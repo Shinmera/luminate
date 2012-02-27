@@ -1,0 +1,87 @@
+/* CSS Document */
+
+.group_main{
+	
+}
+
+.group_subtitle{
+	background-color:#000000;
+	color:#FFF;
+	position:relative;
+	left:-10px;
+	top:-10px;
+	float:left;
+	width:150px;
+	margin-top:-5px;
+	padding-left:5px;
+	font-size:16pt;
+}
+
+.group_title{
+	background-color:#999999;
+	padding:10px;
+	margin-left:-15px;
+	margin-right:-15px;
+	height:60px;
+	vertical-align:middle;
+	font-size:27pt;
+}
+
+.group_public{
+	background-color:#999999;
+	padding:10px;
+	margin-top:15px;
+	margin-left:auto;
+	margin-right:auto;
+	min-height:50px;
+}
+
+.group_private{
+	background-color:#999999;
+	padding:10px;
+	margin-top:15px;
+	margin-left:auto;
+	margin-right:auto;
+	min-height:50px;
+}
+
+.group_leaders{
+	clear:left;
+	background-color:#CCCCCC;
+	margin-top:15px;
+	width:45%;
+	padding:10px;
+	float:left;
+	min-height:100px;
+}
+
+.group_members{
+	clear:right;
+	background-color:#CCCCCC;
+	margin-top:15px;
+	width:45%;
+	padding:10px;
+	float:right;
+	min-height:100px;
+}
+
+.group_comments{
+	clear:right;
+	background-color:#CCCCCC;
+	margin-top:15px;
+	width:45%;
+	padding:10px;
+	float:right;
+}
+
+table.groupList {
+        width:100%;
+	text-align:left;
+	border-spacing:0px;
+	font-size:10pt;
+}
+table.groupList th{padding-left:10px;background-color:#000066;color:#FFF;}
+table.groupList td{border-left:1px solid black;padding:10px;}
+table.groupList td:nth-child(4){border-right:1px solid black;}
+table.groupList tr:nth-child(2n+2){background-color:#EFEFEF;}
+table.groupList tr:nth-child(2n+1){background-color:#FFF;}

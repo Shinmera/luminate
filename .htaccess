@@ -1,0 +1,10 @@
+DirectoryIndex decoder.php
+
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /decoder.php [L]
+AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+FileETag none

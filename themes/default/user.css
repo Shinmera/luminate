@@ -1,0 +1,106 @@
+/* CSS Document */
+
+.user_main{
+	
+}
+
+.user_title{
+	background-color:#000;
+        color:#EEE;
+	padding:10px;
+	margin-left:-15px;
+	margin-right:-15px;
+	height:75px;
+	vertical-align:middle;
+	font-size:27pt;
+}
+
+.user_title a{
+    color:#EEE;
+}
+
+.user_subtitle{
+	background-color:#AAA;
+	color:#000;
+	position:relative;
+	left:-10px;
+	top:-35px;
+	float:left;
+	width:150px;
+	padding-left:5px;
+	font-size:16pt;
+        font-weight: bold;
+        border-radius: 5px 5px 0px 0px;
+}
+
+.user_public{
+	background-color:#007dc4;
+	padding:10px;
+	margin-top:30px;
+	margin-left:auto;
+	margin-right:auto;
+	min-height:50px;
+        border-radius: 0px 5px 5px 5px;
+}
+.user_public .user_subtitle{
+	background-color:#007dc4;
+}
+
+.user_private{
+	background-color:#999999;
+	padding:10px;
+	margin-top:15px;
+	margin-left:auto;
+	margin-right:auto;
+	min-height:50px;
+}
+
+.user_groups{
+	clear:left;
+	background-color:#AAA;
+	margin-top:30px;
+	width:45%;
+	padding:10px;
+	float:left;
+        border-radius: 0px 5px 5px 5px;
+}
+
+.user_facts{
+	clear:right;
+	background-color:#AAA;
+        color:#000;
+	margin-top:30px;
+	width:45%;
+	padding:10px;
+	float:right;
+        border-radius: 0px 5px 5px 5px;
+}
+
+.userAvatarList{
+	background-color:#CCCCCC;
+	width:100%;
+	text-align:center;
+}
+.userAvatarList_confirmed, .userAvatarList_unconfirmed{
+    text-align:center;
+    float:left;
+    padding:5px;
+    margin-right:10px;
+    border-radius:5px;
+}
+.userAvatarList_unconfirmed{background-color:#FF0000;}
+.userAvatarList_confirmed  {background-color:#FFFFFF;}
+
+
+table.userList {
+        width:100%;
+	text-align:left;
+	border-spacing:0px;
+	font-size:10pt;
+        min-height:10px;
+}
+table.userList th{padding-left:10px;background-color:#000066;color:#FFF;}
+table.userList td{border-left:1px solid black;padding:10px;}
+table.userList td:nth-child(3){border-right:1px solid black;}
+table.userList tr:nth-child(2n+2){background-color:#EFEFEF;}
+table.userList tr:nth-child(2n+1){background-color:#FFF;}
