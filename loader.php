@@ -1,9 +1,8 @@
 <? class Loader{
-    function loadModule($index,$name,$id=-1){
-        if(!class_exists($name))include(MODULEPATH.$index);else break;
+    function loadModule($index,$name){
+        if(!class_exists($name))include(MODULEPATH.$index.'/'.$name.'.php');else break;
         if(!class_exists($name))throw new Exception("No such class '".$name."'! Is your module named correctly?");
         $m = new $name();
-        $m->id=$id;
         
         $this->defineGlobally($m);
         $this->loadDependencies($m);
@@ -26,4 +25,9 @@
             $this->loadModule($index,$name);
         }
     }
+    
+    function callHook($hook){
+        
+    }
+    
 } ?>

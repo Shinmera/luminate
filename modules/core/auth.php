@@ -3,7 +3,7 @@ class Auth{
 var $name="Auth";
 var $version=1.8;
 var $short='a';
-var $required=array('Sqlloader'=>'core/sqlloader.php');
+var $required=array();
 
 var $udPBase=array();
 var $udPTree=array();
@@ -72,65 +72,6 @@ var $udPTree=array();
         setcookie('hash',' ',time()+60*60*$c->o['cookie_life_h'],'/');
         $c->resetUser();
         return XERR_OK;
-    }
-
-    function authOID($id="",$method="",$action="login"){
-        require CALLABLESPATH.'openid.php';
-        try {
-            $openid = new LightOpenID(HOST);
-            if(!$openid->mode) {
-                if($id!="") {
-                    switch($method){
-                        case 'wordpress': $id=$id.'.wordpress.com';
-                        case 'aol': $id=$id.'openid.aol.com/';
-                        case 'myspace': $id='www.myspace.com/'.$id;
-                        case 'orange': $id='openid.orange.fr/'.$id;
-                        case 'blogger': $id=$id.'.blogger.com';
-                        case 'livejournal': $id=$id.'.livejournal.com';
-                        case 'yahoo': $id='me.yahoo.com';
-                        case 'google': $id='https://www.google.com/accounts/o8/id';
-                        case 'myopenid': $id=$id.'.myopenid.com';
-                        case 'steam': $id='steamcommunity.com/openid/';
-                        case 'clickpass': $id='clickpass.com/public/'.$id;
-                        case 'verisign': $id=$id.'.pip.verisignlabs.com';
-                        case 'typepad': $id=$id.'.typepad.com';
-                        case 'claimid': $id='claimid.com/'.$id;
-                        case 'clavid': $id=$id.'.clavid.com';
-                        case 'launchpad': $id='launchpad.net/~'.$id;
-                        case 'ubuntu': $id='login.ubuntu.com';
-                        case 'seznam': $id=$id.'.id.seznam.cz';
-                        case 'xlogon': $id='http://xlogon.net/'.$id;
-                        case 'hyves': $id='hyves.nl';
-                        case 'mixi': $id='mixi.jp';
-                        case 'virgilio': $id='virgilio.it';
-                        case 'irtualna': $id='openid.wp.pl';
-                        case 'flickr': $id='http://www.flickr.com'.$id;
-                    }
-                    $openid->identity = $id;
-                    $openid->required = array('namePerson/friendly', 'contact/email');
-                    $openid->optional = array('namePerson/first','namePerson/last','birthDate');
-                    header('Location: ' . $openid->authUrl());
-                }
-            } elseif($openid->mode == 'cancel') {
-                return XERR_OID_CANCEL;
-            } else {
-                $openid->validate();
-                $info = $openid->getAttributes();
-
-                if($action=="login"){
-                    global $c;
-                    $token=$this->composeToken($info['namePerson/friendly'],$c->udUSecret[array_search($info['namePerson/friendly'],$c->udUName)]);
-                    setcookie('username',$info['namePerson/friendly'],time()+60*60*$c->o['cookie_life_h'],'/');
-                    setcookie('hash',$token,time()+60*60*$c->o['cookie_life_h'],'/');
-                }if($action=="register"){
-                    //FIXME: HOOK TO REGISTRATION
-                }
-
-                return $openid->identity;
-            }
-        } catch(ErrorException $e) {
-            return XERR_OID_GENERIC;
-        }
     }
 
     function loadPermissions(){
