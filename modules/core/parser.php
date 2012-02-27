@@ -13,6 +13,7 @@ var $required=array();
         $s = str_ireplace("'","&lsquo;",$s);
         return trim($s);
     }
+    
     function enparseNoBreak($s){
         $s = $this->convertCharset($s);
         $s = htmlspecialchars($s, ENT_QUOTES);
@@ -21,6 +22,7 @@ var $required=array();
         $s = str_ireplace("\\\\","\\",$s);
         return trim($s);
     }
+    
     function fixslashes($s){
         $s = str_replace("\\'","'",$s);
         $s = str_replace('\\"','"',$s);
@@ -33,61 +35,7 @@ var $required=array();
             mb_substitute_character('none');
             $s = mb_convert_encoding($s, 'UTF-8');
         }
-        $bad_ords = array(8235, 8238);
-        $ords = $this->unistr_to_ords($s);
-        foreach ($bad_ords as $bad_ord) {
-            if (in_array($bad_ord, $ords))
-                    return "nope.avi";
-        }
         return $s;
-    }
-
-    //stolen from Kusaba X
-    function closeOpenTags($html){
-        /* Put all opened tags into an array */
-        preg_match_all("#<([a-z]+)( .*)?(?!/)>#iU", $html, $result);
-        $openedtags=$result[1];
-
-        /* Put all closed tags into an array */
-        preg_match_all("#</([a-z]+)>#iU", $html, $result);
-        $closedtags=$result[1];
-        $len_opened = count($openedtags);
-        /* All tags are closed */
-        if(count($closedtags) == $len_opened){
-            return $html;
-        }
-        $openedtags = array_reverse($openedtags);
-        /* Close tags */
-        for($i=0;$i<$len_opened;$i++) {
-            if ($openedtags[$i]!='br') {
-                if (!in_array($openedtags[$i], $closedtags)){
-                    $html .= '</'.$openedtags[$i].'>';
-                } else {
-                    unset($closedtags[array_search($openedtags[$i], $closedtags)]);
-                }
-            }
-        }
-        return $html;
-    }
-
-    //stolen from Kusaba X
-    function unistr_to_ords($str, $encoding = 'UTF-8'){
-        if (!function_exists('mb_convert_encoding')) {
-            return false;
-        }
-        /* Turns a string of unicode characters into an array of ordinal values,
-        Even if some of those characters are multibyte. */
-        $str = mb_convert_encoding($str,"UCS-4BE",$encoding);
-        $ords = array();
-
-        /* Visit each unicode character */
-        for($i = 0; $i < mb_strlen($str,"UCS-4BE"); $i++){
-            /* Now we have 4 bytes. Find their total numeric value */
-            $s2 = mb_substr($str,$i,1,"UCS-4BE");
-            $val = unpack("N",$s2);
-            $ords[] = $val[1];
-        }
-        return($ords);
     }
 
     function deparse($s){

@@ -1,5 +1,4 @@
 <? class Module{
-var $id;
 var $name="Module";
 var $version=0.01;
 var $short='';
