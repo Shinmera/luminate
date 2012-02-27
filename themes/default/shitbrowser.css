@@ -1,0 +1,80 @@
+@charset "utf-8";
+/* CSS Document */
+html,body{
+    margin-left:auto;
+    margin-right:auto;
+    width:512px;
+    background-color:#000;
+    background-image:url("/images/noisebg.png");
+    font-family: Arial;
+}
+
+.header{
+    text-align:center;
+    font-size:36pt;
+    font-weight:900;
+    color:#EEE;
+}
+
+.content{
+    background-color:#EEE;
+    margin-top:-10px;
+    padding:20px;
+    font-size:12pt;
+    margin-top:20px;
+}
+
+.title{
+    text-align:center;
+    font-size:28pt;
+    font-weight:bold;
+    color:#444;
+}
+
+.subtitle{
+    text-align:center;
+    font-size:16pt;
+    font-weight:bold;
+    font-style: italic;
+    color:#AAA;
+}
+
+hr{
+    background: transparent;
+    border-top: transparent;
+    border-left: transparent;
+    border-right: transparent;
+    border-bottom: 1px solid #999;
+}
+
+.browsers{
+    text-align:center;
+    background-color:#000;
+    background-image:url("/images/noisebg.png");
+    color: #EEE;
+    font-weight:bold;
+    padding:10px;
+}
+
+.browser{
+    text-align:center;
+    padding:5px;
+    display:inline-block;
+    width: 70px;
+    height: 100px;
+}
+.browser a{
+    text-decoration: none;
+    color: #EEE;
+    font-size:10pt;
+}
+.browser img{
+    border: none;
+}
+
+.footer{
+    margin-top:20px;
+    font-size:8pt;
+    text-align:center;
+    color:#AAA;
+}
