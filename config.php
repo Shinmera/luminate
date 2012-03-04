@@ -2,13 +2,13 @@
 $time = explode(' ',microtime());
 $time = $time[1]+$time[0];
 define("STARTTIME",$time);
-define("VERSION","4.0.2-Linux/Debianα");
 define("INIT",TRUE);
 //local reference variables
 define("HOST","linuz.com");
 define("ROOT","/var/www");
 define("PROOT","/Luminate/");
 define("TROOT",ROOT.PROOT);
+define("NODOMAIN","http://".HOST.PROOT);
 //shortcuts
 define("THEMEPATH",PROOT."themes/");
 define("DATAPATH",PROOT."data/");
@@ -32,11 +32,14 @@ define("SQLDB","tymoonD");
 //other bs
 define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
 
+$MODULES=array();
+$MODULECACHE=unserialize(file_get_contents(CALLABLESPATH.'modulecache'));
 if(!class_exists("Module")){    require_once(MODULEPATH.'module.php');}
 if(!class_exists("API")){       require_once(TROOT.'api.php');}                 $api=new API();
 if(!class_exists("Loader")){    require_once(TROOT.'loader.php');}              $l = new Loader();
 if(!class_exists("Toolkit")){   require_once(CALLABLESPATH.'toolkit.php');}     $k = new Toolkit();
-$l->loadModule('core', 'sqlloader');
+$l->loadModule('Sqlloader');
 $c->connect(SQLUSER,SQLPASS,SQLDB);
+$l->loadModule('Core');
 }
 ?>

@@ -1,9 +1,8 @@
-<? global $c,$k;?>
+<? global $k,$CORE; ?>
+
 </div>
-<div class="footer">
-&copy;2010-<?=date("Y")?> TymoonNET/NexT, All rights reserved.<br />
-Page generated in <?=$k->getTimeElapsed();?> seconds.<br />
-Running TyNET v<?=VERSION?>.
+<div id="footer">
+    &copy;2010-<?=date("Y")?> TymoonNexT, all rights reserved.<br />
+    Running TyNET-<?=$CORE::$version?><br />
+    Page generated in <?=$k->getTimeElapsed();?>s.
 </div>
-</body>
-</html>

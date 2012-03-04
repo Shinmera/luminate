@@ -1,9 +1,9 @@
 <?php
-class Parser{
-var $name="Parser";
-var $version=2.8;
-var $short='p';
-var $required=array();
+class Parser extends Module{
+public static $name="Parser";
+public static $version=2.8;
+public static $short='p';
+public static $required=array();
 
     function enparse($s){
         $s = $this->convertCharset($s);
@@ -56,6 +56,7 @@ var $required=array();
         $s = str_ireplace("\\\\","\\",$s);
         $s = str_ireplace("\\'","'",$s);
         $s = str_ireplace('\\"','"',$s);
+        $s = $l->triggerHookSequentially("deparse",$this,$s);
         return $s;
     }
 
@@ -78,7 +79,7 @@ var $required=array();
 
     function BBCodeDeParse($s,$level=99,$blacktags=array()){
         if(strlen($s)>1){
-            global $c;
+            global $c,$l;
             $c->loadBBCode();
             for($j=0;$j<10&&strpos($s,"[")!==FALSE;$j++){
                 for($i=0;$i<count($c->msBCode);$i++){
@@ -89,6 +90,8 @@ var $required=array();
             for($i=0;$i<count($c->msMID);$i++){
                 $s = preg_replace("`\[".$c->msMTitle[$i]."=(.+?)\](.+?)\[/".$c->msMTitle[$i]."\]`is","<a href='".PROOT.$c->msMSub[$i]."/byID/\\1'>\\2</a>",$s);
             }
+            //We need to handle the hooks sequentially here.
+            $s = $l->triggerHookSequentially("bbcodeParse",$this,$s);
         }
         return($s);
     }
