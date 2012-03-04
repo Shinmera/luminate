@@ -1,9 +1,10 @@
 <?
 class Sqlloader{
-var $name="Sqlloader";
-var $version=2.4;
-var $short='c';
-var $required=array();
+public static $name="Sqlloader";
+public static $version=2.4;
+public static $short='c';
+public static $required=array();
+public static $hooks=array(); //An empty array blocks hook loading.
 
 var $mysqli;
 var $o=array();
@@ -16,6 +17,7 @@ var $queries=0;
         $this->mysqli = new mysqli('localhost',$sqluser,$sqlpass,$database);
         if(mysqli_connect_errno())die(mysqli_connect_error());
         $this->mysqli->autocommit(TRUE);
+        $this->loadOptions();
     }
 
     function close(){
@@ -141,12 +143,9 @@ var $queries=0;
     }
 
     function loadOptions(){
-        $query="SELECT * FROM ms_options";
-        if(!in_array($query,$this->queries)){
-            $result=$this->getData($query);
-            for ($i=0,$arc=count($result);$i<$arc;$i++) {
-                $this->o[$result[$i]["key"]]=$result[$i]["value"];
-            }
+        $result=$this->getData("SELECT `key`,`value` FROM ms_options");
+        for ($i=0,$arc=count($result);$i<$arc;$i++) {
+            $this->o[$result[$i]["key"]]=$result[$i]["value"];
         }
     }
 }

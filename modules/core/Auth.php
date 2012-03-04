@@ -1,16 +1,15 @@
 <?
-class Auth{
-var $name="Auth";
-var $version=1.8;
-var $short='a';
-var $required=array();
+class Auth extends Module{
+public static $name="Auth";
+public static $version=1.8;
+public static $short='a';
+public static $required=array();
 
 var $udPBase=array();
 var $udPTree=array();
+var $userID;
 
     public function __construct() {
-        global $c;
-        if(!$c->base_loaded)$c->loadBase();
         $this->auth($_COOKIE['username'],$_COOKIE['hash']); 
     }
 

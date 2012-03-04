@@ -21,23 +21,19 @@ if(strpos($param,"?")!=FALSE)$param=substr($param,0,strpos($param,"?"));
 $param=trim(urldecode($param));
 $params=explode("/",$param);
 if($params[0]=="")$site="index";else $site=$params[0];
+if($params[0]==PROOT)$params=array_slice($params, 1);
 $domain=str_replace(HOST,"",$_SERVER['HTTP_HOST']);
 if($domain!=""){
-    $domain=substr($domain,0,strlen($domain)-1);
+    $domain=strtolower(substr($domain,0,strlen($domain)-1));
     define("DOMAIN",$domain);
 }
 
-$mod=$c->getData('SELECT `name` FROM ms_modules WHERE subdomain LIKE ? AND activated=1 LIMIT 1',array('%'.DOMAIN.'%'));
-if(count($mod)==0){
-    if(file_exists(PAGEPATH.$site.".php"))     include(PAGEPATH.$site.".php");
-    else                                       include(PAGEPATH."404.php");
-}else{
-    $m = Loader::loadModule($mod[0]['name']);
-    $m->displayPage();
-}
+$l->triggerHook("HIT".DOMAIN,$CORE,array($params));
 
 ob_end_flush();
 flush();
 $c->close();
+
+$l->triggerHook("END",$CORE,array($k->getMicrotime()));
 die();
 ?>

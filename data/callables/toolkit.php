@@ -97,8 +97,12 @@ function modCategorySelect($name,$module,$presel=-1,$none=false){
 
 
 function err($message,$die=false){
-    if($die)die("<div style='padding:10px;color:red;background-color:white;border: 1px solid black;'><div class='error'>".nl2br ($message)."</div></div>");
-    else echo("<div style='padding:10px;color:red;background-color:white;border: 1px solid black;'><div class='error'>".nl2br($message)."</div></div>");
+    $message="<div style='padding:10px;margin:5px;
+                          color:white;font-weight:bold;font-family: Arial;
+                          background-color: #FF0000;box-shadow: 0px 0px 10px #FF0000;
+                          border-radius: 10px;
+                          display:inline-block;'><div class='error'>".nl2br ($message)."</div></div>";
+    if($die)die($message);else echo($message);
 }
 
 function checkBanned($IP){
@@ -108,52 +112,6 @@ function checkBanned($IP){
     if(time()>$data[0]['time']&&$data[0]['time']!=-1)
         $c->query("DELETE FROM ms_banned WHERE IP=?",array($data[0]['IP']));
     return $data[0];
-}
-
-function toUIDList($mixedList,$delim=";"){
-    global $c;
-    if(!is_array($mixedList))$mixedList=explode($delim,$mixedList);
-    $list = array();
-    for($i=0;$i<count($mixedList);$i++){
-        if($mixedList[$i]!=""){
-        if(is_numeric($mixedList[$i])){
-            $c->loadUsers($mixedList[$i]);
-            $uID=array_search($mixedList[$i],$c->udUID);
-            if($uID!==FALSE)$list[]=$c->udUID[$i];
-        }else{
-            $c->loadUsers("%",$mixedList[$i]);
-            $uID=array_search($mixedList[$i],$c->udUName);
-            if($uID!==FALSE){$list[]=$c->udUID[$i];
-            }else{
-                $uID=array_search($mixedList[$i],$c->udUDisplayName);
-                if($uID!==FALSE)$list[]=$c->udUID[$i];
-            }
-        }}
-    }
-    return $list;
-}
-
-function toNameList($mixedList,$delim=";"){
-     global $c;
-    if(!is_array($mixedList))$mixedList=explode($delim,$mixedList);
-    $list = array();
-    for($i=0;$i<count($mixedList);$i++){
-        if($mixedList[$i]!=""){
-        if(is_numeric($mixedList[$i])){
-            $c->loadUsers($mixedList[$i]);
-            $uID=array_search($mixedList[$i],$c->udUID);
-            if($uID!==FALSE)$list[]=$c->udUName[$i];
-        }else{
-            $c->loadUsers("%",$mixedList[$i]);
-            $uID=array_search($mixedList[$i],$c->udUName);
-            if($uID!==FALSE){$list[]=$c->udUName[$i];
-            }else{
-                $uID=array_search($mixedList[$i],$c->udUDisplayName);
-                if($uID!==FALSE)$list[]=$c->udName[$i];
-            }
-        }}
-    }
-    return $list;
 }
 
 function toKeyArray($array,$delim1=";",$delim2="="){
@@ -235,47 +193,14 @@ function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=
     }
 }
 
-function getUserPageByID($id){
-    global $c;
-    $c->loadUsers($id);
-    $uID=array_search($id,$c->udUID);if($uID===FALSE)return;
-    return("<a href='".PROOT."user/".str_replace(" ","_",$c->udUName[$uID])."'>".$c->udUDisplayName[$uID]."</a>");
-}
-
 function getUserPage($user){
     return("<a href='".PROOT."user/".str_replace(" ","_",$user)."'>".$user."</a>");
-}
-
-function getUserField($user,$key){
-    global $c;
-    $c->loadUsers($user);
-    $uID=array_search($user,$c->udUID);
-    if($uID===FALSE)return;
-
-    $fields=$this->toKeyArray($c->udPFields[$uID]);
-    return $fields[$key];
 }
 
 function addAPIToken($key){
     global $s,$c;$short = $s->generateShort(50);
     $c->query("INSERT INTO ms_options VALUES(?,?)",array($key,$short));
     return $short;
-}
-
-function compileAvatarList($userlist,$size=150,$extra="",$group=false){
-    global $c;
-    if(!is_array($userlist))$userlist=explode(";",$userlist);
-    $final = array();
-    for($i=0;$i<count($userlist);$i++){
-        if(((in_array($userlist[$i],$c->udUID)&&!$group)||(in_array($userlist[$i],$c->udGID)&&$group))&&$userlist[$i]>0){
-            if(!$group)    $uID=array_search($userlist[$i],$c->udUID);
-            else        $uID=array_search($userlist[$i],$c->udGID);
-            if($uID===FALSE)$uID=-1;
-            if(!$group)    $final[]=$this->getUserAvatar($c->udUName[$uID],$c->udUMail[$uID],$size,$extra);
-            else        $final[]=$this->getGroupAvatar($c->udGTitle[$uID],$size,$extra);
-        }
-    }
-    return $final;
 }
 
 function compileList($data,$epr=5,$limit=-1,$align="center",$box=""){
@@ -295,83 +220,12 @@ function compileTagList($data){
     }
 }
 
-function getUID($user){
-    global $c;
-    if(is_numeric($user)){
-        $c->loadUsers($user);
-        if(in_array($user,$c->udUID))return $user;
-        else                         return;
-    }else{
-        $c->loadUsers('%',$user);
-        $uID=array_search($user,$c->udUName);
-        if($uID===FALSE)$uID=array_search($user,$c->udUDisplayName);
-        if($uID!==FALSE)return $c->udUID[$uID];
-        else            return;
-    }
-}
-
-function getUN($user){
-    global $c;
-    if(is_numeric($user)){
-            $c->loadUsers($user);
-            $id=array_search($user,$c->udUID);
-            if($id===FALSE)return "";
-            return $c->udUDisplayName[$id];
-        }else{
-            $c->loadUsers("%",$user);
-            $id=array_search($user,$c->udUName);
-            if($id===FALSE)return "";
-            return $c->udUDisplayName[$id];
-        }
-}
-
-function getUDN($id){
-        global $c;
-        $c->loadUsers($id);
-        $id=array_search($id,$c->udUID);
-        if($id===FALSE)return "";
-        return $c->udUName[$id];
-}
-
-function getGroupAvatar($user,$size=150,$extra=""){
-    global $c;
-    if(is_numeric($user)&&$user>0)$user=$c->udGTitle[array_search($user,$c->udGID)];
-    if(in_array($user,$c->udGTitle)){
-        $temp=array_search($user,$c->udGTitle);
-        if($c->udGFilename[$temp]==""){
-            return("<a href='/user/".$user."' title='".$user."'><img border='0' ".$extra." src='".AVATARPATH."nogroup.png' width='".$size."px' height='".($size/2)."px' alt='".$user."' /></a>");
-        }else
-            return("<a href='/user/".$user."' title='".$user."'><img border='0' ".$extra." src='".AVATARPATH.$c->udGFilename[$temp]."' width='".$size."px' height='".($size/2)."px' alt='".$user."' /></a>");
-    }else{
-        return("<a href='/user/".$user."'><img ".$extra." src='".AVATARPATH."nogroup.png' width='".$size."px' ></a>");
-    }
-}
-
-function getUserAvatar($user,$mail="",$size=150,$extra=""){
-    global $c;
-    if(is_numeric($user))$user=$this->getUDN($user);
-    $usern=$this->getUN($user);
-    if(in_array($user,$c->udUName)){
-        $temp=array_search($user,$c->udUName);
-        if($c->udUFilename[$temp]==""){
-            return("<a href='/user/".$usern."' title='".$usern."'>".$this->getGravatar($mail,$size,$extra)."</a>");
-        }else
-            return("<a href='/user/".$usern."' title='".$usern."'><img border='0' ".$extra." src='".AVATARPATH.$c->udUFilename[$temp]."' width='".$size."px' alt='".$usern."' title='".$usern."' /></a>");
-    }else{
-        return("<img border='0' ".$extra." src='".AVATARPATH."noguy.png' width='".$size."px' alt='".$usern."' title='".$usern."' />");
-    }
-}
-
 function getGravatar($name,$size=100,$extra=""){
     require_once(TROOT."callables/gravatar.php");
     $gravatar = new Gravatar($name,AVATARPATH."noguy.jpg");
     $gravatar->size = $size;
     $gravatar->iclass = $extra;
     return($gravatar);
-}
-
-function getAvatar($name,$mail,$size=100,$ret=0,$extra=""){
-    return $this->getUserAvatar($name,$mail,$size,$extra);
 }
 
 function getGroup($uID){
@@ -580,12 +434,7 @@ function sanitizeFilename($filename){
 }
 
 function sanitizeString($s,$extra=''){
-    $valid=str_split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-'.$extra);
-    $s=str_split($s);$result='';
-    for($i=0;$i<count($s);$i++){
-        if(in_array($s[$i],$valid))$result.=$s[$i];
-    }
-    return $result;
+    return preg_replace("/[^a-zA-Z0-9\s\.\-_]/", "",$s);
 }
 
 
@@ -602,7 +451,7 @@ function validateMail($mail,$selfcheck=true){
     if(strpos($mail,"@")===FALSE)return false;
     if(strpos($mail,"@")>=(strlen($mail)-1))return false;
     if(strpos($mail,".")>=(strlen($mail)-1))return false;
-    if(in_array($mail,$c->udUMail)&&$selfcheck)return false;
+    //if(in_array($mail,$c->udUMail)&&$selfcheck)return false;
 
     //B& hosts
     $banned = explode("\n",file_get_contents(TROOT."callables/banned-mails"));
@@ -610,9 +459,11 @@ function validateMail($mail,$selfcheck=true){
 
     return XERR_OK;
 }
+
 function updateTimeout($action,$timeout){
     return $this->updateTimeout($action,$timeout);
 }
+
 function updateTimestamp($action,$timeout){
     global $c;
     $result=$c->getData("SELECT `time` FROM ms_timer WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],$action));
@@ -718,6 +569,31 @@ function getMicrotime(){
 function strnposr($haystack, $needle, $occurrence, $pos = 0) {
     return ($occurrence<2)?strpos($haystack, $needle, $pos):$this->strnposr($haystack,$needle,$occurrence-1,strpos($haystack, $needle, $pos) + 1);
 }
+
+
+function generateModuleCache(){
+    
+    $modulelist=array();
+    
+    $dh = opendir(MODULEPATH);
+    while(($file = readdir($dh)) !== false){
+        if($file!="."&&$file!=".."){
+            if(is_dir(MODULEPATH.$file)){
+                $di = opendir(MODULEPATH.$file);
+                while(($ifile = readdir($di)) !== false){
+                    if($ifile!="."&&$ifile!=".."&&!is_dir(MODULEPATH.$file.'/'.$ifile)){
+                        $modulelist[str_replace(".php","",$ifile)]=$file.'/'.$ifile;
+                    }
+                }
+            }else{
+                $modulelist[str_replace(".php","",$file)]=$file;
+            }
+        }
+    }
+    closedir($dh);
+    
+    file_put_contents(CALLABLESPATH.'modulecache', serialize($modulelist));
+}  
 
 }
 ?>

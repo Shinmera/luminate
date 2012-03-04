@@ -5,6 +5,28 @@ RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /decoder.php [L]
+RewriteRule . /Luminate/decoder.php [L]
 AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+AddType 'text/html; charset=UTF-8' html
+AddType 'text/html; charset=UTF-8' php
+AddType 'text/javascript; charset=UTF-8' js
+AddType 'text/css; charset=UTF-8' css
 FileETag none
+
+ExpiresActive On
+ExpiresDefault "access plus 30 seconds"
+
+##STATIC IMAGES AND OTHER SHIT##
+<filesmatch "\.(jpg|gif|png|zip|rar|jar|bmp|psd)$">
+    ExpiresDefault "access plus 1 year"
+</filesmatch>
+
+##PAGES##
+<filesmatch "\.(html|php)$">
+    ExpiresDefault "access plus 1 month"
+</filesmatch>
+
+##STYLES&JS##
+<filesmatch "\.(js|css)$">
+    ExpiresDefault "access plus 1 week"
+</filesmatch>

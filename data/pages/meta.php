@@ -17,10 +17,3 @@
 <meta name="distribution" content="Global" />
 <meta name="keywords" content="<?=$c->o['metakeys']?>" />
 <meta name="robots" content="ALL" />
-
-<link rel="alternate" type="application/rss+xml" title="All RSS feeds" href="http://feeds.feedburner.com/Tymoon" />
-<link rel="alternate" type="application/rss+xml" title="RSS: Blog" href="<? echo($host.$proot); ?>rss.php?CID=blog" />
-<link rel="alternate" media="handheld" href="http://mobile.tymoon.eu" />
-<? for($i=0;$i<count($c->coCID);$i++){
-	echo('<link rel="alternate" type="application/rss+xml" title="RSS: '.$c->coCTitle[$i].'" href="'.$host.$proot.'rss.php?CID='.$c->coCID[$i].'" />');
-} ?>
