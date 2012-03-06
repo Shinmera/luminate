@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 27, 2012 at 10:47 PM
+-- Generation Time: Mar 06, 2012 at 10:17 PM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -17,81 +17,8 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `tymoonC`
+-- Database: `tymoonD`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ms_banned`
---
-
-CREATE TABLE IF NOT EXISTS `ms_banned` (
-  `IP` varchar(16) NOT NULL,
-  `time` int(11) NOT NULL,
-  `reason` text NOT NULL,
-  `appeal` text NOT NULL,
-  UNIQUE KEY `IP` (`IP`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ms_banned`
---
-
-INSERT INTO `ms_banned` (`IP`, `time`, `reason`, `appeal`) VALUES
-('`67.159.36.22`is', 1324492534, 'On second thought, stay out too.', 'true');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ms_bbcode`
---
-
-CREATE TABLE IF NOT EXISTS `ms_bbcode` (
-  `title` varchar(32) NOT NULL,
-  `raw` varchar(32) NOT NULL,
-  `bbcode` text NOT NULL,
-  `html` text NOT NULL,
-  `admin` int(11) NOT NULL,
-  PRIMARY KEY (`title`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ms_bbcode`
---
-
-INSERT INTO `ms_bbcode` (`title`, `raw`, `bbcode`, `html`, `admin`) VALUES
-('bold', '[b]|[/b]', '`\\[b\\](.+?)\\[/b\\]`is', '<b>\\1</b>', 0),
-('strike', '[s]|[/s]', '`\\[s\\](.+?)\\[/s\\]`is', '<s>\\1</s>', 0),
-('italic', '[i]|[/i]', '`\\[i\\](.+?)\\[/i\\]`is', '<i>\\1</i>', 0),
-('underlined', '[u]|[/u]', '`\\[u\\](.+?)\\[/u\\]`is', '<u>\\1</u>', 0),
-('center', '[center]|[/center]', '`\\[center\\](.+?)\\[/center\\]`is', '<center>\\1</center>', 1),
-('left', '[left]|[/left]', '`\\[left\\](.+?)\\[/left\\]`is', '<div style="text-align:left;">\\1</div>', 1),
-('right', '[right]|[/right]', ' `\\[right\\](.+?)\\[/right\\]`is', '<div style="text-align:right;">\\1</div>', 1),
-('image', '[img]|[/img]', '`\\[img\\]((http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)\\[/img\\]`is', '<img src=\\"\\1\\" style=\\''max-width:100%;\\'' />', 2),
-('url', '[url]|[/url]', '`\\[url\\](((http|ftp|https):\\/\\/)?[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?)\\[/url\\]`is', '<a href=\\"\\1\\">\\1</a>', 0),
-('aurl', '[url=|][/url]', '`\\[url=(((http|ftp|https):\\/\\/)?[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?)\\]([\\w\\d\\s,_\\-\\.:;,/\\\\&%\\+!\\?\\"\\''\\(\\)]+)\\[/url\\]`is', '<a href=\\"\\1\\">\\6</a>', 0),
-('color_short', '[c=#000000]|[/c]', '`\\[c=(.+?)\\](.+?)\\[/c\\]`is', '<font color="\\1">\\2</font>', 0),
-('font', '[font=Arial]|[/font]', '`\\[font=(.+?)\\](.+?)\\[/font\\]`is', '<font face="\\1">\\2</font>', 0),
-('size', '[size=5]|[/size]', '`\\[size=(\\d+?)\\](.+?)\\[/size\\]`is', '<font size=\\"\\1\\">\\2</font>', 1),
-('quote', '[quote=-]|[/quote]', '`\\[quote=(.+?)\\](.+?)\\[/quote\\]`is', '<div class="quote"><i>Quote: \\1</i><hr>\\2</div>', 0),
-('list', '[list]|[/list]', '`\\[list\\](.+?)\\[/list\\]`is', '<ul>\\1</ul>', 0),
-('listelement', '[*]|\\n', '`\\[\\*\\](.+?)<br>`is', '<li>\\1</li>', 0),
-('alink', '[link=|][/link]', '`\\[url=(((http|ftp|https):\\/\\/)?[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?)\\]([\\w\\d\\s,_\\-\\.:;,/\\\\&%\\+!\\?\\"\\''\\(\\)]+)\\[/url\\]`is', '<a href=\\"\\1\\">\\6</a>', 0),
-('link', '[link]|[link]', '`\\[url\\](((http|ftp|https):\\/\\/)?[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&:/~\\+#]*[\\w\\-\\@?^=%&/~\\+#])?)\\[/url\\]`is', '<a href=\\"\\1\\">\\1</a>', 0),
-('youtube', '[youtube]|[/youtube]', '`\\[youtube\\]https?:\\/\\/(?:[0-9A-Z-]+\\.)?(?:youtu\\.be\\/|youtube\\.com\\S*[^\\w\\-\\s])([\\w\\-]{11})(?=[^\\w\\-]|$)(?![?=&+%\\w]*(?:[\\''\\"][^<>]*>|<\\/a>))[?=&+%\\w]*\\[/youtube\\]`is', '<iframe width=\\"400\\" height=\\"300\\" src=\\"http://www.youtube.com/embed/\\1\\" frameborder=\\"0\\" allowfullscreen></iframe>', 0),
-('squote', '[quote]|[/quote]', '`\\[quote\\](.+?)\\[/quote\\]`is', '<div class=\\"quote\\"><i>Quote</i><hr>\\1</div>', 0),
-('gay', 'gay|gay', '`gay`is', 'fabulous', 0),
-('comment', '[comment]|[/comment]', '`\\[comment\\](.+?)\\[/comment\\]`is', '<!-- \\1 -->', 0),
-('aimg', '[img=|][/img]', '`\\[img=((http|ftp|https):\\/\\/[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?)\\](.+?)\\[/img\\]`is', '<img src=\\"\\1\\" \\5 />', 2),
-('spoiler', '[spoiler]|[/spoiler]', '`\\[spoiler\\](.+?)\\[/spoiler\\]`is', '<div class="spoiler"><input type="button" value="Spoiler" /><div class="spoilertext" style="display:none;">\\1\r\n</div></div>', 0),
-('hr', '[hr]|', '`\\[hr\\]`is', '<hr />', 0),
-('color', '[color=#000000]|[/color]', '`\\[color=(.+?)\\](.+?)\\[/color\\]`is', '<font color="\\1">\\2</font>', 0),
-('sspoiler', '[?]|[/?]', '`\\[\\?\\](.+?)\\[/\\?\\]`is', '<div class=\\"sspoiler\\">\\1</div>', 0),
-('subscript', '[sub]|[/sub]', '`\\[sub\\](.+?)\\[/sub\\]`is', '<sub>\\1</sub>', 0),
-('superscript', '[sup]|[/sup]', '`\\[sup\\](.+?)\\[/sup\\]`is', '<sup>\\1</sup>', 0),
-('code', '[code]|[/code]', '`\\[code\\](.+?)\\[/code\\]`is', '<code style=\\"white-space:pre-wrap;\\">\\1</code>', 0),
-('user', '@| ', '`@(\\w+?)\\s`is', '<a href=\\"/user/\\1\\">@\\1</a> ', 0);
 
 -- --------------------------------------------------------
 
@@ -107,84 +34,29 @@ CREATE TABLE IF NOT EXISTS `ms_categories` (
   `subject` text NOT NULL,
   `options` text NOT NULL,
   PRIMARY KEY (`categoryID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=55 ;
-
---
--- Dumping data for table `ms_categories`
---
-
-INSERT INTO `ms_categories` (`categoryID`, `MID`, `PID`, `title`, `subject`, `options`) VALUES
-(49, 10, 47, 'Awesome', ';P112;P113;P114;P115;P116;P117;P118;P119', ''),
-(33, 12, -1, 'Misc', '', '4'),
-(32, 12, -1, 'Sketches', '', '4'),
-(31, 12, -1, '3D CG', '', '4'),
-(30, 12, 28, 'Spherae', '', '4'),
-(29, 12, 28, 'Re-Boot', '', '4'),
-(28, 12, -1, 'Characters', '', '4'),
-(27, 12, -1, 'Ponies', '', '4'),
-(48, 10, 47, 'Profiles', ';P109;P110;P111', ''),
-(34, 13, -1, 'Transcend', 'This category is for progress updates for the game project Transcend.\r\nIt discusses the game design process on a more distant level, so no coding knowledge is required.', ''),
-(35, 13, -1, 'Site Updates', 'Reports about TyNET&#039;s status.', ''),
-(36, 13, -1, 'Casual', 'Casual updates about things going about in real life.', ''),
-(37, 13, -1, 'Discoveries', 'Things I discovered on the web or just otherwise interesting things that occurred to me.', ''),
-(38, 13, -1, 'Rants', 'Sometimes I like to rant about things that get me steamed up for some reason.\r\nI hope I can keep this either to a minimum or at least interesting.', ''),
-(39, 13, -1, 'Tech', 'Technology, oh technology... what hath thou donest with us?', ''),
-(40, 13, -1, 'Misc', 'Everything that doesn&#039;t quite fit anywhere else.', ''),
-(41, 12, 33, 'Gifts', '', '4'),
-(43, 15, -1, 'Site', 'Discussion about TyNET, administrative matters.', '1;2'),
-(44, 15, -1, 'Projects', 'Discussion of NexT&#039;s projects.', ';3;4;5'),
-(45, 15, -1, 'Chat', '', ';6;7;8'),
-(46, 17, 0, 'chan', '1;2;3', ''),
-(47, 10, -1, 'Links', 'P121;P106;P107;P108;C48;C49', ''),
-(50, 13, -1, 'Reviews', 'Sometimes I write small reviews.\r\nI&#039;m by far no professional critic or reviewer, but it might still be interesting to read some thoughts I have on various things like movies, books, series and so on.', ''),
-(51, 17, 0, 'idk', '4;5', ''),
-(52, 17, 0, 'gen', '6;8;13', ''),
-(53, 17, 0, 'med', '9;11', ''),
-(54, 13, -1, 'Science', 'Science is interesting and I&#039;d like to share some of my humble knowledge about it.', '');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ms_groups`
+-- Table structure for table `ms_hooks`
 --
 
-CREATE TABLE IF NOT EXISTS `ms_groups` (
-  `groupID` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(35) NOT NULL,
-  `admin` int(11) NOT NULL,
-  PRIMARY KEY (`groupID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+CREATE TABLE IF NOT EXISTS `ms_hooks` (
+  `source` varchar(64) NOT NULL,
+  `hook` varchar(64) NOT NULL,
+  `destination` varchar(64) NOT NULL,
+  `function` varchar(64) NOT NULL,
+  PRIMARY KEY (`source`,`hook`,`destination`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `ms_groups`
+-- Dumping data for table `ms_hooks`
 --
 
-INSERT INTO `ms_groups` (`groupID`, `title`, `admin`) VALUES
-(2, 'Registered', 10),
-(3, 'Root', 99),
-(4, 'Admin', 90);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ms_headers`
---
-
-CREATE TABLE IF NOT EXISTS `ms_headers` (
-  `title` varchar(35) NOT NULL,
-  `filename` varchar(35) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `ms_headers`
---
-
-INSERT INTO `ms_headers` (`title`, `filename`) VALUES
-('temporary', 'christmas.png'),
-('Cold Blue', 'cold_blue.png'),
-('Coder', 'coder.png'),
-('Sphere', 'sphere.png'),
-('Cubes', 'cubes.png');
+INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
+('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
+('CORE', 'HITadmin', 'Admin', 'displayPage');
 
 -- --------------------------------------------------------
 
@@ -198,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `owner` bigint(20) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=57 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -269,34 +141,11 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `owner`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ms_modules` (
-  `moduleID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `title` varchar(35) NOT NULL,
+  `name` varchar(35) NOT NULL,
   `subject` text NOT NULL,
-  `subdomain` varchar(35) NOT NULL,
-  `index` varchar(35) NOT NULL,
   `activated` tinyint(1) NOT NULL,
-  PRIMARY KEY (`moduleID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
-
---
--- Dumping data for table `ms_modules`
---
-
-INSERT INTO `ms_modules` (`moduleID`, `title`, `subject`, `subdomain`, `index`, `activated`) VALUES
-(1, 'ACP', 'Administration module. This provides the backend for the whole site.', 'admin', 'admin.php', 0),
-(11, 'Shortener', 'URL shortening service', 'short', 'shortener.php', 0),
-(2, 'UCP', 'User module. This provides the control panel for user actions.', 'user', 'user.php', 0),
-(3, 'RSS', 'Provides RSS feeds.', 'rss', 'rss.php', 0),
-(8, 'Comments', 'Commentary API required by many other modules. Provides nothing by itself.', '-', 'comments.php', 0),
-(10, 'Themes', 'Manage Themes and site layout options.', '-', 'themes.php', 0),
-(9, 'Widgets', 'Widget system.\r\nAssures safe connection between the theming system and the module widgets.', '-', 'widgets.php', 0),
-(12, 'Gallery', 'Provides a simple gallery with user-dependent folders.', 'gallery', 'gallery.php', 0),
-(13, 'Blog', 'Adds a simple blogging system with front-page widget.', 'blog', 'blog.php', 0),
-(14, 'Uploader', 'Simple, globally usable uploader.\r\nProvides AJAX uploading forms.\r\nNo use on it&#039;s own.', 'up', 'uploader.php', 0),
-(15, 'Forum', 'Adds an extensive forum to the site.', 'forum', 'forum.php', 0),
-(16, 'Search', 'Provides searching features.\r\nPart of the main TyNET API.', 'search', 'search.php', 0),
-(17, 'Chan', 'Provides a Kusaba-like imageboard', 'chan', 'chan/chan.php', 0),
-(18, 'Fileman', 'A simple file browser and editor.', '-', 'fileman.php', 0);
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -305,143 +154,30 @@ INSERT INTO `ms_modules` (`moduleID`, `title`, `subject`, `subdomain`, `index`, 
 --
 
 CREATE TABLE IF NOT EXISTS `ms_options` (
-  `key` text NOT NULL,
-  `value` text NOT NULL
+  `key` varchar(64) NOT NULL,
+  `value` text NOT NULL,
+  `type` varchar(1) NOT NULL,
+  PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `ms_options`
 --
 
-INSERT INTO `ms_options` (`key`, `value`) VALUES
-('API_GETMESSAGE_TOKEN', 'JKPLuct0Z5H6Ju331XBx6n64409578Zl3LE046963K1E98242L'),
-('metakeys', 'Shinmera, NexT, Nick, Nicolas Hafner, Nicolas, Hafner, comic, webcomic, blog, projects, Tymoon, TyNET, TymoonNET, gallery, forum, Stevenchan, programming, art, drawing'),
-('headlines', 'Clowning around;NOOPE! Chuck Testa.;Aww, desu desu bitches!'),
-('fo_post_timeout', '15'),
-('comment_Gallery_CCD', '2'),
-('ms_category_order', 'P103;P104;P105;C47'),
-('activated_modules', '1;2;8;9;10;11;12;13;14;15;16;17;18'),
-('rss_title', 'TymoonNET RSS Feed'),
-('post_timeout', '15'),
-('rss_description', 'RSS Feed for the TymoonNET comics by Nicolas Hafner'),
-('register_timeout', '900'),
-('salt1', 'MLPisAveryAWESOMEshow'),
-('salt2', 'you_have_GOT_to_be_shittong_me'),
-('cookie_life_h', '8544'),
-('API_DELUSER_TOKEN', '2jX8isQRib07qOGQ6WbrfEol16Wi8RZXx0ofK7klf8PjFuUFq6'),
-('recaptcha_key_public', '6LeYH7wSAAAAADyB1R9ooRPtxFSTCUcnL5dO6dr8'),
-('recaptcha_key_private', '6LeYH7wSAAAAAMyEpHJzu0HScC6hqm6CyV7WPVMG'),
-('API_DELCOMMENT_TOKEN', '5nsgTd2OW07aV3ofvFnd209RT781nKb14rGozi73jKSXLlCXbq'),
-('akismet_key', '9fce28faba37'),
-('API_SUBMITCOMMENT_TOKEN', 'UqP73SsOJw11e1gJOgiswn59ffOHg7Vhz5q2U7Z27wyw6wB3Tf'),
-('comment_size_min', '4'),
-('comment_size_max', '500'),
-('sysop_mail', 'admin@xprog.ch'),
-('API_INSTALL_TOKEN', 'rn7NAxaiEyhDS2bDTAjqTCGEN15FeGf8y4u1rw5ojgkmc6Z0IJ'),
-('API_UNINSTALL_TOKEN', '3IR37535AX2x4xL2947F4hu43j39tB28287g9YB9DX0Zs5Ic44'),
-('sitename', 'TyNET'),
-('API_SETREAD_TOKEN', 'R8042Nwq12VRi00J0S45v194cJW2n98aZZ4R45ikS1H3Zc0iM7'),
-('API_UPDATEPASSWORD_TOKEN', '6p7d0n907xk6s585195Vo9HpY7m941533BA2G148m5750AjR72'),
-('signature_limit', '300'),
-('avatar_maxsize', '500'),
-('avatar_maxdim', '150'),
-('salt3', '23scUOBa38@#J(&)2h1linDV(03uBNX:'),
-('API_BAN_TOKEN', '27o5oIMg5i08DpT7yvn98bpPWAKKyBtE1pc88YU10q53RrYT76'),
-('API_UNBAN_TOKEN', 'PP32w91Wr8ce3yu05ZF9KN2b08dEvd8022u66aV7T6w76J3ZD6'),
-('API_ADDKEY_TOKEN', '2y954f7tj202wlwvNxI8186Q60yu85nY2J24Ur42437h39I683'),
-('API_DELKEY_TOKEN', 'YzE106Q2gar5173u0pHy1306xW2US1Sy9DwM6JqI19VCWNW0I0'),
-('API_ADDGROUPLEADER_TOKEN', '056V6j7r9qu846b7l7091F6WLrMSm6Rso6L1545cXQ871JC8sg'),
-('API_ADDGROUPMEMBER_TOKEN', 'v1VB7w5G2t20C9FJQKe1ljQ4D8cY58707YVGYpw0MfN41h864k'),
-('API_DELGROUPLEADER_TOKEN', 'b05NtZ397VwzO16H93J321iWMV3Y67C932A6sW7M50VMGsv31F'),
-('API_DELGROUPMEMBER_TOKEN', '590G00j40Kdz1FH30pD6EdZqIK6786X2529ky18q932C0n71DW'),
-('API_REQUESTMEMBER_TOKEN', '5667l2GP9yl3247h39381M6Ak18537VW2K279xv4w43H011ma3'),
-('API_REJECTMEMBER_TOKEN', 'pdX01sP7L43XR9515z6h8N6gJ1V1A322oF3QZ2Y114d893r30g'),
-('API_APPROVEMEMBER_TOKEN', 'P39170Z8V1b8153wx1pa8U83Csf31rCm665X2hJ77LiB1tW3z2'),
-('API_REGISTERCCD_TOKEN', 'vn5Uq60Y8666j9P8K2M578Kz8aG72881K7343V2329K3wW6M4b'),
-('API_REGISTERWIDGET_TOKEN', '0n0Q8r8c2u1fh2d08q347U1f3811i72E16X281pznW61AFK835'),
-('default_theme', 'default'),
-('API_UNREGISTERWIDGET_TOKEN', 'k079vy88L92934A1XGEm15u9j06sq2Ut0XJ2ysP9SqMp5CwFsb'),
-('API_UPDATEWIDGET_TOKEN', 'PT52039824026ij3N2StKjACg18U9MZ02I2098GP0M60ZhCQ7A'),
-('registrations', 'open'),
-('comment_Blog_CCD', '1'),
-('fo_ppp', '50'),
-('fo_tpp', '50'),
-('chan_title', 'Stevenchan'),
-('chan_tpp', '15'),
-('chan_thumbsize', '125'),
-('chan_opthumbsize', '200'),
-('chan_trips', '##toofabulous=!StevenMagnet\r\n##mbyteistherealdeal=!Mbyte\r\n##IhxV5-s^=!Derpy\r\n##jkjn329832axc=!Mithent\r\n##cebz899ff92yf=!TheDoctor\r\n##83kjna9olujef=!Ash\r\n##ijlamwd9020ou=!Haackula\r\n##klhawdino98ol=!Vines\r\n##i=!JohnnySappingtonMermaiduke\r\n##iodaw983309ad=!minty\r\n##0000000000000Link=!Link\r\n##jkdawd9822093=!SunnyDays\r\n##=!Anonymous\r\n##pedobear=!ChrisHansen\r\n##phone=!Phone\r\n##09s3fefefwavfPhotoFinish=!PhotoFinish\r\n##343nfnkfjil8aTwilight=!Twilight\r\n##hfdlawfn89csaSpike=!Spike\r\n##oin4o8989niadPinkiePie=!PinkiePie\r\n##ldwnad8792bakApplejack=!Applejack\r\n##fefi98h3kjnakRarity=!Rarity\r\n##nladwaouidh9hRainbowDash=!RainbowDash\r\n##kbn4los98vlsaFluttershy=!Fluttershy\r\n##dawldnawdoi3oAngelBunny=!AngelBunny\r\n##fufwui3489aacLyra=!Lyra\r\n##kbf.i4o9sn9oaBonBon=!BonBon\r\n##lfsnfnelsoi09Colgate=!Colgate\r\n##ilfsfioef094aDrWhooves=!DrWhooves\r\n##fiafiodalior4RoseLuck=!RoseLuck\r\n##bbabdw9l3aadwZecora=!Zecora\r\n##ilnk4on4oa09fOctavia=!Octavia\r\n##n4isf894nslnuCelestia=!Celestia\r\n##ionadnia90pmaLuna=!Luna\r\n##kadawoi93alkcCheerilee=!Cheerilee\r\n##andwkadlinlnoScootaloo=!Scootaloo\r\n##klnsfeoii40SweetieieBelle=!SweetieBelle\r\n##lmdaw.dmam.oiApplebloom=!Applebloom\r\n##indawdnaowiuaDinky=!Dinky'),
-('chan_maxlines', '20'),
-('chan_posttimeout', '5'),
-('chan_fileloc_extern', 'http://netbook.me/data/chan/');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ms_pages`
---
-
-CREATE TABLE IF NOT EXISTS `ms_pages` (
-  `pageID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `CID` bigint(20) NOT NULL,
-  `title` varchar(35) NOT NULL,
-  `filename` text NOT NULL,
-  PRIMARY KEY (`pageID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=122 ;
-
---
--- Dumping data for table `ms_pages`
---
-
-INSERT INTO `ms_pages` (`pageID`, `CID`, `title`, `filename`) VALUES
-(103, -1, 'Blog', '/blog'),
-(104, -1, 'Gallery', '/gallery'),
-(105, -1, 'Forum', '/forum'),
-(106, 47, 'Image Dump', 'http://img.tymoon.eu'),
-(107, 47, 'Kick Shinmera', 'http://scr.tymoon.eu/kick'),
-(108, -1, 'Stevenchan', 'http://stevenmagnet.tymoon.eu'),
-(109, 48, 'deviantART', 'http://shinmera.deviantart.com'),
-(110, 48, 'Steam', 'http://steamcommunity.com/id/Shinmera'),
-(111, 48, 'Twitter', 'http://twitter.com/Shinmera'),
-(112, 49, 'MSPA', 'http://mspaintadventures.com'),
-(113, 49, 'Nedroid', 'http://nedroid.com'),
-(114, 49, 'TDWTF', 'http://thedailywtf.com'),
-(115, 49, 'Boxerhockey', 'http://boxerhockey.com'),
-(116, 49, 'Dr Mc Ninja', 'http://drmcninja.com'),
-(117, 49, 'Gunnerkrigg', 'http://gunnerkrigg.com'),
-(118, 49, 'Coding Horror', 'http://codinghorror.com'),
-(119, 49, 'You', '/you'),
-(120, -1, 'isisrapefunny.comfunny', 'isisrapefunny.comfunny.php'),
-(121, 47, 'Contact', '/contact');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ms_tickets`
---
-
-CREATE TABLE IF NOT EXISTS `ms_tickets` (
-  `ticketID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `MID` bigint(20) NOT NULL,
-  `AID` bigint(20) NOT NULL,
-  `ticket` text NOT NULL,
-  `autotext` text NOT NULL,
-  `time` varchar(16) NOT NULL,
-  `ip` varchar(16) NOT NULL,
-  PRIMARY KEY (`ticketID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
-
---
--- Dumping data for table `ms_tickets`
---
-
-INSERT INTO `ms_tickets` (`ticketID`, `MID`, `AID`, `ticket`, `autotext`, `time`, `ip`) VALUES
-(1, 17, 8, 'This post IS GAY', 'so fucking gay. SO, GAY.', '1319930159', '81.174.247.151'),
-(2, 17, 8, 'Shins a fag, You fag!', 'so fucking gay. SO, GAY.', '1319930272', '81.174.247.151'),
-(3, 17, 159, 'I report this because I was just blind. Also report test V.2', '&amp;gt;&amp;gt;112\r\nHow do I &amp;quot;enter&amp;quot; the thread.\r\nWhen I quit and click on the post number, I still float outside of the thread?\r\n\r\nIt would be great to have an expand thread button. ^^&amp;#039;\r\n-', '1321389734', '83.248.55.103'),
-(4, 17, 159, 'I report this because I was just blind. Also report test V.2', '&amp;gt;&amp;gt;112\r\nHow do I &amp;quot;enter&amp;quot; the thread.\r\nWhen I quit and click on the post number, I still float outside of the thread?\r\n\r\nIt would be great to have an expand thread button. ^^&amp;#039;\r\n-', '1321389734', '83.248.55.103'),
-(5, 17, 234, 'A little bug I discovered.', '&amp;gt;&amp;gt;233\r\n&amp;gt;&amp;gt;228\r\n\r\n[spoiler] [color] text [color] [spoiler] = fancy text\r\n\r\n[color] [spoiler] text [spoiler] [color] = works.', '1321397841', '83.248.55.103'),
-(6, 17, 28842, 'oh look a faggot spammer! one giant bag of dicks coming his way', '[url=http://chan.tymoon.eu/byID/8/28842]&gt;&gt;28842[/url][hr]\nArrangements for country decor will utilize an ornate container with many flowers that could have just been picked from the backyard garden. Customization to make them mini versions of &#039;57 Chevys or other cars. Aliens: Infestation promises the Nintendo DS a long life ahead, despite the 3DS threats of making it obsolete. &lt;a href=http://lopolikuminr.com&gt;amosite&lt;/a&gt; This makes it easier for your client, makes you look more professional in your approach and saves both of you time. It&#039;s location in the Witwatersrand range of hills makes it a promising trade opportunity for gold and diamond mining.', '1327208294', '95.144.158.247');
+INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
+('akismet_key', '9fce28faba37', 's'),
+('avatar_maxdim', '150', 'i'),
+('avatar_maxsize', '500', 'i'),
+('cookie_life_h', '8544', 'i'),
+('default_theme', 'default', 's'),
+('metakeys', 'Shinmera, NexT, Nick, Nicolas Hafner, Nicolas, Hafner, comic, webcomic, blog, projects, Tymoon, TyNET, TymoonNET, gallery, forum, Stevenchan, programming, art, drawing', 'l'),
+('recaptcha_key_private', '6LeYH7wSAAAAAMyEpHJzu0HScC6hqm6CyV7WPVMG', 's'),
+('recaptcha_key_public', '6LeYH7wSAAAAADyB1R9ooRPtxFSTCUcnL5dO6dr8', 's'),
+('salt1', 'MLPisAveryAWESOMEshow', 's'),
+('salt2', 'you_have_GOT_to_be_shittong_me', 's'),
+('salt3', '23scUOBa38@#J(&)2h1linDV(03uBNX:', 's'),
+('sitename', 'TyNET', 's'),
+('sysop_mail', 'admin@xprog.ch', 's');
 
 -- --------------------------------------------------------
 
@@ -1724,41 +1460,6 @@ INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `ms_urls`
---
-
-CREATE TABLE IF NOT EXISTS `ms_urls` (
-  `short` varchar(15) COLLATE latin1_general_ci NOT NULL,
-  `long` text COLLATE latin1_general_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ms_widgets`
---
-
-CREATE TABLE IF NOT EXISTS `ms_widgets` (
-  `widgetID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `MID` bigint(20) NOT NULL,
-  `title` varchar(35) NOT NULL,
-  `index` varchar(35) NOT NULL,
-  `spaces` text NOT NULL,
-  `group` int(11) NOT NULL,
-  PRIMARY KEY (`widgetID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
-
---
--- Dumping data for table `ms_widgets`
---
-
-INSERT INTO `ms_widgets` (`widgetID`, `MID`, `title`, `index`, `spaces`, `group`) VALUES
-(2, 13, 'BlogWidget', 'blog.widget.php', '', 2),
-(3, 12, 'GalleryWidget', 'gallery.widget.php', '', 2);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `ud_fields`
 --
 
@@ -1766,19 +1467,11 @@ CREATE TABLE IF NOT EXISTS `ud_fields` (
   `fieldID` bigint(20) NOT NULL AUTO_INCREMENT,
   `title` varchar(35) NOT NULL,
   `varname` varchar(32) NOT NULL,
-  `options` text NOT NULL,
-  `group` bigint(20) NOT NULL,
+  `editable` tinyint(1) NOT NULL DEFAULT '0',
+  `displayed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`fieldID`),
   UNIQUE KEY `varname` (`varname`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
-
---
--- Dumping data for table `ud_fields`
---
-
-INSERT INTO `ud_fields` (`fieldID`, `title`, `varname`, `options`, `group`) VALUES
-(3, 'Posts', 'fo_posts', 'p', 2),
-(4, 'Location', 'location', 'p;e', 2);
 
 -- --------------------------------------------------------
 
@@ -1787,25 +1480,11 @@ INSERT INTO `ud_fields` (`fieldID`, `title`, `varname`, `options`, `group`) VALU
 --
 
 CREATE TABLE IF NOT EXISTS `ud_groups` (
-  `groupID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `groupID` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(35) NOT NULL,
-  `publictext` text NOT NULL,
-  `privatetext` text NOT NULL,
-  `filename` varchar(50) NOT NULL,
-  `foundingDate` int(11) NOT NULL,
-  `leaders` text NOT NULL,
-  `members` text NOT NULL,
-  `unapproved` text NOT NULL,
-  `options` text NOT NULL,
+  `permissions` text NOT NULL,
   PRIMARY KEY (`groupID`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
-
---
--- Dumping data for table `ud_groups`
---
-
-INSERT INTO `ud_groups` (`groupID`, `title`, `publictext`, `privatetext`, `filename`, `foundingDate`, `leaders`, `members`, `unapproved`, `options`) VALUES
-(4, 'Staff', 'This is the official TymoonNET Staff group. You can find all moderators and administrators here.', 'Clearly, WE&#039;RE THE BEST.', '1311920592Staff.png', 0, '4;9', '', '', 'c;-;-;-');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -1819,103 +1498,6 @@ CREATE TABLE IF NOT EXISTS `ud_permissions` (
   `tree` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `ud_permissions`
---
-
-INSERT INTO `ud_permissions` (`UID`, `base`, `tree`) VALUES
-(7, 'basic', '*'),
-(8, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(4, '*', ''),
-(7, 'user', 'profile.* \r\ngroups.enter.open \r\ngroups.edit.leader'),
-(8, 'basic', '*'),
-(9, 'basic', '*'),
-(9, 'user', 'profile.*\r\ngroups.enter.open\r\ngroups.edit.leader\r\nmod.*'),
-(9, 'chan', '*'),
-(9, 'admin', 'tickets\r\nban\r\npanel\r\nbbcode\r\nsettings\r\n'),
-(10, 'basic', '*'),
-(10, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(11, 'basic', '*'),
-(11, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(12, 'basic', '*'),
-(12, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(13, 'basic', '*'),
-(13, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(14, 'basic', '*'),
-(14, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(15, 'basic', '*'),
-(15, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(16, 'basic', '*'),
-(16, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(17, 'basic', '*'),
-(17, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(18, 'basic', '*'),
-(18, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(19, 'basic', '*'),
-(19, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(20, 'basic', '*'),
-(20, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(21, 'basic', '*'),
-(21, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(22, 'basic', '*'),
-(22, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader'),
-(9, 'comments', '*'),
-(9, 'shortener', '*'),
-(9, 'themes', '*'),
-(9, 'blog', '*'),
-(9, 'gallery', '*'),
-(9, 'forum', '*'),
-(23, 'basic', '*'),
-(23, 'user', 'profile.*\ngroups.enter.open\ngroups.edit.leader');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `ud_profile`
---
-
-CREATE TABLE IF NOT EXISTS `ud_profile` (
-  `UID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `firstname` varchar(35) NOT NULL,
-  `lastname` varchar(35) NOT NULL,
-  `custom` text NOT NULL,
-  `website` varchar(35) NOT NULL,
-  `signature` text NOT NULL,
-  `birthdate` varchar(16) NOT NULL,
-  `joindate` varchar(16) NOT NULL,
-  `tagline` varchar(35) NOT NULL,
-  `fields` text NOT NULL,
-  `friends` text NOT NULL,
-  `foes` text NOT NULL,
-  `groups` text NOT NULL,
-  PRIMARY KEY (`UID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
-
---
--- Dumping data for table `ud_profile`
---
-
-INSERT INTO `ud_profile` (`UID`, `firstname`, `lastname`, `custom`, `website`, `signature`, `birthdate`, `joindate`, `tagline`, `fields`, `friends`, `foes`, `groups`) VALUES
-(4, 'Nicolas', 'Hafner', 'Basically, I rule.', 'http://tymoon.eu', '', '18-11-1993', '1303724855', 'Greetings, my dear subjects...', 'testvar=test;fo_posts=9', ';7;8', '', '4;5;5'),
-(6, '', '', '', '', '', '--', '1317209187', '', ';testvar=', '', '', ''),
-(7, 'Kieran', 'Rumball', 'bluh bluh testing testing', '', 'Zer0 is a faggot! Also, checking if this updates right n&#039; shit.', '20-9-1987', '1318453145', 'Sign....', ';fo_posts=-41;location=', ';4', ';4', ''),
-(8, '', '', 'I am the best at not making webcomics.\r\n\r\nIt&#039;s me.\r\n\r\nLook at all the webcomics I&#039;ve made.', '', 'THIS IS THE END OF MY POST\r\n\r\nTHANK YOU AND GOODNIGHT', '20-1-1993', '1318586549', 'reactivating internalisers', ';fo_posts=;location=', ';4', '', ''),
-(9, '', '', '', '', '', '7-9-1986', '1319930983', '', 'fo_posts=2;location=', '', '', ''),
-(10, 'Tony', 'Chestang', '', 'DihAredChan', 'This is a signature.', '5-7-1988', '1321568178', '', '', '', '', ''),
-(11, '', '', '', '', '', '--', '1321571381', '', '', '', '', ''),
-(12, 'sarah', 'reilly', '', '', '', '29-5-1997', '1321737980', '', '', '', '', ''),
-(13, 'Alyssa', '', '', '', '', '20-2-', '1322436924', '', '', '', '', ''),
-(14, '', '', '', '', '', '--', '1322698594', '', '', '', '', ''),
-(15, 'Rachel', 'Sherman', '', '', '', '--', '1323269125', '', '', '', '', ''),
-(16, '', '', '', '', '', '--', '1323551230', '', '', '', '', ''),
-(17, 'John', 'Egglederp', '', '', '', '--', '1323734099', '', '', '', '', ''),
-(18, '', '', '', '', '', '--', '1324346153', '', '', '', '', ''),
-(19, '', '', '', '', '', '--', '1324517576', '', '', '', '', ''),
-(20, '', '', '', '', '', '--', '1324606959', '', ';fo_posts=;location=', '', '', ''),
-(21, '', '', '', '', '', '--', '1325736277', '', '', '', '', ''),
-(22, 'Parker', 'Peter', '', 'www.lolno.com', '', '--', '1325809143', '', '', '', '', ''),
-(23, '', '', '', '', '', '--', '1326265494', '', '', '', '', '');
-
 -- --------------------------------------------------------
 
 --
@@ -1924,40 +1506,16 @@ INSERT INTO `ud_profile` (`UID`, `firstname`, `lastname`, `custom`, `website`, `
 
 CREATE TABLE IF NOT EXISTS `ud_users` (
   `userID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) NOT NULL,
-  `usermail` varchar(35) NOT NULL,
-  `userpass` varchar(256) NOT NULL,
-  `usersecret` text NOT NULL,
+  `username` varchar(64) NOT NULL,
+  `mail` varchar(35) NOT NULL,
+  `password` varchar(128) NOT NULL,
+  `secret` text NOT NULL,
   `displayname` varchar(32) NOT NULL,
   `filename` varchar(50) NOT NULL,
   `group` bigint(20) NOT NULL,
-  `activationC` text NOT NULL,
+  `status` varchar(64) NOT NULL,
+  `fields` text NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=24 ;
-
---
--- Dumping data for table `ud_users`
---
-
-INSERT INTO `ud_users` (`userID`, `username`, `usermail`, `userpass`, `usersecret`, `displayname`, `filename`, `group`, `activationC`) VALUES
-(4, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'daiuhd3o827oro2n3uir278or2nui3r2n9o3funadw', 'Princess Celestia', '1318586345Shinmera.png', 3, 'activated'),
-(6, 'Testaccount', 'nhafner@gmx.ch', '30d328e3220c1c57db54f825c24772de7c538d7cf3c4dd412c8bfde90c64245be57c19f83ce73ab1fc6386f5ca72398f43c74b4e2443ff264de84b230aca2fad', '5nK9544BB5Dcla61D2589aY8O', 'Testaccount', '', 2, 'activated'),
-(7, 'Seagoon', 'KieranRumball@hotmail.com', 'b28df9f58c4edc5501ee51d56c04b16a6cfd591cc1ac3e9ada7c4c238e5394c40ed7bf0fc481e34a5c194f858253d8e7c014ef83bab005376cbc7697f0eed725', '4s97gdBj14dQgQKU2x9zDn5XR', 'Malakin', '1318538927Seagoon.png', 2, 'activated'),
-(8, 'Ruke', 'ruke42@hotmail.com', 'af55c4768a921d6744b46f47a130438aba5a63510dcba501aa37db53a8cb77c5c4c454901e1527a55ffa6ac1d846b147248d37d1259f393d0a5a47ae379b0dc2', 'A0n4gkQa0r7I32N11177Z9S03', 'Ruke', '1323148329Ruke.png', 2, 'activated'),
-(9, 'Mithent', 'mithent@gmail.com', 'a3fdcec8dc8ec7d1a0452ab971a5f0416c9d6535a8038d38039a357a4da3dfac861e3c0ab7946bdcb29162b094ac6580f585eaf296a4806d28597485546057a0', 'Y39Fs6941mX5U2363KDMYU60Z', 'Mithent', '1319931137Mithent.png', 4, 'activated'),
-(10, 'dihared', 'dihared@gmail.com', '3d9b657166e06f0f245000e6d84bd09684369c453eec5a53d99891fb27ffa78c8deff6072bb91a37677952135e3ef70da30d89baacdcc170b5f421d7f528ce6c', '4z2B6zi627qFBN4fd0w6l7K01', 'dihared', '1321568299dihared.png', 2, 'activated'),
-(11, 'vampkn', 'rose_nielsen@yahoo.com', '1c925b8843d8d0e4bbcb77bbbd793087e92737bad340f0e2fb0edbea67b524fa694f2694e0da3cf6c23e22c7be05c04c2ed971f89a0a3aa00d78e9599ec5a603', 'r82OO5u2t566c1N6uR3AN74lc', 'vampkn', '', 2, 'j8HZ0KaoU9RH4Tq'),
-(12, 'childishpuppy', 'sadier4@hotmail.co.uk', 'dd7d22f595718e3028a40e0f4ba278e250f1ad0b2d5b03d9aab2617fb6548b105f129f499c2dd0a650deafee6d38ec184343f13fb95cc694642d1afa52b7b576', '3TJ2Z6jKO97tJLg8C5z9IU72k', 'childishpuppy', '', 2, 'activated'),
-(13, 'Oshowatt', 'domokunrox1998@gmail.com', '9b15cb5f53b2fdadcd79684ec077606f0ecc157244ce4b12d509c767a7f01e431b935e8379a6fe048aad0b3519c77cb3566aded4d6c727d000e196e041a5c519', 'nxP5A6LkW45n9798I5lznA7Y7', 'Oshowatt', '', 2, '3N19H2D9Ifx81D7'),
-(14, 'macabremelodrama', 'penguyoko@hotmial.com', '6b5f78ba7e690e25ed3dcc1a25bb9f28f0ae605028cfb943c879368467c4a10dc323c00be91ccdb4c72ffc7ab86bbc7a0a1bbae26a2b39b53086f2bd1e796fb5', '0651I6n20h4dM16zMnP752QE7', 'macabremelodrama', '', 2, '2L8592sbd7P452L'),
-(15, 'BlindBabe', 'sexytroll86@gmail.com', 'fbc48afa194a81ff1b803e4ada9f3dd68d86289d3f20326ef4a691cf9c5d449768da20c4a295d06deb09be3d75a6eee42e522bd8877f2338e0f100e98931d58f', '8qqS6lxFU9YHxG6bF7j6M3v1x', 'BlindBabe', '1323269280BlindBabe.jpg', 2, 'activated'),
-(16, 'adsfchan', 'samanthaticki@gmail.com', 'cff5c132ed329082278fae8c07a480b7821136b16ff8b89fe390692bc5e9198141696733f3a2e07239e47b0db128f5d5d7349d82277a0766f14f7713abe52bb7', '1Din4s0dF0oo0dhaR10ZF6H42', 'adsfchan', '', 2, 'activated'),
-(17, 'SpringSlink', 'zchrono@email.com', '890172acfbd10393a2cb547b402bb6b16ba8eaacba773370df88d009846bb971f6e2ce621f2e557ec7e651bb0f6f958131ade6a13823c3b807c3fb8fb8c839e1', '0n2Y29NW3UD3U6L40Y4bX5U7o', 'SpringSlink', '', 2, '6QM110724eq14tQ'),
-(18, 'wildmildtigerchan', 'asiap623@gmail.com', '8c87cc8eb2dd16dd537536b4d66c9070f5d4da17c4493f00fc4ba42fc5cf98c9d200c3bca5d698d39bc450e6abd78c369c87ff5c6c86335284899c01ec7082bd', '3f811C55nt55360uV10rpe5rV', 'wildmildtigerchan', '', 2, 'g8983lV45ANLcB5'),
-(19, 'fuckyou', 'winry_amber@yahoo.com', 'd46e9c6100fa55b60163567c6c3f443baed15fa5fcbd252fe6cfcd9b801e00848708847f96ef215d1906c7e8235c08493cbc5e4382f640c7770e52171dde049e', 'r7l1O1612QBw11u9B56g2dFO5', 'fuckyou', '', 2, '766978Cvq10NbC5'),
-(20, 'Adam24', 'adam453@gmail.com', '45c8128e40b8d1892b98833c8e34ed2cd300cfaf4f16ba6fcbdef0838e2fe620384aee9da416cd52536b29b71ee63e5c8b31dc680760f21c8b1eb1d0b1beb1ae', '6897ld1t0E0p059uIc91E08L1', 'Adam The Pikachu', '1324607195Adam24.jpg', 2, 'activated'),
-(21, 'gallowsCalibrator', 'britishschones@ymail.com', '19a0d8d421f0f3256c1e66af6eeea2e1c8de62b9ebca2e4bfebe92da02aec56e910cb00df3e7e846d7163ab4e4f31d763f335e2cdbb4345aa4a28fb100c65f90', '9Y9XVvR89EK453217C7ll55FI', 'gallowsCalibrator', '', 2, 'atl25Ji01R2OdJe'),
-(22, 'Mbyte', '96mbyte@gmail.com', '24011aa21dd287fbcf3bbec313fd2969bd57806df20784836e498f840ec671747859603ef30fc0a6448afb9b690d8cb3bf4a7f5e23a035fa6e21a2697d244923', 'bW391TRLOu5q0v0KDDxu9Bi8n', 'Mbyte', '1325809446Mbyte.jpg', 2, 'c2zSc14J779K1a4'),
-(23, 'Fragelistic', 'alicia.dancer@hotmail.com', 'bc7b9b07a8122c8148d410f01c14a39b6bbab8eb09ca58bde56f4893cd4c2bd29ea479c6b147f7d95be130c1ae21b0a4d020afafe60bad4318cde7b3994865f9', '47S453Db5s48n88iUpD927lYs', 'Fragelistic', '', 2, '4488U42tf2zTk73');
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
