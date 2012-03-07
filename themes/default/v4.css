@@ -10,6 +10,8 @@ html,body{
 }
 
 img{max-width:100%;max-height:100%;margin:5px;}
+label{min-width:150px;display:inline-block;}
+input{border: 1px solid #CCC;}
 a{}
 .flLeft{float:left;}
 .flRight{float:right;}
@@ -18,6 +20,7 @@ a{}
 .right{text-align:right;}
 .left{text-align:left;}
 .justify{text-align:justify;}
+.fullWidth{position:absolute;left:0px;right:0px;}
 
 #header{
     font-size:18pt;
@@ -100,6 +103,8 @@ a{}
     height: 20px;
 }
 
+#pageNav a{text-decoration:none;color:black;}
+
 #pageNav .activated{
     margin-bottom:-2px;
     border: 1px solid #ae61ed;
@@ -113,6 +118,7 @@ a{}
 #content{
     background-color: #e5e5e5;
     padding-bottom: 20px;
+    position:relative;
 }
 
 #footer{
@@ -131,4 +137,19 @@ a{}
     bottom:0px;
     left:0px;
     right:0px;
+}
+
+.box{
+    display: inline-block;
+    vertical-align: text-top;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+    
+    box-shadow: 0px 0px 10px #000;
+    border: 2px solid #CCC;
+    background-color: #DDD;
+    
+    min-width: 300px;
+    min-height: 100px;
 }
