@@ -7,7 +7,7 @@ public static $required=array();
 
 var $udPBase=array();
 var $udPTree=array();
-var $userID;
+var $user;
 
     public function __construct() {
         $this->auth($_COOKIE['username'],$_COOKIE['hash']); 
@@ -18,48 +18,41 @@ var $userID;
         return hash("sha512",$c->o['salt0']."-".$name."-".$c->o['salt1']."-".$_SERVER['REMOTE_ADDR']."-".$c->o['salt2']."-".$pass."-".$c->o['salt3']);
     }
 
-    function authPass($name,$pass){
-        global $c;
-        $c->loadUsers("%",$name);
-        if(in_array($name,$c->udUName)){
-            if($c->udUPass[array_search($name,$c->udUName)]===$pass){
-                return XERR_OK;
-            }else{
-                return XERR_INVALID_PASS;
-            }
-        }else{
-            return XERR_INVALID_USER;
-        }
-    }
-
     function auth($name,$token){
         global $c,$k;
-        if($name==""||$token=="")return XERR_INVALID_USER;
-        $c->loadUsers("%",$name);
-        $ctoken = $this->composeToken($name,$c->udUSecret[array_search($name,$c->udUName)]);
-        if($token!==$ctoken)return XERR_INVALID_AUTH;
-        if($c->authUser($name)===XERR_OK){
-            $this->loadPermissions();
+        if($name==""||$token=="")return false;
+        $this->loadUser($name);
+        $ctoken = $this->composeToken($name,$this->user->secret);
+        if($token!==$ctoken){
+            $this->resetUser();
+            return false;
+        }
+        if($this->user != null){
             $k->updateTimestamp("visit:".$c->userID,0);
-            return XERR_OK;
+            return true;
         }else{
-            $c->resetUser();
-            return XERR_INVALID_USER;
+            $this->resetUser();
+            return false;
         }
     }
 
     function login($name,$pass,$hash=true){
         global $c;
+        if($name==""||$pass=="")return false;
         if($hash)$pass=hash("sha512",$pass);
-        if($this->authPass($name,$pass)===XERR_OK){
-            $token = $this->composeToken($name,$c->udUSecret[array_search($name,$c->udUName)]);
+        $this->loadUser($name);
+        
+        if($name==$this->user->username&&
+           $this->user->password===$pass){
+            $token = $this->composeToken($name,$this->user->secret);
             setcookie('username',$name,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
             setcookie('hash',$token,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
             setcookie('username',$name,time()+60*60*$c->o['cookie_life_h'],'/');
             setcookie('hash',$token,time()+60*60*$c->o['cookie_life_h'],'/');
-            return XERR_OK;
+            return true;
         }else{
-            return XERR_INVALID_AUTH;
+            $this->resetUser();
+            return false;
         }
     }
 
@@ -69,15 +62,24 @@ var $userID;
         setcookie('hash',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         setcookie('username',' ',time()+60*60*$c->o['cookie_life_h'],'/');
         setcookie('hash',' ',time()+60*60*$c->o['cookie_life_h'],'/');
-        $c->resetUser();
-        return XERR_OK;
+        $this->resetUser();
+        return true;
+    }
+    
+    function resetUser(){
+        $this->user = null;
+        $this->udPBase = array();
+        $this->udPTree = array();
     }
 
-    function loadPermissions(){
+    function loadUser($name){
         global $c;
+        $this->user = DataModel::getData("ud_users", "SELECT userID,username,mail,password,secret,displayname,filename,`group`,`status`
+                                                      FROM ud_users WHERE username LIKE ?", array($name));
+        if($this->user == null) return;
         $this->udPBase=array();
         $this->udPTree=array();
-        $results=$c->getData("SELECT base,tree FROM ud_permissions WHERE UID=?",array($c->userID));
+        $results=$c->getData("SELECT base,tree FROM ud_permissions WHERE UID=?",array($this->user->userID));
         for($i=0;$i<count($results);$i++){
             $this->udPBase[]=$results[$i]['base'];
             $this->udPTree[]=$results[$i]['tree'];

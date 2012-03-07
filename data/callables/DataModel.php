@@ -66,7 +66,9 @@ class DataModel{
         foreach($data as $element){
             $models[] = new DataModel($table,$fields,$element);
         }
-        return $models;
+        if(count($models)>1)return $models;
+        else if(count($models)==1)return $models[0];
+        else return null;
     }
 }
 ?>
