@@ -24,7 +24,7 @@ function convertArrayDown($array,$field,$ret=array()){
 
 function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false){
     ?><div class='interactiveSelect' id='<?=$name?>'>
-    <input type="text" id="sel_<?=$name?>_add"><ul><?
+    <input type="text" id="sel_<?=$name?>_add" placeholder="New Value" ><ul><?
     for($i=0;$i<count($selData);$i++){
         $pos=array_search($selData[$i],$valData);
         ?><li><a href="#">x</a> <input type="hidden" name="<?=$name?>[]" value="<?=$valData[$pos]?>" /><?=$viewData[$pos]?></li> <?

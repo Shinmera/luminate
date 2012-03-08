@@ -11,7 +11,7 @@ html,body{
 
 img{max-width:100%;max-height:100%;margin:5px;}
 label{min-width:150px;display:inline-block;}
-input{border: 1px solid #CCC;}
+input{border: 1px solid #CCC;background: #EEE;}
 a{}
 .flLeft{float:left;}
 .flRight{float:right;}
@@ -133,7 +133,7 @@ a{}
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#777), color-stop(100%,#0e0e0e));
     background: -webkit-linear-gradient(top, #777 0%,#0e0e0e 100%);
     
-    position:absolute;
+    position:relative;
     bottom:0px;
     left:0px;
     right:0px;
@@ -149,7 +149,23 @@ a{}
     box-shadow: 0px 0px 10px #000;
     border: 2px solid #CCC;
     background-color: #DDD;
+}
+
+.interactiveSelect{
     
-    min-width: 300px;
-    min-height: 100px;
+}
+
+.interactiveSelect ul{
+    list-style: none;
+    display: inline-block;
+    margin:0;padding:0;
+}
+
+.interactiveSelect ul li{
+    display: inline-block;
+    padding: 3px;
+    border-radius: 3px;
+    margin: 2px;
+    border: 1px solid #CCC;
+    background-color: #EEE;
 }
