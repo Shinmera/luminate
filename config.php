@@ -35,6 +35,7 @@ define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
 $MODULES=array();
 $MODULECACHE=unserialize(file_get_contents(CALLABLESPATH.'modulecache'));
 if(!class_exists("Module")){    require_once(MODULEPATH.'module.php');}
+if(!class_exists("DataModel")){   require_once(CALLABLESPATH.'DataModel.php');}
 if(!class_exists("API")){       require_once(TROOT.'api.php');}                 $api=new API();
 if(!class_exists("Loader")){    require_once(TROOT.'loader.php');}              $l = new Loader();
 if(!class_exists("Toolkit")){   require_once(CALLABLESPATH.'toolkit.php');}     $k = new Toolkit();
