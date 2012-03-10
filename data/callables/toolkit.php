@@ -82,6 +82,15 @@ function printSelect($name,$viewData,$valData,$presel=-1,$search=null){
     echo("</select>");
 }
 
+function printSelectObj($name,$objects,$viewField,$valField,$presel=-1){
+    echo("<select name='".$name."'>");
+    for($i=0;$i<count($objects);$i++){
+        if($objects[$i]->$valField==$presel)$sel="selected";else $sel="";
+        echo("<option value='".$objects[$i]->$valField."' ".$sel." >".$objects[$i]->$viewField."</option>");
+    }
+    echo("</select>");
+}
+
 function modCategorySelect($name,$module,$presel=-1,$none=false){
     global $c;
     echo("<select name='".$name."'>");

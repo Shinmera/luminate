@@ -67,7 +67,7 @@ function displayOptionsPage(){
     
     $options = DataModel::getData("ms_options", "SELECT `key`,`value`,`type` FROM ms_options");
     ?>
-    <form action="#" method="post" class="box">
+    <form action="#" method="post" class="box" style="display:block">
         Add a new key: 
         <input type="text" name="key" placeholder="Key" />
         <input type="text" name="value" placeholder="Value" />
@@ -79,7 +79,7 @@ function displayOptionsPage(){
         </select>
         <input type="submit" name="action" value="Add" /><span style="color:red;"><?=$err[0]?></span>
     </form>
-    <form action="#" method="post" class="box"><?
+    <form action="#" method="post" class="box" style="display:block"><?
     foreach($options as $o){
         echo('<div class="datarow">'.$o->key.'<div class="flRight">');
         switch($o->type){
@@ -96,15 +96,116 @@ function displayOptionsPage(){
 }
 
 function displayLogPage(){
-    
+    global $k,$c;
+    if($_POST['action']=="Clear Log"){
+        $c->query("TRUNCATE ms_log",array());
+        $err="Log cleared.";
+    }
+    $logs = DataModel::getData("ms_log","SELECT subject,time,user FROM ms_log ORDER BY time DESC");
+    ?><div class="box" style="display:block;">
+        <form method="post" action="#"><input type="submit" name="action" value="Clear Log" /></form>
+        <span style="color:red;"><?=$err?></span>
+    <? if(is_array($logs)){ ?>
+    <table>
+        <thead>
+            <tr><th style="width:150px">Time</th>
+                <th style="width:150px">User</th>
+                <th>Action</th></tr>
+        </thead>
+        <tbody>
+            <? foreach($logs as $l){
+                echo('<tr><td>'.$k->toDate($l->time).'</td><td>'.$l->user.'</td><td>'.$l->subject.'</td></tr>');
+            } ?>
+        </tbody>
+    </table>
+    <? }else echo('<center>No log records available.</center>');
+    ?></div><?
 }
 
 function displayModulesPage(){
+    global $k,$c;
+    if($_POST['action']=="Install"){
+        //FIXME: Add installation procedure.
+        //Upload file to temp directory
+        //Unpack into temp directory
+        //Read config file
+        //Move folder to modules directory
+        //Open popup and run installation file
+        //Clear temp directory
+        $err[1]="Module unpacked and installed.";
+    }
+    if($_POST['action']=="Delete"){
+        $c->query("DELETE FROM ms_modules WHERE name=?",array($_POST['name']));
+        $err[2]="Module deleted.";
+    }
+    if($_POST['action']=="Add"){
+        $c->query("INSERT INTO ms_modules VALUES(?,?)",array($_POST['name'],$_POST['subject']));
+        $err[3]="Module added.";
+    }
     
+    $modules = DataModel::getData("ms_modules", "SELECT name,subject FROM ms_modules");
+    ?><form action="#" method="post" class="box">
+        Add module entry:<br />
+        <input type="text" name="name" placeholder="Name" />
+        <input type="submit" name="action" value="Add" /><span style="color:red;"><?=$err[3]?></span><br />
+        <textarea name="subject" placeholder="Description"></textarea>
+    </form>
+    <form action="#" method="post" class="box" enctype="multipart/form-data">
+        Install from package:<br />
+        <input type="file" name="file" /><input type="submit" name="action" value="Install" />
+        <span style="color:red;"><?=$err[1]?></span>
+    </form>
+    <div class="box" style="display:block;">
+        <div style="color:red;"><?=$err[2]?></div>
+        <? if(is_array($modules)){
+        foreach($modules as $m){
+            echo('<form class="datarow"><input type="submit" name="action" value="Delete" /> <b>'.$m->name.'</b>');
+            echo('<blockquote>'.$m->subject.'</blockquote><input type="hidden" name="name" value="'.$m->name.'" /></form>');
+        }}else echo('<center>No modules registered!</center>'); ?>
+    </div>
+    <?
 }
 
 function displayHooksPage(){
+    global $c,$k;
+    if($_POST['action']=="Register"){
+        $c->query("INSERT INTO ms_hooks VALUES(?,?,?,?)",array($_POST['source'],$_POST['hook'],
+                                                               $_POST['destination'],$_POST['function']));
+        $err[0]="Hook registered.";
+    }
+    if($_POST['action']=="Remove"){
+        $c->query("DELETE FROM ms_hooks WHERE source=? AND hook=? AND destination=? AND function=?",array(
+                                                               $_POST['source'],$_POST['hook'],
+                                                               $_POST['destination'],$_POST['function']));
+        $err[1]="Hook removed.";
+    }
     
+    $hooks = DataModel::getData("ms_hooks", "SELECT `source`,`hook`,`destination`,`function` FROM ms_hooks");
+    $modules = DataModel::getData("ms_modules", "SELECT `name` FROM ms_modules");
+    ?><form method="post" action="#" class="box">
+        Source: <? $k->printSelectObj("source",$modules,"name","name"); ?>
+        Destination: <? $k->printSelectObj("destination",$modules,"name","name"); ?><br />
+        <label>Hook:</label> <input type="text" name="hook" placeholder="HOOK" /><br />
+        <label>Function:</label> <input type="text" name="function" placeholder="functionName" /><br />
+        <input type="submit" name="action" value="Register" /><span style="color:red;"><?=$err[0]?></span>
+    </form>
+    <div class="box" style="display:block;">
+    <? if(is_array($hooks)){ ?>
+    <span style="color:red;"><?=$err[1]?></span><table>
+        <thead>
+            <tr><th style="width:150px">Source</th>
+                <th style="width:150px">Destination</th>
+                <th style="width:150px">Hook</th>
+                <th>Function</th></tr>
+        </thead>
+        <tbody>
+            <? foreach($hooks as $h){
+                echo('<tr><td>'.$h->source.'</td><td>'.$h->destination.'</td><td>'.$h->hook.'</td><td>'.$h->function.'</td></tr>');
+            } ?>
+        </tbody>
+    </table>
+    <? }else echo('<center>No hooks registered?!</center>');
+    ?></div><?
 }
 
 }
