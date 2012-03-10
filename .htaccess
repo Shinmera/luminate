@@ -23,7 +23,7 @@ ExpiresDefault "access plus 30 seconds"
 
 ##PAGES##
 <filesmatch "\.(html|php)$">
-    ExpiresDefault "access plus 1 month"
+    ExpiresDefault "access plus 5 second"
 </filesmatch>
 
 ##STYLES&JS##
