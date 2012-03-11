@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 06, 2012 at 10:23 PM
+-- Generation Time: Mar 12, 2012 at 12:23 AM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -54,9 +54,10 @@ CREATE TABLE IF NOT EXISTS `ms_hooks` (
 -- Dumping data for table `ms_hooks`
 --
 
-INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
+REPLACE INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
-('CORE', 'HITadmin', 'Admin', 'displayPage');
+('CORE', 'HITadmin', 'Admin', 'displayPage'),
+('CORE', 'HITlogin', 'User', 'displayLogin');
 
 -- --------------------------------------------------------
 
@@ -81,9 +82,20 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
 CREATE TABLE IF NOT EXISTS `ms_modules` (
   `name` varchar(35) NOT NULL,
   `subject` text NOT NULL,
-  `activated` tinyint(1) NOT NULL,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ms_modules`
+--
+
+REPLACE INTO `ms_modules` (`name`, `subject`) VALUES
+('Admin', 'Allows administration of CORE models and provides an interface for module specific configuration pages.'),
+('Auth', 'Provides a secure session and authentication system, as well as permission management.'),
+('CORE', 'This is the CORE module, providing the INIT system.'),
+('Parser', 'Used to provide an extensive bbcode system.'),
+('Themes', 'A simple theming system, making page construction very simple.'),
+('User', 'Allows for user management and supplies AUTH login/logout functions.');
 
 -- --------------------------------------------------------
 
@@ -102,13 +114,14 @@ CREATE TABLE IF NOT EXISTS `ms_options` (
 -- Dumping data for table `ms_options`
 --
 
-INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
+REPLACE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('akismet_key', '9fce28faba37', 's'),
 ('avatar_maxdim', '150', 'i'),
 ('avatar_maxsize', '500', 'i'),
 ('cookie_life_h', '8544', 'i'),
 ('default_theme', 'default', 's'),
-('metakeys', 'Shinmera, NexT, Nick, Nicolas Hafner, Nicolas, Hafner, comic, webcomic, blog, projects, Tymoon, TyNET, TymoonNET, gallery, forum, Stevenchan, programming, art, drawing', 'l'),
+('idiots', 'retards', 's'),
+('metakeys', 'Tymoon;TymoonNET;NexT;TymoonNexT;Shinmera;Nicolas;Hafner;Stevenchan', 'l'),
 ('recaptcha_key_private', '6LeYH7wSAAAAAMyEpHJzu0HScC6hqm6CyV7WPVMG', 's'),
 ('recaptcha_key_public', '6LeYH7wSAAAAADyB1R9ooRPtxFSTCUcnL5dO6dr8', 's'),
 ('salt1', 'MLPisAveryAWESOMEshow', 's'),
@@ -129,6 +142,13 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
   `action` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `ms_timer`
+--
+
+REPLACE INTO `ms_timer` (`IP`, `time`, `action`) VALUES
+('127.0.0.1', 1331409616, 'visit:');
+
 -- --------------------------------------------------------
 
 --
@@ -144,6 +164,19 @@ CREATE TABLE IF NOT EXISTS `ud_fields` (
   PRIMARY KEY (`fieldID`),
   UNIQUE KEY `varname` (`varname`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_field_values`
+--
+
+CREATE TABLE IF NOT EXISTS `ud_field_values` (
+  `fieldID` int(11) NOT NULL,
+  `userID` int(11) NOT NULL,
+  `value` text NOT NULL,
+  PRIMARY KEY (`fieldID`,`userID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -167,8 +200,16 @@ CREATE TABLE IF NOT EXISTS `ud_groups` (
 CREATE TABLE IF NOT EXISTS `ud_permissions` (
   `UID` bigint(20) NOT NULL,
   `base` varchar(32) NOT NULL,
-  `tree` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `tree` text NOT NULL,
+  PRIMARY KEY (`UID`,`base`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `ud_permissions`
+--
+
+REPLACE INTO `ud_permissions` (`UID`, `base`, `tree`) VALUES
+(1, '*', '*');
 
 -- --------------------------------------------------------
 
@@ -181,7 +222,7 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   `username` varchar(64) NOT NULL,
   `mail` varchar(35) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `secret` text NOT NULL,
+  `secret` varchar(128) NOT NULL,
   `displayname` varchar(32) NOT NULL,
   `filename` varchar(50) NOT NULL,
   `group` bigint(20) NOT NULL,
@@ -189,17 +230,11 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
--- Table structure for table `uf_field_values`
+-- Dumping data for table `ud_users`
 --
 
-CREATE TABLE IF NOT EXISTS `uf_field_values` (
-  `fieldID` int(11) NOT NULL,
-  `userID` int(11) NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY (`fieldID`,`userID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+REPLACE INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`) VALUES
+(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Shinmera', '', 1, 'activated');
