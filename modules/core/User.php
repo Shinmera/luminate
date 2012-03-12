@@ -40,7 +40,71 @@ function displayLogin(){
 }
 
 function displayPanel(){
-    echo('<div class="box">A</div>');
+    global $k;
+    ?><div class="box">
+        <div class="title">User</div>
+        <ul class="menu">
+            <a href="<?=$k->url("admin","User")?>"><li>Overview</li></a>
+            <a href="<?=$k->url("admin","User/users")?>"><li>User Management</li></a>
+            <a href="<?=$k->url("admin","User/fields")?>"><li>Custom Fields</li></a>
+        </ul>
+    </div><?
 }
+
+function displayAdminPage(){
+    global $params,$c;
+    if($params[1]=="users")         $this->displayUserManagementPage();
+    else if($params[1]=="fields")   $this->displayFieldsManagementPage();
+    else{
+        $usercount  = $c->getData("SELECT COUNT(userID) AS usercount FROM ud_users");
+        $mostrecent = $c->getData("SELECT username,time FROM ud_users ORDER BY time DESC LIMIT 1");
+        ?><div class="box" style="display:block;">
+            <div class="title">Overview</div>
+
+            <a href="<?=$k->url("admin","User/users")?>" class="button">User Management</a>
+            <a href="<?=$k->url("admin","User/fields")?>" class="button">Custom Fields</a>
+        </div><?
+    }
+}
+
+function displayUserManagementPage(){
+    
+}
+
+function displayFieldsManagementPage(){
+    
+}
+
+function addUser($username,$mail,$password,$status='',$group=0,$displayname=''){
+    global $c,$k;
+    $username=$k->sanitizeString($username);
+    if(!in_array($status,array('activated','banned','system')))$status='inactive';
+    $status=substr($status,0,1);
+    if($displayname=='')$displayname=$username;
+    $secret=$k->generateRandomString(31);
+    $password=hash('sha512',$password);
+    $c->query("INSERT INTO ms_users VALUES(NULL,?,?,?,?,?,?,?,?,?)",array($username,$mail,$password,$secret,$displayname,'',$group,$status,time()));
+}
+
+function updateUser($userID,$fields){
+    
+}
+
+function deleteUser($userID){
+    
+}
+
+function addField(){
+    
+}
+
+function updateField(){
+    
+}
+
+function deleteField(){
+    
+}
+
 }
 ?>

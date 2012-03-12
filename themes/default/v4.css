@@ -11,8 +11,12 @@ html,body{
 
 img{max-width:100%;max-height:100%;margin:5px;}
 label{min-width:150px;display:inline-block;}
-input{border: 1px solid #CCC;background: #EEE;}
-a{}
+input,.button{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;}
+input:hover,.button:hover{box-shadow: 0px 0px 10px #FFDD00;}
+a{text-decoration: none;color:#151515;}
+a:hover{text-shadow: 0px 0px 5px #FFDD00;}
+ul{list-style:none;padding-left:10px;}
+hr{border: none;border-bottom:1px solid #FFF;box-shadow: 0px 0px 3px #FFF;}
 table{width:100%;border-spacing:0;}
 table td,table th{border-left:1px solid #FFF;padding:3px;}
 table td:first-child,table th:first-child{border-left:none;}
@@ -28,6 +32,8 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .right{text-align:right;}
 .left{text-align:left;}
 .justify{text-align:justify;}
+.title{font-size:18pt;font-weight:bold;margin-bottom:5px;margin-right:100px;}
+.menu li{border-bottom: 1px solid #000;}
 
 #header{
     font-size:18pt;
