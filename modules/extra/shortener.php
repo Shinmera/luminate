@@ -4,21 +4,6 @@ class Shortener extends Module{
     var $version=2.1;
     var $short='s';
     var $required=array("Sqlloader","core/sqlloader.php");
-    
-    function generateShort($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
-        $numbers = "01234567890123456789";
-        $alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $specials = ",;.:-_/\\<>(){}[]+\"'*#@&%?!^~";
-        for($i=0;$i<$set[0];$i++)$characters.=$numbers;
-        for($i=0;$i<$set[1];$i++)$characters.=$alphabet;
-        for($i=0;$i<$set[2];$i++)$characters.=$specials;
-        $characters.=$add;
-        for ($p = 0; $p < $n; $p++) {
-            $short .= $characters[mt_rand(0, strlen($characters)-1)];
-        }
-        if(is_numeric($short))$short.=$alphabet[mt_rand(0, strlen($alphabet)-1)];
-        return $short;
-    }
 
     function getLong($short){
         global $c;
@@ -63,16 +48,17 @@ class Shortener extends Module{
     }
 
     function newShortUrl($url){
+        global $k;
         if(substr($url,0,2)=="//")$url="http:".$url;
         $existing=$this->getShort($url);
         if($existing!="")return $existing;
         $shorts=$this->getShorts();
-        $short=$this->generateShort();
+        $short=$k->generateRandomString();
         $n=8;
         for($i=0;in_array($short,$shorts);$i++){
             if($i>50)$n=9;
             if($i>150)$n=10;
-            $short=$this->generateShort($n);
+            $short=$k->generateRandomString($n);
         }
         $this->setShort($short,$url);
         return $short;

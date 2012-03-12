@@ -572,11 +572,8 @@ function strnposr($haystack, $needle, $occurrence, $pos = 0) {
     return ($occurrence<2)?strpos($haystack, $needle, $pos):$this->strnposr($haystack,$needle,$occurrence-1,strpos($haystack, $needle, $pos) + 1);
 }
 
-
 function generateModuleCache(){
-    
     $modulelist=array();
-    
     $dh = opendir(MODULEPATH);
     while(($file = readdir($dh)) !== false){
         if($file!="."&&$file!=".."){
@@ -596,6 +593,21 @@ function generateModuleCache(){
     
     file_put_contents(CALLABLESPATH.'modulecache', serialize($modulelist));
 }  
+
+function generateRandomString($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
+    $numbers = "01234567890123456789";
+    $alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    $specials = ",;.:-_/\\<>(){}[]+\"'*#@&%?!^~";
+    for($i=0;$i<$set[0];$i++)$characters.=$numbers;
+    for($i=0;$i<$set[1];$i++)$characters.=$alphabet;
+    for($i=0;$i<$set[2];$i++)$characters.=$specials;
+    $characters.=$add;
+    for ($p = 0; $p < $n; $p++) {
+        $short .= $characters[mt_rand(0, strlen($characters)-1)];
+    }
+    if(is_numeric($short))$short.=$alphabet[mt_rand(0, strlen($alphabet)-1)];
+    return $short;
+}
 
 }
 ?>
