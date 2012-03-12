@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 12, 2012 at 12:23 AM
+-- Generation Time: Mar 13, 2012 at 12:10 AM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -57,7 +57,9 @@ CREATE TABLE IF NOT EXISTS `ms_hooks` (
 REPLACE INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
 ('CORE', 'HITadmin', 'Admin', 'displayPage'),
-('CORE', 'HITlogin', 'User', 'displayLogin');
+('CORE', 'HITlogin', 'User', 'displayLogin'),
+('Admin', 'PANELdisplay', 'User', 'displayPanel'),
+('Admin', 'ADMINUser', 'User', 'displayAdminPage');
 
 -- --------------------------------------------------------
 
@@ -71,7 +73,17 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Dumping data for table `ms_log`
+--
+
+REPLACE INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
+(1, 'Log cleared.', '1331569674', 1),
+(2, 'Option key &#039;idiots&#039; deleted.', '1331571299', 1),
+(3, 'Hook Admin::PANELdisplay =&gt; User::displayPanel added.', '1331572321', 1),
+(4, 'Hook Admin::ADMINUser =&gt; User::displayAdminPage added.', '1331582924', 1);
 
 -- --------------------------------------------------------
 
@@ -120,7 +132,6 @@ REPLACE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('avatar_maxsize', '500', 'i'),
 ('cookie_life_h', '8544', 'i'),
 ('default_theme', 'default', 's'),
-('idiots', 'retards', 's'),
 ('metakeys', 'Tymoon;TymoonNET;NexT;TymoonNexT;Shinmera;Nicolas;Hafner;Stevenchan', 'l'),
 ('recaptcha_key_private', '6LeYH7wSAAAAAMyEpHJzu0HScC6hqm6CyV7WPVMG', 's'),
 ('recaptcha_key_public', '6LeYH7wSAAAAADyB1R9ooRPtxFSTCUcnL5dO6dr8', 's'),
@@ -147,7 +158,7 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 --
 
 REPLACE INTO `ms_timer` (`IP`, `time`, `action`) VALUES
-('127.0.0.1', 1331409616, 'visit:');
+('127.0.0.1', 1331593780, 'visit:');
 
 -- --------------------------------------------------------
 
@@ -200,15 +211,15 @@ CREATE TABLE IF NOT EXISTS `ud_groups` (
 CREATE TABLE IF NOT EXISTS `ud_permissions` (
   `UID` bigint(20) NOT NULL,
   `base` varchar(32) NOT NULL,
-  `tree` text NOT NULL,
-  PRIMARY KEY (`UID`,`base`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `tree` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `ud_permissions`
 --
 
 REPLACE INTO `ud_permissions` (`UID`, `base`, `tree`) VALUES
+(1, '*', '*'),
 (1, '*', '*');
 
 -- --------------------------------------------------------
@@ -222,11 +233,12 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   `username` varchar(64) NOT NULL,
   `mail` varchar(35) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `secret` varchar(128) NOT NULL,
+  `secret` varchar(32) NOT NULL,
   `displayname` varchar(32) NOT NULL,
   `filename` varchar(50) NOT NULL,
   `group` bigint(20) NOT NULL,
-  `status` varchar(64) NOT NULL,
+  `status` varchar(1) NOT NULL,
+  `time` int(11) NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
@@ -236,5 +248,5 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
 -- Dumping data for table `ud_users`
 --
 
-REPLACE INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Shinmera', '', 1, 'activated');
+REPLACE INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
+(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Shinmera', '', 1, 'a', 0);
