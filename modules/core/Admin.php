@@ -126,13 +126,48 @@ function displayModulesPage(){
     global $k,$c;
     if($_POST['action']=="Install"){
         //FIXME: Add installation procedure.
-        //Upload file to temp directory
-        //Unpack into temp directory
-        //Read config file
-        //Move folder to modules directory
-        //Open popup and run installation file
-        //Clear temp directory
-        $err[1]="Module unpacked and installed.";
+        echo('<div class="box"><b>Starting installation...</b><br />');
+        try{
+            $k->pf('Uploading file...');
+            $k->uploadFile("archive",TEMPPATH,5000,array("application/zip","application/x-zip","application/x-zip-compressed",
+                                                         "application/octet-stream","application/x-compress",
+                                                         "application/x-compressed","multipart/x-zip"),true,"package.zip");
+            $k->pf('Extracting archive...');
+            if($k->unzipFile(TEMPPATH.'package.zip',TEMPPATH.'module/')){
+                $k->pf('Reading configuration...');
+                $config = file_get_contents(TEMPPATH.'module/install.conf');
+                if($config!=FALSE&&$config['name']!=''&&$config['install']!=''){
+                    $k->pf('Creating database entry...');
+                    $c->query('INSERT INTO ms_modules VALUES(?,?)',$config['name'],$config['description']);
+                    $k->pf('Moving files...');
+                    if(rename(TEMPPATH.'module/',MODULEPATH.$config['name'].'/')){
+                        $k->pf('Running installation script...');
+                        include(MODULEPATH.$config['name'].'/'.$config['install']);
+                        ?><div id="modalWindow" class="jqmWindow">
+                            <div id="jqmTitle">
+                                <button class="jqmClose">Close</button>
+                            </div>
+                            <iframe id="installContent" src=""></iframe>
+                        </div><script type="text/javascript">
+                            $(document).ready(function() {
+                                var loadInIframeModal = function(hash){
+                                    var $modal = $(hash.w);
+                                    var $modalContent = $("iframe", $modal);
+                                    $modalContent.html('').attr('src', '<?=TROOT.'modules/'.$config['name'].'/'.$config['install']?>');
+                                }
+                                $('#modalWindow').jqm({
+                                    modal: true,
+                                    target: '#installContent',
+                                    onShow:  loadInIframeModal
+                                }).jqmShow();
+                            });
+                        </script><?
+                        $k->pf('<b>Installation complete!</b>');
+                    }else $k->pf('<b>Failed to move the files!</b>');
+                }else $k->pf('<b>Failed to read the configuration file!</b>');
+            }else $k->pf('<b>Failed to extract the archive!</b>');
+        }catch(Exception $e){$k->pf('<b>'.$e->getMessage().'</b>');}
+        echo('</div>');
     }
     if($_POST['action']=="Delete"){
         $c->query("DELETE FROM ms_modules WHERE name=?",array($_POST['name']));
@@ -152,7 +187,7 @@ function displayModulesPage(){
     </form>
     <form action="#" method="post" class="box" enctype="multipart/form-data">
         Install from package:<br />
-        <input type="file" name="file" /><input type="submit" name="action" value="Install" />
+        <input type="file" name="archive" /><input type="submit" name="action" value="Install" />
         <span style="color:red;"><?=$err[1]?></span>
     </form>
     <div class="box" style="display:block;">

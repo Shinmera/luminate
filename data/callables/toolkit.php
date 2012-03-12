@@ -114,6 +114,11 @@ function err($message,$die=false){
     if($die)die($message);else echo($message);
 }
 
+function pf($message){
+    echo($message.'<br />');
+    ob_flush();flush();
+}
+
 function checkBanned($IP){
     global $c;
     $data = $c->getData("SELECT IP,time,reason,appeal FROM ms_banned WHERE ? REGEXP IP",array($_SERVER['REMOTE_ADDR']));
@@ -127,8 +132,11 @@ function toKeyArray($array,$delim1=";",$delim2="="){
     $temp=explode($delim1,$array);
     $args=array();
     for($i=0;$i<count($temp);$i++){
-        if(strlen($temp[$i])>0)
-            $args[substr($temp[$i],0,strpos($temp[$i],$delim2))]=substr($temp[$i],strpos($temp[$i],$delim2)+1);
+        $temp[$i]=trim($temp[$i]);
+        if(strlen($temp[$i])>0){
+            $temp2 = explode($delim2, $temp[$i]);
+            $args[$temp2[0]]=$temp2[1];
+        }
     }
     return $args;
 }
@@ -338,9 +346,9 @@ function unzipFile($file,$destination){
     if ($res === TRUE) {
         $zip->extractTo($destination);
         $zip->close();
-        return XERR_OK;
+        return true;
     } else {
-        return XERR_UNZIP_FAILED;
+        return false;
     }
 }
 
@@ -359,12 +367,12 @@ function downloadFile($url,$destination,$maxsizeKB=500,$allowedfiles=array(""),$
             $newname = $newname.substr($filename,strpos($filename,"."));
         $filename = $newname;
     }
-    if(strlen($url)<12)                                            return XERR_INVALID_URL;
-    if(strpos($url,".")===FALSE)                                return XERR_INVALID_URL;
-    if(strpos($headers[0],"200")===FALSE)                        return XERR_INVALID_URL;
-    if($filesize>$maxsizeKB)                                    return XERR_FILE_BAD_SIZE;
-    if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))return XERR_FILE_BAD_TYPE;
-    if(file_exists($destination.$filename)&&!$overwrite)        return XERR_FILE_EXISTS;
+    if(strlen($url)<12)                                          throw new Exception("Invalid URL to download from: '".$url."'");
+    if(strpos($url,".")===FALSE)                                 throw new Exception("Invalid URL to download from: '".$url."'");
+    if(strpos($headers[0],"200")===FALSE)                        throw new Exception("Invalid URL to download from: '".$url."'");
+    if($filesize>$maxsizeKB)                                     throw new Exception("File size is too big: ".$filesize."");
+    if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles)) throw new Exception("Bad filetype: '".$filetype."'");
+    if(file_exists($destination.$filename)&&!$overwrite)         throw new Exception("File '".$destination.$filename."' already exists!");
 
     $path=$destination.$k->sanitizeFilename($filename);
 
@@ -378,8 +386,8 @@ function downloadFile($url,$destination,$maxsizeKB=500,$allowedfiles=array(""),$
 }
 
 function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname=""){
-    if(!is_uploaded_file($_FILES[$fieldname]['tmp_name']))        return XERR_FILE_UPLOAD_FAILED.'7';
-    if(!file_exists($_FILES[$fieldname]['tmp_name']))            return XERR_FILE_UPLOAD_FAILED.'8';
+    if(!is_uploaded_file($_FILES[$fieldname]['tmp_name']))        throw new Exception("No uploaded file!");
+    if(!file_exists($_FILES[$fieldname]['tmp_name']))             throw new Exception("No uploaded file exists!");
     $filesize = $_FILES[$fieldname]['size']/1024;
     $filename = $_FILES[$fieldname]['name'];
     $fileorig = $_FILES[$fieldname]['tmp_name'];
@@ -394,11 +402,11 @@ function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array("
     $filename = $this->sanitizeFilename($filename);
     if(substr($destination,strlen($destination)-1)!="/")$destination=$destination."/";
     //perform checks
-    if($filesize>$maxsizeKB)                                    return XERR_FILE_BAD_SIZE;
-    if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))return XERR_FILE_BAD_TYPE;
-    if(file_exists($destination.$filename)&&!$overwrite)        return XERR_FILE_EXISTS;
+    if($filesize>$maxsizeKB)                                                throw new Exception("Filesize is too big: ".$filesize);
+    if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))throw new Exception("Bad filetype: ".$filetype);
+    if(file_exists($destination.$filename)&&!$overwrite)                    throw new Exception("File '".$destination.$filename."' already exists!");
     //move
-    if(!move_uploaded_file($fileorig,$destination.$filename))    return XERR_FILE_UPLOAD_FAILED.'9';
+    if(!move_uploaded_file($fileorig,$destination.$filename))               throw new Exception("File upload failed!");
     return $destination.$filename;
 }
 
@@ -418,23 +426,8 @@ function displayFilesize($filesize){
 }
 
 function sanitizeFilename($filename){
-    $filename = str_replace("#", "", $filename);
-    $filename = str_replace("$", "", $filename);
-    $filename = str_replace("%", "", $filename);
-    $filename = str_replace("^", "", $filename);
-    $filename = str_replace("&", "", $filename);
-    $filename = str_replace("*", "", $filename);
-    $filename = str_replace("?", "", $filename);
-    $filename = str_replace(",", "", $filename);
-    $filename = str_replace("'", "", $filename);
-    $filename = str_replace('"', "", $filename);
-    $filename = str_replace("\\","", $filename);
-    $filename = str_replace(":", "", $filename);
-    $filename = str_replace(";", "", $filename);
-    $filename = str_replace("<", "", $filename);
-    $filename = str_replace(">", "", $filename);
+    $filename = $this->sanitizeString($filename);
     $filename = str_replace(" ","_", $filename);
-    $filename = str_replace("//","/", $filename);
     if(strlen($filename)>48){
         $ending=substr($filename,strpos($filename, "."));
         $filename=substr($filename,0,48).$ending;
@@ -466,7 +459,7 @@ function validateMail($mail,$selfcheck=true){
     $banned = explode("\n",file_get_contents(TROOT."callables/banned-mails"));
     if(in_array(substr($mail,strpos($mail,"@")),$banned))return false;
 
-    return XERR_OK;
+    return true;
 }
 
 function updateTimeout($action,$timeout){
