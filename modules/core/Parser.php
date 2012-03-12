@@ -4,6 +4,7 @@ public static $name="Parser";
 public static $version=2.8;
 public static $short='p';
 public static $required=array();
+public static $hooks=array("foo");
 
     function enparse($s){
         $s = $this->convertCharset($s);

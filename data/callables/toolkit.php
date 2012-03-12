@@ -13,8 +13,8 @@ function url($sub,$url){
 }
 
 function log($message){
-    global $c;
-    $c->query("INSERT INTO ms_log VALUES(NULL,?,?,?)",array($message,time(),$c->userID));
+    global $c,$a;
+    $c->query("INSERT INTO ms_log VALUES(NULL,?,?,?)",array($message,time(),$a->user->userID));
 }
 
 function convertArrayDown($array,$field,$ret=array()){
