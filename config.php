@@ -17,7 +17,7 @@ define("TEMPLATEPATH",PAGEPATH.'templates/');
 define("AVATARPATH",IMAGEPATH."avatars/");
 define("HEADERPATH",IMAGEPATH."headers/");
 define("IMAGEPATH",DATAPATH."images/");
-define("TEMPPATH",DATAPATH."temp/");
+define("TEMPPATH",ROOT.DATAPATH."temp/");
 define("PAGEPATH",ROOT.DATAPATH."pages/");
 define("CALLABLESPATH",ROOT.DATAPATH."callables/");
 //auth variables
