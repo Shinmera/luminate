@@ -3,6 +3,7 @@ public static $name="User";
 public static $version=2.01;
 public static $short='u';
 public static $required=array("Auth","Themes");
+public static $hooks=array("foo");
 
 function __construct(){}
 
@@ -36,6 +37,10 @@ function displayLogin(){
         header("Location: ".$k->url("www",""));
     }
     $t->closePage();
+}
+
+function displayPanel(){
+    echo('<div class="box">A</div>');
 }
 }
 ?>

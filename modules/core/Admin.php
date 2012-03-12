@@ -4,12 +4,13 @@ public static $name="Admin";
 public static $version=2.01;
 public static $short='acp';
 public static $required=array("Themes","Auth");
+public static $hooks=array("foo");
     
 function __construct(){
 }
 
 function displayPage($params){
-    global $a,$t,$site;
+    global $a,$t,$l,$site;
     if($site=="index")$site="Panel";
     $t->openPage("Administration");
     $this->displayNavbar();
@@ -20,7 +21,8 @@ function displayPage($params){
             case 'Log':     $this->displayLogPage();break;
             case 'Modules': $this->displayModulesPage();break;
             case 'Hooks':   $this->displayHooksPage();break;
-            default:        $this->displayPanelPage();break;
+            case 'Panel':   $this->displayPanelPage();break;
+            default:        $l->triggerHook("ADMIN".$site,$this);break;
         }
     }else{
         echo("<center>You are not authorized to view this page.</center>");
@@ -37,30 +39,31 @@ function displayNavbar(){
             <? foreach($pages as $page){
                 if($page==$site)echo('<a href="'.$k->url("admin",$page).'" class="tab activated">'.$page.'</a>');
                 else            echo('<a href="'.$k->url("admin",$page).'" class="tab">'.$page.'</a>');
-            } ?>
+            }if(!in_array($site, $pages))echo('<a href="'.$k->url("admin",$site).'" class="tab activated">'.$site.'</a>'); ?>
         </div>
     </div><?
 }
 
 function displayPanelPage(){
     global $l;
-    $l->triggerHook("panelPage",$this);
+    $l->triggerHook("PANELdisplay",$this);
 }
 
 function displayOptionsPage(){
-    global $k,$c;
+    global $k;
     if($_POST['action']=="Add"){
-        $c->query("INSERT INTO ms_options VALUES(?,?,?)",array($_POST['key'],$_POST['value'],$_POST['type']));
+        $this->addOption($_POST['key'],$_POST['value'],$_POST['type']);
         $err[0]="Key added.";
     }
     if($_POST['action']=="Save"){
         $options = DataModel::getData("ms_options", "SELECT `key`,`value` FROM ms_options");
         foreach($options as $o){
             if(is_array($_POST['val'.$o->key]))$_POST['val'.$o->key]=implode(";",$_POST['val'.$o->key]);
-            if($_POST['act'.$o->key]=="delete")
-                $c->query("DELETE FROM ms_options WHERE `key`=?",array($o->key));
-            else if($_POST['val'.$o->key]!=$o->value)
-                $c->query("UPDATE ms_options SET `value`=? WHERE `key`=?",array($_POST['val'.$o->key],$o->key));
+            if($_POST['act'.$o->key]=="delete"){
+                $this->deleteOption($o->key);
+            }else if($_POST['val'.$o->key]!=$o->value){
+                $this->setOption($o->key,$_POST['val'.$o->key]);
+            }
         }
         $err[1]="Data saved.";
     }
@@ -88,7 +91,7 @@ function displayOptionsPage(){
             case 't':echo('<textarea type="text" class="text" name="val'.$o->key.'">'.$o->value.'</textarea>');break;
             case 'l':$vals=explode(";",$o->value);$k->interactiveList("val".$o->key,$vals,$vals,$vals,true);break;
         }
-        echo('<select name="act"'.$o->key.'><option value="edit">Edit</option><option value="delete">Delete</otpion></select>');
+        echo('<select name="act'.$o->key.'"><option value="edit">Edit</option><option value="delete">Delete</otpion></select>');
         echo('</div></div><br class="clear" />');
     }
     ?><input type="submit" name="action" value="Save" />
@@ -96,9 +99,9 @@ function displayOptionsPage(){
 }
 
 function displayLogPage(){
-    global $k,$c;
+    global $k;
     if($_POST['action']=="Clear Log"){
-        $c->query("TRUNCATE ms_log",array());
+        $this->clearLog();
         $err="Log cleared.";
     }
     $logs = DataModel::getData("ms_log","SELECT subject,time,user FROM ms_log ORDER BY time DESC");
@@ -123,58 +126,23 @@ function displayLogPage(){
 }
 
 function displayModulesPage(){
-    global $k,$c;
+    global $k,$MODULECACHE;
     if($_POST['action']=="Install"){
-        //FIXME: Add installation procedure.
-        echo('<div class="box"><b>Starting installation...</b><br />');
         try{
-            $k->pf('Uploading file...');
             $k->uploadFile("archive",TEMPPATH,5000,array("application/zip","application/x-zip","application/x-zip-compressed",
-                                                         "application/octet-stream","application/x-compress",
-                                                         "application/x-compressed","multipart/x-zip"),true,"package.zip");
-            $k->pf('Extracting archive...');
-            if($k->unzipFile(TEMPPATH.'package.zip',TEMPPATH.'module/')){
-                $k->pf('Reading configuration...');
-                $config = file_get_contents(TEMPPATH.'module/install.conf');
-                if($config!=FALSE&&$config['name']!=''&&$config['install']!=''){
-                    $k->pf('Creating database entry...');
-                    $c->query('INSERT INTO ms_modules VALUES(?,?)',$config['name'],$config['description']);
-                    $k->pf('Moving files...');
-                    if(rename(TEMPPATH.'module/',MODULEPATH.$config['name'].'/')){
-                        $k->pf('Running installation script...');
-                        include(MODULEPATH.$config['name'].'/'.$config['install']);
-                        ?><div id="modalWindow" class="jqmWindow">
-                            <div id="jqmTitle">
-                                <button class="jqmClose">Close</button>
-                            </div>
-                            <iframe id="installContent" src=""></iframe>
-                        </div><script type="text/javascript">
-                            $(document).ready(function() {
-                                var loadInIframeModal = function(hash){
-                                    var $modal = $(hash.w);
-                                    var $modalContent = $("iframe", $modal);
-                                    $modalContent.html('').attr('src', '<?=TROOT.'modules/'.$config['name'].'/'.$config['install']?>');
-                                }
-                                $('#modalWindow').jqm({
-                                    modal: true,
-                                    target: '#installContent',
-                                    onShow:  loadInIframeModal
-                                }).jqmShow();
-                            });
-                        </script><?
-                        $k->pf('<b>Installation complete!</b>');
-                    }else $k->pf('<b>Failed to move the files!</b>');
-                }else $k->pf('<b>Failed to read the configuration file!</b>');
-            }else $k->pf('<b>Failed to extract the archive!</b>');
-        }catch(Exception $e){$k->pf('<b>'.$e->getMessage().'</b>');}
-        echo('</div>');
+                                                            "application/octet-stream","application/x-compress",
+                                                            "application/x-compressed","multipart/x-zip"),true,"package.zip");
+            $this->installModule();
+        }catch(Exception $e){
+            $k->err("Error Code: ".$e->getCode()."<br>Error Message: ".$e->getMessage()."<br>Strack Trace: <br>".$e->getTraceAsString());
+        }
     }
     if($_POST['action']=="Delete"){
-        $c->query("DELETE FROM ms_modules WHERE name=?",array($_POST['name']));
+        $this->deleteModule($_POST['name']);
         $err[2]="Module deleted.";
     }
     if($_POST['action']=="Add"){
-        $c->query("INSERT INTO ms_modules VALUES(?,?)",array($_POST['name'],$_POST['subject']));
+        $this->addModule($_POST['name'],$_POST['subject']);
         $err[3]="Module added.";
     }
     
@@ -195,23 +163,27 @@ function displayModulesPage(){
         <? if(is_array($modules)){
         foreach($modules as $m){
             echo('<form class="datarow"><input type="submit" name="action" value="Delete" /> <b>'.$m->name.'</b>');
-            echo('<blockquote>'.$m->subject.'</blockquote><input type="hidden" name="name" value="'.$m->name.'" /></form>');
+            if(!class_exists($m->name))include(MODULEPATH.$MODULECACHE[$m->name]);$vars=get_class_vars($m->name);
+            echo(' v'.$vars['version'].' by '.$vars['author']);
+            if($vars['required'][0]!=''){
+                sort($vars['required']);
+                echo('<br />&nbsp;&nbsp; Requires: '.implode(", ",$vars['required']));
+            }
+            echo('<blockquote>'.$m->subject.'</blockquote>');
+            echo('<input type="hidden" name="name" value="'.$m->name.'" /></form>');
         }}else echo('<center>No modules registered!</center>'); ?>
     </div>
     <?
 }
 
 function displayHooksPage(){
-    global $c,$k;
+    global $k;
     if($_POST['action']=="Register"){
-        $c->query("INSERT INTO ms_hooks VALUES(?,?,?,?)",array($_POST['source'],$_POST['hook'],
-                                                               $_POST['destination'],$_POST['function']));
+        $this->registerHook($_POST['source'],$_POST['hook'],$_POST['destination'],$_POST['function']);
         $err[0]="Hook registered.";
     }
     if($_POST['action']=="Remove"){
-        $c->query("DELETE FROM ms_hooks WHERE source=? AND hook=? AND destination=? AND function=?",array(
-                                                               $_POST['source'],$_POST['hook'],
-                                                               $_POST['destination'],$_POST['function']));
+        $this->removeHook($_POST['source'],$_POST['hook'],$_POST['destination'],$_POST['function']);
         $err[1]="Hook removed.";
     }
     
@@ -241,6 +213,104 @@ function displayHooksPage(){
     </table>
     <? }else echo('<center>No hooks registered?!</center>');
     ?></div><?
+}
+
+function addOption($key,$value,$type='s'){
+    global $c,$k,$l;
+    $c->query("INSERT INTO ms_options VALUES(?,?,?)",array($key,$value,$type));
+    $l->triggerHook("OPTIONadded",$this,array($key,$value));
+    $k->log('Option key \''.$key.'\' ('.$type.') added with value \''.$value.'\'.');
+}
+
+function setOption($key,$value){
+    global $c,$k,$l;
+    $c->query("UPDATE ms_options SET `value`=? WHERE `key`=?",array($value,$key));
+    $l->triggerHook("OPTIONset",$this,array($key,$value));
+    $k->log('Option key \''.$key.'\' changed to \''.$value.'\'.');
+}
+
+function deleteOption($key){
+    global $c,$k,$l;
+    $c->query("DELETE FROM ms_options WHERE `key`=?",array($key));
+    $l->triggerHook("OPTIONdeleted",$this,array($key));
+    $k->log('Option key \''.$key.'\' deleted.');
+}
+
+function clearLog(){
+    global $c,$k,$l;
+    $c->query("TRUNCATE ms_log",array());
+    $l->triggerHook("LOGcleared",$this);
+    $k->log('Log cleared.');
+}
+
+function installModule(){
+    global $k,$c,$l;
+    $k->pf('<div class="box"><b>Starting installation...</b><br />');
+    $k->pf('Extracting archive...');
+    if($k->unzipFile(TEMPPATH.'package.zip',TEMPPATH.'module/')){
+        $k->pf('Reading configuration...');
+        $config = file_get_contents(TEMPPATH.'module/install.conf');
+        if($config!=FALSE&&$config['name']!=''&&$config['install']!=''){
+            $k->pf('Creating database entry...');
+            $c->query('INSERT INTO ms_modules VALUES(?,?)',$config['name'],$config['description']);
+            $k->pf('Moving files...');
+            if(rename(TEMPPATH.'module/',MODULEPATH.$config['name'].'/')){
+                $k->pf('Running installation script...');
+                include(MODULEPATH.$config['name'].'/'.$config['install']);
+                ?><div id="modalWindow" class="jqmWindow">
+                    <div id="jqmTitle">
+                        <button class="jqmClose">Close</button>
+                    </div>
+                    <iframe id="installContent" src=""></iframe>
+                </div><script type="text/javascript">
+                    $(document).ready(function() {
+                        var loadInIframeModal = function(hash){
+                            var $modal = $(hash.w);
+                            var $modalContent = $("iframe", $modal);
+                            $modalContent.html('').attr('src', '<?=TROOT.'modules/'.$config['name'].'/'.$config['install']?>');
+                        }
+                        $('#modalWindow').jqm({
+                            modal: true,
+                            target: '#installContent',
+                            onShow:  loadInIframeModal
+                        }).jqmShow();
+                    });
+                </script><?
+                $k->pf('<b>Installation complete!</b>');
+                $l->triggerHook("MODULEinstalled",$this,array($config['name']));
+                $k->log("Module '".$config['name']."' installed.");
+            }else $k->pf('<b>Failed to move the files!</b>');
+        }else $k->pf('<b>Failed to read the configuration file!</b>');
+    }else $k->pf('<b>Failed to extract the archive!</b>');
+    $k->pf('</div>');
+}
+
+function addModule($name,$description){
+    global $c,$k,$l;
+    $c->query("INSERT INTO ms_modules VALUES(?,?)",array($name,$description));
+    $l->triggerHook("MODULEadded",$this,array($name));
+    $k->log("Module '".$name."' added.");
+}
+
+function deleteModule($name){
+    global $c,$k,$l;
+    $c->query("DELETE FROM ms_modules WHERE name=?",array($name));
+    $l->triggerHook("MODULEdeleted",$this,array($name));
+    $k->log("Module '".$name."' deleted.");
+}
+
+function registerHook($source,$hook,$destination,$function){
+    global $c,$k,$l;
+    $c->query("INSERT INTO ms_hooks VALUES(?,?,?,?)",array($source,$hook,$destination,$function));
+    $l->triggerHook("HOOKregistered",$this,array($source,$hook,$destination,$function));
+    $k->log("Hook ".$source.'::'.$hook.' => '.$destination.'::'.$function.' added.');
+}
+
+function removeHook($source,$hook,$destination,$function){
+    global $c,$k,$l;
+    $c->query("DELETE FROM ms_hooks WHERE source=? AND hook=? AND destination=? AND function=?",array($source,$hook,$destination,$function));
+    $l->triggerHook("HOOKremoved",$this,array($source,$hook,$destination,$function));
+    $k->log("Hook ".$source.'::'.$hook.' => '.$destination.'::'.$function.' deleted.');
 }
 
 }

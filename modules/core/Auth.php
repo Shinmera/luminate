@@ -4,6 +4,7 @@ public static $name="Auth";
 public static $version=1.8;
 public static $short='a';
 public static $required=array();
+public static $hooks=array("foo");
 
 var $udPBase=array();
 var $udPTree=array();

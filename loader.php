@@ -3,7 +3,7 @@
         global $k,$MODULES,$MODULECACHE;
         if(!class_exists($name))include(MODULEPATH.$MODULECACHE[$name]);
         if(!class_exists($name))throw new Exception("No such class '".$name."'! Is your module named correctly?");
-        if(in_array($name::$name,$MODULES)){
+        if(array_key_exists($name::$name,$MODULES)){
             $short = $name::$short;
             global $$short;
             return $$short;

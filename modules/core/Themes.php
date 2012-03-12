@@ -4,6 +4,7 @@ public static $name="Themes";
 public static $version=1.5;
 public static $short='t';
 public static $required=array();
+public static $hooks=array("foo");
 
 var $tname;
 var $tauthor;
@@ -19,9 +20,7 @@ var $headerf;
 var $footerf;
 var $menudata = array();
 
-function __construct(){
-    global $c,$api;
-}
+function __construct(){}
 
 function loadTheme($themename,$override=true){
     if($override){

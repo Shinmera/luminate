@@ -4,6 +4,7 @@ public static $name="CORE";
 public static $version="4.0.2-Linux/Debian-α";
 public static $short='CORE';
 public static $required=array();
+public static $hooks=array("foo");
 
 function __construct(){}
 
