@@ -14,11 +14,8 @@ function displayLogin(){
             if($_POST['username']=="")$err[1]="Username missing!";
             if($_POST['password']=="")$err[2]="Password missing!";
             if(!isset($err)){
-                if($a->login($_POST['username'],$_POST['password'])){
-                    header("Location: ".$k->url("www",""));
-                }else{
-                    $err[0]="Invalid username or password.";
-                }
+                if($a->login($_POST['username'],$_POST['password']))    header("Location: ".$k->url("www",""));
+                else                                                    $err[0]="Invalid username or password.";
             }
         }
         $t->openPage("Login");
@@ -33,9 +30,7 @@ function displayLogin(){
             <label>Password: </label><input name="password" type="password" maxlength="64" /><label><?=$err[2]?></label><br />
             <input type="submit" name="action" value="Login" />
         </form></center><?
-    }else{
-        header("Location: ".$k->url("www",""));
-    }
+    }else header("Location: ".$k->url("www",""));
     $t->closePage();
 }
 
@@ -46,25 +41,29 @@ function displayPanel(){
         <ul class="menu">
             <a href="<?=$k->url("admin","User")?>"><li>Overview</li></a>
             <a href="<?=$k->url("admin","User/users")?>"><li>User Management</li></a>
+            <a href="<?=$k->url("admin","User/groups")?>"><li>Group Management</li></a>
             <a href="<?=$k->url("admin","User/fields")?>"><li>Custom Fields</li></a>
         </ul>
     </div><?
 }
 
 function displayAdminPage(){
-    global $params,$c;
-    if($params[1]=="users")         $this->displayUserManagementPage();
-    else if($params[1]=="fields")   $this->displayFieldsManagementPage();
-    else if($params[1]=="edituser")  $this->displayEditUserPage();
-    else{
-        $usercount  = $c->getData("SELECT COUNT(userID) AS usercount FROM ud_users");
-        $mostrecent = $c->getData("SELECT username,time FROM ud_users ORDER BY time DESC LIMIT 1");
-        ?><div class="box" style="display:block;">
-            <div class="title">Overview</div>
-
-            <a href="<?=$k->url("admin","User/users")?>" class="button">User Management</a>
-            <a href="<?=$k->url("admin","User/fields")?>" class="button">Custom Fields</a>
-        </div><?
+    global $params,$c,$k;
+    $this->displayPanel();
+    switch($params[1]){
+        case 'users': $this->displayUserManagementPage();break;
+        case 'groups': $this->displayGroupsManagementPage();break;
+        case 'fields': $this->displayFieldsManagementPage();break;
+        case 'edituser': $this->displayEditUserPage();break;
+        default:
+            $usercount  = $c->getData("SELECT COUNT(userID) AS usercount FROM ud_users");
+            $mostrecent = $c->getData("SELECT username,time FROM ud_users ORDER BY time DESC LIMIT 1");
+            ?><div class="box">
+                <div class="title">Overview</div>
+                Total amount of users: <?=$usercount[0]['usercount']?><br />
+                Most recent user (<?=$k->toDate($mostrecent[0]['time'])?>): <?=$mostrecent[0]['username']?>
+            </div><?
+            break;
     }
 }
 
@@ -116,67 +115,96 @@ function displayUserManagementPage(){
     </div><?
 }
 
+function displayGroupsManagementPage(){
+    
+}
+
 function displayFieldsManagementPage(){
     
 }
 
 function displayEditUserPage(){
-    $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
-    if($user==null)$user = DataModel::getHull ("ud_users");
-    foreach($_POST as $key => $value){
-        $user->__set($key,$value);
-    }
+    if($_POST['action']!='Edit')$_POST['action']='Add';
     if($_POST['action']=="Add"&&$_POST['status']!=''){
-        $user->insertData();
-    }if($_POST['action']=="Edit"&&$_POST['status']!=''){
-        $user->saveData();
+        $this->addUser($_POST['username'],$_POST['mail'],$_POST['password'],$_POST['status'],$_POST['group'],$_POST['displayname']);
+        $_POST['action']='Edit';$_POST['status']='';
     }
+    if($_POST['action']=="Edit"&&$_POST['status']!=''){
+        $this->updateUser($_POST['userID'], $_POST);
+    }
+    if($_POST['action']=="Delete"){
+        $this->deleteUser($_POST['userID']);
+    }
+    $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
+    $groups=DataModel::getData("ud_groups","SELECT groupID,title FROM ud_groups");
+    if($user==null)$user = DataModel::getHull("ud_users");
     ?><form action="#" method="post" class="box">
-        <label>UserID</label>       <input type="text" name="userID" value="<?=$user->userID?>" disabled="disabled" placeholder="Generated"/><br />
+        <label>UserID</label>       <input type="text" value="<?=$user->userID?>" disabled="disabled" placeholder="Generated"/><br />
         <label>Username</label>     <input type="text" name="username" value="<?=$user->username?>" placeholder="Required"/><br />
         <label>Displayname</label>  <input type="text" name="displayname" value="<?=$user->displayname?>" placeholder="Username"/><br />
         <label>Mail</label>         <input type="text" name="mail" value="<?=$user->mail?>" placeholder="Required"/><br />
         <label>Password</label>     <input type="password" name="password" value="<?=$user->password?>" placeholder="Random"/><br />
-        <label>Secret</label>       <input type="text" name="secret" value="<?=$user->secret?>" placeholder="Generated"/><br />
-        <label>Filename</label>     <input type="text" name="filename" value="<?=$user->filename?>" placeholder="noguy.png"/><br />
-        <label>Time</label>         <input type="text" name="time" value="<?=$user->time?>" placeholder="Generated"/><br />
+        <label>Secret</label>       <input type="text" name="secret" value="<?=$user->secret?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
+        <label>Filename</label>     <input type="text" name="filename" value="<?=$user->filename?>" placeholder="noguy.png" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
+        <label>Time</label>         <input type="text" name="time" value="<?=$user->time?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
         <label>Group</label>
             <select name="group">
-                
+                <? foreach($groups as $g){
+                    if($g->groupID==$user->group)$sel="selected";else $sel="";
+                    echo('<option value="'.$g->groupID.'" '.$sel.' >'.$g->title.'</option>');
+                } ?>
             </select><br />
         <label>Status</label>
             <select name="status">
-                <option value="a">Activated</option>
-                <option value="i">Inactive</option>
-                <option value="b">Banned</option>
-                <option value="s">System</option>
+                <option value="a" <? if($user->status=="a")echo('selected'); ?>>Activated</option>
+                <option value="i" <? if($user->status=="i")echo('selected'); ?>>Inactive</option>
+                <option value="b" <? if($user->status=="b")echo('selected'); ?>>Banned</option>
+                <option value="s" <? if($user->status=="s")echo('selected'); ?>>System</option>
             </select><br />
-        <? if($_POST['action']=="Edit")echo('<input type="submit" name="action" value="Edit" />');
-           else                        echo('<input type="submit" name="action" value="Add" />');?>
+        <input type="hidden" name="userID" value="<?=$user->userID?>" />
+        <input type="submit" name="action" value="<?=$_POST['action']?>" class="flRight" style="font-weight:bold;"/>
+        <input type="submit" name="action" value="Delete"/> 
     </form><?
 }
 
 function addUser($username,$mail,$password,$status='',$group=0,$displayname=''){
     global $c,$k;
     $username=$k->sanitizeString($username);
+    if(!is_numeric($group))$group=0;
     if(!in_array($status,array('activated','banned','system')))$status='inactive';
     $status=substr($status,0,1);
     if($displayname=='')$displayname=$username;
     $secret=$k->generateRandomString(31);
     $password=hash('sha512',$password);
-    $c->query("INSERT INTO ms_users VALUES(NULL,?,?,?,?,?,?,?,?,?)",array($username,$mail,$password,$secret,$displayname,'',$group,$status,time()));
+    $c->query("INSERT INTO ud_users VALUES(NULL,?,?,?,?,?,?,?,?,?)",array($username,$mail,$password,$secret,$displayname,'',$group,$status,time()));
 }
 
 function updateUser($userID,$fields){
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($userID));
-    foreach($fields as $key => $value){
-        $user->__set($key, $value);
-    }$user->saveData();
+    if($user!=null){
+        if($fields['password']!=$user->password)$fields['password']=hash('sha512',$fields['password']); //Hash password
+        foreach($fields as $key => $value){
+            $user->$key = $value;
+        }
+        $user->saveData();
+    }
 }
 
 function deleteUser($userID){
     global $c;
     $c->query('DELETE FROM ud_users WHERE userID=?',array($userID));
+}
+
+function addGroup(){
+    
+}
+
+function updateGroup(){
+    
+}
+
+function deleteGroup(){
+    
 }
 
 function addField(){

@@ -31,26 +31,28 @@ class DataModel{
     public function saveData(){
         global $c;
         $data = array();
-        $query = 'UPDATE '.$table.' SET';
-        foreach($holder as $key=>$value){
-            $data[]=$value;
-            $query.=' `'.$key.'`=?,';
+        $query = 'UPDATE '.$this->table.' SET';
+        foreach($this->holder as $key=>$value){
+            if(in_array($key,$this->fields)){
+                $data[]=$value;
+                $query.=' `'.$key.'`=?,';
+            }
         }
         $query=substr($query,0,strlen($query)-1);
         $query.= ' WHERE `'.$this->fields[0].'`=?';
-        $data[]=$holder[$this->fields[0]];
+        $data[]=$this->holder[$this->fields[0]];
         $c->query($query,$data);
     }
     
     public function insertData(){
         global $c;
         $data = array();
-        $query = 'INSERT INTO '.$table.' VALUES(';
-        foreach($fields as $field){
+        $query = 'INSERT INTO '.$this->table.' VALUES(';
+        foreach($this->fields as $field){
             if($this->holder[$field]==""){
                 $query.='NULL,';
             }else{
-                $data[]=$value;
+                $data[]=$this->holder[$field];
                 $query.='?,';
             }
         }
@@ -75,7 +77,8 @@ class DataModel{
     
     public static function getHull($table){
         global $c;
-        $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=?',array($table));
+        $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=? AND table_schema=?',
+                                                    array($table,SQLDB));
         return new DataModel($table,$fields);
     }
 }
