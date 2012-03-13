@@ -13,6 +13,7 @@ img{max-width:100%;max-height:100%;margin:5px;}
 label{min-width:150px;display:inline-block;}
 input,.button{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;}
 input:hover,.button:hover{box-shadow: 0px 0px 10px #FFDD00;}
+input[disabled='disabled']{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
 a{text-decoration: none;color:#151515;}
 a:hover{text-shadow: 0px 0px 5px #FFDD00;}
 ul{list-style:none;padding-left:10px;}

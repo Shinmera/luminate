@@ -16,10 +16,12 @@ class DataModel{
         return print_r($this->holder, true);
     }
     
-    public function __construct($table,$fields,$data) {
+    public function __construct($table,$fields,$data=null) {
         $this->table=$table;
-        foreach($data as $key=>$value){
-            $this->holder[$key]=$value;
+        if($data==null){
+            foreach($fields as $field)$this->holder[$field['name']]="";
+        }else{
+            foreach($data as $key=>$value)$this->holder[$key]=$value;
         }
         foreach($fields as $field){
             $this->fields[]=$field['name'];
@@ -69,6 +71,12 @@ class DataModel{
         if(count($models)>1)return $models;
         else if(count($models)==1)return $models[0];
         else return null;
+    }
+    
+    public static function getHull($table){
+        global $c;
+        $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=?',array($table));
+        return new DataModel($table,$fields);
     }
 }
 ?>
