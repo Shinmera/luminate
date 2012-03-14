@@ -116,7 +116,35 @@ function displayUserManagementPage(){
 }
 
 function displayGroupsManagementPage(){
+    global $c;
     
+    if($_POST['title']!=''){
+        if($_POST['permissions']!=''){
+            if($_POST['action']=="Edit")$this->updateGroup($_POST['title'], $_POST);
+            if($_POST['action']=="Add" )$this->addGroup($_POST['title'], $_POST['permissions']);
+            if($_POST['action']=="Delete")$this->deleteGroup ($_POST['title']);
+        }
+        $group = DataModel::getData("ud_groups","SELECT * FROM ud_groups WHERE title=?",array($_POST['title']));
+    }
+    $groups = DataModel::getData("ud_groups","SELECT * FROM ud_groups");
+    ?><form class="box" method="post" action="#">
+        <input type="text" name="title" placeholder="Groupname" value="<?=$group->title?>" />
+        <input type="submit" name="action" value="<? if($group==null)echo('Add');else echo('Edit'); ?>" /><br />
+        <textarea name="permissions" placeholder="Permissiontree" style="min-width:200px;min-height:100px;"><?=$group->permissions?></textarea>
+        <? if($group!=null)echo('<input type="submit" name="action" value="Delete" />'); ?>
+    </form>
+    <div class="box" style="display:block;">
+        <table>
+            <thead><tr><th style="width:200px;">Title</th><th>Permissions</th><th style="width:100px;">Members</th></tr></thead>
+            <tbody><?
+                foreach($groups as $g){
+                    $amount = $c->getData("SELECT COUNT(userID) FROM ud_users WHERE `group` LIKE ?",array($g->title));
+                    echo('<tr><td><form action="#" method="post"><input type="submit" name="title" value="'.$g->title.'" /></td>');
+                    echo('<td>'.nl2br($g->permissions).'</td><td>'.$amount[0]['COUNT(userID)'].'</td></tr>');
+                }
+            ?></tbody>
+        </table>
+    </div><?
 }
 
 function displayFieldsManagementPage(){
@@ -136,7 +164,7 @@ function displayEditUserPage(){
         $this->deleteUser($_POST['userID']);
     }
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
-    $groups=DataModel::getData("ud_groups","SELECT groupID,title FROM ud_groups");
+    $groups=DataModel::getData("ud_groups","SELECT title FROM ud_groups");
     if($user==null)$user = DataModel::getHull("ud_users");
     ?><form action="#" method="post" class="box">
         <label>UserID</label>       <input type="text" value="<?=$user->userID?>" disabled="disabled" placeholder="Generated"/><br />
@@ -150,8 +178,8 @@ function displayEditUserPage(){
         <label>Group</label>
             <select name="group">
                 <? foreach($groups as $g){
-                    if($g->groupID==$user->group)$sel="selected";else $sel="";
-                    echo('<option value="'.$g->groupID.'" '.$sel.' >'.$g->title.'</option>');
+                    if($g->title==$user->group)$sel="selected";else $sel="";
+                    echo('<option value="'.$g->title.'" '.$sel.' >'.$g->title.'</option>');
                 } ?>
             </select><br />
         <label>Status</label>
@@ -167,10 +195,9 @@ function displayEditUserPage(){
     </form><?
 }
 
-function addUser($username,$mail,$password,$status='',$group=0,$displayname=''){
+function addUser($username,$mail,$password,$status='',$group='Registered',$displayname=''){
     global $c,$k;
     $username=$k->sanitizeString($username);
-    if(!is_numeric($group))$group=0;
     if(!in_array($status,array('activated','banned','system')))$status='inactive';
     $status=substr($status,0,1);
     if($displayname=='')$displayname=$username;
@@ -183,9 +210,7 @@ function updateUser($userID,$fields){
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($userID));
     if($user!=null){
         if($fields['password']!=$user->password)$fields['password']=hash('sha512',$fields['password']); //Hash password
-        foreach($fields as $key => $value){
-            $user->$key = $value;
-        }
+        foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
     }
 }
@@ -195,28 +220,44 @@ function deleteUser($userID){
     $c->query('DELETE FROM ud_users WHERE userID=?',array($userID));
 }
 
-function addGroup(){
-    
+function addGroup($groupname,$tree){
+    $group = DataModel::getHull("ud_groups");
+    $group->title=$groupname;
+    $group->permissions=$tree;
+    $group->insertData();
 }
 
-function updateGroup(){
-    
+function updateGroup($groupname,$changes){
+    $group = DataModel::getData("ud_groups", "SELECT * FROM ud_groups WHERE title=?",array($groupname));
+    foreach($changes as $key=>$value){$group->$key = $value;}
+    $group->saveData();
 }
 
-function deleteGroup(){
-    
+function deleteGroup($groupname){
+    global $c;
+    $c->query("DELETE FROM ud_groups WHERE title=?",array($groupname));
 }
 
-function addField(){
-    
+function addField($fieldname,$title,$editable=false,$displayed=false,$default=''){
+    $field = DataModel::getHull("ud_fields");
+    $field->varname=$fieldname;
+    $field->title=$title;
+    $field->default=$default;
+    if(is_bool($editable))$field->editable=$editable;
+    if(is_bool($displayed))$field->displayed=$fidplayed;
+    $field->insertData();
 }
 
-function updateField(){
-    
+function updateField($fieldname,$changes){
+    $field = DataModel::getData("ud_fields", "SELECT * FROM ud_fields WHERE varname=?",array($fieldname));
+    foreach($changes as $key=>$value){$field->$key = $value;}
+    $field->saveData();
 }
 
-function deleteField(){
-    
+function deleteField($fieldname){
+    global $c;
+    $c->query("DELETE FROM ud_fields WHERE varname=?",array($fieldname));
+    $c->query("DELETE FROM ud_field_values WHERE varname=?",array($fieldname));
 }
 
 }
