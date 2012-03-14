@@ -16,7 +16,7 @@ class DataModel{
         return print_r($this->holder, true);
     }
     
-    public function __construct($table,$fields,$data=null) {
+    private function __construct($table,$fields,$data=null) {
         $this->table=$table;
         if($data==null){
             foreach($fields as $field)$this->holder[$field['name']]="";
@@ -38,9 +38,10 @@ class DataModel{
                 $query.=' `'.$key.'`=?,';
             }
         }
-        $query=substr($query,0,strlen($query)-1);
-        $query.= ' WHERE `'.$this->fields[0].'`=?';
         $data[]=$this->holder[$this->fields[0]];
+        $query=substr($query,0,strlen($query)-1);
+        if(is_numeric($this->holder[$this->fields[0]]))$query.= ' WHERE `'.$this->fields[0].'`=?';
+        else                                           $query.= ' WHERE `'.$this->fields[0].'` LIKE ?';
         $c->query($query,$data);
     }
     
@@ -64,7 +65,8 @@ class DataModel{
     public static function getData($table,$query,$args=array(),$fields=array()){
         global $c;
         if(count($fields)==0)
-            $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=?',array($table));
+            $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=? AND table_schema=?',
+                                                    array($table,SQLDB));
         $data = $c->getData($query,$args);
         $models = array();
         foreach($data as $element){

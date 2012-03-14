@@ -53,6 +53,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     left:0px;
     right:0px;
     height:30px;
+    z-index:10;
 }
 
 #navbar{
@@ -67,6 +68,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     top: 0px;
     right: 0px;
     left: 0px;
+    z-index:20;
 }
 
 #navbar a{
