@@ -115,6 +115,8 @@ function displayUserManagementPage(){
     </div><?
 }
 
+//FIXME: Group permissions system needs to be revised.
+//FIXME: New system needs to be reflected in this.
 function displayGroupsManagementPage(){
     global $c;
     
@@ -131,7 +133,7 @@ function displayGroupsManagementPage(){
         <input type="text" name="title" placeholder="Groupname" value="<?=$group->title?>" />
         <input type="submit" name="action" value="<? if($group==null)echo('Add');else echo('Edit'); ?>" /><br />
         <textarea name="permissions" placeholder="Permissiontree" style="min-width:200px;min-height:100px;"><?=$group->permissions?></textarea>
-        <? if($group!=null)echo('<input type="submit" name="action" value="Delete" />'); ?>
+        <? if($group!=null)echo('<br /><input type="submit" name="action" value="Delete" />'); ?>
     </form>
     <div class="box" style="display:block;">
         <table>
@@ -148,21 +150,57 @@ function displayGroupsManagementPage(){
 }
 
 function displayFieldsManagementPage(){
+    global $c;
     
+    if($_POST['varname']!=''){
+        if($_POST['title']!=''){
+            if($_POST['action']=="Edit")$this->updateField($_POST['varname'], $_POST);
+            if($_POST['action']=="Add" )$this->addField($_POST['varname'], $_POST['title'], $_POST['default'],$_POST['editable'],$_POST['displayed']);
+            if($_POST['action']=="Delete")$this->deleteField($_POST['varname']);
+        }
+        $field = DataModel::getData("ud_fields","SELECT * FROM ud_fields WHERE varname=?",array($_POST['varname']));
+    }
+    $fields = DataModel::getData("ud_fields","SELECT * FROM ud_fields");
+    ?><form class="box" method="post" action="#">
+        <input type="text" name="varname" placeholder="Variable Name" value="<?=$field->varname?>" />
+        <input type="text" name="title" placeholder="Field Title" value="<?=$field->title?>" />
+        <input type="submit" name="action" value="<? if($field==null)echo('Add');else echo('Edit'); ?>" /><br />
+        <textarea name="default" placeholder="Default Value" style="min-width:400px;min-height:100px;"><?=$field->default?></textarea><br />
+        <select name="type">
+            <option value="s" <? if($field->type=='s')echo('selected'); ?>>String</option>
+            <option value="i" <? if($field->type=='i')echo('selected'); ?>>Number</option>
+            <option value="t" <? if($field->type=='t')echo('selected'); ?>>Text</option>
+            <option value="l" <? if($field->type=='l')echo('selected'); ?>>List</option>
+        </select>
+        <input type="checkbox" name="editable" value="1"  <? if($field->editable==1)echo('checked'); ?> /> Editable
+        <input type="checkbox" name="displayed" value="1" <? if($field->displayed==1)echo('checked'); ?> /> Displayed
+        <? if($field!=null)echo('<br /><input type="submit" name="action" value="Delete" />'); ?>
+    </form>
+    <div class="box" style="display:block;">
+        <table>
+            <thead><tr><th style="width:200px;">Varname</th><th style="width:200px;">Title</th><th>Default</th>
+                    <th style="width:10px;">E</th><th style="width:10px;">D</th><th style="width:10px;">T</th></tr></thead>
+            <tbody><?
+                if(!is_array($fields))$fields=array($fields);
+                foreach($fields as $f){
+                    echo('<tr><td><form action="#" method="post"><input type="submit" name="varname" value="'.$f->varname.'" /></td>');
+                    echo('<td>'.$f->title.'</td><td>'.nl2br($f->default).'</td><td>'.$f->editable.'</td><td>'.$f->displayed.'</td><td>'.$f->type.'</td></tr>');
+                }
+            ?></tbody>
+        </table>
+    </div><?
 }
 
 function displayEditUserPage(){
-    if($_POST['action']!='Edit')$_POST['action']='Add';
+    if($_POST['action']=='')$_POST['action']='Add';
     if($_POST['action']=="Add"&&$_POST['status']!=''){
         $this->addUser($_POST['username'],$_POST['mail'],$_POST['password'],$_POST['status'],$_POST['group'],$_POST['displayname']);
         $_POST['action']='Edit';$_POST['status']='';
     }
-    if($_POST['action']=="Edit"&&$_POST['status']!=''){
-        $this->updateUser($_POST['userID'], $_POST);
-    }
-    if($_POST['action']=="Delete"){
-        $this->deleteUser($_POST['userID']);
-    }
+    if($_POST['action']=="Edit"&&$_POST['status']!='')  $this->updateUser($_POST['userID'], $_POST);
+    if($_POST['action']=="Save Fields"){                $this->updateUserFields($_POST['userID'], $_POST);$_POST['action']='Edit';}
+    if($_POST['action']=="Delete"){                     $this->deleteUser($_POST['userID']);header('Location: /'.PROOT.'/users');}
+    
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
     $groups=DataModel::getData("ud_groups","SELECT title FROM ud_groups");
     if($user==null)$user = DataModel::getHull("ud_users");
@@ -192,6 +230,28 @@ function displayEditUserPage(){
         <input type="hidden" name="userID" value="<?=$user->userID?>" />
         <input type="submit" name="action" value="<?=$_POST['action']?>" class="flRight" style="font-weight:bold;"/>
         <input type="submit" name="action" value="Delete"/> 
+    </form>
+        
+    <? $fields = DataModel::getData('ud_fields','SELECT `title`,`varname`,`default`,`type` FROM ud_fields');
+    $ufields = DataModel::getData('ud_field_values','SELECT varname,value FROM ud_field_values WHERE userID=?',array($user->userID));
+    if(!is_array($fields))$fields=array($fields);if(!is_array($ufields))$ufields=array($ufields);?>
+    <form action="#" method="post" class="box">
+        <? foreach($fields as $f){
+            $u = null;
+            foreach($ufields as $u){if($u->varname==$f->varname)break;}
+            if($u->value=='')$u->value=$f->default;
+            
+            echo('<label>'.$f->title.'</label>');
+            switch($f->type){
+                case 'i':echo('<input type="text" class="number" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 's':echo('<input type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 't':echo('<br /><textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
+                case 'l':$vals=explode(";",$u->value);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
+            }
+            echo('<br />');
+        } ?>
+        <input type="hidden" name="userID" value="<?=$user->userID?>" />
+        <input type="submit" name="action" value="Save Fields" />
     </form><?
 }
 
@@ -212,6 +272,20 @@ function updateUser($userID,$fields){
         if($fields['password']!=$user->password)$fields['password']=hash('sha512',$fields['password']); //Hash password
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
+    }
+}
+
+function updateUserFields($userID,$values){
+    global $c;
+    $fields = DataModel::getData('ud_fields','SELECT varname FROM ud_fields');
+    if(!is_array($fields))$fields=array($fields);
+    $ufield = DataModel::getHull('ud_field_values');
+    $ufield->userID=$userID;
+    $c->query("DELETE FROM ud_field_values WHERE userID=?",array($userID));
+    foreach($fields as $f){
+        $ufield->varname = $f->varname;
+        $ufield->value = $values['val'.$f->varname];
+        $ufield->insertData();
     }
 }
 
@@ -238,13 +312,17 @@ function deleteGroup($groupname){
     $c->query("DELETE FROM ud_groups WHERE title=?",array($groupname));
 }
 
-function addField($fieldname,$title,$editable=false,$displayed=false,$default=''){
+function addField($fieldname,$title,$default='',$editable=0,$displayed=0,$type='s'){
+    if($editable=='')$editable=0;
+    if($displayed=='')$displayed=0;
+    if($default=='')$default=' ';
     $field = DataModel::getHull("ud_fields");
     $field->varname=$fieldname;
     $field->title=$title;
     $field->default=$default;
-    if(is_bool($editable))$field->editable=$editable;
-    if(is_bool($displayed))$field->displayed=$fidplayed;
+    $field->editable=$editable;
+    $field->displayed=$displayed;
+    $field->type=$type;
     $field->insertData();
 }
 

@@ -87,6 +87,7 @@ var $user;
         }
     }
 
+//FIXME: New Group permissions system needs to be implemented properly.
     function check($tree){
         $tree=explode(".",trim(strtolower($tree)));
         if(in_array("*",$this->udPBase))return true;
