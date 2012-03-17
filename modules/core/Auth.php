@@ -29,7 +29,7 @@ var $user;
             return false;
         }
         if($this->user != null){
-            $k->updateTimestamp("visit:".$c->userID,0);
+            $k->updateTimestamp("visit:".$this->user->userID,0);
             return true;
         }else{
             $this->resetUser();
