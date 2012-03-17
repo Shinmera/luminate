@@ -10,7 +10,7 @@ pageTracker._trackPageview();
 
 <? for($i=0;$i<count($t->js);$i++){echo("<script type='text/javascript' src='".THEMEPATH.$t->tname."/".$t->js[$i]."' ></script>\n");}?>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" ></script>
-<script type="text/javascript" src="<?=CALLABLESPATH.'js/plugins.js'?>" ></script>
-<script type="text/javascript" src="<?=CALLABLESPATH.'js/js.js'?>" ></script>
+<script type="text/javascript" src="<?=DATAPATH.'js/plugins.js'?>" ></script>
+<script type="text/javascript" src="<?=DATAPATH.'js/js.js'?>" ></script>
 </body>
 </html>

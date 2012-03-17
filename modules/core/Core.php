@@ -13,5 +13,10 @@ function printTimePassed(){
     ?><center><div style='display:inline-block;padding:5px;border-radius:5px;box-shadow: 0px 0px 10px #000;'><?=$k->getTimeElapsed()?>s</div></center><?
 }
 
+function apiCall(){
+    global $l,$site;
+    $l->triggerHook("API".$site,$this);
+}
+
 }
 ?>
