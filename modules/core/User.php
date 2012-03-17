@@ -26,8 +26,8 @@ function displayLogin(){
         </div>
         <center><form action="#" method="post">
             <?=$err[0]?><br />
-            <label>Username: </label><input name="username" type="text" maxlength="64" /><label><?=$err[1]?></label><br />
-            <label>Password: </label><input name="password" type="password" maxlength="64" /><label><?=$err[2]?></label><br />
+            <label>Username: </label><input autofocus="autofocus" name="username" type="text" maxlength="64" /><label><?=$err[1]?></label><br />
+            <label>Password: </label><input                       name="password" type="password" maxlength="64" /><label><?=$err[2]?></label><br />
             <input type="submit" name="action" value="Login" />
         </form></center><?
     }else header("Location: ".$k->url("www",""));
@@ -35,26 +35,30 @@ function displayLogin(){
 }
 
 function displayPanel(){
-    global $k;
+    global $k,$a;
     ?><div class="box">
         <div class="title">User</div>
         <ul class="menu">
             <a href="<?=$k->url("admin","User")?>"><li>Overview</li></a>
-            <a href="<?=$k->url("admin","User/users")?>"><li>User Management</li></a>
-            <a href="<?=$k->url("admin","User/groups")?>"><li>Group Management</li></a>
-            <a href="<?=$k->url("admin","User/fields")?>"><li>Custom Fields</li></a>
+            <? if($a->check("user.admin.users")){ ?>
+            <a href="<?=$k->url("admin","User/users")?>"><li>User Management</li></a><? } ?>
+            <? if($a->check("user.admin.groups")){ ?>
+            <a href="<?=$k->url("admin","User/groups")?>"><li>Group Management</li></a><? } ?>
+            <? if($a->check("user.admin.fields")){ ?>
+            <a href="<?=$k->url("admin","User/fields")?>"><li>Custom Fields</li></a><? } ?>
         </ul>
     </div><?
 }
 
 function displayAdminPage(){
-    global $params,$c,$k;
+    global $params,$c,$k,$a;
+    if(!$a->check("user.admin.panel"))return;
     $this->displayPanel();
     switch($params[1]){
-        case 'users': $this->displayUserManagementPage();break;
-        case 'groups': $this->displayGroupsManagementPage();break;
-        case 'fields': $this->displayFieldsManagementPage();break;
-        case 'edituser': $this->displayEditUserPage();break;
+        case 'users': if($a->check("user.admin.users"))$this->displayUserManagementPage();break;
+        case 'groups': if($a->check("user.admin.groups"))$this->displayGroupsManagementPage();break;
+        case 'fields': if($a->check("user.admin.fields"))$this->displayFieldsManagementPage();break;
+        case 'edituser': if($a->check("user.admin.users.edit"))$this->displayEditUserPage();break;
         default:
             $usercount  = $c->getData("SELECT COUNT(userID) AS usercount FROM ud_users");
             $mostrecent = $c->getData("SELECT username,time FROM ud_users ORDER BY time DESC LIMIT 1");
@@ -90,8 +94,8 @@ function displayUserManagementPage(){
         <form>
             <input type="submit" name="dir" value="<<" />
             <input type="submit" name="dir" value="<" />
-            <input type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
-            <input type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
+            <input autocomplete="off" type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
+            <input autocomplete="off" type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
             <input type="submit" name="dir" value="Go" />
             <input type="submit" name="dir" value=">" />
             <input type="submit" name="dir" value=">>" />
@@ -130,8 +134,8 @@ function displayGroupsManagementPage(){
     }
     $groups = DataModel::getData("ud_groups","SELECT * FROM ud_groups");
     ?><form class="box" method="post" action="#">
-        <input type="text" name="title" placeholder="Groupname" value="<?=$group->title?>" />
-        <input type="submit" name="action" value="<? if($group==null)echo('Add');else echo('Edit'); ?>" /><br />
+        <input autocomplete="off" type="text" name="title" placeholder="Groupname" value="<?=$group->title?>" />
+        <input autocomplete="off" type="submit" name="action" value="<? if($group==null)echo('Add');else echo('Edit'); ?>" /><br />
         <textarea name="permissions" placeholder="Permissiontree" style="min-width:200px;min-height:100px;"><?=$group->permissions?></textarea>
         <? if($group!=null)echo('<br /><input type="submit" name="action" value="Delete" />'); ?>
     </form>
@@ -162,13 +166,14 @@ function displayFieldsManagementPage(){
     }
     $fields = DataModel::getData("ud_fields","SELECT * FROM ud_fields");
     ?><form class="box" method="post" action="#">
-        <input type="text" name="varname" placeholder="Variable Name" value="<?=$field->varname?>" />
-        <input type="text" name="title" placeholder="Field Title" value="<?=$field->title?>" />
+        <input autocomplete="off" type="text" name="varname" placeholder="Variable Name" value="<?=$field->varname?>" />
+        <input autocomplete="off" type="text" name="title" placeholder="Field Title" value="<?=$field->title?>" />
         <input type="submit" name="action" value="<? if($field==null)echo('Add');else echo('Edit'); ?>" /><br />
         <textarea name="default" placeholder="Default Value" style="min-width:400px;min-height:100px;"><?=$field->default?></textarea><br />
         <select name="type">
             <option value="s" <? if($field->type=='s')echo('selected'); ?>>String</option>
             <option value="i" <? if($field->type=='i')echo('selected'); ?>>Number</option>
+            <option value="u" <? if($field->type=='u')echo('selected'); ?>>URL</option>
             <option value="t" <? if($field->type=='t')echo('selected'); ?>>Text</option>
             <option value="l" <? if($field->type=='l')echo('selected'); ?>>List</option>
         </select>
@@ -192,6 +197,7 @@ function displayFieldsManagementPage(){
 }
 
 function displayEditUserPage(){
+    if($_POST['userID']=='')$_POST['userID']=$_GET['userID'];
     if($_POST['action']=='')$_POST['action']='Add';
     if($_POST['action']=="Add"&&$_POST['status']!=''){
         $this->addUser($_POST['username'],$_POST['mail'],$_POST['password'],$_POST['status'],$_POST['group'],$_POST['displayname']);
@@ -205,14 +211,14 @@ function displayEditUserPage(){
     $groups=DataModel::getData("ud_groups","SELECT title FROM ud_groups");
     if($user==null)$user = DataModel::getHull("ud_users");
     ?><form action="#" method="post" class="box">
-        <label>UserID</label>       <input type="text" value="<?=$user->userID?>" disabled="disabled" placeholder="Generated"/><br />
-        <label>Username</label>     <input type="text" name="username" value="<?=$user->username?>" placeholder="Required"/><br />
-        <label>Displayname</label>  <input type="text" name="displayname" value="<?=$user->displayname?>" placeholder="Username"/><br />
-        <label>Mail</label>         <input type="text" name="mail" value="<?=$user->mail?>" placeholder="Required"/><br />
-        <label>Password</label>     <input type="password" name="password" value="<?=$user->password?>" placeholder="Random"/><br />
-        <label>Secret</label>       <input type="text" name="secret" value="<?=$user->secret?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
-        <label>Filename</label>     <input type="text" name="filename" value="<?=$user->filename?>" placeholder="noguy.png" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
-        <label>Time</label>         <input type="text" name="time" value="<?=$user->time?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
+        <label>UserID</label>       <input autocomplete="off" type="number" value="<?=$user->userID?>" readonly="readonly" placeholder="Generated"/><br />
+        <label>Username</label>     <input autocomplete="off" type="text" required="required" name="username" value="<?=$user->username?>" placeholder="Required"/><br />
+        <label>Displayname</label>  <input autocomplete="off" type="text" name="displayname" value="<?=$user->displayname?>" placeholder="Username"/><br />
+        <label>Mail</label>         <input autocomplete="off" type="email" required="required" name="mail" value="<?=$user->mail?>" placeholder="Required"/><br />
+        <label>Password</label>     <input autocomplete="off" type="password" required="required" name="password" value="<?=$user->password?>" placeholder="Random"/><br />
+        <label>Secret</label>       <input autocomplete="off" type="text" name="secret" value="<?=$user->secret?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
+        <label>Filename</label>     <input autocomplete="off" type="text" name="filename" value="<?=$user->filename?>" placeholder="noguy.png" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
+        <label>Time</label>         <input autocomplete="off" type="number" name="time" value="<?=$user->time?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
         <label>Group</label>
             <select name="group">
                 <? foreach($groups as $g){
@@ -243,8 +249,9 @@ function displayEditUserPage(){
             
             echo('<label>'.$f->title.'</label>');
             switch($f->type){
-                case 'i':echo('<input type="text" class="number" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
-                case 's':echo('<input type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 'i':echo('<input autocomplete="off" type="number" class="number" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 'u':echo('<input autocomplete="off" type="url" class="url" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
                 case 't':echo('<br /><textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
                 case 'l':$vals=explode(";",$u->value);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
             }
@@ -264,6 +271,7 @@ function addUser($username,$mail,$password,$status='',$group='Registered',$displ
     $secret=$k->generateRandomString(31);
     $password=hash('sha512',$password);
     $c->query("INSERT INTO ud_users VALUES(NULL,?,?,?,?,?,?,?,?,?)",array($username,$mail,$password,$secret,$displayname,'',$group,$status,time()));
+    Toolkit::log("Added user @".$c->insertID());
 }
 
 function updateUser($userID,$fields){
@@ -273,6 +281,7 @@ function updateUser($userID,$fields){
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
     }
+    Toolkit::log("Updated user @".$userID);
 }
 
 function updateUserFields($userID,$values){
@@ -287,11 +296,13 @@ function updateUserFields($userID,$values){
         $ufield->value = $values['val'.$f->varname];
         $ufield->insertData();
     }
+    Toolkit::log("Updated user fields for @".$userID);
 }
 
 function deleteUser($userID){
     global $c;
     $c->query('DELETE FROM ud_users WHERE userID=?',array($userID));
+    Toolkit::log("Deleted user '".$userID."'");
 }
 
 function addGroup($groupname,$tree){
@@ -299,17 +310,20 @@ function addGroup($groupname,$tree){
     $group->title=$groupname;
     $group->permissions=$tree;
     $group->insertData();
+    Toolkit::log("Added group '".$groupname."'");
 }
 
 function updateGroup($groupname,$changes){
     $group = DataModel::getData("ud_groups", "SELECT * FROM ud_groups WHERE title=?",array($groupname));
     foreach($changes as $key=>$value){$group->$key = $value;}
     $group->saveData();
+    Toolkit::log("Updated group '".$groupname."'");
 }
 
 function deleteGroup($groupname){
     global $c;
     $c->query("DELETE FROM ud_groups WHERE title=?",array($groupname));
+    Toolkit::log("Deleted group '".$groupname."'");
 }
 
 function addField($fieldname,$title,$default='',$editable=0,$displayed=0,$type='s'){
@@ -324,18 +338,21 @@ function addField($fieldname,$title,$default='',$editable=0,$displayed=0,$type='
     $field->displayed=$displayed;
     $field->type=$type;
     $field->insertData();
+    Toolkit::log("Added field '".$fieldname."'");
 }
 
 function updateField($fieldname,$changes){
     $field = DataModel::getData("ud_fields", "SELECT * FROM ud_fields WHERE varname=?",array($fieldname));
     foreach($changes as $key=>$value){$field->$key = $value;}
     $field->saveData();
+    Toolkit::log("Updated field '".$fieldname."'");
 }
 
 function deleteField($fieldname){
-    global $c;
+    global $c,$k;
     $c->query("DELETE FROM ud_fields WHERE varname=?",array($fieldname));
     $c->query("DELETE FROM ud_field_values WHERE varname=?",array($fieldname));
+    $k->log("Deleted field '".$fieldname."'");
 }
 
 }

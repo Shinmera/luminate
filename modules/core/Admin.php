@@ -17,12 +17,12 @@ function displayPage($params){
     
     if($a->check('admin.panel')){
         switch($site){
-            case 'Options': $this->displayOptionsPage();break;
-            case 'Log':     $this->displayLogPage();break;
-            case 'Modules': $this->displayModulesPage();break;
-            case 'Hooks':   $this->displayHooksPage();break;
-            case 'Panel':   $this->displayPanelPage();break;
-            default:        $l->triggerHook("ADMIN".$site,$this);break;
+            case 'Options': if($a->check("admin.options"))$this->displayOptionsPage();break;
+            case 'Log':     if($a->check("admin.log"))$this->displayLogPage();break;
+            case 'Modules': if($a->check("admin.modules"))$this->displayModulesPage();break;
+            case 'Hooks':   if($a->check("admin.hooks"))$this->displayHooksPage();break;
+            case 'Panel':   if($a->check("admin.panel"))$this->displayPanelPage();break;
+            default:        if($a->check("admin.panel"))$l->triggerHook("ADMIN".$site,$this);break;
         }
     }else{
         echo("<center>You are not authorized to view this page.</center>");
@@ -31,14 +31,16 @@ function displayPage($params){
 }
 
 function displayNavbar(){
-    global $site,$k;
+    global $site,$k,$a;
     $pages=array('Panel','Options','Log','Modules','Hooks');
     ?><div id='pageNav'>
         <div class="description">Administration</div>
         <div class="tabs">
             <? foreach($pages as $page){
-                if($page==$site)echo('<a href="'.$k->url("admin",$page).'" class="tab activated">'.$page.'</a>');
-                else            echo('<a href="'.$k->url("admin",$page).'" class="tab">'.$page.'</a>');
+                if($a->check("admin.".$page)){
+                    if($page==$site)echo('<a href="'.$k->url("admin",$page).'" class="tab activated">'.$page.'</a>');
+                    else            echo('<a href="'.$k->url("admin",$page).'" class="tab">'.$page.'</a>');
+                }
             }if(!in_array($site, $pages))echo('<a href="'.$k->url("admin",$site).'" class="tab activated">'.$site.'</a>'); ?>
         </div>
     </div><?
@@ -72,8 +74,8 @@ function displayOptionsPage(){
     ?>
     <form action="#" method="post" class="box" style="display:block">
         Add a new key: 
-        <input type="text" name="key" placeholder="Key" />
-        <input type="text" name="value" placeholder="Value" />
+        <input autocomplete="off" type="text" name="key" placeholder="Key" />
+        <input autocomplete="off" type="text" name="value" placeholder="Value" />
         <select name="type">
             <option value="s" >String</option>
             <option value="i" >Number</option>
@@ -86,8 +88,8 @@ function displayOptionsPage(){
     foreach($options as $o){
         echo('<div class="datarow">'.$o->key.'<div class="flRight">');
         switch($o->type){
-            case 'i':echo('<input type="text" class="number" name="val'.$o->key.'" value="'.$o->value.'" />');break;
-            case 's':echo('<input type="text" class="string" name="val'.$o->key.'" value="'.$o->value.'" />');break;
+            case 'i':echo('<input autocomplete="off" type="number" class="number" name="val'.$o->key.'" value="'.$o->value.'" />');break;
+            case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$o->key.'" value="'.$o->value.'" />');break;
             case 't':echo('<textarea type="text" class="text" name="val'.$o->key.'">'.$o->value.'</textarea>');break;
             case 'l':$vals=explode(";",$o->value);$k->interactiveList("val".$o->key,$vals,$vals,$vals,true);break;
         }
@@ -149,13 +151,16 @@ function displayModulesPage(){
     $modules = DataModel::getData("ms_modules", "SELECT name,subject FROM ms_modules");
     ?><form action="#" method="post" class="box">
         Add module entry:<br />
-        <input type="text" name="name" placeholder="Name" />
+        <input autocomplete="off" type="text" name="name" placeholder="Name" />
         <input type="submit" name="action" value="Add" /><span style="color:red;"><?=$err[3]?></span><br />
         <textarea name="subject" placeholder="Description"></textarea>
     </form>
     <form action="#" method="post" class="box" enctype="multipart/form-data">
         Install from package:<br />
-        <input type="file" name="archive" /><input type="submit" name="action" value="Install" />
+        <input type="file" name="archive" accept="application/zip,application/x-zip,application/x-zip-compressed,
+                                                  application/octet-stream,application/x-compress,
+                                                  application/x-compressed,multipart/x-zip" />
+        <input type="submit" name="action" value="Install" />
         <span style="color:red;"><?=$err[1]?></span>
     </form>
     <div class="box" style="display:block;">
@@ -192,8 +197,8 @@ function displayHooksPage(){
     ?><form method="post" action="#" class="box">
         Source: <? $k->printSelectObj("source",$modules,"name","name"); ?>
         Destination: <? $k->printSelectObj("destination",$modules,"name","name"); ?><br />
-        <label>Hook:</label> <input type="text" name="hook" placeholder="HOOK" /><br />
-        <label>Function:</label> <input type="text" name="function" placeholder="functionName" /><br />
+        <label>Hook:</label> <input autocomplete="off" type="text" name="hook" placeholder="HOOK" /><br />
+        <label>Function:</label> <input autocomplete="off" type="text" name="function" placeholder="functionName" /><br />
         <input type="submit" name="action" value="Register" /><span style="color:red;"><?=$err[0]?></span>
     </form>
     <div class="box" style="display:block;">
@@ -255,8 +260,10 @@ function installModule(){
             $c->query('INSERT INTO ms_modules VALUES(?,?)',$config['name'],$config['description']);
             $k->pf('Moving files...');
             if(rename(TEMPPATH.'module/',MODULEPATH.$config['name'].'/')){
+                $k->pf('Generating module cache...');
+                $k->generateModuleCache();
                 $k->pf('Running installation script...');
-                include(MODULEPATH.$config['name'].'/'.$config['install']);
+                //include(MODULEPATH.$config['name'].'/'.$config['install']);
                 ?><div id="modalWindow" class="jqmWindow">
                     <div id="jqmTitle">
                         <button class="jqmClose">Close</button>

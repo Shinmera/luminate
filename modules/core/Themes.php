@@ -3,7 +3,7 @@ class Themes extends Module{
 public static $name="Themes";
 public static $version=1.5;
 public static $short='t';
-public static $required=array();
+public static $required=array("Auth");
 public static $hooks=array("foo");
 
 var $tname;
@@ -121,7 +121,133 @@ function printPage($id,$return=false){
     if($return)return $ret;else echo($ret);
 }
 
-function displayAdmin($params){
+function displayPanel(){
+    global $k,$a;
+    ?><div class="box">
+        <div class="title">Themes</div>
+        <ul class="menu">
+            <? if($a->check("themes.admin")){ ?>
+            <a href="<?=$k->url("admin","Themes")?>"><li>Manage Themes</li></a><? } ?>
+            <? if($a->check("themes.admin.edit")){ ?>
+            <a href="<?=$k->url("admin","Themes/edit")?>"><li>Edit Theme Files</li></a><? } ?>
+        </ul>
+    </div><?
 }
+
+function displayAdminPage(){
+    global $params,$a;
+    switch($params[1]){
+        case 'edit':if($a->check("themes.admin.edit"))$this->displayEditPage();break;
+        default:    if($a->check("themes.admin"))$this->displayThemesPage();break;
+    }
+}
+
+function displayThemesPage(){
+    global $k;
+    ?><form class="box" action="#" method="post">
+        Install from package:<br />
+        <input type="file" name="archive" accept="application/zip,application/x-zip,application/x-zip-compressed,
+                                                  application/octet-stream,application/x-compress,
+                                                  application/x-compressed,multipart/x-zip" />
+        <input type="submit" name="action" value="Install" />
+    </form>
+
+    <div class="box" style="display:block;"><?
+        $dh = opendir(ROOT.THEMEPATH);
+        $origtheme = $this->tname;
+        while(($file = readdir($dh)) !== false){
+            if($file!="."&&$file!=".."&&is_dir(ROOT.THEMEPATH.$file)){
+                $this->loadTheme($file);
+                ?><div class="datarow">
+                    <b><?=$this->tname?></b> v<?=$this->tversion?> by <?=$this->tauthor?><br />
+                    <blockquote>
+                        <?=$this->tdescription?>
+                    </blockquote>
+                    Edit: 
+                    <form action="<?=PROOT?>Themes/edit" method="post" style="display:inline-block;">
+                        <input type="submit" name="file" value="<?=$this->headerf?>" />
+                    <input type="hidden" name="theme" value="<?=$file?>" /></form>
+                    <form action="<?=PROOT?>Themes/edit" method="post" style="display:inline-block;">
+                        <input type="submit" name="file" value="<?=$this->footerf?>" />
+                    <input type="hidden" name="theme" value="<?=$file?>" /></form>
+                    <? foreach($this->js as $js){ ?>
+                        <form action="<?=PROOT?>Themes/edit" method="post" style="display:inline-block;">
+                            <input type="submit" name="file" value="<?=$js?>" />
+                        <input type="hidden" name="theme" value="<?=$file?>" /></form>
+                    <? } ?>
+                    <? foreach($this->css as $css){ ?>
+                        <form action="<?=PROOT?>Themes/edit" method="post" style="display:inline-block;">
+                            <input type="submit" name="file" value="<?=$css?>" />
+                        <input type="hidden" name="theme" value="<?=$file?>" /></form>
+                    <? } ?>
+                </div><?
+            }
+        }
+        
+    ?></div><?
+    $this->loadTheme($origtheme);
+}
+
+function displayEditPage(){
+    global $l,$k;
+    if($_POST['file']=='')$_POST['file']=$_GET['file'];
+    if($_POST['theme']=='')$_POST['theme']=$_GET['theme'];
+    
+    ?><form id="editorForm" action="<?=$k->url("api","Themes/savepage");?>" method="post">
+        <input tpye="hidden" name="theme" value="<?=$_POST['theme']?>" />
+        <input type="text" name="file" value="<?=$_POST['file']?>" /><br /><?
+
+        $ace = $l->loadModule("Ace");
+        $filetype=substr($_POST['file'],strrpos($_POST['file'], ".")+1);
+        if($filetype=="js")$filetype="javascript"; //All others match file ending and type already.
+        $ace->getAceEditor("source",$filetype,
+            file_get_contents(ROOT.THEMEPATH.$_POST['theme'].'/'.$_POST['file']),"width:100%;height:500px;");
+
+        ?>
+        <input type="submit" id="submitter" value="Save To Disc" />
+        <span id="result" style="color:red;"><?=$_GET['result']?></span>
+    </form>
+    <script type="text/javascript">
+        $("#submitter").click(function(){
+            transferToTextarea();
+            return true;
+            /*$.post("<?=$k->url("api","Themes/savepage");?>", $("#editorForm").serialize(),function(data) {
+                $("#result").html(data);
+            });*/
+        });
+    </script><?
+}
+
+function displayAPI(){
+    global $params;
+    switch($params[1]){
+        case 'savepage':$this->displayAPISavePage();break;
+        case 'preview':$this->displayAPIPreviewPage();break;
+    }
+}
+
+function displayAPISavePage(){
+    global $a;
+    if(!$a->check("themes.admin.edit"))die("No permissions.");
+    if($_POST['source']!=''){
+        if(!file_put_contents(ROOT.THEMEPATH.$_POST['theme'].'/'.$_POST['file'],$_POST['source']))
+            header('Location: '.$_SERVER['HTTP_REFERER'].'?file='.$_POST['file'].'&theme='.$_POST['theme'].'&result=Failed%20to%20save%20the%20file!');
+        else
+            header('Location: '.$_SERVER['HTTP_REFERER'].'?file='.$_POST['file'].'&theme='.$_POST['theme'].'&result=Saved!');
+    }else{
+        header('Location: '.$_SERVER['HTTP_REFERER'].'?file='.$_POST['file'].'&theme='.$_POST['theme'].'&result=No%20source%20received.');
+    }
+}
+
+function displayAPIPreviewPage(){
+    if($_POST['theme']=='')$_POST['theme']=$_GET['theme'];
+    if($_POST['theme']=='')$_POST['theme']='default';
+    
+    $this->loadTheme($_POST['theme']);
+    $this->openPage("Themepreview");
+    
+    $this->closePage();
+}
+
 }
 ?>

@@ -6,13 +6,13 @@ function getTimeElapsed(){
     return round(($time-STARTTIME),4);
 }
     
-function url($sub,$url){
+public static function url($sub,$url){
     if(substr($url,0,1)!="/")$url=PROOT.$url;
     if($sub=="") return 'http://'.HOST.$url;
     else         return 'http://'.$sub.'.'.HOST.$url;
 }
 
-function log($message){
+public static function log($message){
     global $c,$a;
     $c->query("INSERT INTO ms_log VALUES(NULL,?,?,?)",array($message,time(),$a->user->userID));
 }
@@ -24,7 +24,7 @@ function convertArrayDown($array,$field,$ret=array()){
 
 function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false){
     ?><div class='interactiveSelect' id='<?=$name?>'>
-    <input type="text" id="sel_<?=$name?>_add" placeholder="New Value" ><ul><?
+    <input autocomplete="off" type="text" id="sel_<?=$name?>_add" placeholder="New Value" ><ul><?
     for($i=0;$i<count($selData);$i++){
         $pos=array_search($selData[$i],$valData);
         ?><li><a href="#">x</a> <input type="hidden" name="<?=$name?>[]" value="<?=$valData[$pos]?>" /><?=$viewData[$pos]?></li> <?
