@@ -79,46 +79,22 @@ function closePage(){
     include(PAGEPATH.'global_footer.php');
 }
 
-function printMenu($return=false){
-    global $c;
-    $temp = explode(";",$c->o['ms_category_order']);$ret="";
-    for($i=0;$i<count($temp);$i++){
-        if(substr($temp[$i],0,1)=="C"){ //category that isn't sub.
-            $cid = array_search(substr($temp[$i],1),$c->msCID);
-            if($c->msCPID[$cid]==-1&&$cid!==FALSE)$ret.=$this->printCategory(substr($temp[$i],1),true);
-        }if(substr($temp[$i],0,1)=="P"){ //page
-            $pid = array_search(substr($temp[$i],1),$c->msPID);
-            if($c->msPCID[$pid]==-1&&$pid!==FALSE)$ret.=$this->printPage(substr($temp[$i],1),true);
-        }
+function printMenu($menu){
+    /**
+     * Sample menu format:
+     * Pseudo: [ [ A, link, (style) ], [ B, link, (style) ], [ C, link, (style), [ CA, link, (style) ]]]
+     * PHP:    array(array('A','/A'),array('B','/B'),array('C','/C','',array('CA','/CA')))
+     * Produces:
+     * V        [   A   ] [   B   ] [   C   ]
+     * H                            [  CA   ]
+     */
+    echo('<ul>');
+    foreach($menu as $item){
+        echo('<li style="'.$item[2].'"><a href="'.$item[1].'">'.$item[0].'</a>');
+            if(count($item)==4)$this->printMenu($item[3]);
+        echo('</li>');
     }
-    if($return)return $ret;else echo($ret);
-}
-
-function printCategory($id,$return=false){
-    global $c;
-    $cid = array_search($id,$c->msCID);$ret="";
-    if(strpos($c->msCSubject[$cid],";")!==FALSE){
-        $list = explode(";",$c->msCSubject[$cid]);
-        $ret.='<li><a href="#" class="menulink">'.$c->msCTitle[$cid].'</a>';
-        if(count($list)>0)$ret.='<ul>';
-        for($i=0;$i<count($list);$i++){
-            if(substr($list[$i],0,1)=="C")$ret.=$this->printCategory(substr($list[$i],1),true);
-            if(substr($list[$i],0,1)=="P")$ret.=$this->printPage(    substr($list[$i],1),true);
-        }
-        if(count($list)>0)$ret.='</ul>';
-    }else{
-        $ret.='<li><a href="'.$c->msCSubject[$cid].'" class="menulink">'.$c->msCTitle[$cid].'</a>';
-    }
-    $ret.='</li>';
-    if($return)return $ret;else echo($ret);
-}
-
-function printPage($id,$return=false){
-    global $c;
-    $pid = array_search($id,$c->msPID);$ret="";
-    if(strpos($c->msPFilename[$pid],"/")!==FALSE)   $ret='<li><a href="'.$c->msPFilename[$pid].'" class="menulink">'.$c->msPTitle[$pid].'</a></li>';
-    else                                            $ret='<li><a href="/'.$c->msPTitle[$pid].'" class="menulink">'.$c->msPTitle[$pid].'</a></li>';
-    if($return)return $ret;else echo($ret);
+    echo('</ul>');
 }
 
 function displayPanel(){
