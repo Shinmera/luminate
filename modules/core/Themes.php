@@ -79,7 +79,7 @@ function closePage(){
     include(PAGEPATH.'global_footer.php');
 }
 
-function printMenu($menu){
+function printMenu($menu=null){
     /**
      * Sample menu format:
      * Pseudo: [ [ A, link, (style) ], [ B, link, (style) ], [ C, link, (style), [ CA, link, (style) ]]]
@@ -88,6 +88,16 @@ function printMenu($menu){
      * V        [   A   ] [   B   ] [   C   ]
      * H                            [  CA   ]
      */
+    
+    if(!is_array($menu)){
+        global $l,$k;
+        $menu=array();
+        $menu[]=array('Index',NODOMAIN);
+        $menu = $l->triggerHookSequentially("buildMenu",$this,$menu);
+        if($a->user->userID=='')
+            $menu[]=array('Login',$k->url("login",""),"float:right;");
+    }
+    
     echo('<ul>');
     foreach($menu as $item){
         echo('<li style="'.$item[2].'"><a href="'.$item[1].'">'.$item[0].'</a>');
@@ -120,6 +130,16 @@ function displayAdminPage(){
 
 function displayThemesPage(){
     global $k;
+    if($_POST['action']=="Install"){
+        try{
+            $k->uploadFile("archive",TEMPPATH,5000,array("application/zip","application/x-zip","application/x-zip-compressed",
+                                                            "application/octet-stream","application/x-compress",
+                                                            "application/x-compressed","multipart/x-zip"),true,"package.zip");
+            $this->installTheme();
+        }catch(Exception $e){
+            $k->err("Error Code: ".$e->getCode()."<br>Error Message: ".$e->getMessage()."<br>Strack Trace: <br>".$e->getTraceAsString());
+        }
+    }
     ?><form class="box" action="#" method="post">
         Install from package:<br />
         <input type="file" name="archive" accept="application/zip,application/x-zip,application/x-zip-compressed,
@@ -223,6 +243,27 @@ function displayAPIPreviewPage(){
     $this->openPage("Themepreview");
     
     $this->closePage();
+}
+
+//TODO: Test
+function installTheme(){
+    global $k,$c,$l;
+    $k->pf('<div class="box"><b>Starting installation...</b><br />');
+    $k->pf('Extracting archive...');
+    mkdir(TEMPPATH.'theme/');
+    if($k->unzipFile(TEMPPATH.'package.zip',TEMPPATH.'theme/')){
+        $k->pf('Reading configuration...');
+        $config = $k->toKeyArray(file_get_contents(TEMPPATH.'module/install.conf'),"\n",":");
+        if($config!=FALSE&&$config['name']!=''){
+            $k->pf('Moving files...');
+            if(rename(TEMPPATH.'theme/',ROOT.THEMEPATH.$config['name'].'/')){
+                $k->pf('<b>Installation complete!</b>');
+                $l->triggerHook("THEMEinstalled",$this,array($config['name']));
+                $k->log("Module '".$config['name']."' installed.");
+            }else $k->pf('<b>Failed to move the files!</b>');
+        }else $k->pf('<b>Failed to read the configuration file!</b>');
+    }else $k->pf('<b>Failed to extract the archive!</b>');
+    $k->pf('</div>');
 }
 
 }

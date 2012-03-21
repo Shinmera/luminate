@@ -1,21 +1,9 @@
-<? global $c,$k,$t,$a; ?>
+<? global $c,$k,$t,$a,$l; ?>
 <div id="header">
     <?=$c->o['sitename']?>
 
     <nav id="navbar">
-        <? $menu=array();
-        $menu[]=array('Index',NODOMAIN);
-        if($a->check('admin.panel'))
-            $menu[]=array('Admin',$k->url("admin",""),"float:right;",array(
-                                   array('Panel',   $k->url("admin","panel")),
-                                   array('Options', $k->url("admin","options")),
-                                   array('Log',     $k->url("admin","log")),
-                                   array('Modules', $k->url("admin","modules")),
-                                   array('Hooks',   $k->url("admin","hooks"))
-                               ));
-        if($a->user->userID=='')
-            $menu[]=array('Login',$k->url("login",""),"float:right;");
-        $t->printMenu($menu); ?>
+        <? $t->printMenu(); ?>
     </nav>
 </div>
 <script type="text/javascript">

@@ -9,6 +9,19 @@ public static $hooks=array("foo");
 function __construct(){
 }
 
+function buildMenu($menu){
+    global $a,$k;
+    if($a->check('admin.panel'))
+        $menu[]=array('Admin',$k->url("admin",""),"float:right;",array(
+                                array('Panel',   $k->url("admin","panel")),
+                                array('Options', $k->url("admin","options")),
+                                array('Log',     $k->url("admin","log")),
+                                array('Modules', $k->url("admin","modules")),
+                                array('Hooks',   $k->url("admin","hooks"))
+                            ));
+    return $menu;
+}
+
 function displayPage($params){
     global $a,$t,$l,$site;
     if($site=="index")$site="Panel";
@@ -34,7 +47,7 @@ function displayNavbar(){
     global $site,$k,$a;
     $pages=array('Panel','Options','Log','Modules','Hooks');
     ?><div id='pageNav'>
-        <div class="description">Administration</div>
+        <h1 class="sectionheader">Administration</h1>
         <div class="tabs">
             <? foreach($pages as $page){
                 if($a->check("admin.".$page)){
@@ -248,13 +261,15 @@ function clearLog(){
     $k->log('Log cleared.');
 }
 
+//TODO: Test
 function installModule(){
     global $k,$c,$l;
     $k->pf('<div class="box"><b>Starting installation...</b><br />');
     $k->pf('Extracting archive...');
+    mkdir(TEMPPATH.'module/');
     if($k->unzipFile(TEMPPATH.'package.zip',TEMPPATH.'module/')){
         $k->pf('Reading configuration...');
-        $config = file_get_contents(TEMPPATH.'module/install.conf');
+        $config = $k->toKeyArray(file_get_contents(TEMPPATH.'module/install.conf'),"\n",":");
         if($config!=FALSE&&$config['name']!=''&&$config['install']!=''){
             $k->pf('Creating database entry...');
             $c->query('INSERT INTO ms_modules VALUES(?,?)',$config['name'],$config['description']);
