@@ -6,7 +6,6 @@ public static $short='a';
 public static $required=array();
 public static $hooks=array("foo");
 
-var $udPBase=array();
 var $udPTree=array();
 var $user;
 
@@ -80,21 +79,25 @@ var $user;
         if($this->user == null) return;
         $this->udPBase=array();
         $this->udPTree=array();
-        $results=$c->getData("SELECT base,tree FROM ud_permissions WHERE UID=?",array($this->user->userID));
+        $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array($this->user->group));
         for($i=0;$i<count($results);$i++){
-            $this->udPBase[]=$results[$i]['base'];
-            $this->udPTree[]=$results[$i]['tree'];
+            $base = explode(".",$results[$i]['permissions']);
+            $this->udPTree[$base[0]]=  array_slice($base,1);
+        }
+        //Individual permissions override group permissions.
+        $results=$c->getData("SELECT tree FROM ud_permissions WHERE UID=?",array($this->user->userID));
+        for($i=0;$i<count($results);$i++){
+            $base = explode(".",$results[$i]['tree']);
+            $this->udPTree[$base[0]]=  array_slice($base,1);
         }
     }
 
-//FIXME: New Group permissions system needs to be implemented properly.
     function check($tree){
         $tree=explode(".",trim(strtolower($tree)));
-        if(in_array("*",$this->udPBase))return true;
-        $bID=array_search($tree[0],$this->udPBase);
-        if($bID===FALSE)return false;
+        if(array_key_exists("*",$this->udPTree))return true;
+        if(!isset($this->udPTree[$tree[0]]))    return false;
         
-        $perms=explode("\n",$this->udPTree[$bID]);
+        $perms=explode("\n",$this->udPTree[$tree[0]]);
         for($i=0;$i<count($perms);$i++){
             $perms[$i]=trim(strtolower($perms[$i]));
             if(strrpos($perms[$i], ".*")===FALSE)$perms[$i].='.*';

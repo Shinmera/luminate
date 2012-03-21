@@ -119,8 +119,6 @@ function displayUserManagementPage(){
     </div><?
 }
 
-//FIXME: Group permissions system needs to be revised.
-//FIXME: New system needs to be reflected in this.
 function displayGroupsManagementPage(){
     global $c;
     
@@ -205,12 +203,14 @@ function displayEditUserPage(){
     }
     if($_POST['action']=="Edit"&&$_POST['status']!='')  $this->updateUser($_POST['userID'], $_POST);
     if($_POST['action']=="Save Fields"){                $this->updateUserFields($_POST['userID'], $_POST);$_POST['action']='Edit';}
+    if($_POST['action']=="Save Permissions")            $this->updateUserPermissions($_POST['userID'],$_POST['tree']);
     if($_POST['action']=="Delete"){                     $this->deleteUser($_POST['userID']);header('Location: /'.PROOT.'/users');}
     
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
     $groups=DataModel::getData("ud_groups","SELECT title FROM ud_groups");
     if($user==null)$user = DataModel::getHull("ud_users");
     ?><form action="#" method="post" class="box">
+        <h2 class="title">User Variables</h2>
         <label>UserID</label>       <input autocomplete="off" type="number" value="<?=$user->userID?>" readonly="readonly" placeholder="Generated"/><br />
         <label>Username</label>     <input autocomplete="off" type="text" required="required" name="username" value="<?=$user->username?>" placeholder="Required"/><br />
         <label>Displayname</label>  <input autocomplete="off" type="text" name="displayname" value="<?=$user->displayname?>" placeholder="Username"/><br />
@@ -242,6 +242,7 @@ function displayEditUserPage(){
     $ufields = DataModel::getData('ud_field_values','SELECT varname,value FROM ud_field_values WHERE userID=?',array($user->userID));
     if(!is_array($fields))$fields=array($fields);if(!is_array($ufields))$ufields=array($ufields);?>
     <form action="#" method="post" class="box">
+        <h2 class="title">Fields</h2>
         <? foreach($fields as $f){
             $u = null;
             foreach($ufields as $u){if($u->varname==$f->varname)break;}
@@ -259,6 +260,40 @@ function displayEditUserPage(){
         } ?>
         <input type="hidden" name="userID" value="<?=$user->userID?>" />
         <input type="submit" name="action" value="Save Fields" />
+    </form>
+        
+    <? $permissions = DataModel::getData('ud_permissions','SELECT tree FROM ud_permissions WHERE UID=?',array($user->userID)); ?>
+    <form action="#" method="post" class="box">
+        <a class="button flRight" id="addTreeBranch" title="Add Row">+</a>
+        <h2 class="title">Permissions</h2>
+        <div id="permissionTree">
+            <? global $c;$groupperms = $c->getData("SELECT permissions FROM ud_groups WHERE title=?",array($user->group));
+            $groupperms = explode("\n",$groupperms[0]['permissions']);
+            foreach($groupperms as $p){
+                echo('<input type="text" disabled="disabled" style="width:90%" value="'.$p.'" /><br />');
+            }
+            
+            $permissions = explode("\n",$permissions->tree);$i=0;
+            foreach($permissions as $p){
+                echo('<input type="text" name="tree[]" style="width:90%" value="'.$p.'" id="branch'.$i.'" />');
+                echo('<a class="button removeBranch" value="'.$i.'" >-<br /></a>');
+                $i++;
+            } ?>
+        </div>
+        <br />
+        <input type="hidden" name="userID" value="<?=$user->userID?>" />
+        <input type="submit" name="action" class="flRight" value="Save Permissions" />
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#addTreeBranch").click(function(){
+                    $("#permissionTree").append('<input type="text" style="width:90%" name="tree[]" /><br />');
+                });
+                $(".removeBranch").each(function(){$(this).click(function(){
+                    $("#branch"+$(this).attr('value')).remove();
+                    $(this).remove();
+                });});
+            });
+        </script>
     </form><?
 }
 
@@ -297,6 +332,16 @@ function updateUserFields($userID,$values){
         $ufield->insertData();
     }
     Toolkit::log("Updated user fields for @".$userID);
+}
+
+function updateUserPermissions($userID,$tree){
+    global $c;
+    $ftree = "";
+    foreach($tree as $branch){
+        if(trim($branch)!='')$ftree.=strtolower(trim($branch))."\n";
+    }
+    $ftree = trim($ftree);
+    $c->query("UPDATE ud_permissions SET tree=? WHERE UID=?",array($ftree,$userID));
 }
 
 function deleteUser($userID){

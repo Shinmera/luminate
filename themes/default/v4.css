@@ -113,9 +113,10 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     margin-bottom:20px;
 }
 
-#pageNav .description{
+#pageNav .sectionheader{
     display:inline;
     margin-right: 20px;
+    font-size:18pt;
     font-family: pixelated, Arial;
 }
 
