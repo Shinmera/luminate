@@ -13,11 +13,11 @@ function buildMenu($menu){
     global $a,$k;
     if($a->check('admin.panel'))
         $menu[]=array('Admin',$k->url("admin",""),"float:right;",array(
-                                array('Panel',   $k->url("admin","panel")),
-                                array('Options', $k->url("admin","options")),
-                                array('Log',     $k->url("admin","log")),
-                                array('Modules', $k->url("admin","modules")),
-                                array('Hooks',   $k->url("admin","hooks"))
+                                array('Panel',   $k->url("admin","Panel")),
+                                array('Options', $k->url("admin","Options")),
+                                array('Log',     $k->url("admin","Log")),
+                                array('Modules', $k->url("admin","Modules")),
+                                array('Hooks',   $k->url("admin","Hooks"))
                             ));
     return $menu;
 }

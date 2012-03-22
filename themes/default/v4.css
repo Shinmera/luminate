@@ -113,11 +113,20 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     margin-bottom:20px;
 }
 
+#pageNav img{
+    max-width:60px;
+    max-height:60px;
+}
+
 #pageNav .sectionheader{
-    display:inline;
     margin-right: 20px;
     font-size:18pt;
     font-family: pixelated, Arial;
+    display:inline;
+}
+
+#pageNav .sectionsubheader{
+    font-size:10pt;
 }
 
 #pageNav .tabs{

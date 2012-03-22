@@ -14,12 +14,12 @@ define("THEMEPATH",PROOT."themes/");
 define("DATAPATH",PROOT."data/");
 define("MODULEPATH",TROOT."modules/");
 define("TEMPLATEPATH",PAGEPATH.'templates/');
-define("AVATARPATH",IMAGEPATH."avatars/");
-define("HEADERPATH",IMAGEPATH."headers/");
 define("IMAGEPATH",DATAPATH."images/");
 define("TEMPPATH",ROOT.DATAPATH."temp/");
 define("PAGEPATH",ROOT.DATAPATH."pages/");
 define("CALLABLESPATH",ROOT.DATAPATH."callables/");
+define("AVATARPATH",IMAGEPATH."avatars/");
+define("HEADERPATH",IMAGEPATH."headers/");
 //auth variables
 define('COOKIE_DOMAIN',HOST);
 define('COOKIE_PATH',PROOT);
@@ -42,5 +42,6 @@ if(!class_exists("Toolkit")){   require_once(CALLABLESPATH.'toolkit.php');}     
 $l->loadModule('Sqlloader');
 $c->connect(SQLUSER,SQLPASS,SQLDB);
 $l->loadModule('Core');
+//$k->generateModuleCache();
 }
 ?>

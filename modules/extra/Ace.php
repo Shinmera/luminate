@@ -13,16 +13,14 @@ function getAceEditor($formname,$mode,$content="",$style=""){
     <div style="<?=$style?>">&nbsp;</div>
 
     <script src="<?=DATAPATH?>js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
-    <script src="<?=DATAPATH?>js/ace/mini_require.js" type="text/javascript" charset="utf-8"></script>
     <script src="<?=DATAPATH?>js/ace/mode-<?=$mode?>.js" type="text/javascript" charset="utf-8"></script>
     <script>
     var editor;
-    var ace = window.__ace_shadowed__;
     $(document).ready(function() {
+        if(ace==null)ace = window.__ace_shadowed__;
         editor = ace.edit("editor");
-        var mode = ace.require("ace/mode/<?=$mode?>").Mode;
+        mode = require("ace/mode/<?=$mode?>").Mode;
         editor.getSession().setMode(new mode());
-        
     });
     function transferToTextarea(){
         $("#editorHolder").html(editor.getSession().getValue());
