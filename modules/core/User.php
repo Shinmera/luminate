@@ -173,6 +173,7 @@ function displayFieldsManagementPage(){
             <option value="i" <? if($field->type=='i')echo('selected'); ?>>Number</option>
             <option value="u" <? if($field->type=='u')echo('selected'); ?>>URL</option>
             <option value="t" <? if($field->type=='t')echo('selected'); ?>>Text</option>
+            <option value="d" <? if($field->type=='d')echo('selected'); ?>>Date</option>
             <option value="l" <? if($field->type=='l')echo('selected'); ?>>List</option>
         </select>
         <input type="checkbox" name="editable" value="1"  <? if($field->editable==1)echo('checked'); ?> /> Editable
@@ -245,7 +246,7 @@ function displayEditUserPage(){
         <h2 class="title">Fields</h2>
         <? foreach($fields as $f){
             $u = null;
-            foreach($ufields as $u){if($u->varname==$f->varname)break;}
+            foreach($ufields as $nu){if($nu->varname==$f->varname){$u=$nu;break;}}
             if($u->value=='')$u->value=$f->default;
             
             echo('<label>'.$f->title.'</label>');
@@ -253,6 +254,7 @@ function displayEditUserPage(){
                 case 'i':echo('<input autocomplete="off" type="number" class="number" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
                 case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
                 case 'u':echo('<input autocomplete="off" type="url" class="url" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 'd':echo('<input autocomplete="off" type="date" class="date" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
                 case 't':echo('<br /><textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
                 case 'l':$vals=explode(";",$u->value);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
             }

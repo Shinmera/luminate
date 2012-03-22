@@ -94,8 +94,6 @@ function printMenu($menu=null){
         $menu=array();
         $menu[]=array('Index',NODOMAIN);
         $menu = $l->triggerHookSequentially("buildMenu",$this,$menu);
-        if($a->user->userID=='')
-            $menu[]=array('Login',$k->url("login",""),"float:right;");
     }
     
     echo('<ul>');
