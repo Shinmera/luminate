@@ -609,5 +609,12 @@ function generateRandomString($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
     return $short;
 }
 
+function unifyNumberString($string,$n){
+    while(strlen($string)<$n){
+        $string='0'.$string;
+    }
+    return $string;
+}
+
 }
 ?>

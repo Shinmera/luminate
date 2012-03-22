@@ -83,15 +83,30 @@ function displayUserPage($username){
 }
 
 function displayUserProfile($username){
-    global $k,$a;
+    global $k,$a,$l;
     $user = DataModel::getData("ud_users","SELECT userID,displayname,`group`,`status`,`time` FROM ud_users WHERE username LIKE ?",array($username));
     $fields = DataModel::getData("ud_fields", "SELECT ud_fields.title,ud_fields.default,ud_fields.type,ud_field_values.value ".
                                               "FROM ud_fields INNER JOIN ud_field_values USING(varname) ".
                                               "WHERE ud_fields.displayed=1 AND ud_field_values.userID=? ",array($user->userID));
     
     ?><div class='bar'>
-        User #<?=$user->userID?>, registered on <?=$k->toDate($user->time);?>
-        Group: <?=$user->group?>, &Delta;<?=$a->generateDelta();?>
+        <div class='section'>
+            <?=$username?>#<?=$k->unifyNumberString(base_convert($user->userID, 10, 16),10);?><br />
+            Registered on <?=$k->toDate($user->time);?>
+        </div>
+        <div class='section'>
+            Group: <?=$user->group?><br />
+            &Delta;<?=$a->generateDelta();?>
+        </div>
+        <? try{ $liroli = $l->loadModule('Liroli');
+            $liroli->loadGroups($username);
+            echo('<ul class="section dropdown">');
+            foreach($liroli->groups as $group){
+                echo('<li><a href="'.$k->url('group',$group->name).'"><img src="'.AVATARPATH.$group->filename.'" alt="" >'.$group->name.'</a></li>');
+            }
+            echo('</ul>');
+        }catch(Exception $e){} //Liroli isn't present.
+        ?>
     </div><?
 }
 
