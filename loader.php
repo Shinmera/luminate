@@ -1,7 +1,7 @@
 <? class Loader{
     function loadModule($name){
         global $k,$MODULES,$MODULECACHE;
-        if(!class_exists($name))include(MODULEPATH.$MODULECACHE[$name]);
+        if(!class_exists($name))@ include(MODULEPATH.$MODULECACHE[$name]);
         if(!class_exists($name))throw new Exception("No such class '".$name."'! Is your module named correctly?");
         if(array_key_exists($name::$name,$MODULES)){
             $short = $name::$short;
@@ -18,6 +18,12 @@
         if($loadHooks)$this->triggerHook("INIT",$m,array($k->getMicrotime()));
         $MODULES[$name::$name]=$name::$short;
         return $m;
+    }
+    
+    function moduleExists($name){
+        global $MODULECACHE;
+        if($MODULECACHE[$name]=='')return false;
+        return true;
     }
     
     function defineGlobally(&$m){
