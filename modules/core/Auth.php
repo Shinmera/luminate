@@ -126,6 +126,12 @@ var $user;
             }
         }
     }
+    
+    function generateDelta(){
+        global $k;
+        $tree = $k->toKeyString($this->udPTree);
+        return substr(hash('sha512',$tree),0,10);
+    }
 
 }
 ?>

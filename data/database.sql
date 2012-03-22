@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 21, 2012 at 05:04 PM
+-- Generation Time: Mar 22, 2012 at 01:06 AM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -64,7 +64,8 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Admin', 'ADMINThemes', 'Themes', 'displayAdminPage'),
 ('CORE', 'HITapi', 'CORE', 'apiCall'),
 ('CORE', 'APIThemes', 'Themes', 'displayAPI'),
-('Themes', 'buildMenu', 'Admin', 'buildMenu');
+('Themes', 'buildMenu', 'Admin', 'buildMenu'),
+('CORE', 'HITuser', 'Neon', 'displayMainPage');
 
 -- --------------------------------------------------------
 
@@ -78,7 +79,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -96,7 +97,10 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (9, 'Updated group &#039;Unregistered&#039;', '1332156443', 1),
 (10, 'Added user @3', '1332156482', 1),
 (11, 'Deleted user &#039;3&#039;', '1332156514', 1),
-(12, 'Hook Themes::buildMenu =&gt; Admin::buildMenu added.', '1332319263', 1);
+(12, 'Hook Themes::buildMenu =&gt; Admin::buildMenu added.', '1332319263', 1),
+(13, 'Module &#039;Neon&#039; added.', '1332349563', 1),
+(14, 'Hook CORE::HITuser =&gt; Neon::displayMainPage added.', '1332349581', 1),
+(15, 'Module &#039;Ace&#039; added.', '1332356819', 1);
 
 -- --------------------------------------------------------
 
@@ -115,9 +119,11 @@ CREATE TABLE IF NOT EXISTS `ms_modules` (
 --
 
 INSERT INTO `ms_modules` (`name`, `subject`) VALUES
+('Ace', 'Provides a simple interface for the Ace text editor component.'),
 ('Admin', 'Allows administration of CORE models and provides an interface for module specific configuration pages.'),
 ('Auth', 'Provides a secure session and authentication system, as well as permission management.'),
 ('CORE', 'This is the CORE module, providing the INIT system.'),
+('Neon', 'Provides user front-end.'),
 ('Parser', 'Used to provide an extensive bbcode system.'),
 ('Themes', 'A simple theming system, making page construction very simple.'),
 ('User', 'Allows for user management and supplies AUTH login/logout functions.');
@@ -173,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
-('127.0.0.1', 1332319300, 'visit:1');
+('127.0.0.1', 1332372683, 'visit:1');
 
 -- --------------------------------------------------------
 
