@@ -50,6 +50,7 @@ function displayPanel(){
     </div><?
 }
 
+function adminNavbar($menu){$menu[]='User';return $menu;}
 function displayAdminPage(){
     global $params,$c,$k,$a;
     if(!$a->check("user.admin.panel"))return;
@@ -157,7 +158,7 @@ function displayFieldsManagementPage(){
     if($_POST['varname']!=''){
         if($_POST['title']!=''){
             if($_POST['action']=="Edit")$this->updateField($_POST['varname'], $_POST);
-            if($_POST['action']=="Add" )$this->addField($_POST['varname'], $_POST['title'], $_POST['default'],$_POST['editable'],$_POST['displayed']);
+            if($_POST['action']=="Add" )$this->addField($_POST['varname'], $_POST['title'], $_POST['default'],$_POST['editable'],$_POST['displayed'],$_POST['type']);
             if($_POST['action']=="Delete")$this->deleteField($_POST['varname']);
         }
         $field = DataModel::getData("ud_fields","SELECT * FROM ud_fields WHERE varname=?",array($_POST['varname']));
