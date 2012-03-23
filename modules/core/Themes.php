@@ -118,6 +118,7 @@ function displayPanel(){
     </div><?
 }
 
+function adminNavbar($menu){$menu[]='Themes';return $menu;}
 function displayAdminPage(){
     global $params,$a;
     switch($params[1]){

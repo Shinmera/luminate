@@ -6,6 +6,7 @@ public static $short='neon';
 public static $required=array("Auth","Themes","User");
 public static $hooks=array("foo");
 
+
 function buildMenu($menu){
     global $a,$k;
     if($a->user->userID=='')
@@ -30,22 +31,6 @@ function displayMainPage(){
     }
 }
 
-function displayNavbar(){
-    global $site,$k,$a;
-    $pages=array('Panel','Options','Log','Modules','Hooks');
-    ?><div id='pageNav'>
-        <h1 class="sectionheader">User</h1>
-        <div class="tabs">
-            <? foreach($pages as $page){
-                if($a->check("admin.".$page)){
-                    if($page==$site)echo('<a href="'.$k->url("admin",$page).'" class="tab activated">'.$page.'</a>');
-                    else            echo('<a href="'.$k->url("admin",$page).'" class="tab">'.$page.'</a>');
-                }
-            }if(!in_array($site, $pages))echo('<a href="'.$k->url("admin",$site).'" class="tab activated">'.$site.'</a>'); ?>
-        </div>
-    </div><?
-}
-
 function displayUserlistPage(){
     global $t;
     //TODO: Add userlist
@@ -54,9 +39,9 @@ function displayUserlistPage(){
 function displayControlPanelPage(){
     global $t,$a,$l,$k,$params;
     $t->openPage("User Settings");
-    if($params[1]=='')$site='Profile';
-    $pages = array('Profile'); //TODO: Split up properly
-    $l->triggerHookSequentially('SETTINGSmenu',$this,$pages);
+    if($params[1]=='')$params[1]='Profile';
+    $pages = array('Profile');
+    $pages = $l->triggerHookSequentially('SETTINGSnavbar',$this,$pages);
     ?><div id='pageNav'>
         <div style="display:inline-block">
             <h1 class="sectionheader">Settings</h1>
@@ -64,13 +49,61 @@ function displayControlPanelPage(){
         <div class="tabs">
             <? foreach($pages as $page){
                 if($a->check("admin.".$page)){
-                    if($page==$site)echo('<a href="'.$k->url("user",$page).'" class="tab activated">'.$page.'</a>');
-                    else            echo('<a href="'.$k->url("user",$page).'" class="tab">'.$page.'</a>');
+                    if($page==$params[1])echo('<a href="'.$k->url("user",$page).'" class="tab activated">'.$page.'</a>');
+                    else                 echo('<a href="'.$k->url("user",$page).'" class="tab">'.$page.'</a>');
                 }
-            }if(!in_array($site, $pages))echo('<a href="'.$k->url("user",$site).'" class="tab activated">'.$site.'</a>'); ?>
+            }if(!in_array($params[1], $pages))echo('<a href="'.$k->url("user",$params[1]).'" class="tab activated">'.$params[1].'</a>'); ?>
         </div>
     </div><?
-    //TODO: Add page separation
+    if($params[1]=='Profile')$this->displayControlPanelProfile();
+    else                     $l->triggerHook('SETTINGS'.$params[1],$this);
+}
+
+function displayControlPanelProfile(){
+    global $a,$c;
+    
+    ?><form class="box" action="#" method="post">
+        <h3>Account Settings</h3>
+        <label>Username</label><input type="text" name="displayname" value="<?=$a->user->username?>" disabled="disabled" /><br />
+        <label>Displayname</label><input type="text" name="displayname" value="<?=$a->user->displayname?>" /><br />
+        <label>E-Mail</label><input type="email" name="mail" value="<?=$a->user->mail?>" /><br />
+        <input type="submit" name="action" value="Update Account" />
+    </form>
+    <form class="box" action="#" method="post">
+        <h3>Password</h3>
+        <label>New password:</label><input type="password" name="newpass" autocomplete="off" /><br />
+        <label>Repeat:</label><input type="password" name="newpassrepeat" autocomplete="off" /><br />
+        <input type="submit" name="action" value="Save Password" />
+    </form>
+    <form class="box" action="#" method="post" enctype="multipart/form-data">
+        <h3>Avatar</h3>
+        <img src="<?=AVATARPATH.$a->user->filename?>" alt="Avatar" title="Your avatar image" /><br />
+        <input type="file" name="avatar" accept="image/*" />
+        <input type="submit" name="action" value="Update Avatar" /><br />
+        <span class="small">
+            Maximum filesize is <?=$c->o['avatar_maxsize']?>kb.
+            If the avatar exceeds <?=$c->o['avatar_maxdim']?>x<?=$c->o['avatar_maxdim']?> px, it will be re-scaled.
+        </span>
+    </form>
+    <form class="box" action="#" method="post">
+        <h3>Profile Information</h3>
+        <? $fields = DataModel::getData("ud_fields", "SELECT `varname`, `title`, `default`, `type` FROM ud_fields WHERE `editable`=1");
+        $values = DataModel::getData("ud_field_values","SELECT `value` FROM ud_field_values WHERE userID=?",array($a->user->userID));
+        foreach($fields as $f){
+            echo('<label>'.$f->title.':</label>');
+            switch($f->type){
+                case 'i':echo('<input autocomplete="off" type="number" class="number" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 'u':echo('<input autocomplete="off" type="url" class="url" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 'd':echo('<input autocomplete="off" type="date" class="date" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
+                case 't':echo('<br /><textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
+                case 'l':$vals=explode(";",$u->value);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
+            }
+            echo('<br />');
+        }
+        ?>
+        <input type="submit" name="action" value="Update Profile" />
+    </form><?
 }
 
 function displayUserPage($username){
@@ -85,7 +118,7 @@ function displayUserPage($username){
         $t->openPage($username." - Profile");
         if($params[1]=='')$site='Profile';
         $pages = array('Profile');
-        $l->triggerHookSequentially('PROFILEmenu',$this,$pages);
+        $l->triggerHookSequentially('PROFILEnavbar',$this,$pages);
         ?><div id='pageNav'>
             <? if($user->filename==''){ $user->filename='noguy.png'; } ?>
             <img src="<?=AVATARPATH.$user->filename?>" alt="" title="<?=$user->displayname?>'s avatar" />

@@ -44,8 +44,9 @@ function displayPage($params){
 }
 
 function displayNavbar(){
-    global $site,$k,$a;
-    $pages=array('Panel','Options','Log','Modules','Hooks');
+    global $site,$k,$a,$l;
+    $pages = array('Panel','Options','Log','Modules','Hooks');
+    $pages = $l->triggerHookSequentially('ADMINNavbar',$this,$pages);
     ?><div id='pageNav'>
         <h1 class="sectionheader">Administration</h1>
         <div class="tabs">

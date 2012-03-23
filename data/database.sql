@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 22, 2012 at 01:06 AM
+-- Generation Time: Mar 23, 2012 at 01:56 PM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -65,7 +65,10 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITapi', 'CORE', 'apiCall'),
 ('CORE', 'APIThemes', 'Themes', 'displayAPI'),
 ('Themes', 'buildMenu', 'Admin', 'buildMenu'),
-('CORE', 'HITuser', 'Neon', 'displayMainPage');
+('CORE', 'HITuser', 'Neon', 'displayMainPage'),
+('Themes', 'buildMenu', 'Neon', 'buildMenu'),
+('Admin', 'ADMINNavbar', 'User', 'adminNavbar'),
+('Admin', 'ADMINNavbar', 'Themes', 'adminNavbar');
 
 -- --------------------------------------------------------
 
@@ -79,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -100,7 +103,14 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (12, 'Hook Themes::buildMenu =&gt; Admin::buildMenu added.', '1332319263', 1),
 (13, 'Module &#039;Neon&#039; added.', '1332349563', 1),
 (14, 'Hook CORE::HITuser =&gt; Neon::displayMainPage added.', '1332349581', 1),
-(15, 'Module &#039;Ace&#039; added.', '1332356819', 1);
+(15, 'Module &#039;Ace&#039; added.', '1332356819', 1),
+(16, 'Hook Themes::buildMenu =&gt; Neon::buildMenu added.', '1332485714', 1),
+(17, 'Hook Admin::ADMINNavbar =&gt; User::adminNavbar added.', '1332506621', 1),
+(18, 'Hook Admin::ADMINNavbar =&gt; Themes::adminNavbar added.', '1332506633', 1),
+(19, 'Added field &#039;aboutuser&#039;', '1332506769', 1),
+(20, 'Updated field &#039;aboutuser&#039;', '1332506780', 1),
+(21, 'Added field &#039;birthdate&#039;', '1332506805', 1),
+(22, 'Updated field &#039;birthdate&#039;', '1332506813', 1);
 
 -- --------------------------------------------------------
 
@@ -179,7 +189,21 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
-('127.0.0.1', 1332372683, 'visit:1');
+('127.0.0.1', 1332506856, 'visit:1');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `neon_friends`
+--
+
+CREATE TABLE IF NOT EXISTS `neon_friends` (
+  `uID1` int(11) NOT NULL,
+  `uID2` int(11) NOT NULL,
+  `type` varchar(1) NOT NULL DEFAULT 'r',
+  PRIMARY KEY (`uID1`),
+  UNIQUE KEY `uID2` (`uID2`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -202,7 +226,9 @@ CREATE TABLE IF NOT EXISTS `ud_fields` (
 --
 
 INSERT INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable`, `displayed`) VALUES
-('web', 'Website', ' ', 'u', 1, 1);
+('web', 'Website', ' ', 'u', 1, 1),
+('aboutuser', 'About', ' ', 't', 1, 1),
+('birthdate', 'Birthdate', ' ', 'd', 1, 1);
 
 -- --------------------------------------------------------
 
