@@ -36,6 +36,10 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .justify{text-align:justify;}
 .title{font-size:18pt;font-weight:bold;margin-bottom:5px;margin-right:100px;}
 .menu li{border-bottom: 1px solid #000;}
+.small{font-size: 8pt;}
+.medium{font-size: 12pt;}
+.large{font-size:18pt;}
+.huge{font-size:36pt;}
 
 #header{
     font-size:18pt;
