@@ -37,13 +37,13 @@ var $user;
     }
 
     function login($name,$pass,$hash=true){
-        global $c;
+        global $c,$l;
         if($name==""||$pass=="")return false;
         if($hash)$pass=hash("sha512",$pass);
         $this->loadUser($name);
         
-        if($name==$this->user->username&&
-           $this->user->password===$pass){
+        if($name==$this->user->username&&$this->user->password===$pass){
+            $l->triggerHook('USERlogin',$this);
             $token = $this->composeToken($name,$this->user->secret);
             setcookie('username',$name,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
             setcookie('hash',$token,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
@@ -57,7 +57,8 @@ var $user;
     }
 
     function logout(){
-        global $c;
+        global $c,$l;
+        $l->triggerHook('USERlogout',$this);
         setcookie('username',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         setcookie('hash',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         setcookie('username',' ',time()+60*60*$c->o['cookie_life_h'],'/');
@@ -76,19 +77,26 @@ var $user;
         global $c;
         $this->user = DataModel::getData("ud_users", "SELECT userID,username,mail,password,secret,displayname,filename,`group`,`status`
                                                       FROM ud_users WHERE username LIKE ?", array($name));
-        if($this->user == null) return;
-        $this->udPBase=array();
-        $this->udPTree=array();
-        $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array($this->user->group));
-        for($i=0;$i<count($results);$i++){
-            $base = explode(".",$results[$i]['permissions']);
-            $this->udPTree[$base[0]]=  array_slice($base,1);
-        }
-        //Individual permissions override group permissions.
-        $results=$c->getData("SELECT tree FROM ud_permissions WHERE UID=?",array($this->user->userID));
-        for($i=0;$i<count($results);$i++){
-            $base = explode(".",$results[$i]['tree']);
-            $this->udPTree[$base[0]]=  array_slice($base,1);
+        if($this->user == null){
+            $this->udPTree=array();
+            $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array('Unregistered'));
+            for($i=0;$i<count($results);$i++){
+                $base = explode(".",$results[$i]['permissions']);
+                $this->udPTree[$base[0]]=  array_slice($base,1);
+            }
+        }else{
+            $this->udPTree=array();
+            $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array($this->user->group));
+            for($i=0;$i<count($results);$i++){
+                $base = explode(".",$results[$i]['permissions']);
+                $this->udPTree[$base[0]]=  array_slice($base,1);
+            }
+            //Individual permissions override group permissions.
+            $results=$c->getData("SELECT tree FROM ud_permissions WHERE UID=?",array($this->user->userID));
+            for($i=0;$i<count($results);$i++){
+                $base = explode(".",$results[$i]['tree']);
+                $this->udPTree[$base[0]]=  array_slice($base,1);
+            }
         }
     }
 

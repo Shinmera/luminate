@@ -435,7 +435,7 @@ function sanitizeFilename($filename){
     return $filename;
 }
 
-function sanitizeString($s,$extra=''){
+function sanitizeString($s){
     return preg_replace("/[^a-zA-Z0-9\s\.\-_]/", "",$s);
 }
 
