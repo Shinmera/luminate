@@ -9,6 +9,7 @@ public static $hooks=array(); //An empty array blocks hook loading.
 var $mysqli;
 var $o=array();
 var $queries=0;
+var $tableColumnCache=array();
 
     function __construct(){
     }
@@ -121,6 +122,14 @@ var $queries=0;
             }
         }
         return $stmt;                           //return the bound statement 
+    }
+    
+    function getTableColumns($table){
+        if(!array_key_exists($table,$this->tableColumnCache)){
+            $fields = $this->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=? AND table_schema=?',array($table,SQLDB));
+            foreach($fields as $field)$this->tableColumnCache[$table][] = $field['name'];
+        }
+        return $this->tableColumnCache[$table];
     }
     
     function enparse($s){
