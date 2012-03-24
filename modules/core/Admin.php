@@ -71,7 +71,7 @@ function displayOptionsPage(){
         $this->addOption($_POST['key'],$_POST['value'],$_POST['type']);
         $err[0]="Key added.";
     }
-    if($_POST['action']=="Save"){
+    else if($_POST['action']=="Save"){
         $options = DataModel::getData("ms_options", "SELECT `key`,`value` FROM ms_options");
         foreach($options as $o){
             if(is_array($_POST['val'.$o->key]))$_POST['val'.$o->key]=implode(";",$_POST['val'.$o->key]);
@@ -143,23 +143,25 @@ function displayLogPage(){
 
 function displayModulesPage(){
     global $k,$MODULECACHE;
-    if($_POST['action']=="Install"){
-        try{
-            $k->uploadFile("archive",TEMPPATH,5000,array("application/zip","application/x-zip","application/x-zip-compressed",
-                                                            "application/octet-stream","application/x-compress",
-                                                            "application/x-compressed","multipart/x-zip"),true,"package.zip");
-            $this->installModule();
-        }catch(Exception $e){
-            $k->err("Error Code: ".$e->getCode()."<br>Error Message: ".$e->getMessage()."<br>Strack Trace: <br>".$e->getTraceAsString());
-        }
-    }
-    if($_POST['action']=="Delete"){
-        $this->deleteModule($_POST['name']);
-        $err[2]="Module deleted.";
-    }
-    if($_POST['action']=="Add"){
-        $this->addModule($_POST['name'],$_POST['subject']);
-        $err[3]="Module added.";
+    switch($_POST['action']){
+        case 'Install':
+            try{
+                $k->uploadFile("archive",TEMPPATH,5000,array("application/zip","application/x-zip","application/x-zip-compressed",
+                                                                "application/octet-stream","application/x-compress",
+                                                                "application/x-compressed","multipart/x-zip"),true,"package.zip");
+                $this->installModule();
+            }catch(Exception $e){
+                $k->err("Error Code: ".$e->getCode()."<br>Error Message: ".$e->getMessage()."<br>Strack Trace: <br>".$e->getTraceAsString());
+            }
+            break;
+        case 'Delete':
+            $this->deleteModule($_POST['name']);
+            $err[2]="Module deleted.";
+            break;
+        case 'Add':
+            $this->addModule($_POST['name'],$_POST['subject']);
+            $err[3]="Module added.";
+            break;
     }
     
     $modules = DataModel::getData("ms_modules", "SELECT name,subject FROM ms_modules");
@@ -201,7 +203,7 @@ function displayHooksPage(){
         $this->registerHook($_POST['source'],$_POST['hook'],$_POST['destination'],$_POST['function']);
         $err[0]="Hook registered.";
     }
-    if($_POST['action']=="Remove"){
+    else if($_POST['action']=="Remove"){
         $this->removeHook($_POST['source'],$_POST['hook'],$_POST['destination'],$_POST['function']);
         $err[1]="Hook removed.";
     }

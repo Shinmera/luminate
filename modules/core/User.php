@@ -7,33 +7,6 @@ public static $hooks=array("foo");
 
 function __construct(){}
 
-function displayLogin(){
-    global $t,$a,$k;
-    if($a->user == null){
-        if($_POST['action']=="Login"){
-            if($_POST['username']=="")$err[1]="Username missing!";
-            if($_POST['password']=="")$err[2]="Password missing!";
-            if(!isset($err)){
-                if($a->login($_POST['username'],$_POST['password']))    header("Location: ".$k->url("www",""));
-                else                                                    $err[0]="Invalid username or password.";
-            }
-        }
-        $t->openPage("Login");
-        ?><div id='pageNav'>
-            <div class="description">Login</div>
-            <div class="tabs">
-            </div>
-        </div>
-        <center><form action="#" method="post">
-            <?=$err[0]?><br />
-            <label>Username: </label><input autofocus="autofocus" name="username" type="text" maxlength="64" /><label><?=$err[1]?></label><br />
-            <label>Password: </label><input                       name="password" type="password" maxlength="64" /><label><?=$err[2]?></label><br />
-            <input type="submit" name="action" value="Login" />
-        </form></center><?
-    }else header("Location: ".$k->url("www",""));
-    $t->closePage();
-}
-
 function displayPanel(){
     global $k,$a;
     ?><div class="box">
@@ -198,15 +171,18 @@ function displayFieldsManagementPage(){
 
 function displayEditUserPage(){
     if($_POST['userID']=='')$_POST['userID']=$_GET['userID'];
-    if($_POST['action']=='')$_POST['action']='Add';
-    if($_POST['action']=="Add"&&$_POST['status']!=''){
-        $this->addUser($_POST['username'],$_POST['mail'],$_POST['password'],$_POST['status'],$_POST['group'],$_POST['displayname']);
-        $_POST['action']='Edit';$_POST['status']='';
+    switch($_POST['action']){
+        case '':$_POST['action']='Add';
+        case 'Add':
+            $this->addUser($_POST['username'],$_POST['mail'],$_POST['password'],$_POST['status'],$_POST['group'],$_POST['displayname']);
+            $_POST['action']='Edit';
+            $_POST['status']='';
+            break;
+        case 'Edit': $this->updateUser($_POST['userID'], $_POST);break;
+        case "Save Fields": $this->updateUserFields($_POST['userID'], $_POST);$_POST['action']='Edit';break;
+        case "Save Permissions": $this->updateUserPermissions($_POST['userID'],$_POST['tree']);break;
+        case "Delete": $this->deleteUser($_POST['userID']);header('Location: /'.PROOT.'/users');break;
     }
-    if($_POST['action']=="Edit"&&$_POST['status']!='')  $this->updateUser($_POST['userID'], $_POST);
-    if($_POST['action']=="Save Fields"){                $this->updateUserFields($_POST['userID'], $_POST);$_POST['action']='Edit';}
-    if($_POST['action']=="Save Permissions")            $this->updateUserPermissions($_POST['userID'],$_POST['tree']);
-    if($_POST['action']=="Delete"){                     $this->deleteUser($_POST['userID']);header('Location: /'.PROOT.'/users');}
     
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
     $groups=DataModel::getData("ud_groups","SELECT title FROM ud_groups");
@@ -256,7 +232,7 @@ function displayEditUserPage(){
                 case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
                 case 'u':echo('<input autocomplete="off" type="url" class="url" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
                 case 'd':echo('<input autocomplete="off" type="date" class="date" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
-                case 't':echo('<br /><textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
+                case 't':echo('<textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
                 case 'l':$vals=explode(";",$u->value);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
             }
             echo('<br />');
@@ -298,6 +274,20 @@ function displayEditUserPage(){
             });
         </script>
     </form><?
+}
+
+function checkMailValidity($mail){
+    global $k;
+    $atpos= strpos($mail,'@');
+    $dotpos=strpos($mail,'.');
+    if($atpos==false  ||$dotpos==false ||$dotpos<$atpos)return false;
+    $name = substr($mail,0,$atpos);
+    $serv = substr($mail,$atpos+1,$dotpos);
+    $dom  = substr($mail,$dotpos+1);
+    if($name==false   ||$serv==false   ||$dom==false)   return false;
+    if(strlen($name)<3||strlen($serv)<3||strlen($dom)<3)return false;
+    if($k->sanitizeString($mail)!=$mail)                return false;
+    return true;
 }
 
 function addUser($username,$mail,$password,$status='',$group='Registered',$displayname=''){
