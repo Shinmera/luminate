@@ -16,20 +16,19 @@ class DataModel{
         return print_r($this->holder, true);
     }
     
-    private function __construct($table,$fields,$data=null) {
+    private function __construct($table,$fields=array(),$data=null) {
         $this->table=$table;
         if($data==null){
             foreach($fields as $field)$this->holder[$field['name']]="";
         }else{
             foreach($data as $key=>$value)$this->holder[$key]=$value;
         }
-        foreach($fields as $field){
-            $this->fields[]=$field['name'];
-        }
     }
     
     public function saveData(){
         global $c;
+        if(count($this->fields)==0)$this->fields=$c->getTableColumns($this->table);
+            
         $data = array();
         $query = 'UPDATE '.$this->table.' SET';
         foreach($this->holder as $key=>$value){
@@ -47,6 +46,8 @@ class DataModel{
     
     public function insertData(){
         global $c;
+        if(count($this->fields)==0)$this->fields=$c->getTableColumns($this->table);
+        
         $data = array();
         $query = 'INSERT INTO '.$this->table.' VALUES(';
         foreach($this->fields as $field){
@@ -62,11 +63,9 @@ class DataModel{
         $c->query($query,$data);
     }
     
-    public static function getData($table,$query,$args=array(),$fields=array()){
+    public static function getData($table,$query,$args=array(),$fields=array(),$loadFields=false){
         global $c;
-        if(count($fields)==0)
-            $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=? AND table_schema=?',
-                                                    array($table,SQLDB));
+        if($loadFields)$fields=$c->getTableColumns($this->table);
         $data = $c->getData($query,$args);
         $models = array();
         foreach($data as $element){
@@ -79,9 +78,8 @@ class DataModel{
     
     public static function getHull($table){
         global $c;
-        $fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=? AND table_schema=?',
-                                                    array($table,SQLDB));
-        return new DataModel($table,$fields);
+        //$fields = $c->getData('SELECT column_name AS name FROM information_schema.columns WHERE table_name=? AND table_schema=?',array($table,SQLDB));
+        return new DataModel($table);
     }
 }
 ?>

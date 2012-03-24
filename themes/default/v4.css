@@ -23,6 +23,7 @@ table{width:100%;border-spacing:0;}
 table td,table th{border-left:1px solid #FFF;padding:3px;}
 table td:first-child,table th:first-child{border-left:none;}
 table th{background-color:#000;color:#FFF;font-weight:bold;}
+table th a{color:yellow;}
 table th:first-child{border-radius:5px 0px 0px 0px;}
 table th:last-child{border-radius:0px 5px 0px 0px;}
 table tbody tr{background-color:#CCC;}

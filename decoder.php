@@ -16,9 +16,12 @@ if(is_array($banned)){
 }*/
 
 //PARSE URL
-if(PROOT!=="/")$param=str_replace(PROOT,"",$_SERVER['REQUEST_URI']);else $param=substr($_SERVER['REQUEST_URI'],1);
-if(strpos($param,"?")!=FALSE)$param=substr($param,0,strpos($param,"?"));
-$param=trim(urldecode($param));
+if(PROOT!=="/")$param=str_replace(PROOT,"",$_SERVER['REQUEST_URI']);
+else           $param=substr($_SERVER['REQUEST_URI'],1);
+
+$param=urldecode($param);
+if(strpos($param,"?")!==FALSE)$param=substr($param,0,strpos($param,"?"));
+$param=trim($param);
 $params=explode("/",$param);
 if($params[0]=="")$site="index";else $site=$params[0];
 if($params[0]==PROOT)$params=array_slice($params, 1);
