@@ -196,7 +196,7 @@ function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=
                if($crop==false)    imagecopyresized( $tmp_img, $imgs, 0,0, 0,0,                             $w,$h, $width,$height );
             else if($crop=="w")    imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,0,                 $w,$h, $w,$height );
             else if($crop=="h")    imagecopyresized( $tmp_img, $imgs, 0,0, 0,$height/2-$h/2,                 $w,$h, $width,$h );
-            else                 imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,$height/2-$h/2,     $w,$h, $w,$h );
+            else                   imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,$height/2-$h/2,     $w,$h, $w,$h );
 
                if ( strtolower($info['extension']) == 'jpg' )imagejpeg( $tmp_img,$out);
                if ( strtolower($info['extension']) == 'jpeg')imagejpeg( $tmp_img,$out);
@@ -208,16 +208,6 @@ function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=
         copy($in,$out);
         return 0;
     }
-}
-
-function getUserPage($user){
-    return("<a href='".PROOT."user/".str_replace(" ","_",$user)."'>".$user."</a>");
-}
-
-function addAPIToken($key){
-    global $s,$c;$short = $s->generateShort(50);
-    $c->query("INSERT INTO ms_options VALUES(?,?)",array($key,$short));
-    return $short;
 }
 
 function compileList($data,$epr=5,$limit=-1,$align="center",$box=""){
@@ -402,7 +392,7 @@ function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array("
     $filename = $this->sanitizeFilename($filename);
     if(substr($destination,strlen($destination)-1)!="/")$destination=$destination."/";
     //perform checks
-    if($filesize>$maxsizeKB)                                                throw new Exception("Filesize is too big: ".$filesize);
+    if($filesize>$maxsizeKB)                                                throw new Exception("File is too big: ".$this->displayFilesize ($filesize));
     if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))throw new Exception("Bad filetype: ".$filetype);
     if(file_exists($destination.$filename)&&!$overwrite)                    throw new Exception("File '".$destination.$filename."' already exists!");
     //move
@@ -435,31 +425,48 @@ function sanitizeFilename($filename){
     return $filename;
 }
 
-function sanitizeString($s){
-    return preg_replace("/[^a-zA-Z0-9\s\.\-_]/", "",$s);
+function sanitizeString($s,$extra="\s\.\-_"){
+    return preg_replace("/[^a-zA-Z0-9".$extra."]/", "",$s);
 }
 
+function checkMailValidity($mail){
+    /*$atpos= strpos($mail,'@');
+    $dotpos=strpos($mail,'.');
+    if($atpos==false  ||$dotpos==false ||$dotpos<$atpos)return false;
+    $name = substr($mail,0,$atpos);
+    $serv = substr($mail,$atpos+1,$dotpos-$atpos-1);
+    $dom  = substr($mail,$dotpos+1);
+    if($name==false   ||$serv==false   ||$dom==false)   return false;
+    if(strlen($name)<3||strlen($serv)<3||strlen($dom)<2)return false;
+    if($k->sanitizeString($mail,'@\.\-_')!=$mail)       return false;
+    */
+    if(!filter_var($mail, FILTER_VALIDATE_EMAIL))return false;
+    $banned = explode("\n",file_get_contents(CALLABLESPATH."banned-mails"));
+    if(in_array($serv.'.'.$dom,$banned))return false;
+    return true;
+}
+
+function checkDateValidity($date){
+    $date=explode(".",$date);
+    if(count($date)!=3)return false;
+    if(strlen($date[0])==0||strlen($date[0])>2)return false;
+    if(strlen($date[1])==0||strlen($date[1])>2)return false;
+    if(strlen($date[2])<2 ||strlen($date[2])>4)return false;
+    if(!is_numeric($date[0]))return false;
+    if(!is_numeric($date[1]))return false;
+    if(!is_numeric($date[2]))return false;
+    return true;
+}
+
+function checkURLValidity($url){
+    if(!filter_var($url, FILTER_VALIDATE_URL))return false;
+    return true;
+}
 
 function displayImageSized($imgpath,$limit=800,$title="",$alt="image"){
     $d = getimagesize(ROOT.$imgpath);
     if($d[0]>$limit)$d=$limit;else $d=$d[0];
     echo("<img src='".$imgpath."' width='".$d."px' title='".$title."' alt='".$alt."' />");
-}
-
-function validateMail($mail,$selfcheck=true){
-    global $c;
-    if($mail=="")return false;
-    if(strpos($mail,".")===FALSE)return false;
-    if(strpos($mail,"@")===FALSE)return false;
-    if(strpos($mail,"@")>=(strlen($mail)-1))return false;
-    if(strpos($mail,".")>=(strlen($mail)-1))return false;
-    //if(in_array($mail,$c->udUMail)&&$selfcheck)return false;
-
-    //B& hosts
-    $banned = explode("\n",file_get_contents(TROOT."callables/banned-mails"));
-    if(in_array(substr($mail,strpos($mail,"@")),$banned))return false;
-
-    return true;
 }
 
 function updateTimeout($action,$timeout){

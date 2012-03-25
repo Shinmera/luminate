@@ -3,7 +3,7 @@ public static $name="Neon";
 public static $author="NexT";
 public static $version=2.01;
 public static $short='neon';
-public static $required=array("Auth","Themes","User");
+public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
 function displayLogin(){
@@ -162,42 +162,75 @@ function displayControlPanelPage(){
     }else{
         echo('<div style="text-align:center;">You are not authorized to view this page.</div>');
     }
+    $t->closePage();
 }
 
 function displayControlPanelProfile(){
-    global $a,$c;
+    global $a,$c,$k,$l;
     
     switch($_POST['action']){
         case 'Update Account':
-            
-            $_POST['displayname']=$k->sanitizeString($_POST['displayname']);
-            $a->user->displayname=$_POST['displayname'];
-            $a->user->email=$_POST['mail'];
-            $a->user->saveData();
+            $_POST['displayname']=trim($k->sanitizeString($_POST['displayname']));
+            if($k->checkMailValidity($_POST['mail'])){
+                if(strlen($_POST['displayname'])>3){
+                    if($_POST['displayname']!=$a->user->displayname){
+                        $used = $c->query("SELECT COUNT(userID) FROM ud_users WHERE displayname LIKE ? OR username LIKE ? ",array($_POST['displayname'],$_POST['displayname']));
+                        if(count($used)==0)$a->user->displayname=$_POST['displayname'];
+                        else               $err[0]="This username is already taken.";
+                    }
+                    $a->user->mail=$_POST['mail'];
+                    $a->user->saveData();
+                    $err[2]="Account information saved.";
+                }else $err[0]="Invalid username!";
+            }else $err[1]="Invalid mail address!";
             break;
-        case 'Save Password':break;
-        case 'Update Avatar':break;
-        case 'Update Profile':break;
+        case 'Save Password':
+            if(strlen($_POST['newpass'])>5){
+                if($_POST['newpass']==$_POST['newpassrepeat']){
+                    $hash=hash('sha512',$_POST['newpass']);
+                    $a->user->password=$hash;
+                    $a->user->saveData();
+                    $a->login($a->user->username,$hash,false); //Revalidate cookies
+                    $err[5]="Password saved.";
+                }else $err[4]="The passwords do not match.";
+            }else $err[3]="Password must be longer than 5 characters.";
+            break;
+        case 'Update Avatar':
+            $filename = $a->user->username.'-'.$k->generateRandomString();
+            try{
+                $dest = $k->uploadFile("avatar",ROOT.AVATARPATH,$c->o['avatar_maxsize'],array("image/png","image/gif","image/jpeg","image/jpg"),false,$filename);
+                $k->createThumbnail($dest,$dest,$c->o['avatar_maxdim'],$c->o['avatar_maxdim'],false,true,false);
+                unlink(ROOT.AVATARPATH.$a->user->filename);
+                $a->user->filename=substr($dest,  strrpos($dest, "/"));
+                $a->user->saveData();
+                $err[7]="Avatar changed.";
+            }catch(Exception $e){$err[6]="Uploading failed: ".$e->getMessage();}
+            break;
+        case 'Update Profile':
+            $u = $l->loadModule('User');
+            $u->updateUserFields($a->user->userID,$_POST);
+            $err[8]="Profile settings saved.";
+            break;
     }
     
     ?><form class="box" action="#" method="post">
         <h3>Account Settings</h3>
         <label>Username</label><input type="text" name="displayname" value="<?=$a->user->username?>" disabled="disabled" /><br />
-        <label>Displayname</label><input type="text" name="displayname" value="<?=$a->user->displayname?>" /><br />
-        <label>E-Mail</label><input type="email" name="mail" value="<?=$a->user->mail?>" /><br />
-        <input type="submit" name="action" value="Update Account" />
+        <label>Displayname</label><input type="text" name="displayname" value="<?=$a->user->displayname?>" /><?=$err[0]?><br />
+        <label>E-Mail</label><input type="email" name="mail" value="<?=$a->user->mail?>" /><?=$err[1]?><br />
+        <input type="submit" name="action" value="Update Account" /><?=$err[2]?>
     </form>
     <form class="box" action="#" method="post">
         <h3>Password</h3>
-        <label>New password:</label><input type="password" name="newpass" autocomplete="off" /><br />
-        <label>Repeat:</label><input type="password" name="newpassrepeat" autocomplete="off" /><br />
-        <input type="submit" name="action" value="Save Password" />
+        <label>New password:</label><input type="password" name="newpass" autocomplete="off" /><?=$err[3]?><br />
+        <label>Repeat:</label><input type="password" name="newpassrepeat" autocomplete="off" /><?=$err[4]?><br />
+        <input type="submit" name="action" value="Save Password" /><?=$err[5]?>
     </form>
     <form class="box" action="#" method="post" enctype="multipart/form-data">
         <h3>Avatar</h3>
         <img src="<?=AVATARPATH.$a->user->filename?>" alt="Avatar" title="Your avatar image" /><br />
-        <input type="file" name="avatar" accept="image/*" />
-        <input type="submit" name="action" value="Update Avatar" /><br />
+        <input type="file" name="avatar" accept="image/*" /><?=$err[6]?>
+        <input type="submit" name="action" value="Update Avatar" /><?=$err[7]?><br />
         <span class="small">
             Maximum filesize is <?=$c->o['avatar_maxsize']?>kb.
             If the avatar exceeds <?=$c->o['avatar_maxdim']?>x<?=$c->o['avatar_maxdim']?> px, it will be re-scaled.
@@ -206,21 +239,25 @@ function displayControlPanelProfile(){
     <form class="box" action="#" method="post">
         <h3>Profile Information</h3>
         <? $fields = DataModel::getData("ud_fields", "SELECT `varname`, `title`, `default`, `type` FROM ud_fields WHERE `editable`=1");
-        $values = DataModel::getData("ud_field_values","SELECT `value` FROM ud_field_values WHERE userID=?",array($a->user->userID));
+        $values = DataModel::getData("ud_field_values","SELECT `varname`,`value` FROM ud_field_values WHERE userID=?",array($a->user->userID));
         foreach($fields as $f){
             echo('<label>'.$f->title.':</label>');
+            $v = null;
+            foreach($values as $value){
+                if($value->varname==$f->varname){$v=$value->value;break;}
+            }
             switch($f->type){
-                case 'i':echo('<input autocomplete="off" type="number" class="number" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
-                case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
-                case 'u':echo('<input autocomplete="off" type="url" class="url" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
-                case 'd':echo('<input autocomplete="off" type="date" class="date" name="val'.$f->varname.'" value="'.$u->value.'" placeholder="'.$f->default.'" />');break;
-                case 't':echo('<textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$u->value.'</textarea>');break;
-                case 'l':$vals=explode(";",$u->value);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
+                case 'i':echo('<input type="number" class="number" name="val'.$f->varname.'" value="'.$v.'" placeholder="'.$f->default.'" />');break;
+                case 's':echo('<input type="text" class="string" name="val'.$f->varname.'" value="'.$v.'" placeholder="'.$f->default.'" />');break;
+                case 'u':echo('<input type="url" class="url" name="val'.$f->varname.'" value="'.$v.'" placeholder="'.$f->default.'" />');break;
+                case 'd':echo('<input type="date" class="date" name="val'.$f->varname.'" value="'.$v.'" placeholder="'.$f->default.'" />');break;
+                case 't':echo('<textarea type="text" class="text" name="val'.$f->varname.'" placeholder="'.$f->default.'">'.$v.'</textarea>');break;
+                case 'l':$vals=explode(";",$v);$k->interactiveList("val".$f->varname,$vals,$vals,$vals,true);break;
             }
             echo('<br />');
         }
         ?>
-        <input type="submit" name="action" value="Update Profile" />
+        <input type="submit" name="action" value="Update Profile" /><?=$err[8]?>
     </form><?
 }
 

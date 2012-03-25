@@ -276,20 +276,6 @@ function displayEditUserPage(){
     </form><?
 }
 
-function checkMailValidity($mail){
-    global $k;
-    $atpos= strpos($mail,'@');
-    $dotpos=strpos($mail,'.');
-    if($atpos==false  ||$dotpos==false ||$dotpos<$atpos)return false;
-    $name = substr($mail,0,$atpos);
-    $serv = substr($mail,$atpos+1,$dotpos);
-    $dom  = substr($mail,$dotpos+1);
-    if($name==false   ||$serv==false   ||$dom==false)   return false;
-    if(strlen($name)<3||strlen($serv)<3||strlen($dom)<3)return false;
-    if($k->sanitizeString($mail)!=$mail)                return false;
-    return true;
-}
-
 function addUser($username,$mail,$password,$status='',$group='Registered',$displayname=''){
     global $c,$k;
     $username=$k->sanitizeString($username);
@@ -312,17 +298,28 @@ function updateUser($userID,$fields){
     Toolkit::log("Updated user @".$userID);
 }
 
-function updateUserFields($userID,$values){
-    global $c;
-    $fields = DataModel::getData('ud_fields','SELECT varname FROM ud_fields');
+function updateUserFields($userID,$values,$prefix="val"){
+    global $c,$k;
+    $fields = DataModel::getData('ud_fields','SELECT varname,`type` FROM ud_fields');
     if(!is_array($fields))$fields=array($fields);
     $ufield = DataModel::getHull('ud_field_values');
     $ufield->userID=$userID;
     $c->query("DELETE FROM ud_field_values WHERE userID=?",array($userID));
     foreach($fields as $f){
-        $ufield->varname = $f->varname;
-        $ufield->value = $values['val'.$f->varname];
-        $ufield->insertData();
+        $valid=false;
+        switch($f->type){
+            case 'i':if(is_numeric($values[$prefix.$f->varname]))           $valid=true;break;
+            case 's':if(strpos($values[$prefix.$f->varname],"\n")===FALSE)  $valid=true;break;
+            case 'u':if($k->checkURLValidity($values[$prefix.$f->varname])) $valid=true;break;
+            case 'd':if($k->checkDateValidity($values[$prefix.$f->varname]))$valid=true;break;
+            case 't':                                                       $valid=true;break;
+            case 'l':                                                       $valid=true;break;
+        }
+        if($valid){
+            $ufield->varname = $f->varname;
+            $ufield->value = $values[$prefix.$f->varname];
+            $ufield->insertData();
+        }
     }
     Toolkit::log("Updated user fields for @".$userID);
 }

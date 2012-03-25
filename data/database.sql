@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 23, 2012 at 01:56 PM
+-- Generation Time: Mar 26, 2012 at 01:08 AM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `ms_hooks` (
 INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
 ('CORE', 'HITadmin', 'Admin', 'displayPage'),
-('CORE', 'HITlogin', 'User', 'displayLogin'),
+('CORE', 'HITlogin', 'Neon', 'displayLogin'),
 ('Admin', 'PANELdisplay', 'User', 'displayPanel'),
 ('Admin', 'ADMINUser', 'User', 'displayAdminPage'),
 ('Admin', 'PANELdisplay', 'Themes', 'displayPanel'),
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=23 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -110,7 +110,47 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (19, 'Added field &#039;aboutuser&#039;', '1332506769', 1),
 (20, 'Updated field &#039;aboutuser&#039;', '1332506780', 1),
 (21, 'Added field &#039;birthdate&#039;', '1332506805', 1),
-(22, 'Updated field &#039;birthdate&#039;', '1332506813', 1);
+(22, 'Updated field &#039;birthdate&#039;', '1332506813', 1),
+(23, 'Updated user fields for @1', '1332575159', 1),
+(24, 'Updated user fields for @1', '1332575262', 1),
+(25, 'Updated user fields for @1', '1332576099', 1),
+(26, 'Updated user fields for @1', '1332576156', 1),
+(27, 'Added user @2', '1332582153', 1),
+(28, 'Updated user fields for @1', '1332690536', 1),
+(29, 'Updated user fields for @1', '1332694171', 1),
+(30, 'Updated user fields for @1', '1332696820', 1),
+(31, 'Updated user fields for @1', '1332697642', 1),
+(32, 'Updated user fields for @1', '1332697725', 1),
+(33, 'Updated user fields for @1', '1332697742', 1),
+(34, 'Updated user fields for @1', '1332697756', 1),
+(35, 'Updated user fields for @1', '1332697758', 1),
+(36, 'Updated user fields for @1', '1332697758', 1),
+(37, 'Updated user fields for @1', '1332697759', 1),
+(38, 'Updated user fields for @1', '1332697762', 1),
+(39, 'Updated user fields for @1', '1332697764', 1),
+(40, 'Updated user fields for @1', '1332697778', 1),
+(41, 'Updated user fields for @1', '1332697818', 1),
+(42, 'Updated user fields for @1', '1332697834', 1),
+(43, 'Updated user fields for @1', '1332697841', 1),
+(44, 'Updated user fields for @1', '1332698804', 1),
+(45, 'Updated user fields for @1', '1332698811', 1),
+(46, 'Updated user fields for @1', '1332705386', 1),
+(47, 'Updated user fields for @1', '1332710338', 1),
+(48, 'Updated user fields for @1', '1332710367', 1),
+(49, 'Updated user fields for @1', '1332710392', 1),
+(50, 'Updated user fields for @1', '1332710438', 1),
+(51, 'Updated user fields for @1', '1332710445', 1),
+(52, 'Updated user fields for @1', '1332710449', 1),
+(53, 'Updated user fields for @1', '1332710471', 1),
+(54, 'Updated user fields for @1', '1332710542', 1),
+(55, 'Updated user fields for @1', '1332710762', 1),
+(56, 'Updated user fields for @1', '1332710766', 1),
+(57, 'Updated user fields for @1', '1332710811', 1),
+(58, 'Updated user fields for @1', '1332710834', 1),
+(59, 'Updated user fields for @1', '1332710858', 1),
+(60, 'Updated user fields for @1', '1332710861', 1),
+(61, 'Updated user fields for @1', '1332710862', 1),
+(62, 'Updated user fields for @1', '1332710873', 1);
 
 -- --------------------------------------------------------
 
@@ -189,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
-('127.0.0.1', 1332506856, 'visit:1');
+('127.0.0.1', 1332711889, 'visit:1');
 
 -- --------------------------------------------------------
 
@@ -248,7 +288,9 @@ CREATE TABLE IF NOT EXISTS `ud_field_values` (
 --
 
 INSERT INTO `ud_field_values` (`varname`, `userID`, `value`) VALUES
-('web', 1, ' SHIT');
+('birthdate', 1, '18.11.1993'),
+('aboutuser', 1, ''),
+('web', 1, 'http://dicks.com');
 
 -- --------------------------------------------------------
 
@@ -309,11 +351,12 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 
 --
 -- Dumping data for table `ud_users`
 --
 
 INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Shinmera', '', 'root', 'a', 0);
+(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Shinmera', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 1332582153);
