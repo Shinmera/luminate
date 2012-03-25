@@ -51,7 +51,7 @@ class DataModel{
         $data = array();
         $query = 'INSERT INTO '.$this->table.' VALUES(';
         foreach($this->fields as $field){
-            if($this->holder[$field]===""||!isset($this->holder[$field])){
+            if(/*$this->holder[$field]===""||*/!isset($this->holder[$field])){
                 $query.='NULL,';
             }else{
                 $data[]=$this->holder[$field];
