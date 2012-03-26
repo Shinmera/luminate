@@ -154,3 +154,37 @@ function implode (glue, pieces) {
     }
     return pieces;
 }
+
+$(document).ready(function(){
+    $(".date").each(function(){
+        $(this).datepicker();
+    });
+    
+    $(".tabbed").each(function(){
+        var tabcontainer = $(this);
+        tabcontainer.children("div,form").addClass("tabContainer");
+        tabcontainer.children("div,form").css("display","none");
+        tabcontainer.children("div:nth-child(1),form:nth-child(1)").css("display","block");
+        
+        var toInsert="<ul class='tabBar'>";
+        tabcontainer.children("div,form").each(function(){
+            toInsert+="<li>"+$(this).attr("name")+"</li>";
+        });
+        toInsert+="</ul>";
+        tabcontainer.prepend(toInsert);
+        var tablist = tabcontainer.children("ul");
+        tablist.children("li:nth-child(1)").addClass("selected");
+        
+        var i=1;
+        $(this).find("ul li").each(function(){
+            var a = i; //copy so it's available in the new scope
+            $(this).click(function(){
+                tabcontainer.children("div,form").css("display","none");
+                tabcontainer.children("div:nth-child("+(a+1)+"),form:nth-child("+(a+1)+")").css("display","block");
+                tablist.children("li").removeClass("selected");
+                $(this).addClass("selected");
+            });
+            i++;
+        });
+    });
+})

@@ -213,31 +213,9 @@ function displayControlPanelProfile(){
             break;
     }
     
-    ?><form class="box" action="#" method="post">
-        <h3>Account Settings</h3>
-        <label>Username</label><input type="text" name="displayname" value="<?=$a->user->username?>" disabled="disabled" /><br />
-        <label>Displayname</label><input type="text" name="displayname" value="<?=$a->user->displayname?>" /><?=$err[0]?><br />
-        <label>E-Mail</label><input type="email" name="mail" value="<?=$a->user->mail?>" /><?=$err[1]?><br />
-        <input type="submit" name="action" value="Update Account" /><?=$err[2]?>
-    </form>
-    <form class="box" action="#" method="post">
-        <h3>Password</h3>
-        <label>New password:</label><input type="password" name="newpass" autocomplete="off" /><?=$err[3]?><br />
-        <label>Repeat:</label><input type="password" name="newpassrepeat" autocomplete="off" /><?=$err[4]?><br />
-        <input type="submit" name="action" value="Save Password" /><?=$err[5]?>
-    </form>
-    <form class="box" action="#" method="post" enctype="multipart/form-data">
-        <h3>Avatar</h3>
-        <img src="<?=AVATARPATH.$a->user->filename?>" alt="Avatar" title="Your avatar image" /><br />
-        <input type="file" name="avatar" accept="image/*" /><?=$err[6]?>
-        <input type="submit" name="action" value="Update Avatar" /><?=$err[7]?><br />
-        <span class="small">
-            Maximum filesize is <?=$c->o['avatar_maxsize']?>kb.
-            If the avatar exceeds <?=$c->o['avatar_maxdim']?>x<?=$c->o['avatar_maxdim']?> px, it will be re-scaled.
-        </span>
-    </form>
-    <form class="box" action="#" method="post">
-        <h3>Profile Information</h3>
+    ?>
+<div class="tabbed">
+    <form action="#" method="post" name="Profile">
         <? $fields = DataModel::getData("ud_fields", "SELECT `varname`, `title`, `default`, `type` FROM ud_fields WHERE `editable`=1");
         $values = DataModel::getData("ud_field_values","SELECT `varname`,`value` FROM ud_field_values WHERE userID=?",array($a->user->userID));
         foreach($fields as $f){
@@ -258,13 +236,170 @@ function displayControlPanelProfile(){
         }
         ?>
         <input type="submit" name="action" value="Update Profile" /><?=$err[8]?>
-    </form><?
+    </form>
+    <form action="#" method="post" enctype="multipart/form-data" name="Avatar">
+        <img src="<?=AVATARPATH.$a->user->filename?>" alt="Avatar" title="Your avatar image" /><br />
+        <input type="file" name="avatar" accept="image/*" /><?=$err[6]?>
+        <input type="submit" name="action" value="Update Avatar" /><?=$err[7]?><br />
+        <span class="small">
+            Maximum filesize is <?=$c->o['avatar_maxsize']?>kb.
+            If the avatar exceeds <?=$c->o['avatar_maxdim']?>x<?=$c->o['avatar_maxdim']?> px, it will be re-scaled.
+        </span>
+    </form>
+    <form action="#" method="post" name="Account">
+        <label>Username</label><input type="text" name="displayname" value="<?=$a->user->username?>" disabled="disabled" /><br />
+        <label>Displayname</label><input type="text" name="displayname" value="<?=$a->user->displayname?>" /><?=$err[0]?><br />
+        <label>E-Mail</label><input type="email" name="mail" value="<?=$a->user->mail?>" /><?=$err[1]?><br />
+        <input type="submit" name="action" value="Update Account" /><?=$err[2]?>
+    </form>
+    <form action="#" method="post" name="Password">
+        <label>New password:</label><input type="password" name="newpass" autocomplete="off" /><?=$err[3]?><br />
+        <label>Repeat:</label><input type="password" name="newpassrepeat" autocomplete="off" /><?=$err[4]?><br />
+        <input type="submit" name="action" value="Save Password" /><?=$err[5]?>
+    </form>
+</div><?
 }
 
 function displayControlPanelFriends(){
-    global $a;
+    global $a,$k,$c;
+    
+    switch($action){
+        case 'Remove':
+            if(count($_POST['friends']>0)){
+                $query = "DELETE FROM neon_users WHERE type=? AND (";
+                $data = array('f');$sub=array();
+                foreach($_POST['blocked'] as $b){
+                    $sub[]="((uID1=? AND uID2=?) OR (uID2=? AND uID1=?))";
+                    $data[]=$a->user->userID;
+                    $data[]=$b;
+                    $data[]=$a->user->userID;
+                    $data[]=$b;
+                }
+                $query.=implode(" OR ",$sub).")";
+                $c->query($query,$data);
+                $err[0]="Friend removed.";
+            }
+            if(count($_POST['requests']>0)){
+                $query = "DELETE FROM neon_users WHERE type=? AND (";
+                $data = array('r');$sub=array();
+                foreach($_POST['requests'] as $b){
+                    $sub[]="(uID2=? AND uID1=?)";
+                    $data[]=$a->user->userID;
+                    $data[]=$b;
+                }
+                $query.=implode(" OR ",$sub).")";
+                $c->query($query,$data);
+                $err[2]="Request denied.";
+            }
+            if(count($_POST['blocked']>0)){
+                $query = "DELETE FROM neon_users WHERE type=? AND (";
+                $data = array('b');$sub=array();
+                foreach($_POST['blocked'] as $b){
+                    $sub[]="(uID1=? AND uID2=?)";
+                    $data[]=$a->user->userID;
+                    $data[]=$b;
+                }
+                $query.=implode(" OR ",$sub).")";
+                $c->query($query,$data);
+                $err[3]="Block  removed.";
+            }
+            break;
+        case 'Add Friend':
+            $friend = DataModel::getHull("neon_friends");
+            $exists = $c->getData("SELECT userID FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($_POST['user'],$_POST['user']));
+            if(count($exists)>0){
+                $friend->uID1=$a->user->userID;
+                $friend->uID2=$exists[0]['userID'];
+                $friend->type='r';
+                $friend->insertData();
+                $err[1]="Friend request sent.";
+            }else $err[1]="No such user.";
+            break;
+        case 'Accept':
+            $friend = DataModel::getHull("neon_friends");
+            foreach($_POST['requests'] as $request){
+                $friend->uID1=$a->user->userID;
+                $friend->uID2=$request;
+                $friend->type='f';
+                $friend->insertData();
+                $friend->uID2=$request;
+                $friend->uID1=$a->user->userID;
+                $friend->saveData();
+                $err[2]="Friend accepted.";
+            }
+            break;
+        case 'Block':
+            $block = DataModel::getHull("neon_friends");
+            $exists = $c->getData("SELECT userID FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($_POST['user'],$_POST['user']));
+            if(count($exists)>0){
+                $block->uID1=$a->user->userID;
+                $block->uID2=$exists[0]['userID'];
+                $block->type='b';
+                $block->insertData();
+                $err[4]="User blocked.";
+            }
+            break;
+    }
     
     
+    $friends = DataModel::getData("neon_friends","SELECT ud_users.userID as userID, ud_users.displayname AS displayname,ud_users.filename AS filename FROM ".
+                                                 "neon_friends INNER JOIN ud_users ON neon_friends.uID2 = ud_users.userID ".
+                                                 "WHERE neon_friends.uID1=? AND neon_friends.type LIKE ?",array($a->user->userID,'f'));
+    $blocked = DataModel::getData("neon_friends","SELECT ud_users.userID as userID, ud_users.displayname AS displayname,ud_users.filename AS filename FROM ".
+                                                 "neon_friends INNER JOIN ud_users ON neon_friends.uID2 = ud_users.userID ".
+                                                 "WHERE neon_friends.uID1=? AND neon_friends.type LIKE ?",array($a->user->userID,'b'));
+    $requests= DataModel::getData("neon_friends","SELECT ud_users.userID as userID, ud_users.displayname AS displayname,ud_users.filename AS filename FROM ".
+                                                 "neon_friends INNER JOIN ud_users ON neon_friends.uID1 = ud_users.userID ".
+                                                 "WHERE neon_friends.uID2=? AND neon_friends.type LIKE ?",array($a->user->userID,'r'));
+    if($friends==null)$friends=array();
+    if($requests==null)$requests=array();
+    if($blocked==null)$blocked=array();
+    if(!is_array($friends))$friends=array($friends);
+    if(!is_array($requests))$requests=array($requests);
+    if(!is_array($blocked))$blocked=array($blocked);
+    ?>
+<div class="tabbed">
+    <form action="#" method="post" name="Friends">
+        <? foreach($friends as $friend){ ?>
+            <div class="useravatarbox" >
+                <? $k->getUserAvatar($friend->displayname,$friend->filename,false,50); ?><br />
+                <input type="checkbox" name="friends[]" value="<?=$friend->userID?>"/>
+                <? $k->getUserPage($friend->displayname); ?>
+            </div>
+        <? } ?>
+        <br />
+        <input type="submit" name="action" value="Remove" /><?=$err[0]?>
+        <br />
+        <input type="text" name="user" class="userpick" />
+        <input type="submit" name="action" value="Add Friend" /><?=$err[1]?>
+    </form>
+    <form action="#" method="post" name="Requests">
+        <? foreach($requests as $request){ ?>
+            <div class="useravatarbox" >
+                <? $k->getUserAvatar($request->displayname,$request->filename,false,50); ?><br />
+                <input type="checkbox" name="requests[]" value="<?=$request->userID?>"/>
+                <? $k->getUserPage($request->displayname); ?>
+            </div>
+        <? } ?>
+        <br />
+        <input type="submit" name="action" value="Remove" />
+        <input type="submit" name="action" value="Accept" /><?=$err[2]?>
+    </form>
+    <form action="#" method="post" name="Blocked">
+        <? foreach($blocked as $block){ ?>
+            <div class="useravatarbox" >
+                <? $k->getUserAvatar($block->displayname,$block->filename,false,50); ?><br />
+                <input type="checkbox" name="blocked[]" value="<?=$block->userID?>"/>
+                <? $k->getUserPage($block->displayname); ?>
+            </div>
+        <? } ?>
+        <br />
+        <input type="submit" name="action" value="Remove" /><?=$err[3]?>
+        <br />
+        <input type="text" name="user" class="userpick" />
+        <input type="submit" name="action" value="Block" /><?=$err[4]?>
+    </form>
+</div><?
     
     
 }

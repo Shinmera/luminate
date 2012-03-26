@@ -235,12 +235,6 @@ function getGravatar($name,$size=100,$extra=""){
     return($gravatar);
 }
 
-function getGroup($uID){
-    global $c;
-    $c->loadUsers($uID);
-    return $c->msGTitle[array_search($c->udUGroup[array_search($uID,$c->udUID)],$c->msGID)];
-}
-
 function array_insert(&$array, $insert, $position = -1) { 
      $position = ($position == -1) ? (count($array)) : $position ; 
      if($position != (count($array))) { 
@@ -502,66 +496,6 @@ function wrapAndPrint($array,$front,$end){
     }else echo($front.$array.$end);
 }
 
-function htmlDiff($old, $new){
-    if(!class_exists("simpleDiff"))include(TROOT.'callables/simplediff.php');
-    
-    $diff = simpleDiff::diff_to_array(false, $old, $new, 1);
-
-    $out = '<table class="diff">';
-    $prev = key($diff);
-
-    foreach ($diff as $i=>$line){
-        if ($i > $prev + 1){
-            $out .= '<tr><td colspan="5" class="separator"><hr /></td></tr>';
-        }
-
-        list($type, $old, $new) = $line;
-
-        $class1 = $class2 = '';
-        $t1 = $t2 = '';
-
-        if ($type == simpleDiff::INS){
-            $class2 = 'ins';
-            $t2 = '+';
-        }elseif ($type == simpleDiff::DEL){
-            $class1 = 'del';
-            $t1 = '-';
-        }elseif ($type == simpleDiff::CHANGED){
-            $class1 = 'del';
-            $class2 = 'ins';
-            $t1 = '-';
-            $t2 = '+';
-
-            $lineDiff = simpleDiff::wdiff($old, $new);
-
-            // Don't show new things in deleted line
-            $old = preg_replace('!\{\+(?:.*)\+\}!U', '', $lineDiff);
-            $old = str_replace('  ', ' ', $old);
-            $old = str_replace('-] [-', ' ', $old);
-            $old = preg_replace('!\[-(.*)-\]!U', '<del>\\1</del>', $old);
-
-            // Don't show old things in added line
-            $new = preg_replace('!\[-(?:.*)-\]!U', '', $lineDiff);
-            $new = str_replace('  ', ' ', $new);
-            $new = str_replace('+} {+', ' ', $new);
-            $new = preg_replace('!\{\+(.*)\+\}!U', '<ins>\\1</ins>', $new);
-        }
-
-        $out .= '<tr>';
-        $out .= '<td class="line">'.($i+1).'</td>';
-        $out .= '<td class="leftChange">'.$t1.'</td>';
-        $out .= '<td class="leftText '.$class1.'">'.$old.'</td>';
-        $out .= '<td class="rightChange">'.$t2.'</td>';
-        $out .= '<td class="rightText '.$class2.'">'.$new.'</td>';
-        $out .= '</tr>';
-
-        $prev = $i;
-    }
-
-    $out .= '</table>';
-    return $out;
-}
-
 function checkShitBrowser(){
     if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie') !== FALSE && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 9.') === FALSE){
         include(PAGEPATH.'shitbrowser.php');
@@ -621,6 +555,18 @@ function unifyNumberString($string,$n){
         $string='0'.$string;
     }
     return $string;
+}
+
+function getUserPage($user,$return=false){
+    $t = '<a href="'.$this->url("user",$user).'" />'.$user.'</a>';
+    if(!$return)echo($t);else return $t;
+}
+
+function getUserAvatar($user,$file,$return=false,$size=150){
+    if($file=="")$file="noguy.png";
+    $t = '<a href="'.$this->url("user",$user).'">
+          <img src="'.AVATARPATH.$file.'" alt="" title="'.$user.'\'s avatar" style="width:'.$size.'px;height:'.$size.'px;" /></a>';
+    if(!$return)echo($t);else return $t;
 }
 
 }

@@ -14,7 +14,11 @@ function printTimePassed(){
 }
 
 function apiCall(){
-    global $l,$site;
+    global $l,$site,$params;
+    if($site=="api"){
+        $site = $params[0];
+        $params = array_slice($params, 1);
+    }
     $l->triggerHook("API".$site,$this);
 }
 

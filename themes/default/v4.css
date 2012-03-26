@@ -252,3 +252,50 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .jqmOverlay { background-color: #000; }
 .jqmClose{ background:#FFDD00; border:1px solid #FFDD00; color:#000; clear:right; float:right; padding:0 5px; cursor:pointer; }
 .jqmClose:hover{ background:#FFF; }
+
+.useravatarbox{
+    display:inline-block;
+    padding: 5px;
+}
+
+.tabbed{
+    
+}
+
+.tabContainer{
+    background-color:#FFF;
+    border: 2px solid #ae61ed;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.tabBar{
+    list-style:none;
+    margin:0;
+    position:relative;
+}
+
+.tabBar li{
+    list-style:none;
+    display: inline-block;
+    margin-top:5px;
+    margin-left:2px;
+    margin-right:2px;
+    padding:5px;
+    border: 1px solid  #CCC;
+    border-bottom: none;
+    border-radius: 5px 5px 0px 0px;
+    min-width:20px;
+    text-align:center;
+    background-color: #EEE;
+    position:relative;
+    font-size: 10pt;
+}
+
+.tabBar li.selected{
+    font-size: 12pt;
+    border: 1px solid  #ae61ed;
+    border-bottom: none;
+    bottom:-2px;
+    background-color: #FFF;
+}
