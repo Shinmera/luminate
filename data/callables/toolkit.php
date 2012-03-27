@@ -119,15 +119,6 @@ function pf($message){
     ob_flush();flush();
 }
 
-function checkBanned($IP){
-    global $c;
-    $data = $c->getData("SELECT IP,time,reason,appeal FROM ms_banned WHERE ? REGEXP IP",array($_SERVER['REMOTE_ADDR']));
-    if(count($data)==0)return false;
-    if(time()>$data[0]['time']&&$data[0]['time']!=-1)
-        $c->query("DELETE FROM ms_banned WHERE IP=?",array($data[0]['IP']));
-    return $data[0];
-}
-
 function toKeyArray($array,$delim1=";",$delim2="="){
     $temp=explode($delim1,$array);
     $args=array();
@@ -468,13 +459,14 @@ function updateTimeout($action,$timeout){
 }
 
 function updateTimestamp($action,$timeout){
-    global $c;
+    global $c,$a;
     $result=$c->getData("SELECT `time` FROM ms_timer WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],$action));
     if(count($result)>0){
         if((time()-$result[0]['time'])<=$timeout)return false;
-        $c->query("DELETE FROM ms_timer WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],$action));
+        $c->query("UPDATE ms_timer SET time=? WHERE IP=? AND action=?",array(time(),$_SERVER['REMOTE_ADDR'],$action));
+    }else{
+        $c->query("INSERT INTO ms_timer VALUES(?,?,?)",array($_SERVER['REMOTE_ADDR'],time(),$action));
     }
-    $c->query("INSERT INTO ms_timer VALUES(?,?,?)",array($_SERVER['REMOTE_ADDR'],time(),$action));
     return true;
 }
 

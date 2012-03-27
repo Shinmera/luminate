@@ -12,7 +12,8 @@
         nav.find("li").each(function() {
             if ($(this).find("ul").length > 0) {
                 //Add indicator.
-                $("<span>").text("\u21b4").appendTo($(this).children(":first"));
+                //$("<span>").text("\u21b4").appendTo($(this).children(":first"));
+                $(this).children(":first").addClass("menu");
 
                 $(this).mouseenter(function() {
                     $(this).find("ul").stop(true, true).slideDown();

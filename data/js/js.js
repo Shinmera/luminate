@@ -52,37 +52,6 @@ function insert(formid,aTag, eTag) {
   }
 }
 
-function errorCodeToString(err){
-    switch(err){
-        case 0:  return 'Generic Error';break;
-        case 1:  return 'Ok';break;
-        case 2:  return 'No Access';break;
-        case 3:  return 'Resource Not Loaded';break;
-        case 4:  return 'Resource Not Found';break;
-        case 5:  return 'Invalid Request';break;
-        case 6:  return 'Invalid Password';break;
-        case 7:  return 'Invalid User';break;
-        case 8:  return 'Invalid Authentification';break;
-        case 9:  return 'Invalid Captcha';break;
-        case 10: return 'Invalid API Securiy Token';break;
-        case 11: return 'Invalid URL';break;
-        case 12: return 'Invalid Group';break;
-        case 13: return 'Unzipping Failed';break;
-        case 14: return 'Module Not Found';break;
-        case 15: return 'Module Not Active';break;
-        case 50: return 'OpenID Cancelled';break;
-        case 51: return 'OpenID Generic Error';break;
-        case 100:return 'Bad IP';break;
-        case 101:return 'Bad Akismet';break;
-        case 121:return 'File Too Big';break;
-        case 122:return 'Invalid Filetype';break;
-        case 123:return 'Upload Failed';break;
-        case 124:return 'File Exists';break;
-        case 200:return 'Timeout';break;
-        default: return 'Unknown Error';break;
-    }
-}
-
 function randomstring(length){
     var temp=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
               'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -100,22 +69,6 @@ function isNumeric(n) {
 
 jQuery.extend(jQuery.expr[':'], {
   focus: "a == document.activeElement"
-});
-
-$(function(){
-    $(".spoiler input").each(function(){
-        $(this).click(function(){
-            $(this).parent().children(".spoilertext").slideToggle();
-        });
-    });
-
-    $(".sspoiler").each(function(){
-        $(this).hover(function(){
-            $(this).removeClass("sspoiler");
-        },function(){
-            $(this).addClass("sspoiler");
-        });
-    });
 });
 
 function time(){
@@ -157,24 +110,32 @@ function implode (glue, pieces) {
 
 $(document).ready(function(){
     $(".date").each(function(){
-        $(this).datepicker();
+        $(this).datepicker({dateFormat:'dd.mm.yy',yearRange:'1940:2040'});
+    });
+    
+    $(".text").each(function(){
+        $(this).resizable({minWidth:200,minHeight:100});
     });
     
     $(".tabbed").each(function(){
         var tabcontainer = $(this);
-        tabcontainer.children("div,form").addClass("tabContainer");
-        tabcontainer.children("div,form").css("display","none");
-        tabcontainer.children("div:nth-child(1),form:nth-child(1)").css("display","block");
         
+        //Generate tabbar
         var toInsert="<ul class='tabBar'>";
         tabcontainer.children("div,form").each(function(){
-            toInsert+="<li>"+$(this).attr("name")+"</li>";
+            if(typeof $(this).attr("href") !='undefined'){
+                toInsert+="<li><a href='"+$(this).attr("href")+"'>"+$(this).attr("name")+"</a></li>";
+            }else{
+                toInsert+="<li>"+$(this).attr("name")+"</li>";
+            }
+            $(this).addClass("tabContainer");
+            $(this).css("display","none");
         });
         toInsert+="</ul>";
         tabcontainer.prepend(toInsert);
         var tablist = tabcontainer.children("ul");
-        tablist.children("li:nth-child(1)").addClass("selected");
         
+        //Add tab switch functionality
         var i=1;
         $(this).find("ul li").each(function(){
             var a = i; //copy so it's available in the new scope
@@ -186,5 +147,25 @@ $(document).ready(function(){
             });
             i++;
         });
+        
+        //Select first.
+        if(typeof tabselect== 'undefined')var tabselect = 1;
+        tablist.children("li:nth-child("+tabselect+")").addClass("selected");
+        tabcontainer.children("div:nth-child("+(tabselect+1)+"),form:nth-child("+(tabselect+1)+")").css("display","block");
     });
-})
+    
+    $(".spoiler input").each(function(){
+        $(this).click(function(){
+            $(this).parent().children(".spoilertext").slideToggle();
+        });
+    });
+
+    $(".sspoiler").each(function(){
+        $(this).hover(function(){
+            $(this).removeClass("sspoiler");
+        },function(){
+            $(this).addClass("sspoiler");
+        });
+    });
+    
+});

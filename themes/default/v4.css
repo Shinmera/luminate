@@ -11,9 +11,10 @@ html,body{
 
 img{max-width:100%;max-height:100%;margin:5px;}
 label{min-width:150px;display:inline-block;}
-input,.button{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;}
-input:hover,.button:hover{box-shadow: 0px 0px 10px #FFDD00;}
-input[disabled='disabled']{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
+input,.button,textarea{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;}
+input:hover,.button:hover,textarea:hover{box-shadow: 0px 0px 10px #FFDD00;}
+input[disabled='disabled'],textarea[disabled='disabled']{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
+textarea{min-width:200px;min-height:100px;}
 a{text-decoration: none;color:blue;}
 a:hover{text-shadow: 0px 0px 5px #FFDD00;}
 ul{list-style:none;padding-left:10px;}
@@ -82,15 +83,20 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     color: #FFF;
     text-decoration: none;
     font-size:12pt;
-    margin-left: 10px;
     padding: 5px;
     display: inline-block;
     text-shadow: none;
+    min-width:100px;
+}
+
+#navbar a.menu{
+    background: -moz-linear-gradient(top, rgba(255,221,0,0) 0%, rgba(255,221,0,0) 75%, rgba(255,221,0,0.65) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,221,0,0)), color-stop(75%,rgba(255,221,0,0)), color-stop(100%,rgba(255,221,0,0.65)));
 }
 
 #navbar a:hover{text-shadow: 0px 0px 10px #FFF;}
 #navbar ul { padding:0; margin:0; }
-#navbar li { position:relative; float:left; list-style-type:none; }
+#navbar li { position:relative; float:left; list-style-type:none;margin-left: 5px;margin-rightt: 5px; }
 #navbar ul:after { content:"."; display:block; height:0; clear:both; visibility:hidden; }
 #navbar li:first-child a { border-left:none; }
 #navbar li.last a { border-right:none; }

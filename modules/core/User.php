@@ -277,7 +277,7 @@ function displayEditUserPage(){
 }
 
 function addUser($username,$mail,$password,$status='',$group='Registered',$displayname=''){
-    global $c,$k;
+    global $c,$k,$l;
     $username=$k->sanitizeString($username);
     if(!in_array($status,array('activated','banned','system')))$status='inactive';
     $status=substr($status,0,1);
@@ -285,21 +285,26 @@ function addUser($username,$mail,$password,$status='',$group='Registered',$displ
     $secret=$k->generateRandomString(31);
     $password=hash('sha512',$password);
     $c->query("INSERT INTO ud_users VALUES(NULL,?,?,?,?,?,?,?,?,?)",array($username,$mail,$password,$secret,$displayname,'',$group,$status,time()));
+    
+    $l->triggerHook("USERadd",$this,array($c->insertID()));
     Toolkit::log("Added user @".$c->insertID());
 }
 
 function updateUser($userID,$fields){
+    global $l;
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($userID));
     if($user!=null){
         if($fields['password']!=$user->password)$fields['password']=hash('sha512',$fields['password']); //Hash password
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
     }
+    
+    $l->triggerHook("USERupdate",$this,array($userID));
     Toolkit::log("Updated user @".$userID);
 }
 
 function updateUserFields($userID,$values,$prefix="val"){
-    global $c,$k;
+    global $c,$k,$l;
     $fields = DataModel::getData('ud_fields','SELECT varname,`type` FROM ud_fields');
     if(!is_array($fields))$fields=array($fields);
     $ufield = DataModel::getHull('ud_field_values');
@@ -321,47 +326,63 @@ function updateUserFields($userID,$values,$prefix="val"){
             $ufield->insertData();
         }
     }
-    Toolkit::log("Updated user fields for @".$userID);
+    
+    $l->triggerHook("UPDATEfields",$this,array($userID));
+    //Toolkit::log("Updated user fields for @".$userID);
 }
 
 function updateUserPermissions($userID,$tree){
-    global $c;
+    global $c,$l;
     $ftree = "";
     foreach($tree as $branch){
         if(trim($branch)!='')$ftree.=strtolower(trim($branch))."\n";
     }
     $ftree = trim($ftree);
     $c->query("UPDATE ud_permissions SET tree=? WHERE UID=?",array($ftree,$userID));
+    
+    $l->triggerHook("USERupdatePermissions",$this,array($userID));
+    Toolkit::log("Updated permissions for @".$userID);
 }
 
 function deleteUser($userID){
-    global $c;
+    global $c,$l;
     $c->query('DELETE FROM ud_users WHERE userID=?',array($userID));
+    
+    $l->triggerHook("USERdelete",$this,array($userID));
     Toolkit::log("Deleted user '".$userID."'");
 }
 
 function addGroup($groupname,$tree){
+    global $l;
     $group = DataModel::getHull("ud_groups");
     $group->title=$groupname;
     $group->permissions=$tree;
     $group->insertData();
+    
+    $l->triggerHook("GROUPadd",$this,array($groupname));
     Toolkit::log("Added group '".$groupname."'");
 }
 
 function updateGroup($groupname,$changes){
+    global $l;
     $group = DataModel::getData("ud_groups", "SELECT * FROM ud_groups WHERE title=?",array($groupname));
     foreach($changes as $key=>$value){$group->$key = $value;}
     $group->saveData();
+    
+    $l->triggerHook("GROUPupdate",$this,array($groupname));
     Toolkit::log("Updated group '".$groupname."'");
 }
 
 function deleteGroup($groupname){
-    global $c;
+    global $c,$l;
     $c->query("DELETE FROM ud_groups WHERE title=?",array($groupname));
+    
+    $l->triggerHook("GROUPdelete",$this,array($groupname));
     Toolkit::log("Deleted group '".$groupname."'");
 }
 
 function addField($fieldname,$title,$default='',$editable=0,$displayed=0,$type='s'){
+    global $l;
     if($editable=='')$editable=0;
     if($displayed=='')$displayed=0;
     if($default=='')$default=' ';
@@ -373,20 +394,27 @@ function addField($fieldname,$title,$default='',$editable=0,$displayed=0,$type='
     $field->displayed=$displayed;
     $field->type=$type;
     $field->insertData();
+    
+    $l->triggerHook("FIELDadd",$this,array($fieldname));
     Toolkit::log("Added field '".$fieldname."'");
 }
 
 function updateField($fieldname,$changes){
+    global $l;
     $field = DataModel::getData("ud_fields", "SELECT * FROM ud_fields WHERE varname=?",array($fieldname));
     foreach($changes as $key=>$value){$field->$key = $value;}
     $field->saveData();
+    
+    $l->triggerHook("FIELDupdate",$this,array($fieldname));
     Toolkit::log("Updated field '".$fieldname."'");
 }
 
 function deleteField($fieldname){
-    global $c,$k;
+    global $c,$k,$l;
     $c->query("DELETE FROM ud_fields WHERE varname=?",array($fieldname));
     $c->query("DELETE FROM ud_field_values WHERE varname=?",array($fieldname));
+    
+    $l->triggerHook("FIELDdelete",$this,array($fieldname));
     $k->log("Deleted field '".$fieldname."'");
 }
 
