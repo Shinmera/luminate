@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 26, 2012 at 01:08 AM
+-- Generation Time: Mar 27, 2012 at 02:09 AM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -82,75 +82,17 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `ms_log`
 --
 
 INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
-(1, 'Log cleared.', '1331569674', 1),
-(2, 'Option key &#039;idiots&#039; deleted.', '1331571299', 1),
-(3, 'Hook Admin::PANELdisplay =&gt; User::displayPanel added.', '1331572321', 1),
-(4, 'Hook Admin::ADMINUser =&gt; User::displayAdminPage added.', '1331582924', 1),
-(5, 'Hook Admin::PANELdisplay =&gt; Themes::displayPanel added.', '1331883490', 1),
-(6, 'Hook Admin::ADMINThemes =&gt; Admin::displayAdminPage added.', '1331883501', 1),
-(7, 'Hook CORE::HITapi =&gt; CORE::apiCall added.', '1331975228', 1),
-(8, 'Hook CORE::API =&gt; Themes::displayAPISavePage added.', '1331976124', 1),
-(9, 'Updated group &#039;Unregistered&#039;', '1332156443', 1),
-(10, 'Added user @3', '1332156482', 1),
-(11, 'Deleted user &#039;3&#039;', '1332156514', 1),
-(12, 'Hook Themes::buildMenu =&gt; Admin::buildMenu added.', '1332319263', 1),
-(13, 'Module &#039;Neon&#039; added.', '1332349563', 1),
-(14, 'Hook CORE::HITuser =&gt; Neon::displayMainPage added.', '1332349581', 1),
-(15, 'Module &#039;Ace&#039; added.', '1332356819', 1),
-(16, 'Hook Themes::buildMenu =&gt; Neon::buildMenu added.', '1332485714', 1),
-(17, 'Hook Admin::ADMINNavbar =&gt; User::adminNavbar added.', '1332506621', 1),
-(18, 'Hook Admin::ADMINNavbar =&gt; Themes::adminNavbar added.', '1332506633', 1),
-(19, 'Added field &#039;aboutuser&#039;', '1332506769', 1),
-(20, 'Updated field &#039;aboutuser&#039;', '1332506780', 1),
-(21, 'Added field &#039;birthdate&#039;', '1332506805', 1),
-(22, 'Updated field &#039;birthdate&#039;', '1332506813', 1),
-(23, 'Updated user fields for @1', '1332575159', 1),
-(24, 'Updated user fields for @1', '1332575262', 1),
-(25, 'Updated user fields for @1', '1332576099', 1),
-(26, 'Updated user fields for @1', '1332576156', 1),
-(27, 'Added user @2', '1332582153', 1),
-(28, 'Updated user fields for @1', '1332690536', 1),
-(29, 'Updated user fields for @1', '1332694171', 1),
-(30, 'Updated user fields for @1', '1332696820', 1),
-(31, 'Updated user fields for @1', '1332697642', 1),
-(32, 'Updated user fields for @1', '1332697725', 1),
-(33, 'Updated user fields for @1', '1332697742', 1),
-(34, 'Updated user fields for @1', '1332697756', 1),
-(35, 'Updated user fields for @1', '1332697758', 1),
-(36, 'Updated user fields for @1', '1332697758', 1),
-(37, 'Updated user fields for @1', '1332697759', 1),
-(38, 'Updated user fields for @1', '1332697762', 1),
-(39, 'Updated user fields for @1', '1332697764', 1),
-(40, 'Updated user fields for @1', '1332697778', 1),
-(41, 'Updated user fields for @1', '1332697818', 1),
-(42, 'Updated user fields for @1', '1332697834', 1),
-(43, 'Updated user fields for @1', '1332697841', 1),
-(44, 'Updated user fields for @1', '1332698804', 1),
-(45, 'Updated user fields for @1', '1332698811', 1),
-(46, 'Updated user fields for @1', '1332705386', 1),
-(47, 'Updated user fields for @1', '1332710338', 1),
-(48, 'Updated user fields for @1', '1332710367', 1),
-(49, 'Updated user fields for @1', '1332710392', 1),
-(50, 'Updated user fields for @1', '1332710438', 1),
-(51, 'Updated user fields for @1', '1332710445', 1),
-(52, 'Updated user fields for @1', '1332710449', 1),
-(53, 'Updated user fields for @1', '1332710471', 1),
-(54, 'Updated user fields for @1', '1332710542', 1),
-(55, 'Updated user fields for @1', '1332710762', 1),
-(56, 'Updated user fields for @1', '1332710766', 1),
-(57, 'Updated user fields for @1', '1332710811', 1),
-(58, 'Updated user fields for @1', '1332710834', 1),
-(59, 'Updated user fields for @1', '1332710858', 1),
-(60, 'Updated user fields for @1', '1332710861', 1),
-(61, 'Updated user fields for @1', '1332710862', 1),
-(62, 'Updated user fields for @1', '1332710873', 1);
+(1, 'Log cleared.', '1332795359', 1),
+(2, 'Added field &#039;userfirstname&#039;', '1332799137', 1),
+(3, 'Added field &#039;userlastname&#039;', '1332799151', 1),
+(4, 'Updated user @1', '1332801088', 1);
 
 -- --------------------------------------------------------
 
@@ -220,7 +162,7 @@ INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
 CREATE TABLE IF NOT EXISTS `ms_timer` (
   `IP` varchar(16) NOT NULL,
   `time` int(11) NOT NULL,
-  `action` text NOT NULL
+  `action` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -229,7 +171,8 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
-('127.0.0.1', 1332711889, 'visit:1');
+('127.0.0.1', 1332798331, 'visit'),
+('127.0.0.1', 1332804010, 'visit:1');
 
 -- --------------------------------------------------------
 
@@ -241,9 +184,8 @@ CREATE TABLE IF NOT EXISTS `neon_friends` (
   `uID1` int(11) NOT NULL,
   `uID2` int(11) NOT NULL,
   `type` varchar(1) NOT NULL DEFAULT 'r',
-  PRIMARY KEY (`uID1`),
-  UNIQUE KEY `uID2` (`uID2`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`uID1`,`uID2`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -268,7 +210,9 @@ CREATE TABLE IF NOT EXISTS `ud_fields` (
 INSERT INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable`, `displayed`) VALUES
 ('web', 'Website', ' ', 'u', 1, 1),
 ('aboutuser', 'About', ' ', 't', 1, 1),
-('birthdate', 'Birthdate', ' ', 'd', 1, 1);
+('birthdate', 'Birthdate', ' ', 'd', 1, 1),
+('userfirstname', 'First name', ' ', 's', 1, 1),
+('userlastname', 'Last name', ' ', 's', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -289,8 +233,10 @@ CREATE TABLE IF NOT EXISTS `ud_field_values` (
 
 INSERT INTO `ud_field_values` (`varname`, `userID`, `value`) VALUES
 ('birthdate', 1, '18.11.1993'),
-('aboutuser', 1, ''),
-('web', 1, 'http://dicks.com');
+('web', 1, 'http://shinmera.com'),
+('aboutuser', 1, 'I make stuff.\r\nSome of it is kinda cool.\r\n\r\nVery important trufax about me:\r\nMithent is my waifu.'),
+('userfirstname', 1, 'Nicolas'),
+('userlastname', 1, 'Hafner');
 
 -- --------------------------------------------------------
 
@@ -358,5 +304,5 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
 --
 
 INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Shinmera', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(1, 'Shinmera', 'nhafner@gmx.ch', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
 (2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 1332582153);

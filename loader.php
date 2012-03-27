@@ -57,6 +57,7 @@
     
     function triggerHook($hook,$source,$args=array(),$modules=array()){
         global $k;
+        if(is_string($source))$source = $this->loadModule($source);
         if(array_key_exists($hook,$source::$hooks)){
             $returns = array();
             if(count($modules)==0)$modules=$source::$hooks[$hook];
@@ -78,6 +79,7 @@
     
     function triggerHookSequentially($hook,$source,$args="",$modules=array()){
         global $k;
+        if(is_string($source))$source = $this->loadModule($source);
         if(array_key_exists($hook,$source::$hooks)){
             if(count($modules)==0)$modules=$source::$hooks[$hook];
             foreach($modules as $module){

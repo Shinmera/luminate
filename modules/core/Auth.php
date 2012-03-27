@@ -10,7 +10,8 @@ var $udPTree=array();
 var $user;
 
     public function __construct() {
-        $this->auth($_COOKIE['username'],$_COOKIE['hash']); 
+        global $k;
+        $this->auth($_COOKIE['username'],$_COOKIE['hash']);
     }
 
     function composeToken($name,$pass){
@@ -135,10 +136,28 @@ var $user;
         }
     }
     
-    function generateDelta(){
-        global $k;
-        $tree = $k->toKeyString($this->udPTree);
-        return substr(hash('sha512',$tree),0,10);
+    function generateDelta($userID=-1,$group=""){
+        global $k,$c;
+        if($userID==-1){
+            $tree = $k->toKeyString($this->udPTree);
+            return substr(hash('sha512',$tree),0,10);
+        }else{
+            $udPTree=array();
+            $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array($group));
+            for($i=0;$i<count($results);$i++){
+                $base = explode(".",$results[$i]['permissions']);
+                $udPTree[$base[0]]=  array_slice($base,1);
+            }
+            //Individual permissions override group permissions.
+            $results=$c->getData("SELECT tree FROM ud_permissions WHERE UID=?",array($userID));
+            for($i=0;$i<count($results);$i++){
+                $base = explode(".",$results[$i]['tree']);
+                $udPTree[$base[0]]=  array_slice($base,1);
+            }
+            
+            $tree = $k->toKeyString($udPTree);
+            return substr(hash('sha512',$tree),0,10);
+        }
     }
 
 }

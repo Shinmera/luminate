@@ -2,18 +2,6 @@
 
 include("config.php");
 $k->checkShitBrowser();
-/*$banned=$k->checkBanned($_SERVER['REMOTE_ADDR']);
-if(is_array($banned)){
-    $banned[0]=true;
-    $banned[1]=$banned['IP'];
-    $banned[2]=$banned['time'];
-    $banned[3]=$banned['reason'];
-    $banned[4]=$banned['appeal'];
-    if($banned['reason']!="/mute"){
-        include(PAGEPATH.'banned.php');
-        die();
-    }
-}*/
 
 //PARSE URL
 if(PROOT!=="/")$param=str_replace(PROOT,"",$_SERVER['REQUEST_URI']);
