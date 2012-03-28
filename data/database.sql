@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 27, 2012 at 02:09 AM
+-- Generation Time: Mar 28, 2012 at 10:52 PM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -19,6 +19,37 @@ SET time_zone = "+00:00";
 --
 -- Database: `tymoonD`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fenfire_comments`
+--
+
+CREATE TABLE IF NOT EXISTS `fenfire_comments` (
+  `ommentID` int(11) NOT NULL AUTO_INCREMENT,
+  `module` varchar(32) NOT NULL,
+  `path` varchar(64) NOT NULL,
+  `username` varchar(32) NOT NULL,
+  `mail` varchar(32) NOT NULL,
+  `text` text NOT NULL,
+  `time` int(11) NOT NULL,
+  `level` tinyint(4) NOT NULL,
+  `moderation` tinyint(1) NOT NULL,
+  PRIMARY KEY (`ommentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fenfire_order`
+--
+
+CREATE TABLE IF NOT EXISTS `fenfire_order` (
+  `module` varchar(32) NOT NULL,
+  `path` varchar(64) NOT NULL,
+  `order` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -68,7 +99,11 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITuser', 'Neon', 'displayMainPage'),
 ('Themes', 'buildMenu', 'Neon', 'buildMenu'),
 ('Admin', 'ADMINNavbar', 'User', 'adminNavbar'),
-('Admin', 'ADMINNavbar', 'Themes', 'adminNavbar');
+('Admin', 'ADMINNavbar', 'Themes', 'adminNavbar'),
+('Themes', 'buildMenu', 'Display', 'buildMenu'),
+('Admin', 'ADMINFenfire', 'Fenfire', 'displayAdminPage'),
+('Admin', 'PANELdisplay', 'Fenfire', 'displayPanel'),
+('Admin', 'ADMINNavbar', 'Fenfire', 'adminNavbar');
 
 -- --------------------------------------------------------
 
@@ -82,7 +117,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -92,7 +127,14 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (1, 'Log cleared.', '1332795359', 1),
 (2, 'Added field &#039;userfirstname&#039;', '1332799137', 1),
 (3, 'Added field &#039;userlastname&#039;', '1332799151', 1),
-(4, 'Updated user @1', '1332801088', 1);
+(4, 'Updated user @1', '1332801088', 1),
+(5, 'Module &#039;Liroli&#039; added.', '1332884737', 1),
+(6, 'Module &#039;Display&#039; added.', '1332896480', 1),
+(7, 'Hook Themes::buildMenu =&gt; Display::buildMenu added.', '1332896505', 1),
+(8, 'Module &#039;Fenfire&#039; added.', '1332937555', 1),
+(9, 'Hook Admin::ADMINFenfire =&gt; Fenfire::displayAdminPage added.', '1332937673', 1),
+(10, 'Hook Admin::PANELdisplay =&gt; Fenfire::displayPanel added.', '1332937689', 1),
+(11, 'Hook Admin::ADMINNavbar =&gt; Fenfire::adminNavbar added.', '1332937781', 1);
 
 -- --------------------------------------------------------
 
@@ -115,6 +157,9 @@ INSERT INTO `ms_modules` (`name`, `subject`) VALUES
 ('Admin', 'Allows administration of CORE models and provides an interface for module specific configuration pages.'),
 ('Auth', 'Provides a secure session and authentication system, as well as permission management.'),
 ('CORE', 'This is the CORE module, providing the INIT system.'),
+('Display', 'A gallery module with per-user gallery support.'),
+('Fenfire', 'Provides a simple comment system.'),
+('Liroli', 'Public user groups'),
 ('Neon', 'Provides user front-end.'),
 ('Parser', 'Used to provide an extensive bbcode system.'),
 ('Themes', 'A simple theming system, making page construction very simple.'),
@@ -172,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
 ('127.0.0.1', 1332798331, 'visit'),
-('127.0.0.1', 1332804010, 'visit:1');
+('127.0.0.1', 1332946499, 'visit:1');
 
 -- --------------------------------------------------------
 
