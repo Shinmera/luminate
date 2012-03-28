@@ -160,6 +160,7 @@ function displayModulesPage(){
             break;
         case 'Add':
             $this->addModule($_POST['name'],$_POST['subject']);
+            $k->generateModuleCache();
             $err[3]="Module added.";
             break;
     }
@@ -208,7 +209,7 @@ function displayHooksPage(){
         $err[1]="Hook removed.";
     }
     
-    $hooks = DataModel::getData("ms_hooks", "SELECT `source`,`hook`,`destination`,`function` FROM ms_hooks");
+    $hooks = DataModel::getData("ms_hooks", "SELECT `source`,`hook`,`destination`,`function` FROM ms_hooks ORDER BY `source`,`destination`,`hook` DESC");
     $modules = DataModel::getData("ms_modules", "SELECT `name` FROM ms_modules");
     ?><form method="post" action="#" class="box">
         Source: <? $k->printSelectObj("source",$modules,"name","name"); ?>
