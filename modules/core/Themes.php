@@ -22,6 +22,7 @@ var $menudata = array();
 
 function __construct(){}
 
+//TODO: Add template system.
 function loadTheme($themename,$override=true){
     if($override){
         $this->img="";$this->css=array();

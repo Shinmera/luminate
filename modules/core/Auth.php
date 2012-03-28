@@ -101,6 +101,7 @@ var $user;
         }
     }
 
+    //TODO: Add exclusion masks
     function check($tree){
         $tree=explode(".",trim(strtolower($tree)));
         if(array_key_exists("*",$this->udPTree))return true;
@@ -121,6 +122,7 @@ var $user;
         return false;
     }
 
+    //FIXME: Update this function.
     function grant($uid,$base,$tree){
         global $c;
         if(!$this->check("auth.permissions.grant"))return XERR_NO_ACCESS;

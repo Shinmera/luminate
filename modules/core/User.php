@@ -29,10 +29,10 @@ function displayAdminPage(){
     if(!$a->check("user.admin.panel"))return;
     $this->displayPanel();
     switch($params[1]){
-        case 'users': if($a->check("user.admin.users"))$this->displayUserManagementPage();break;
-        case 'groups': if($a->check("user.admin.groups"))$this->displayGroupsManagementPage();break;
-        case 'fields': if($a->check("user.admin.fields"))$this->displayFieldsManagementPage();break;
-        case 'edituser': if($a->check("user.admin.users.edit"))$this->displayEditUserPage();break;
+        case 'users':   if($a->check("user.admin.users"))$this->displayUserManagementPage();break;
+        case 'groups':  if($a->check("user.admin.groups"))$this->displayGroupsManagementPage();break;
+        case 'fields':  if($a->check("user.admin.fields"))$this->displayFieldsManagementPage();break;
+        case 'edituser':if($a->check("user.admin.users.edit"))$this->displayEditUserPage();break;
         default:
             $usercount  = $c->getData("SELECT COUNT(userID) AS usercount FROM ud_users");
             $mostrecent = $c->getData("SELECT username,time FROM ud_users ORDER BY time DESC LIMIT 1");
