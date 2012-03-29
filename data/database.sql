@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 28, 2012 at 10:52 PM
+-- Generation Time: Mar 29, 2012 at 10:30 PM
 -- Server version: 5.5.21
 -- PHP Version: 5.3.10
 
@@ -27,29 +27,31 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `fenfire_comments` (
-  `ommentID` int(11) NOT NULL AUTO_INCREMENT,
-  `module` varchar(32) NOT NULL,
-  `path` varchar(64) NOT NULL,
+  `commentID` int(11) NOT NULL AUTO_INCREMENT,
+  `FID` int(11) NOT NULL,
   `username` varchar(32) NOT NULL,
   `mail` varchar(32) NOT NULL,
   `text` text NOT NULL,
   `time` int(11) NOT NULL,
   `level` tinyint(4) NOT NULL,
   `moderation` tinyint(1) NOT NULL,
-  PRIMARY KEY (`ommentID`)
+  PRIMARY KEY (`commentID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `fenfire_order`
+-- Table structure for table `fenfire_folders`
 --
 
-CREATE TABLE IF NOT EXISTS `fenfire_order` (
+CREATE TABLE IF NOT EXISTS `fenfire_folders` (
+  `folderID` int(11) NOT NULL AUTO_INCREMENT,
   `module` varchar(32) NOT NULL,
   `path` varchar(64) NOT NULL,
-  `order` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `order` text NOT NULL,
+  `open` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`folderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -217,7 +219,7 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
 ('127.0.0.1', 1332798331, 'visit'),
-('127.0.0.1', 1332946499, 'visit:1');
+('127.0.0.1', 1333023204, 'visit:1');
 
 -- --------------------------------------------------------
 
