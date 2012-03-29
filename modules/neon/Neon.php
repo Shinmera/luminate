@@ -6,6 +6,7 @@ public static $short='neon';
 public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
+//TODO: Registration
 function displayLogin(){
     global $t,$a,$k,$params;
     if($a->user == null){
