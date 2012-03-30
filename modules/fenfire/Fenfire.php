@@ -37,85 +37,103 @@ function displayAdminPage(){
     if(!$a->check('fenfire.admin'))return;
     $this->displayPanel();
     switch($params[1]){
-        case 'comments':$this->displayAdminComments();break;
-        case 'folders':$this->displayAdminFolders();break;
+        case 'comments':if($a->check("fenfire.admin.comments"))$this->displayAdminComments();break;
+        case 'folders':if($a->check("fenfire.admin.folders"))$this->displayAdminFolders();break;
     }
 }
 
 function displayAdminComments(){
-    global $a,$c;
-    if($a->check("user.list")){
-        $max = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments");$max=$max[0]['COUNT(commentID)'];
-        switch($_GET['action']){
-            case '<<':$_GET['f']=0;  $_GET['t']=50; break;
-            case '<' :$_GET['f']-=50;$_GET['t']-=50;break;
-            case '>' :$_GET['f']+=50;$_GET['t']+=50;break;
-            case '>>':$_GET['f']=$max-50;$_GET['t']=$max;break;
-        }
-        //Sanitize user input
-        if($_GET['f']<0||!is_numeric($_GET['f']))         $_GET['f']=0;
-        if($_GET['t']<$_GET['f']||!is_numeric($_GET['t']))$_GET['t']=$_GET['f']+50;
-        if($_GET['t']>$max)$_GET['t']=$max;
-        if($_GET['f']>$_GET['t'])$_GET['f']=$_GET['t']-1;
-        if($_GET['a']!=0&&$_GET['a']!=1)      $_GET['a']="0";
-        if($_GET['t']-$_GET['f']>100)$_GET['t']=$_GET['f']+100;
-        $orders = array('module','path','commentID','username','time');
-        if(!in_array($_GET['o'],$orders))$_GET['o']='time';
-        ?>
-        <div class="box" style="display:block;">
-            <form>
-                <input type="checkbox" name="b" value="1" <? if($_GET['b']=="1")echo("checked"); ?> />Show approved comments
-                <input type="submit" name="dir" value="Show" /><br />
-                <input type="submit" name="dir" value="<<" />
-                <input type="submit" name="dir" value="<" />
-                <input autocomplete="off" type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
-                <input autocomplete="off" type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
-                <input type="submit" name="dir" value="Go" />
-                <input type="submit" name="dir" value=">" />
-                <input type="submit" name="dir" value=">>" />
-                <input type="hidden" name="order" value="<?=$_GET['o']?>" />
-                <input type="hidden" name="asc" value="<?=$_GET['a']?>" />
-            </form>
-            <table>
-                <thead><tr>
-                    <th style="width:50px;"></th>
-                    <th style="width:150px;">Module</th>
-                    <th style="width:200px;">Path</th>
-                    <th style="width:100px;">ID</th>
-                    <th style="width:150px;">Username</th>
-                    <th>Text</th>
-                    <th style="width:100px;">Time</th>
-                </tr></thead>
-            </table>
-            <? if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
-            if($_GET['b']==1)$where="";else $where="WHERE fenfire_comments.moderation=1";
-            $comments = DataModel::getData("fenfire_comments","SELECT fenfire_comments.commentID AS commentID,fenfire_comments.FID AS FID,".
-                                   "fenfire_comments.username AS username,fenfire_comments.text AS `text`,fenfire_comments.time AS `time`,".
-                                   "fenfire_folders.module AS module,fenfire_folders.path AS path ".
-                                   "FROM fenfire_comments INNER JOIN fenfire_folders ON fenfire_comments.FID = fenfire_folders.folderID ".
-                                   $where." ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t']);
-            if($comments!=null){
-                if(!is_array($comments))$comments=array($comments);
-                foreach($comments as $comment){
-                    ?><tr>
-                        <td><form>
-                            <input type="hidden" name="commentID" value="<?=$comment->commentID?>" />
-                            <input type="hidden" name="FID" value="<?=$comment->FID?>" />
-                            <input type="submit" name="action" value="X" />
-                            <input type="submit" name="action" value="M" />
-                        </form></td>
-                        <td><?=$comment->module?></td>
-                        <td><?=$comment->path?></td>
-                        <td><?=$comment->commentID?></td>
-                        <td><?=$comment->username?></td>
-                        <td><?=$comment->text?></td>
-                        <td><?=$k->toDate($comment->time);?></td>
-                    </tr><?
-                }
-            }
-            ?>
-        </div><?
+    global $c,$k;
+    
+    if($_GET['action']=="M"){
+        $mod = $c->getData("SELECT moderation FROM fenfire_comments WHERE commentID=? AND FID=?",array($_GET['commentID'],$_GET['FID']));
+        if($mod[0]['moderation']=="1")$mod=0;else $mod=1;
+        $c->query("UPDATE fenfire_comments SET moderation=? WHERE commentID=? AND FID=?",array($mod,$_GET['commentID'],$_GET['FID']));
+        if($mod==1)$err="Comment blocked.";else $err="Comment approved.";
     }
+    
+    if($_GET['action']=="X"){
+        $c->query("DELETE FROM fenfire_comments WHERE commentID=? AND FID=?",array($_GET['commentID'],$_GET['FID']));
+        $err="Comment deleted.";
+    }
+    
+    $max = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments");$max=$max[0]['COUNT(commentID)'];
+    switch($_GET['action']){
+        case '<<':$_GET['f']=0;  $_GET['t']=50; break;
+        case '<' :$_GET['f']-=50;$_GET['t']-=50;break;
+        case '>' :$_GET['f']+=50;$_GET['t']+=50;break;
+        case '>>':$_GET['f']=$max-50;$_GET['t']=$max;break;
+    }
+    //Sanitize user input
+    if($_GET['f']<0||!is_numeric($_GET['f']))         $_GET['f']=0;
+    if($_GET['t']<$_GET['f']||!is_numeric($_GET['t']))$_GET['t']=$_GET['f']+50;
+    if($_GET['t']>$max)$_GET['t']=$max;
+    if($_GET['f']>$_GET['t'])$_GET['f']=$_GET['t']-1;
+    if($_GET['a']!=0&&$_GET['a']!=1)      $_GET['a']="0";
+    if($_GET['t']-$_GET['f']>100)$_GET['t']=$_GET['f']+100;
+    $orders = array('module','path','commentID','username','time');
+    if(!in_array($_GET['o'],$orders))$_GET['o']='time';
+    ?>
+    <div class="box" style="display:block;">
+        <?=$err?><br />
+        <form>
+            <input type="checkbox" name="b" value="1" <? if($_GET['b']=="1")echo("checked"); ?> />Show approved comments
+            <input type="submit" name="dir" value="Show" /><br />
+            <input type="submit" name="dir" value="<<" />
+            <input type="submit" name="dir" value="<" />
+            <input autocomplete="off" type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
+            <input autocomplete="off" type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
+            <input type="submit" name="dir" value="Go" />
+            <input type="submit" name="dir" value=">" />
+            <input type="submit" name="dir" value=">>" />
+            <input type="hidden" name="order" value="<?=$_GET['o']?>" />
+            <input type="hidden" name="asc" value="<?=$_GET['a']?>" />
+        </form>
+        <table>
+            <thead><tr>
+                <th style="width:60px;"></th>
+                <th style="width:150px;"><a href="?o=module&a=<?=!$_GET['a']?>&b=<?=$_GET['b']?>">    Module</a></th>
+                <th style="width:200px;"><a href="?o=path&a=<?=!$_GET['a']?>&b=<?=$_GET['b']?>">      Path</a></th>
+                <th style="width:100px;"><a href="?o=commentID&a=<?=!$_GET['a']?>&b=<?=$_GET['b']?>"> ID</a></th>
+                <th style="width:150px;"><a href="?o=username&a=<?=!$_GET['a']?>&b=<?=$_GET['b']?>">  Username</a></th>
+                <th>Text</th>
+                <th style="width:100px;"><a href="?o=time&a=<?=!$_GET['a']?>&b=<?=$_GET['b']?>">      Time</a></th>
+            </tr></thead>
+            <tbody>
+                <? if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
+                if($_GET['b']==1)$where="";else $where="WHERE fenfire_comments.moderation=1";
+                $comments = DataModel::getData("fenfire_comments","SELECT fenfire_comments.commentID AS commentID,fenfire_comments.FID AS FID,".
+                                        "fenfire_comments.username AS username,fenfire_comments.text AS `text`,fenfire_comments.time AS `time`,".
+                                        "fenfire_comments.moderation AS `moderation`,fenfire_folders.module AS module,fenfire_folders.path AS path ".
+                                        "FROM fenfire_comments INNER JOIN fenfire_folders ON fenfire_comments.FID = fenfire_folders.folderID ".
+                                        $where." ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t']);
+                if($comments!=null){
+                    if(!is_array($comments))$comments=array($comments);
+                    foreach($comments as $comment){
+                        if($comment->moderation==1)$mod="background-color:red;";else $mod="";
+                        ?><tr>
+                            <td style="<?=$mod?>"><form>
+                                <input type="hidden" name="o" value="<?=$_GET['o']?>" />
+                                <input type="hidden" name="a" value="<?=$_GET['a']?>" />
+                                <input type="hidden" name="b" value="<?=$_GET['b']?>" />
+                                <input type="hidden" name="commentID" value="<?=$comment->commentID?>" />
+                                <input type="hidden" name="FID" value="<?=$comment->FID?>" />
+                                <input type="submit" name="action" value="X" class="roundbutton" />
+                                <input type="submit" name="action" value="M" class="roundbutton" />
+                            </form></td>
+                            <td><?=$comment->module?></td>
+                            <td><?=$comment->path?></td>
+                            <td><?=$comment->commentID?></td>
+                            <td><?=$comment->username?></td>
+                            <td><?=$comment->text?></td>
+                            <td><?=$k->toDate($comment->time);?></td>
+                        </tr><?
+                    }
+                }
+                ?>
+            <tbody>
+        </table>
+    </div><?
 }
 
 function displayAdminFolders(){
