@@ -110,7 +110,7 @@ function displayUserPage($username){
                     <? foreach($pages as $page){
                         if($a->check("admin.".$page)){
                             if($page==$params[1])echo('<a href="'.$k->url("user",$site.'/'.$page).'" class="tab activated">'.$page.'</a>');
-                            else            echo('<a href="'.$k->url("user",$site.'/'.$page).'" class="tab">'.$page.'</a>');
+                            else                 echo('<a href="'.$k->url("user",$site.'/'.$page).'" class="tab">'.$page.'</a>');
                         }
                     }if(!in_array($params[1], $pages))echo('<a href="'.$k->url("user",$site).'" class="tab activated">'.$site.'</a>'); ?>
                 </div>
@@ -119,8 +119,8 @@ function displayUserPage($username){
             switch($params[1]){
                 case '':
                 case 'Profile':displayUserProfile($username,$user);break;
-                case 'Add Friend':break;
-                default:$l->triggerHook('PAGE'.$site,"Neon",array($user));break;
+                case 'Add Friend':break;//FIXME: Add Add Friend page.
+                default:$l->triggerHook('PAGE'.$site,"Neon",array($user->username,$user));break;
             }
         }else{
             echo(NO_ACCESS);
@@ -198,6 +198,6 @@ function displayUserProfile($username,$user=null){
         }
         echo('</ul></div>');
     }
-    $l->triggerHook('PROFILEpage',"Neon");
+    $l->triggerHook('PROFILEpage',"Neon",array($user->userID));
 }
 ?>
