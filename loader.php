@@ -55,8 +55,8 @@
         }
     }
     
-    function triggerHook($hook,$source,$args=array(),$modules=array()){
-        global $k;
+    function triggerHook($hook,$source,$args=array(),$modules=array(),$setdominating=false){
+        global $k,$DOMINATINGMODULE;
         if(is_string($source))$source = $this->loadModule($source);
         if(array_key_exists($hook,$source::$hooks)){
             $returns = array();
@@ -64,6 +64,7 @@
             foreach($modules as $module){
                 try{
                     $mod = $this->loadModule($module[0]);
+                    if($setdominating)$DOMINATINGMODULE=$mod;
                     $result = call_user_func_array(array($mod,$module[1]), $args);
                     if($result!=false&&$result!=="")$returns[]=$result;
                 }catch(Exception $e){
