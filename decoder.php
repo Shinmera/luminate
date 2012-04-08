@@ -19,7 +19,7 @@ if($domain!=""){
     define("DOMAIN",$domain);
 }
 
-$l->triggerHook("HIT".DOMAIN,$CORE,array($params));
+$l->triggerHook("HIT".DOMAIN,$CORE,array($params),array(),true);
 
 ob_end_flush();
 flush();
