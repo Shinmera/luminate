@@ -49,7 +49,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .huge{font-size:36pt;}
 
 #header{
-    font-size:18pt;
+    font-size:12pt;
     font-weight:bold;
     padding: 5px;
     color: #FFF;
@@ -87,7 +87,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 #navbar a{
     color: #FFF;
     text-decoration: none;
-    font-size:12pt;
+    font-size:10pt;
     padding: 5px;
     display: inline-block;
     text-shadow: none;

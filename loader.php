@@ -8,7 +8,7 @@
             global $$short;
             return $$short;
         }
-        if(in_array($name::$short,$GLOBALS))throw new Exception("Error globalizing '".$name::$name."': $".$name::$short." has already been defined!");
+        if($GLOBALS[$name::$short]!="")throw new Exception("Error globalizing '".$name::$name."': $".$name::$short." has already been defined!");
         $m = new $name();
         
         if(count($m::$hooks)>0)$loadHooks=true;else $loadHooks=false;

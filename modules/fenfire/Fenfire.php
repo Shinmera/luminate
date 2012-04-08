@@ -224,28 +224,67 @@ function submitCommentForm(){
     if($c->o['comment_size_min']!=''&&strlen($_POST['varsubject'])<$c->o['comment_size_min']){$k->err("Post too short.",false,true);return;}
     if($c->o['comment_size_max']!=''&&strlen($_POST['varsubject'])>$c->o['comment_size_max']){$k->err("Post too long.",false,true);return;}
 
+    $post = DataModel::getHull("fenfire_comments");
     $folder = $this->getFolder($_POST['varFID']);
+    //Calculate nesting level
+    $parent = null;
+    if($_POST['varresponse']==""){
+        $parent = DataModel::getData("fenfire_comments", "SELECT commentID,level FROM fenfire_comments WHERE commentID=?",$array($_POST['varresponse']));
+        if($parent!=null){
+            if($parent->level<$c->o['comment_max_level'])$post->level=$parent->level+1;
+            else                                         $post->level=$c->o['comment_max_level'];
+        }
+    }else{
+        $post->level=0;
+    }
+    
+    //Insert post
+    $post->FID=$folder->folderID;
+    $post->username=$_POST['varuser'];
+    $post->mail=$_POST['varmail'];
+    $post->text=$_POST['varsubject'];
+    $post->time=time();
+    $post->moderation=$spamcheck;
+    $post->insertData();
+    $post->commentID=$c->insertID();
+    
+    //Calculate new order
+    $order = explode(";",$folder->order);
+    if($parent==null||!in_array($parent->commentID, $order)){
+        $order[]=$post->commentID;
+    }else{
+        for($i=0,$count=count($order);$i<$count;$i++){
+            if($order[$i]==$parent->commentID){
+                $k->array_insert($order, $post->commentID,$i);
+                break;
+            }
+        }
+    }
+    $folder->order=implode(";",$order);
+    $folder->saveData();
     
     Toolkit::log("Comment from ".$_POST['varuser']." (".$_POST['varmail'].") for  added.");
     header('Location: '.$_SERVER['HTTP_REFERER']);
 }
 
-function modComment(){
-    if($a->check('comments.mod')){
-        $c->query("UPDATE tb_comments SET moderation=? WHERE commentID=? LIMIT 1",array($args['moderation'],$args['CID']));
-        Toolkit::log("Comment moderation for ID".$args['CID']." set to ".$args['moderation']);
+function modComment($CID,$moderation){
+    global $a,$c;
+    if($a->check('fenfire.admin.comments.mod')){
+        $c->query("UPDATE fenifre_comments SET moderation=? WHERE commentID=? LIMIT 1",array($moderation,$CID));
+        Toolkit::log("Comment moderation for ID".$CID." set to ".$moderation);
     }
 }
 
-function delComment(){
-    if($a->check('comments.mod')){
-        $this->loadComment($args['CID']);
-        $order=$this->loadCommentOrder($this->tbDMID[0],$this->tbDCID[0]);
-        $c->query("UPDATE tb_comment_order SET `order`=? WHERE CID=? AND MID=? LIMIT  1",array(
-                                            $k->removeFromList($args['CID'],$order,","),$this->tbDCID[0],$this->tbDMID[0]));
-        $c->query("DELETE FROM tb_comments WHERE commentID=? LIMIT 1",array(
-                                            $args['CID']));
-        Toolkit::log("Comment ID".$args['CID']." deleted.");
+function delComment($CID){
+    global $a,$c;
+    if($a->check('enfire.admin.comments.delete')){
+        $folder = DataModel::getData("fenfire_folders","SELECT fenfire_folders.order FROM fenfire_folders ".
+                                                       "INNER JOIN fenfire_comments ON fenfire_folders.folderID = fenfire_comments.FID ".
+                                                       "WHERE fenfire_comments.commentID=?",array($CID));
+        $folder->order = removeFromList($CID,$folder->order,";");
+        $folder->saveData();
+        $c->query("DELETE FROM fenfire_comments WHERE commentID=?",array($CID));
+        Toolkit::log("Comment #".$CID." deleted.");
     }
 }
 
@@ -257,6 +296,8 @@ function cleanComments($FID){
     Toolkit::log("Comments for ".$folder->module.".".$folder->path." cleared.");
 }
 
+
+//FIXME: Do this, but in a way that doesn't suck donkey balls.
 function commentList($FID=null,$width=440){
     
     if($order==""){echo("<center>No comments have been added yet.</center>");return;}
