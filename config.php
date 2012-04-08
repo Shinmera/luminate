@@ -34,7 +34,7 @@ define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
 define("NO_ACCESS",'<div class="large" style="text-align:center;">You are not authorized to view this page.</div>');
 
 $SUPERIORPATH="";
-$DOMINATINGMODULE="CORE";
+$DOMINATINGMODULE="";
 $MODULES=array();
 $MODULECACHE=unserialize(file_get_contents(CALLABLESPATH.'modulecache'));
 if(!class_exists("Module")){    require_once(MODULEPATH.'module.php');}
