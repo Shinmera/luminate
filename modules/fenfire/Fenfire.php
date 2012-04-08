@@ -25,13 +25,6 @@ function displayPanel(){
     </div><?
 }
 
-function loadCommentOrder($MID,$CID){
-    global $c;
-    $result=$c->getData("SELECT `order` FROM tb_comment_order WHERE MID=? AND CID=?",array($MID,$CID));
-    if(count($result)<=0)return "";
-    return $result[0]["order"];
-}
-
 function displayAdminPage(){
     global $a,$c,$k,$params;
     if(!$a->check('fenfire.admin'))return;
@@ -140,138 +133,107 @@ function displayAdminFolders(){
     
 }
 
-
-
-function submitCommentForm(){
-    if($c->userpriv<1){
-        if($_POST['varuser']==""){echo("<center>Error: No user name given.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-        if($_POST['varmail']==""){echo("<center>Error: No mail address given.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-        if($k->in_arrayi($_POST['varuser'],$c->udUName)){
-                                    echo("<center>Error: You cannot use the name of a registered user.<br />
-                                            If this name belongs to you, please <a href='/user/login'>log in</a> first.<br />
-                                        <a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-        $args['user']=$_POST['varuser'];
-        $args['mail']=$_POST['varmail'];
-        $args["recaptcha_challenge_field"]=$_POST["recaptcha_challenge_field"];
-        $args["recaptcha_response_field"]=$_POST["recaptcha_response_field"];
+function getFolder($FID){
+    if($FID==""){
+        global $DOMINATINGMODULE,$SUPERIORPATH,$param,$c;
+        $folder = DataModel::getHull("fenfire_folders");
+        $folder->module = $DOMINATINGMODULE::$name;
+        if($SUPERIORPATH=="")$folder->path=$param;
+        else                 $folder->path=$SUPERIORPATH;
+        $folder->open=1;
+        $folder->insertData();
+        $folder->folderID=$c->insertID();
+        return $folder;
     }else{
-        if($c->userpriv<1){echo("<center>Error: You do not have the necessary permissions to post.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-        $args['user']=$c->username;
-        $args['mail']=$c->udUMail[$c->uID];
-    }
-    if($_POST['varMID']==""){echo("<center>Error: Post malformed.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-    if($_POST['varCID']==""){echo("<center>Error: Post malformed.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-    if($_POST['varsubject']==""){echo("<center>Error: No text given.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-    if(strlen($_POST['varsubject'])<$c->o['comment_size_min']){echo("<center>Error: Post too short.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-    if(strlen($_POST['varsubject'])>$c->o['comment_size_max']){echo("<center>Error: Post too long.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");return;}
-
-    $args['MID']=$_POST['varMID'];
-    $args['CID']=$_POST['varCID'];
-    $args['subject']=$_POST['varsubject'];
-    $args['response']=$_POST['varresponse'];
-
-    $response=$this->apiCall("submitComment",$args,$c->o['API_SUBMITCOMMENT_TOKEN']);
-    switch((string)$response){
-        case XERR_TIMEOUT:
-            echo("<center>Error: Please wait ".$c->o['post_timeout']." seconds between posts.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");
-            break;
-        case XERR_INVALID_CAPTCHA:
-            echo("<center>Error: You entered an invalid captcha.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");
-            break;
-        case XERR_BAD_AKISMET:
-            echo("<center>Error: The comment has been marked as spam and is held back for moderation.<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");
-            break;
-        case XERR_INVALID_API_TOKEN:
-            echo("<center>Error: An internal API error occurred. Please try again. <br />
-                If the error persists, contact the sysop at <a href='mailto:".$c->o['sysop_mail']."'>".$c->o['sysop_mail']."</a>.<br />
-                <a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");
-            break;
-        case XERR_GENERIC:
-            echo("<center>Error: Generic Error.<a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");
-            break;
-        case XERR_OK:
-            header('Location: '.$_SERVER['HTTP_REFERER']);
-            break;
-        default:
-            echo("<center>An unknown error occurred: '".$response."' .<a href='".$_SERVER['HTTP_REFERER']."'>Return</a></center>");
-            break;
+        return DataModel::getData("fenfire_folders","SELECT * FROM fenfire_folders WHERE folderID=?",array($FID));
     }
 }
 
-function submitComment(){
-    if(!$k->updateTimestamp("comment",$c->o['post_timeout']))return XERR_TIMEOUT;
+function commentBox($FID=null){
+    global $a,$l,$c;
+    $saveduser=$_COOKIE['_session_user'];
+    $savedmail=$_COOKIE['_session_mail'];
+    if($FID==null){$FID=$this->getFolder("")->folderID;}
+    ?>
+    
+    <form class="commentBox" method="post" action="<?=PROOT?>api.php?m=Comments&c=submitCommentForm">
+        <b><a title="commentBox">Add a comment:</a></b><br />
+        <? if($a->user==null) {?>
+            <label><a href="<?=$k->url("login","")?>" title="If you have a registered account, please log in first.">Username:</a></label><input name="varuser" value="<?=$saveduser?>" type="text" /><br />
+            <label><a title="Gravatar supported. Email will not be published.">E-Mail:</a></label>                                        <input name="varmail" value="<?=$savedmail?>" type="text" /><br />
+        <? } ?>
+            
+        <? $l->triggerHook("EDITOR",$this); ?>
+        <textarea Name="varsubject" id="varsubject" style="height:100px;"></textarea><br />
+        
+        <? if($a->user==null&&$c->o['recaptcha_key_public']!=''){
+            require_once(TROOT.'callables/recaptchalib.php'); ?>
+            <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
+            <?=recaptcha_get_html($c->o['recaptcha_key_public']);?>
+        <? } ?>
+        <input type="submit" name="Submit" value="Submit" />
+    <input type="hidden" name="varFID" value="<?=$FID?>">
+    <input type="hidden" id="varresponse" name="varresponse" value=""></form><?
+}
 
-    //check the captcha
-    if(!in_array($args['user'],$c->udUName)){
-        setcookie("_session_user",$args['user'],time()+60*60*24*$c->o['cookie_life_h']);
-        setcookie("_session_mail",$args['mail'],time()+60*60*24*$c->o['cookie_life_h']);
-        require_once($root.'callables/recaptchalib.php');
-        $resp = recaptcha_check_answer ($c->o['recaptcha_key_private'],
-                                        $_SERVER["REMOTE_ADDR"],
-                                        $args["recaptcha_challenge_field"],
-                                        $args["recaptcha_response_field"]);
-        if (!$resp->is_valid)return XERR_INVALID_CAPTCHA;
+function submitCommentForm(){
+    global $a,$k,$c;
+    
+    $spamcheck=0;
+    if(!$k->updateTimestamp("comment",$c->o['post_timeout'])){
+        $k->err("Please wait ".$c->o['post_timeout']." seconds between posts.",false,true);
+        return;
     }
-
-    //check akismet
-    require_once('./callables/akismet.php');
-    $akismet = new Akismet(HOST ,$c->o['akismet_key']);
-    $akismet->setCommentAuthor($args['user']);
-    $akismet->setCommentAuthorEmail($args['mail']);
-    $akismet->setCommentContent($args['subject']);
-    $akismet->setPermalink(HOST);
-    if($akismet->isCommentSpam())$spamcheck=1;else $spamcheck=0;
-
-    //get the comment list, level, order list and next ID.
-    $this->loadComments($args['CID'],$args['MID'],"1000");
-    $level=$this->tbDLevel[array_search($args['response'],$this->tbDID)]+1;if($level>5)$level=5;
-    $CO=$this->loadCommentOrder($args['MID'],$args['CID']);
-    $nid='%';
-
-    if($CO!="")$CO=explode(",",$CO);else{
-        $c->query("INSERT INTO tb_comment_order VALUES(?,?,?)",array($args['CID'],$args['MID'],''));
-        $CO=array();
-    }
-
-    //find the correct position
-    if(count($CO)>0){
-        if($args['response']!=""){
-            $pos=array_search($args['response'],$CO)+1;
-            for($i=$pos;$i<count($CO);$i++){
-                if($this->tbDLevel[array_search($CO[$i],$this->tbDID)]<$level){
-                    $pos=$i;
-                    break;
-                }
-            }
-        }else{
-            $pos=count($CO);
-            $level=0;
+    
+    if($a->user==null){
+        if($_POST['varuser']==""){$k->err("No username given.",false,true);return;}
+        if($_POST['varmail']==""){$k->err("No email address given.",false,true);return;}
+        if(DataModel::getData("SELECT userID FROM ud_users WHERE username=? OR displayname=? LIMIT1",array($_POST['varuser'],$_POST['varuser']))!=null){
+            $k->err("You cannot use the name of a registered user.<br />If this name belongs to you, please <a href='".$k->url("login","")."'>log in</a> first.",false,true);
+            return;
         }
-        $k->array_insert($CO,$nid,$pos);
-        $COf=implode(",",$CO);
+        setcookie("_session_user",$_POST['varuser'],time()+60*60*24*$c->o['cookie_life_h']);
+        setcookie("_session_mail",$_POST['varmail'],time()+60*60*24*$c->o['cookie_life_h']);
+        
+        //Check recaptcha
+        if($c->o['recaptcha_key_private']!=''){
+            require_once(CALLABLESPATH.'recaptchalib.php');
+            $resp = recaptcha_check_answer ($c->o['recaptcha_key_private'],
+                                            $_SERVER["REMOTE_ADDR"],
+                                            $_POST["recaptcha_challenge_field"],
+                                            $_POST["recaptcha_response_field"]);
+            if (!$resp->is_valid){$k->err("Invalid captcha.",false,true);return;}
+        }
+        
+        //Check akismet
+        if($c->o['akismet_key']!=''){
+            require_once('./callables/akismet.php');
+            $akismet = new Akismet(HOST ,$c->o['akismet_key']);
+            $akismet->setCommentAuthor($username);
+            $akismet->setCommentAuthorEmail($mail);
+            $akismet->setCommentContent($subject);
+            $akismet->setPermalink(HOST);
+            if($akismet->isCommentSpam())$spamcheck=1;
+        }
     }else{
-        $level=0;
-        $COf=$nid."";
+        $_POST['varuser']=$a->user->username;
+        $_POST['varmail']=$a->user->mail;
     }
+    if($_POST['varFID']==""){$k->err("Post malformed.",false,true);return;}
+    if($_POST['varsubject']==""){$k->err("No text given.",false,true);return;}
+    if($c->o['comment_size_min']!=''&&strlen($_POST['varsubject'])<$c->o['comment_size_min']){$k->err("Post too short.",false,true);return;}
+    if($c->o['comment_size_max']!=''&&strlen($_POST['varsubject'])>$c->o['comment_size_max']){$k->err("Post too long.",false,true);return;}
 
-    //insert
-    $query="INSERT INTO tb_comments VALUES(NULL,?,?,?,?,?,?,?,?,?)";
-    $c->query($query,array($args['CID'],$args['MID'],$args['user'],$args['mail'],$args['subject'],time(),$level,0,$spamcheck));
-    $result=$c->getData("SELECT commentID FROM tb_comments ORDER BY commentID DESC LIMIT 1;");
-    $nid=$result[0]['commentID'];$COf=str_replace("%",$nid,$COf);
-    $query="UPDATE tb_comment_order SET `order`=? WHERE CID=? AND MID=? LIMIT 1;";
-    $c->query($query,array($COf,$args['CID'],$args['MID']));
-    $k->log("Comment from ".$args['user']." (".$args['mail'].") for CID ".$args['CID']." and MID ".$args['MID']." added.");
-    //FIXME: SEND MESSAGES
-
-    if($spamcheck==1)   return XERR_BAD_AKISMET;
-    else                return XERR_OK;
+    $folder = $this->getFolder($_POST['varFID']);
+    
+    Toolkit::log("Comment from ".$_POST['varuser']." (".$_POST['varmail'].") for  added.");
+    header('Location: '.$_SERVER['HTTP_REFERER']);
 }
 
 function modComment(){
     if($a->check('comments.mod')){
         $c->query("UPDATE tb_comments SET moderation=? WHERE commentID=? LIMIT 1",array($args['moderation'],$args['CID']));
-        $k->log("Comment moderation for ID".$args['CID']." set to ".$args['moderation']);
+        Toolkit::log("Comment moderation for ID".$args['CID']." set to ".$args['moderation']);
     }
 }
 
@@ -283,22 +245,20 @@ function delComment(){
                                             $k->removeFromList($args['CID'],$order,","),$this->tbDCID[0],$this->tbDMID[0]));
         $c->query("DELETE FROM tb_comments WHERE commentID=? LIMIT 1",array(
                                             $args['CID']));
-        $k->log("Comment ID".$args['CID']." deleted.");
+        Toolkit::log("Comment ID".$args['CID']." deleted.");
     }
 }
 
-function cleanComments(){
-    $c->query("DELETE FROM tb_comments WHERE CID=? AND MID=?",array($args['CID'],$args['MID']));
-    $c->query("DELETE FROM tb_comment_order WHERE CID=? AND MID=?",array($args['CID'],$args['MID']));
-    $k->log("Comments for CID ".$args['CID']." and MID ".$args['MID']." cleared.");
+function cleanComments($FID){
+    global $c;
+    $c->query("DELETE FROM fenfire_comments WHERE FID=?",array($FID));
+    $folder = DataModel::getData("fenfire_folders","SELECT module,path FROM fenfire_folders WHERE folderID=?",array($FID));
+    $c->query("DELETE FROM fenfire_folders WHERE folderID=?",array($FID));
+    Toolkit::log("Comments for ".$folder->module.".".$folder->path." cleared.");
 }
 
-function commentList(){
-    if($args['MID']==""||$args['CID']=="")return;
-    if($args['from']=="")$args['from']=0;
-    if($args['to']=="")$args['to']=25;
-    if($args['width']=="")$args['width']='440px';
-    $order=$this->loadCommentOrder($args['MID'],$args['CID']);
+function commentList($FID=null,$width=440){
+    
     if($order==""){echo("<center>No comments have been added yet.</center>");return;}
     else $order=explode(",",$order);
     $this->loadComments($args['CID'],$args['MID'],$args['from'].",".$args['to']);
@@ -331,30 +291,8 @@ function commentList(){
     </div><?       
 }
 
-function commentBox(){
-    $saveduser=$_COOKIE['_session_user'];
-    $savedmail=$_COOKIE['_session_mail'];
-    if($args['width']=="")$args['width']='440px';
-    ?><div class="commentBox">
-    <b><a title="commentBox">Add a comment:</a></b><br />
-    <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
-    <form method="post" action="<?=PROOT?>api.php?m=Comments&c=submitCommentForm">
-    <table width="<?=$args['width']?>">
-        <? if($c->userpriv<1) {?>
-            <tr><td><a title="If you have a registered account, please log in first.">Username:</a></td><td align="right"><input style="width:200px;" name="varuser" value="<?=$saveduser?>" type="text" /></td></tr>
-            <tr><td><a title="Gravatar supported. Email will not be published.">E-Mail:</a></td><td align="right"><input style="width:200px;" name="varmail" value="<?=$savedmail?>" type="text"/></td></tr>
-        <? }?>
-    </table>
-        <TEXTAREA Name="varsubject" id="varsubject" style="width:<?=$args['width']?>;height:100px;"></TEXTAREA><br />
-        <? if($c->userpriv<1){require_once(TROOT.'callables/recaptchalib.php');echo recaptcha_get_html($c->o['recaptcha_key_public']);} ?>
-        <input type="submit" name="Submit" value="Submit" />
-    <input type="hidden" name="varMID" value="<?=$args['MID']?>">
-    <input type="hidden" name="varCID" value="<?=$args['CID']?>">
-    <input type="hidden" id="varresponse" name="varresponse" value=""></form></div><?
-}
-
-function getCommentAmount(){
-    $result = $c->getData("SELECT COUNT(commentID) FROM tb_comments WHERE CID=? AND MID=? AND moderation=?",array($args['CID'],$args['MID'],0));
+function getCommentAmount($FID){
+    $result = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments WHERE FID=? moderation=?",array($FID,0));
     if($result[0]['COUNT(commentID)']=="")return 0;
     else return $result[0]['COUNT(commentID)'];
 }
