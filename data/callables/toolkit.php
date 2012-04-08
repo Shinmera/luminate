@@ -258,6 +258,12 @@ function in_arrayi($needle, $haystack) {
     return false;
 }
 
+function removeFromList($needle,$haystack,$sep=";"){
+    $haystack = explode($sep,$haystack);
+    unset($haystack[array_search($needle, $haystack)]);
+    return implode($sep,$haystack);
+}
+
 function breadcrumbs($array){
     echo("<div class='breadcrumbs'>");
     foreach($array as $a=>$l){
@@ -307,14 +313,6 @@ function convertHTML($html){
     $html = str_replace("<","&lt;",$html);
     $html = str_replace(">","&gt;",$html);
     return $html;
-}
-
-function removeFromList($needle,$haystack,$sep=";"){
-    $haystack = str_replace($needle,"",$haystack);
-    $haystack = str_replace($sep.$sep,$sep,$haystack);
-    if(substr($haystack,0,1)==$sep)$haystack = substr($haystack,1);
-    if(substr($haystack,strlen($haystack)-1)==$sep)$haystack = substr($haystack,0,strlen($haystack)-1);
-    return $haystack;
 }
 
 function unzipFile($file,$destination){
