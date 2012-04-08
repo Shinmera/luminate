@@ -41,6 +41,9 @@ public static $hooks=array("foo");
 
     function deparse($s){
         $s = str_ireplace("\n","<br />",$s);
+        $s = str_ireplace("\\\\","\\",$s);
+        $s = str_ireplace("\\'","'",$s);
+        $s = str_ireplace('\\"','"',$s);
         return trim($s);
     }
     function deparseNoBreak($s){
@@ -54,10 +57,6 @@ public static $hooks=array("foo");
         $s=$this->BBCodeDeParse($s,$level,$blacktags);
         if($level>=99)$s=preg_replace_callback("`\[html\](.+?)\[/html\]`is",array(&$this, 'reparseHTML'), $s);
         $s=$this->balanceTags($s);
-        $s = str_ireplace("\\\\","\\",$s);
-        $s = str_ireplace("\\'","'",$s);
-        $s = str_ireplace('\\"','"',$s);
-        $s = $l->triggerHookSequentially("deparse",$this,$s);
         return $s;
     }
 

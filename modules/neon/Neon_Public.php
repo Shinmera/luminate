@@ -11,35 +11,12 @@ function displayUserlistPage(){
 
     <? global $c;
     if($a->check("user.list")){
-        $max = $c->getData("SELECT COUNT(userID) FROM ud_users");$max=$max[0]['COUNT(userID)'];
-        switch($_GET['action']){
-            case '<<':$_GET['f']=0;  $_GET['t']=50; break;
-            case '<' :$_GET['f']-=50;$_GET['t']-=50;break;
-            case '>' :$_GET['f']+=50;$_GET['t']+=50;break;
-            case '>>':$_GET['f']=$max-50;$_GET['t']=$max;break;
-        }
-        //Sanitize user input
-        if($_GET['f']<0||!is_numeric($_GET['f']))         $_GET['f']=0;
-        if($_GET['t']<$_GET['f']||!is_numeric($_GET['t']))$_GET['t']=$_GET['f']+50;
-        if($_GET['t']>$max)$_GET['t']=$max;
-        if($_GET['f']>$_GET['t'])$_GET['f']=$_GET['t']-1;
-        if($_GET['a']!=0&&$_GET['a']!=1)      $_GET['a']="0";
-        if($_GET['t']-$_GET['f']>100)$_GET['t']=$_GET['f']+100;
-        $orders = array('username','displayname','group','time');
-        if(!in_array($_GET['o'],$orders))$_GET['o']='time';
+        $max = $c->getData("SELECT COUNT(userID) FROM ud_users");
+        
+        $k->sanitizePager($max[0]['COUNT(userID)'],array('username','displayname','group','time'),'time');
         ?>
         <div class="box" style="display:block;">
-            <form>
-                <input type="submit" name="dir" value="<<" />
-                <input type="submit" name="dir" value="<" />
-                <input autocomplete="off" type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
-                <input autocomplete="off" type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
-                <input type="submit" name="dir" value="Go" />
-                <input type="submit" name="dir" value=">" />
-                <input type="submit" name="dir" value=">>" />
-                <input type="hidden" name="order" value="<?=$_GET['o']?>" />
-                <input type="hidden" name="asc" value="<?=$_GET['a']?>" />
-            </form>
+            <? $k->displayPager(); ?>
             <form action="<?=PROOT?>User/edituser" method="post"><table>
                 <thead>
                     <tr>
@@ -75,9 +52,9 @@ function displayUserlistPage(){
 }
 
 function displayUserPage($username){
-    global $t,$l,$k,$a,$params,$site;
+    global $t,$l,$k,$a,$params,$site,$SUPERIORPATH;
     $user = DataModel::getData("ud_users","SELECT userID,username,displayname,`group`,`status`,`time`,filename FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($username,$username));
-    
+    $SUPERIORPATH=$user->username;
     if($user==null){
         $t->openPage("User not found");
         ?><div id='pageNav'>

@@ -400,6 +400,39 @@ function displayFilesize($filesize){
     }
 }
 
+function displayPager(){
+    ?><form class="pagerForm">
+        <input class="bb" type="submit" name="dir" value="<<" />
+        <input class="b"  type="submit" name="dir" value="<" />
+        <input class="from" autocomplete="off" type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
+        <input class="to"   autocomplete="off" type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
+        <input class="go" type="submit" name="dir" value="Go" />
+        <input class="f"  type="submit" name="dir" value=">" />
+        <input class="ff" type="submit" name="dir" value=">>" />
+        <input type="hidden" name="order" value="<?=$_GET['o']?>" />
+        <input type="hidden" name="asc" value="<?=$_GET['a']?>" />
+    </form><?
+}
+
+function sanitizePager($max,$orders,$defaultOrder="",$step=50){
+    switch($_GET['action']){
+        case '<<':$_GET['f']=0;  $_GET['t']=$step; break;
+        case '<' :$_GET['f']-=$step;$_GET['t']-=$step;break;
+        case '>' :$_GET['f']+=$step;$_GET['t']+=$step;break;
+        case '>>':$_GET['f']=$max-$step;$_GET['t']=$max;break;
+    }
+    if($_GET['f']<0||!is_numeric($_GET['f']))         $_GET['f']=0;
+    if($_GET['t']<$_GET['f']||!is_numeric($_GET['t']))$_GET['t']=$_GET['f']+$step;
+    if($_GET['t']>$max)                               $_GET['t']=$max;
+    if($_GET['f']>$_GET['t'])                         $_GET['f']=$_GET['t']-1;
+    if($_GET['t']-$_GET['f']>100)                     $_GET['t']=$_GET['f']+100;
+    if($_GET['a']!=0&&$_GET['a']!=1)                  $_GET['a']="0";
+    if(!in_array($_GET['o'],$orders)){
+        if($defaultOrder=="")$_GET['o']=$orders[0];
+        else                 $_GET['o']=$defaultOrder;
+    }
+}
+
 function sanitizeFilename($filename){
     $filename = $this->sanitizeString($filename);
     $filename = str_replace(" ","_", $filename);

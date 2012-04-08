@@ -50,25 +50,12 @@ function displayAdminComments(){
         $err="Comment deleted.";
     }
     
-    $max = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments");$max=$max[0]['COUNT(commentID)'];
-    switch($_GET['action']){
-        case '<<':$_GET['f']=0;  $_GET['t']=50; break;
-        case '<' :$_GET['f']-=50;$_GET['t']-=50;break;
-        case '>' :$_GET['f']+=50;$_GET['t']+=50;break;
-        case '>>':$_GET['f']=$max-50;$_GET['t']=$max;break;
-    }
-    //Sanitize user input
-    if($_GET['f']<0||!is_numeric($_GET['f']))         $_GET['f']=0;
-    if($_GET['t']<$_GET['f']||!is_numeric($_GET['t']))$_GET['t']=$_GET['f']+50;
-    if($_GET['t']>$max)$_GET['t']=$max;
-    if($_GET['f']>$_GET['t'])$_GET['f']=$_GET['t']-1;
-    if($_GET['a']!=0&&$_GET['a']!=1)      $_GET['a']="0";
-    if($_GET['t']-$_GET['f']>100)$_GET['t']=$_GET['f']+100;
-    $orders = array('module','path','commentID','username','time');
-    if(!in_array($_GET['o'],$orders))$_GET['o']='time';
+    $max = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments");
+    $k->sanitizePager($max[0]['COUNT(commentID)'],array('module','path','commentID','username','time'),'time');
     ?>
     <div class="box" style="display:block;">
         <?=$err?><br />
+        
         <form>
             <input type="checkbox" name="b" value="1" <? if($_GET['b']=="1")echo("checked"); ?> />Show approved comments
             <input type="submit" name="dir" value="Show" /><br />
@@ -130,37 +117,97 @@ function displayAdminComments(){
 }
 
 function displayAdminFolders(){
+    global $c,$k;
     
+    if($_GET['action']=="M"){
+        $mod = $c->getData("SELECT moderation FROM fenfire_comments WHERE commentID=? AND FID=?",array($_GET['commentID'],$_GET['FID']));
+        if($mod[0]['moderation']=="1")$mod=0;else $mod=1;
+        $c->query("UPDATE fenfire_comments SET moderation=? WHERE commentID=? AND FID=?",array($mod,$_GET['commentID'],$_GET['FID']));
+        if($mod==1)$err="Comment blocked.";else $err="Comment approved.";
+    }
+    
+    $max = $c->getData("SELECT COUNT(folderID) FROM fenfire_folders");
+    $k->sanitizePager($max[0]['COUNT(folderID)'],array('folderID','module','path'),'folderID');
+    ?>
+    <div class="box" style="display:block;">
+        <?=$err?><br />
+        <? $k->displayPager(); ?>
+        <table>
+            <thead><tr>
+                <th style="width:60px;"></th>
+                <th style="width:100px;"><a href="?o=folderID&a=<?=!$_GET['a']?>"> ID</a></th>
+                <th style="width:150px;"><a href="?o=module&a=<?=!$_GET['a']?>">   Module</a></th>
+                <th><a href="?o=path&a=<?=!$_GET['a']?>">     Path</a></th>
+                <th style="width:60px;">Open</th>
+            </tr></thead>
+            <tbody>
+                <? if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
+                $folders = DataModel::getData("fenfire_folders","SELECT folderID,module,path,open FROM fenfire_folders ".
+                                              " ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t']);
+                if($folders!=null){
+                    if(!is_array($folders))$folders=array($folders);
+                    foreach($folders as $folder){
+                        ?><tr>
+                            <td><form>
+                                <input type="hidden" name="o" value="<?=$_GET['o']?>" />
+                                <input type="hidden" name="a" value="<?=$_GET['a']?>" />
+                                <input type="hidden" name="folderID" value="<?=$folder->folderID?>" />
+                                <input type="submit" name="action" value="X" class="roundbutton" />
+                                <input type="submit" name="action" value="M" class="roundbutton" />
+                            </form></td>
+                            <td><?=$folder->folderID?></td>
+                            <td><?=$folder->module?></td>
+                            <td><?=$folder->path?></td>
+                            <td><?=$folder->open?></td>
+                        </tr><?
+                    }
+                }
+                ?>
+            <tbody>
+        </table>
+    </div><?
 }
 
 function getFolder($FID){
-    if($FID==""){
-        global $DOMINATINGMODULE,$SUPERIORPATH,$param,$c;
+    global $DOMINATINGMODULE,$SUPERIORPATH,$param,$c;
+    if($SUPERIORPATH=="")$path=$param;
+    else                 $path=$SUPERIORPATH;
+    
+    if(is_numeric($FID)&&$FID!="")$folder = DataModel::getData("fenfire_folders","SELECT * FROM fenfire_folders WHERE folderID=?",array($FID));
+    else $folder = DataModel::getData("fenfire_folders","SELECT * FROM fenfire_folders WHERE module LIKE ? AND path LIKE ?",array($DOMINATINGMODULE::$name,$path));
+    
+    if($folder==null){
         $folder = DataModel::getHull("fenfire_folders");
         $folder->module = $DOMINATINGMODULE::$name;
-        if($SUPERIORPATH=="")$folder->path=$param;
-        else                 $folder->path=$SUPERIORPATH;
-        $folder->open=1;
+        $folder->path = $path;
+        $folder->open = 1;
         $folder->insertData();
         $folder->folderID=$c->insertID();
-        return $folder;
-    }else{
-        return DataModel::getData("fenfire_folders","SELECT * FROM fenfire_folders WHERE folderID=?",array($FID));
     }
+    return $folder;
+}
+
+function commentSection($FID=null){
+    echo("<div class='box commentSection'>");
+    $this->commentList();
+    $this->commentBox();
+    echo("</div>");
 }
 
 function commentBox($FID=null){
-    global $a,$l,$c;
+    global $a,$l,$c,$k;
     $saveduser=$_COOKIE['_session_user'];
     $savedmail=$_COOKIE['_session_mail'];
-    if($FID==null){$FID=$this->getFolder("")->folderID;}
+    $folder=$this->getFolder("");
+    if($folder->open!=1)return;
+    if($FID==null){$FID=$folder->folderID;}
     ?>
     
-    <form class="commentBox" method="post" action="<?=PROOT?>api.php?m=Comments&c=submitCommentForm">
+    <form class="commentBox" method="post" action="<?=$k->url("API","SubmitComment")?>">
         <b><a title="commentBox">Add a comment:</a></b><br />
         <? if($a->user==null) {?>
             <label><a href="<?=$k->url("login","")?>" title="If you have a registered account, please log in first.">Username:</a></label><input name="varuser" value="<?=$saveduser?>" type="text" /><br />
-            <label><a title="Gravatar supported. Email will not be published.">E-Mail:</a></label>                                        <input name="varmail" value="<?=$savedmail?>" type="text" /><br />
+            <label><a title="Email will not be published.">E-Mail:</a></label>                                                            <input name="varmail" value="<?=$savedmail?>" type="text" /><br />
         <? } ?>
             
         <? $l->triggerHook("EDITOR",$this); ?>
@@ -172,8 +219,9 @@ function commentBox($FID=null){
             <?=recaptcha_get_html($c->o['recaptcha_key_public']);?>
         <? } ?>
         <input type="submit" name="Submit" value="Submit" />
-    <input type="hidden" name="varFID" value="<?=$FID?>">
-    <input type="hidden" id="varresponse" name="varresponse" value=""></form><?
+        <input type="hidden" name="varFID" value="<?=$FID?>">
+        <input type="hidden" id="varresponse" name="varresponse" value="">
+    </form><?
 }
 
 function submitCommentForm(){
@@ -181,13 +229,13 @@ function submitCommentForm(){
     
     $spamcheck=0;
     if(!$k->updateTimestamp("comment",$c->o['post_timeout'])){
-        $k->err("Please wait ".$c->o['post_timeout']." seconds between posts.",false,true);
+        $k->err("Please wait ".$c->o['post_timeout']." seconds between posts.",true,true);
         return;
     }
     
     if($a->user==null){
-        if($_POST['varuser']==""){$k->err("No username given.",false,true);return;}
-        if($_POST['varmail']==""){$k->err("No email address given.",false,true);return;}
+        if($_POST['varuser']==""){$k->err("No username given.",true,true);return;}
+        if($_POST['varmail']==""){$k->err("No email address given.",true,true);return;}
         if(DataModel::getData("SELECT userID FROM ud_users WHERE username=? OR displayname=? LIMIT1",array($_POST['varuser'],$_POST['varuser']))!=null){
             $k->err("You cannot use the name of a registered user.<br />If this name belongs to you, please <a href='".$k->url("login","")."'>log in</a> first.",false,true);
             return;
@@ -202,7 +250,7 @@ function submitCommentForm(){
                                             $_SERVER["REMOTE_ADDR"],
                                             $_POST["recaptcha_challenge_field"],
                                             $_POST["recaptcha_response_field"]);
-            if (!$resp->is_valid){$k->err("Invalid captcha.",false,true);return;}
+            if (!$resp->is_valid){$k->err("Invalid captcha.",true,true);return;}
         }
         
         //Check akismet
@@ -219,20 +267,23 @@ function submitCommentForm(){
         $_POST['varuser']=$a->user->username;
         $_POST['varmail']=$a->user->mail;
     }
-    if($_POST['varFID']==""){$k->err("Post malformed.",false,true);return;}
-    if($_POST['varsubject']==""){$k->err("No text given.",false,true);return;}
-    if($c->o['comment_size_min']!=''&&strlen($_POST['varsubject'])<$c->o['comment_size_min']){$k->err("Post too short.",false,true);return;}
-    if($c->o['comment_size_max']!=''&&strlen($_POST['varsubject'])>$c->o['comment_size_max']){$k->err("Post too long.",false,true);return;}
+    if($_POST['varFID']==""){$k->err("Post malformed.",true,true);return;}
+    if($_POST['varsubject']==""){$k->err("No text given.",true,true);return;}
+    if($c->o['comment_size_min']!=''&&strlen($_POST['varsubject'])<$c->o['comment_size_min']){$k->err("Post too short.",true,true);return;}
+    if($c->o['comment_size_max']!=''&&strlen($_POST['varsubject'])>$c->o['comment_size_max']){$k->err("Post too long.",true,true);return;}
 
     $post = DataModel::getHull("fenfire_comments");
     $folder = $this->getFolder($_POST['varFID']);
+    
     //Calculate nesting level
     $parent = null;
-    if($_POST['varresponse']==""){
-        $parent = DataModel::getData("fenfire_comments", "SELECT commentID,level FROM fenfire_comments WHERE commentID=?",$array($_POST['varresponse']));
+    if($_POST['varresponse']!=""){
+        $parent = DataModel::getData("fenfire_comments", "SELECT commentID,level FROM fenfire_comments WHERE commentID=?",array($_POST['varresponse']));
         if($parent!=null){
-            if($parent->level<$c->o['comment_max_level'])$post->level=$parent->level+1;
-            else                                         $post->level=$c->o['comment_max_level'];
+            if($parent->level<$c->o['comment_max_level']||$c->o['comment_max_level']=="")$post->level=$parent->level+1;
+            else                                                                         $post->level=$c->o['comment_max_level'];
+        }else{
+            $post->level=0;
         }
     }else{
         $post->level=0;
@@ -255,7 +306,7 @@ function submitCommentForm(){
     }else{
         for($i=0,$count=count($order);$i<$count;$i++){
             if($order[$i]==$parent->commentID){
-                $k->array_insert($order, $post->commentID,$i);
+                $k->array_insert($order, $post->commentID,$i+1);
                 break;
             }
         }
@@ -296,40 +347,62 @@ function cleanComments($FID){
     Toolkit::log("Comments for ".$folder->module.".".$folder->path." cleared.");
 }
 
-
-//FIXME: Do this, but in a way that doesn't suck donkey balls.
-function commentList($FID=null,$width=440){
+function commentList($FID="",$width=440){
+    global $c,$k,$l;
     
-    if($order==""){echo("<center>No comments have been added yet.</center>");return;}
-    else $order=explode(",",$order);
-    $this->loadComments($args['CID'],$args['MID'],$args['from'].",".$args['to']);
-    ?><div class='co_list' style="width:<?=$args['width']?>;"><a name="comments"></a>
-    <script type="text/javascript">
-    $(function(){
-        $(".respondButton").each(function(){
-            $(this).click(function(){
-                $("#varresponse").val($(this).attr("id"));
-                $("#varsubject").focus();
-                $("#varsubject").val($("#varsubject").val()+">>"+$(this).attr("id")+"\n");
+    $folder = $this->getFolder($FID);
+    $max = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments WHERE FID=?",array($folder->folderID));
+    $k->sanitizePager($max,array('time'),'',25);
+    
+    ?>
+    <div class="commentList">
+        <? $k->displayPager();
+        
+        if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
+        $comments = DataModel::getData("fenfire_comments",'SELECT commentID,username,mail,text,time,level FROM fenfire_comments '.
+                        'WHERE FID=? AND moderation=0 ORDER BY `'.$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t'],array($folder->folderID));
+        if($_GET['a']=="DESC")$_GET['a']=0;else $_GET['a']=1;
+        
+        if($comments==null){
+            echo('<center>No comments available.</center>');
+        }else{
+            if(!is_array($comments))$comments=array($comments);
+            $order = explode(";",$folder->order);
+            foreach($order as $o){
+                $comment=null;
+                foreach($comments as $com){if($com->commentID==$o){$comment=$com;break;}}
+                if($comment!=null){
+                    ?><div class="comment" style="margin-left:<?=(50*$comment->level)?>px;">
+                        <?
+                        $user = DataModel::getData("ud_users","SELECT displayname,filename FROM ud_users WHERE username LIKE ?",array($comment->username));
+                        if($user==null){$user = DataModel::getHull("");$user->displayname=$comment->username;$user->filename="noguy.png";}
+                        $k->getUserAvatar($user->displayname,$user->filename,false,75);?>
+                        <div class="commentText">
+                            <div class="commentInfo">
+                                Posted by <?=$k->getUserPage($user->displayname);?> on <?=$k->toDate($comment->time);?>
+                                <a class="button replyButton" id="<?=$comment->commentID?>">Reply</a>
+                            </div>
+                            <p>
+                                <?=$l->triggerHookSequentially("PARSEText","CORE",$comment->text);?>
+                            </p>
+                        </div>
+                    </div><?
+                }
+            }
+        } ?>
+        <script type="text/javascript">
+            $(".comment .replyButton").each(function(){
+                $(this).click(function(){
+                    $(".commentBox #varresponse").attr("value",$(this).attr("id"));
+                    $(".commentBox #varsubject").focus();
+                    $('html,body').animate({scrollTop: $(".commentBox #varsubject").offset().top-40},'fast');
+                });
             });
-        });
-    });</script>
+        </script>
+        <? $k->displayPager(); ?>
+    </div>
     <?
-    for($i=0;$i<count($order);$i++){
-        $id=array_search($order[$i],$this->tbDID);
-        if(in_array($order[$i],$this->tbDID)){
-        ?><div style="padding:10px;width:<?=($this->tbDLevel[$id]*20)?>px;float:left;"></div>
-        <div class="co_entry">
-            <div class='co_entryAvatar'><?=$k->getUserAvatar($this->tbDUsername[$id],$this->tbDUsermail[$id],75)?></div>
-            <a style="float:right;" href="#<?=$this->tbDID[$id]?>" title="<?=$this->tbDID[$id]?>">#<?=$this->tbDID[$id]?></a>
-            <b><?=$this->tbDUsername[$id]?></b>
-            <div style='font-size:10px;'>Posted on: <?=$k->toDate($this->tbDTime[$id])?> | <a class="respondButton" id="<?=$this->tbDID[$id]?>" href="#commentBox">Respond</a>
-            <? if($a->check('comments.mod')){echo(' | <a href="/api.php?m=Comments&c=delComment&a=CID:'.$this->tbDID[$id].'&s='.$c->o['API_DELCOMMENT_TOKEN'].'&r=true">Delete</a>');} ?></div>
-            <?=$p->deparseAll($this->tbDText[$id])?>
-        </div>
-        <br class="clear" />
-    <?}}?>
-    </div><?       
+    
 }
 
 function getCommentAmount($FID){
