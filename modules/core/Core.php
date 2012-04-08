@@ -9,13 +9,21 @@ public static $hooks=array("foo");
 function __construct(){}
 
 function printTimePassed(){
-    global $k;
+    global $k,$l,$SUPERIORPATH;
     ?><center>
         <div style='display:inline-block;padding:5px;border-radius:5px;box-shadow: 0px 0px 10px #000;'>
             <?=$k->getTimeElapsed()?>s<br />
             <?=CORE::$version?>
         </div>
     </center><?
+    $t = $l->loadModule("Themes");
+    $fenfire = $l->loadModule("Fenfire");
+    
+    $t->openPage("INDEX");
+    $SUPERIORPATH="INDEX";
+    $fenfire->commentList();
+    $fenfire->commentBox();
+    $t->closePage();
 }
 
 function apiCall(){

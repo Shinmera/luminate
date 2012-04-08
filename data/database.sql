@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1
+-- version 3.5.0
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 29, 2012 at 10:30 PM
--- Server version: 5.5.21
+-- Generation Time: Apr 09, 2012 at 12:54 AM
+-- Server version: 5.5.22-log
 -- PHP Version: 5.3.10
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -36,7 +36,15 @@ CREATE TABLE IF NOT EXISTS `fenfire_comments` (
   `level` tinyint(4) NOT NULL,
   `moderation` tinyint(1) NOT NULL,
   PRIMARY KEY (`commentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+
+--
+-- Dumping data for table `fenfire_comments`
+--
+
+INSERT INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `text`, `time`, `level`, `moderation`) VALUES
+(15, 90, 'Someone Else', 'nigger', 'LOL UR GHEY FOR MITHENT', 1333924316, 0, 0),
+(16, 90, 'Shinmera', 'nhafner@gmx.ch', 'IKNORITE', 1333924490, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -48,10 +56,18 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
   `folderID` int(11) NOT NULL AUTO_INCREMENT,
   `module` varchar(32) NOT NULL,
   `path` varchar(64) NOT NULL,
-  `order` text NOT NULL,
+  `order` text,
   `open` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`folderID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=91 ;
+
+--
+-- Dumping data for table `fenfire_folders`
+--
+
+INSERT INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
+(89, 'CORE', 'INDEX', ';0;9;1;0;7;10;8;2;3;4;5;6;11;12;13;14', 1),
+(90, 'Neon', 'Shinmera', ';15;16', 1);
 
 -- --------------------------------------------------------
 
@@ -105,7 +121,10 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Themes', 'buildMenu', 'Display', 'buildMenu'),
 ('Admin', 'ADMINFenfire', 'Fenfire', 'displayAdminPage'),
 ('Admin', 'PANELdisplay', 'Fenfire', 'displayPanel'),
-('Admin', 'ADMINNavbar', 'Fenfire', 'adminNavbar');
+('Admin', 'ADMINNavbar', 'Fenfire', 'adminNavbar'),
+('CORE', 'APISubmitComment', 'Fenfire', 'submitCommentForm'),
+('CORE', 'PARSEText', 'Parser', 'deparse'),
+('Neon', 'PROFILEpage', 'Fenfire', 'commentSection');
 
 -- --------------------------------------------------------
 
@@ -119,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -136,7 +155,30 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (8, 'Module &#039;Fenfire&#039; added.', '1332937555', 1),
 (9, 'Hook Admin::ADMINFenfire =&gt; Fenfire::displayAdminPage added.', '1332937673', 1),
 (10, 'Hook Admin::PANELdisplay =&gt; Fenfire::displayPanel added.', '1332937689', 1),
-(11, 'Hook Admin::ADMINNavbar =&gt; Fenfire::adminNavbar added.', '1332937781', 1);
+(11, 'Hook Admin::ADMINNavbar =&gt; Fenfire::adminNavbar added.', '1332937781', 1),
+(12, 'Hook Admin::PANELdisplay =&gt; Fenfire::commentList added.', '1333918439', 1),
+(13, 'Hook CORE::APISubmitComment =&gt; Fenfire::submitCommentForm added.', '1333920237', 1),
+(14, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333920332', 1),
+(15, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921025', 1),
+(16, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921067', 1),
+(17, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921208', 1),
+(18, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921435', 1),
+(19, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921449', 1),
+(20, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921712', 1),
+(21, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921740', 1),
+(22, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921759', 1),
+(23, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921810', 1),
+(24, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921821', 1),
+(25, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921839', 1),
+(26, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921864', 1),
+(27, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922562', 1),
+(28, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922696', 1),
+(29, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922727', 1),
+(30, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922735', 1),
+(31, 'Hook CORE::PARSEText =&gt; Parser::deparse added.', '1333922882', 1),
+(32, 'Hook Neon::PROFILEpage =&gt; Fenfire::commentSection added.', '1333924256', 1),
+(33, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924316', 1),
+(34, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924490', 1);
 
 -- --------------------------------------------------------
 
@@ -219,7 +261,8 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
 ('127.0.0.1', 1332798331, 'visit'),
-('127.0.0.1', 1333023204, 'visit:1');
+('127.0.0.1', 1333925549, 'visit:1'),
+('127.0.0.1', 1333924490, 'comment');
 
 -- --------------------------------------------------------
 
@@ -351,5 +394,5 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
 --
 
 INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
 (2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 1332582153);
