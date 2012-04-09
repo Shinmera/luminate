@@ -1,0 +1,11 @@
+POST action:
+Hookname: POST
+Sender: Always saved in $a.
+Arguments:
+  Module toModule                   The module it is being posted to.
+  String sectionID                  The specific subsection of the module this post action came from.
+  String postBody                   The actual post content/text
+  &optional String toUser           Posts can be directed at a certain user. This is the USERNAME String.
+  &optional String postTitle        An optional post title.
+  &optional URLString permalink     A link that refers to this post upon visit.
+  &optional String type             A description of the post type (comment,thread,etc)

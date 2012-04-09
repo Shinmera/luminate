@@ -120,10 +120,16 @@ function displayAdminFolders(){
     global $c,$k;
     
     if($_GET['action']=="M"){
-        $mod = $c->getData("SELECT moderation FROM fenfire_comments WHERE commentID=? AND FID=?",array($_GET['commentID'],$_GET['FID']));
-        if($mod[0]['moderation']=="1")$mod=0;else $mod=1;
-        $c->query("UPDATE fenfire_comments SET moderation=? WHERE commentID=? AND FID=?",array($mod,$_GET['commentID'],$_GET['FID']));
-        if($mod==1)$err="Comment blocked.";else $err="Comment approved.";
+        $mod = $c->getData("SELECT open FROM fenfire_folders WHERE folderID=?",array($_GET['folderID']));
+        if($mod[0]['open']=="1")$mod=0;else $mod=1;
+        $c->query("UPDATE fenfire_folders SET open=? WHERE folderID=?",array($mod,$_GET['folderID']));
+        if($mod==1)$err="Folder closed.";else $err="Folder opened.";
+    }
+    
+    if($_GET['action']=="X"){
+        $c->query("DELETE FROM fenfire_comments WHERE FID=?",array($_GET['folderID']));
+        $c->query("DELETE FROM fenfire_folders WHERE folderID=?",array($_GET['folderID']));
+        $err="Folder and comments deleted.";
     }
     
     $max = $c->getData("SELECT COUNT(folderID) FROM fenfire_folders");
