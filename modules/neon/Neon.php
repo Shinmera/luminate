@@ -77,7 +77,7 @@ function displayControlPanelPage(){
     
     if($params[1]=='')$params[1]='Profile';
     $pages = array('Profile','Friends');
-    $pages = $l->triggerHookSequentially('SETTINGSnavbar',$this,$pages);
+    $pages = $l->triggerHookSequentially('SETTINGSNavbar',"User",$pages);
     ?><div id='pageNav'>
         <div style="display:inline-block">
             <h1 class="sectionheader">Settings</h1>
@@ -97,7 +97,7 @@ function displayControlPanelPage(){
         switch($params[1]){
             case 'Profile':displayControlPanelProfile();break;
             case 'Friends':displayControlPanelFriends();break;
-            default:       $l->triggerHook('SETTINGS'.$params[1],$this);break;
+            default:       $l->triggerHook('SETTINGS'.$params[1],"User");break;
         } 
     }else{
         echo(NO_ACCESS);

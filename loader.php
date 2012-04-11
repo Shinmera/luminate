@@ -55,6 +55,12 @@
         }
     }
     
+    function triggerPOST($source,$toModule,$sectionID,$postBody,$toUser="",$permalink="",$postTitle="",$type=""){
+        $args=array("toModule"=>$toModule,"sectionID"=>$sectionID,"postBody"=>$postBody,
+                    "toUser"=>$toUser,"postTitle"=>$postTitle,"permalink"=>$permalink,"type"=>$type);
+        $this->triggerHook("POST",$source,$args);
+    }
+    
     function triggerHook($hook,$source,$args=array(),$modules=array(),$setdominating=false){
         global $k,$DOMINATINGMODULE;
         if(is_string($source))$source = $this->loadModule($source);
