@@ -231,7 +231,7 @@ function commentBox($FID=null){
 }
 
 function submitCommentForm(){
-    global $a,$k,$c;
+    global $a,$k,$c,$l;
     
     $spamcheck=0;
     if(!$k->updateTimestamp("comment",$c->o['post_timeout'])){
@@ -284,7 +284,7 @@ function submitCommentForm(){
     //Calculate nesting level
     $parent = null;
     if($_POST['varresponse']!=""){
-        $parent = DataModel::getData("fenfire_comments", "SELECT commentID,level FROM fenfire_comments WHERE commentID=?",array($_POST['varresponse']));
+        $parent = DataModel::getData("fenfire_comments", "SELECT commentID,username,level FROM fenfire_comments WHERE commentID=?",array($_POST['varresponse']));
         if($parent!=null){
             if($parent->level<$c->o['comment_max_level']||$c->o['comment_max_level']=="")$post->level=$parent->level+1;
             else                                                                         $post->level=$c->o['comment_max_level'];
@@ -320,6 +320,8 @@ function submitCommentForm(){
     $folder->order=implode(";",$order);
     $folder->saveData();
     
+    if($parent==null)$toUser="";else $toUser=$parent->username;
+    $l->triggerPOST($this,$folder->module,$folder->path,$post->text,$toUser,$k->url($folder->module,$folder->path),"","comment");
     Toolkit::log("Comment from ".$_POST['varuser']." (".$_POST['varmail'].") for  added.");
     header('Location: '.$_SERVER['HTTP_REFERER']);
 }

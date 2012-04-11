@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.0
+-- version 3.4.10.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 09, 2012 at 12:54 AM
--- Server version: 5.5.22-log
+-- Generation Time: Apr 11, 2012 at 12:21 PM
+-- Server version: 5.5.22
 -- PHP Version: 5.3.10
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -19,6 +19,24 @@ SET time_zone = "+00:00";
 --
 -- Database: `tymoonD`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `derpy_messages`
+--
+
+CREATE TABLE IF NOT EXISTS `derpy_messages` (
+  `messageID` int(11) NOT NULL AUTO_INCREMENT,
+  `sender` varchar(32) NOT NULL,
+  `recipient` varchar(32) NOT NULL,
+  `type` varchar(1) NOT NULL DEFAULT 'm',
+  `title` varchar(64) NOT NULL DEFAULT 'No Subject',
+  `text` text NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `read` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`messageID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -124,7 +142,10 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Admin', 'ADMINNavbar', 'Fenfire', 'adminNavbar'),
 ('CORE', 'APISubmitComment', 'Fenfire', 'submitCommentForm'),
 ('CORE', 'PARSEText', 'Parser', 'deparse'),
-('Neon', 'PROFILEpage', 'Fenfire', 'commentSection');
+('Neon', 'PROFILEpage', 'Fenfire', 'commentSection'),
+('User', 'buildMenu', 'Derpy', 'buildMenu'),
+('User', 'SETTINGSNavbar', 'Derpy', 'userNavbar'),
+('User', 'SETTINGSMessages', 'Derpy', 'displayMessagesPage');
 
 -- --------------------------------------------------------
 
@@ -138,7 +159,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` varchar(16) NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=35 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -178,7 +199,12 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (31, 'Hook CORE::PARSEText =&gt; Parser::deparse added.', '1333922882', 1),
 (32, 'Hook Neon::PROFILEpage =&gt; Fenfire::commentSection added.', '1333924256', 1),
 (33, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924316', 1),
-(34, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924490', 1);
+(34, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924490', 1),
+(35, 'Module &#039;Derpy&#039; added.', '1334133579', 1),
+(36, 'Hook User::buildMenu =&gt; Derpy::userNavbar added.', '1334136669', 1),
+(37, 'Hook User::SETTINGSNavbar =&gt; Derpy::userNavbar added.', '1334136753', 1),
+(38, 'Hook User::SETTINGSNavbar =&gt; Derpy::userNavbar added.', '1334136779', 1),
+(39, 'Hook User::SETTINGSMessages =&gt; Derpy::displayMessagesPage added.', '1334137612', 1);
 
 -- --------------------------------------------------------
 
@@ -201,6 +227,7 @@ INSERT INTO `ms_modules` (`name`, `subject`) VALUES
 ('Admin', 'Allows administration of CORE models and provides an interface for module specific configuration pages.'),
 ('Auth', 'Provides a secure session and authentication system, as well as permission management.'),
 ('CORE', 'This is the CORE module, providing the INIT system.'),
+('Derpy', 'Derpy Mail, a private user message system.'),
 ('Display', 'A gallery module with per-user gallery support.'),
 ('Fenfire', 'Provides a simple comment system.'),
 ('Liroli', 'Public user groups'),
@@ -261,7 +288,7 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 1332009384, 'visit:'),
 ('127.0.0.1', 1332798331, 'visit'),
-('127.0.0.1', 1333925549, 'visit:1'),
+('127.0.0.1', 1334138772, 'visit:1'),
 ('127.0.0.1', 1333924490, 'comment');
 
 -- --------------------------------------------------------
@@ -375,7 +402,7 @@ INSERT INTO `ud_permissions` (`UID`, `tree`) VALUES
 
 CREATE TABLE IF NOT EXISTS `ud_users` (
   `userID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `username` varchar(64) NOT NULL,
+  `username` varchar(32) NOT NULL,
   `mail` varchar(35) NOT NULL,
   `password` varchar(128) NOT NULL,
   `secret` varchar(128) NOT NULL,

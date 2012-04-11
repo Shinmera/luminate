@@ -27,5 +27,4 @@ try{
 
     $l->triggerHook("END",$CORE,array($k->getMicrotime()));
 }catch(Exception $e){Toolkit::err("Error Code: ".$e->getCode()."<br>Error Message: ".$e->getMessage()."<br>Strack Trace: <br>".$e->getTraceAsString());}
-die();
 ?>
