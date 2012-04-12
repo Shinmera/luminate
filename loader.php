@@ -55,6 +55,12 @@
         }
     }
     
+    function triggerPARSE($source,$text,$formatted=true,$allowRaw=false,$blockedTags=array()){
+        $args=array("text"=>$text,"formatted"=>$formatted,"allowRaw"=>$allowRaw,"blockedTags"=>$blockedTags);
+        $ret = $this->triggerHookSequentially("PARSE",$source,$args);
+        return $ret['text'];
+    }
+    
     function triggerPOST($source,$toModule,$sectionID,$postBody,$toUser="",$permalink="",$postTitle="",$type=""){
         $args=array("toModule"=>$toModule,"sectionID"=>$sectionID,"postBody"=>$postBody,
                     "toUser"=>$toUser,"postTitle"=>$postTitle,"permalink"=>$permalink,"type"=>$type);
@@ -71,7 +77,7 @@
                 try{
                     $mod = $this->loadModule($module[0]);
                     if($setdominating)$DOMINATINGMODULE=$mod;
-                    $result = call_user_func_array(array($mod,$module[1]), $args);
+                    $result = call_user_func(array($mod,$module[1]), $args);
                     if($result!=false&&$result!=="")$returns[]=$result;
                 }catch(Exception $e){
                     $k->err($e->getMessage()."\n\n".$e->getTraceAsString());

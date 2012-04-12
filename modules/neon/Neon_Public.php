@@ -139,7 +139,10 @@ function displayUserProfile($username,$user=null){
         foreach($fields as $field){
             if($field->type=='t'){
                 if(trim($field->value)=='')$field->value=trim($field->default);
-                if($field->value!='')echo('<div class="box userTextBox"><h3>'.$field->title.'</h3>'.nl2br($field->value).'</div>');
+                if($field->value!=''){
+                    $text = $l->triggerPARSE("CORE",$field->value);
+                    echo('<div class="box userTextBox"><h3>'.$field->title.'</h3>'.$text.'</div>');
+                }
             }
         }
         echo('<div class="box userInfoBox"><h3>Info</h3><ul>');

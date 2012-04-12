@@ -1,8 +1,8 @@
-All hook arguments, except for sequential ones, get their arguments delivered in a key array.
+All hook arguments get their arguments delivered in a key array.
 
 POST action:
 Hookname: POST
-Sender: Always saved in $a.
+Type: Regular
 Arguments:
   String toModule                   The module it is being posted to.
   String sectionID                  The specific subsection of the module this post action came from.
@@ -11,3 +11,12 @@ Arguments:
   &optional URLString permalink     A link that refers to this post upon visit.
   &optional String postTitle        An optional post title.
   &optional String type             A description of the post type (comment,thread,etc)
+
+PARSE action:
+Hookname: PARSE
+Type: Sequential
+Arguments:
+  String text                       The text to parse.
+  &optional boolean formatted       Allow or disallow text formatting. (Default: true)
+  &optional boolean allowRaw        Allow or disallow raw html input. (Default: false)
+  &optional array blockedTags       Tags that shouldn't be parsed.
