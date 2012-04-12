@@ -1,0 +1,126 @@
+ ______                ______ __  __ 
+|  ____|              |  ____|  \/  |
+| |__ _   _ _ __   ___| |__  | \  / |
+|  __| | | | '_ \ / __|  __| | |\/| |
+| |  | |_| | | | | (__| |____| |  | |
+|_|   \__,_|_| |_|\___|______|_|  |_|
+=--  Functional Extensive Markup  --=
+
+ __   __  __          ___    __      
+|  \ |_  |_  | |\ | |  |  | /  \ |\ | 
+|__/ |__ |   | | \| |  |  | \__/ | \| 
+                             
+Generally a tag is marked like so:
+
+  tag{ text to be marked }
+
+If the tag requires additional arguments, they are specified like so:
+
+  tag(args1,args2){ text to be marked }
+
+For single word markup, syntactical sugar can be used:
+
+  #tText
+
+To escape text from being marked, use the special nomarkup tag:
+
+  !{ this won't be marked }!
+
+There's also a sugar equivalent:
+
+  #!NoParse
+
+
+ __        __   __         __  
+|__)  /\  |__) (_  | |\ | / _  
+|    /--\ | \  __) | | \| \__) 
+
+Parsing has to happen according to XML markup, so a simple regex won't do.
+EG:
+
+  bold{ italic{ lol } }
+
+Has to produce:
+
+  <strong> <em> lol </em> </strong>
+
+And not as regex would imply:
+
+  <strong> <em> lol </strong> </em>
+
+Sugar markup can be parsed quickly with regex though.
+Any noparse blocks will be ignored through a simple flag as the loop iterates over the text.
+Once it hits a }!, it'll reset the flag and continue on parsing as usual.
+Any kind of balance issues with the tags have to be cleared in advance by simply filling up the required amount of tags.
+The user's original intent is lost in this, but we don't really have to care since it's impossible to correctly guess the closing position.
+To get the correct order of opening/closing tags, a simple stack will do.
+Internally, the resulting tag forms get used with @@ annotations for the body and $$ annotations for arguments.
+Optionally the annotations can contain an indicator for the type of value allowed.
+
+//FIXME: Sanitize unbalanced brackets
+//FIXME: Support spaces in tag arguments list
+//TODO: Add support for noparse blocks
+Pseudo code of the main parsing function:
+    
+    //We use this instead of a split since we need to parse this sequentially.
+    function getParts(String text,String delim){
+        String[] parts
+        parts[0] = text.substring(0,text.strpos(delim))
+        text = text.substring(text.strpos(delim)+1)
+        parts[1] = text.substring(0,text.strpos(delim))
+        parts[2] = text.substring(text.strpos(delim)+1)
+        return parts;
+    }
+    
+    //This function parses a beginning tag with the included text into what we need.
+    function parseStartTag(String tagRaw,String[] arguments){
+        if(tagRaw.contains("$")){
+            String[] parts = getParts(tagRaw,"$")
+            
+            if(parts[1]=="")tagRaw=parts[0]+arguments[0]+parts[1]
+            else{
+                switch(parts[1]){
+                    //types, etc. If not matched, default to abort parsing and return the base shit.
+                }
+            }
+            arguments = arguments.splice(1) //Pop one element from the stack.
+            
+            return parseTag(text,tagRaw,arguments) //Needs more iterations.
+        }else return tagRaw;
+    }
+
+    function parse(text){
+        text = " ".text //To prevent the opening tag from failing to be recognized.
+        Stack endTags = new Stack
+        String[] tags = {"image"=>{"<img src='","' />"},
+                        "url"  =>{"<a href='$URL$'>","</a>"}}
+        boolean active = true
+        int pointer = 0
+        while(pointer<text.length()){
+            int nextOpen = text.strpos("{",pointer)
+            int nextClose = text.strpos("}",pointer)
+
+            if(nextClose==-1||(nextOpen==-1&&endTags.size()==0))
+                break
+            
+            if(nextOpen<nextClose){
+                pointer=nextOpen
+                tag = text.substring(text.strrpos(" ",pointer),pointer)
+
+                String[] args
+                if(tag.contains("(")&&tag.contains(")"){
+                    args = tag.substring(tag.strpos("(")+1,tag.strpos(")")).split(",")
+                    tag = tag.substring(tag.strpos("("));
+                }
+
+                if(tags.containsKey(tag)){
+                    endTags.push(tags[tag][1])
+                    text = text.replaceRegion(text.strrpos(" ",pointer),pointer+1,parseStartTag(tags[tag][0],args));
+                }
+            }else{
+                pointer=nextClose
+                text = text.insertAt(pointer,endTags.pop())
+            }
+        }
+        return text.trim()
+    }

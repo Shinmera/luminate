@@ -5,68 +5,28 @@ public static $version=2.8;
 public static $short='p';
 public static $required=array();
 public static $hooks=array("foo");
-
-    function enparse($s){
-        $s = $this->convertCharset($s);
-        $s = $this->fixslashes($s);
-        $s = htmlspecialchars($s, ENT_QUOTES);
-        $s = str_ireplace("$","&#36;",$s);
-        $s = str_ireplace("'","&lsquo;",$s);
-        return trim($s);
-    }
     
-    function enparseNoBreak($s){
-        $s = $this->convertCharset($s);
-        $s = htmlspecialchars($s, ENT_QUOTES);
-        $s = str_ireplace("'","&lsquo;",$s);
-        $s = str_ireplace("$","&#36;",$s);
-        $s = str_ireplace("\\\\","\\",$s);
-        return trim($s);
-    }
-    
-    function fixslashes($s){
+    function fixslashes(&$s){
         $s = str_replace("\\'","'",$s);
         $s = str_replace('\\"','"',$s);
         $s = str_replace('\\\\','\\',$s);
-        return $s;
     }
 
-    function convertCharset($s){
-        if(!mb_check_encoding($s, 'UTF-8')){
-            mb_substitute_character('none');
-            $s = mb_convert_encoding($s, 'UTF-8');
-        }
-        return $s;
-    }
-
-    function deparse($s){
+    function deparse($args){
+        $s = $args['text'];
         $s = str_ireplace("\n","<br />",$s);
-        $s = str_ireplace("\\\\","\\",$s);
-        $s = str_ireplace("\\'","'",$s);
-        $s = str_ireplace('\\"','"',$s);
-        return trim($s);
+        fixslashes($s);
+        if($args['formatted'])parseBBCode($s);
+        if($args['allowRaw'])$s=preg_replace_callback("`\[html\](.+?)\[/html\]`is",array(&$this, 'reparseHTML'), $s);
+        $args['text']=$s;
+        return $args;
     }
-    function deparseNoBreak($s){
-        $s = str_ireplace("<br />","",$s);
-        $s = str_ireplace('&#039;',"'",$s);
-        return trim($s);
-    }
-
-    function deparseAll($s,$level=99,$blacktags=array()){
-        $s=$this->deparse($s);
-        $s=$this->BBCodeDeParse($s,$level,$blacktags);
-        if($level>=99)$s=preg_replace_callback("`\[html\](.+?)\[/html\]`is",array(&$this, 'reparseHTML'), $s);
+    
+    function parseBBCode(&$s){
         $s=$this->balanceTags($s);
-        return $s;
-    }
-
-    function deparseAllNoBreak($s){
-        $s=$this->deparseNoBreak($s);
-        return $s;
     }
 
     function reparseHTML($matches){
-        global $a;
         $s = str_ireplace("<br />","",$matches[1]);
         $s = str_ireplace("&gt;",">",$s);
         $s = str_ireplace("&lt;","<",$s);
@@ -136,7 +96,6 @@ public static $hooks=array("foo");
         }
         return $s;
     }
-
 
     function balanceTags( $text ) {
         $tagstack = array(); $stacksize = 0; $tagqueue = ''; $newtext = '';
