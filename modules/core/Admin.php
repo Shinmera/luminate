@@ -184,7 +184,7 @@ function displayModulesPage(){
         <div style="color:red;"><?=$err[2]?></div>
         <? if(is_array($modules)){
         foreach($modules as $m){
-            echo('<form class="datarow"><input type="submit" name="action" value="Delete" /> <b>'.$m->name.'</b>');
+            echo('<form class="datarow" method="post"><input type="submit" name="action" value="Delete" /> <b>'.$m->name.'</b>');
             if(!class_exists($m->name))include(MODULEPATH.$MODULECACHE[$m->name]);$vars=get_class_vars($m->name);
             echo(' v'.$vars['version'].' by '.$vars['author']);
             if($vars['required'][0]!=''){
@@ -320,7 +320,8 @@ function addModule($name,$description){
 
 function deleteModule($name){
     global $c,$k,$l;
-    $c->query("DELETE FROM ms_modules WHERE name=?",array($name));
+    $c->query("DELETE FROM ms_modules WHERE name LIKE ?",array($name));
+    $c->query("DELETE FROM ms_hooks WHERE source LIKE ? OR destination LIKE ?",array($name,$name));
     $l->triggerHook("MODULEdeleted",$this,array($name));
     $k->log("Module '".$name."' deleted.");
 }
@@ -334,7 +335,7 @@ function registerHook($source,$hook,$destination,$function){
 
 function removeHook($source,$hook,$destination,$function){
     global $c,$k,$l;
-    $c->query("DELETE FROM ms_hooks WHERE source=? AND hook=? AND destination=? AND function=?",array($source,$hook,$destination,$function));
+    $c->query("DELETE FROM ms_hooks WHERE source LIKE ? AND hook LIKE ? AND destination LIKE ? AND function LIKE ?",array($source,$hook,$destination,$function));
     $l->triggerHook("HOOKremoved",$this,array($source,$hook,$destination,$function));
     $k->log("Hook ".$source.'::'.$hook.' => '.$destination.'::'.$function.' deleted.');
 }

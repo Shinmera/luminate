@@ -67,6 +67,10 @@ function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function stringContains(a,search){
+    return (a.indexOf(search) != -1);
+}
+
 jQuery.extend(jQuery.expr[':'], {
   focus: "a == document.activeElement"
 });
@@ -169,3 +173,43 @@ $(document).ready(function(){
     });
     
 });
+
+function displayPopupInput(completeFunc,question){
+    var id=time();
+    $("body").append('<div class="jqmWindow" id="popupInput'+id+'"><p>'+question+'</p><input class="in" type="text"/><br /><a href="#" class="jqmClose">Close</a></div>');
+    $('#popupInput'+id).jqm({
+        modal: false,overlay: 0,
+        onHide: function(){
+            completeFunc($("#popupInput"+id+" .in").attr("value"));
+            $("#popupInput"+id).remove();
+        }
+    }).jqmShow();
+}
+
+function insertAdv(object,tagform){
+    if(stringContains(tagform,"$")){
+        var strings0 = tagform.substring(0,tagform.indexOf("$"));tagform = tagform.substring(tagform.indexOf("$")+1,tagform.length);
+        var strings1 = tagform.substring(0,tagform.indexOf("$"));
+        var strings2 = tagform.substring(tagform.indexOf("$")+1,tagform.length);
+        displayPopupInput(function(receive){
+            insertAdv(object,strings0+receive+strings2);
+        },strings1+":");
+    }else{
+        var start = object[0].selectionStart;
+        var end = object[0].selectionEnd;
+        var len = object.val().length; 
+        var sel = object.val().substring(start,end);
+        var text = tagform;
+        if(stringContains(tagform,"@")){
+            if(sel==''){
+                tagform = tagform.replace("@","$Enter a value$");
+                insertAdv(object,tagform);
+            }else{
+                tagform = tagform.replace("@",sel);
+                insertAdv(object,tagform);
+            }
+        }else{
+            object.val(object.val().substring(0,start)+text+object.val().substring(end,len));
+        }
+    }
+}

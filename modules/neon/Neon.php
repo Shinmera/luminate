@@ -44,10 +44,10 @@ function buildMenu($menu){
     else{
         $innermenu=array(
             array('Settings',$k->url("user","panel")),
-            array('Profile',$k->url("user",$a->user->displayname)),
-            array('Logout',$k->url("login","logout"))
+            array('Profile',$k->url("user",$a->user->displayname))
         );
         $innermenu=$l->triggerHookSequentially("buildMenu",'User',$innermenu);
+        $innermenu[]=array('Logout',$k->url("login","logout"));
         $menu[]=array($a->user->displayname,$k->url("user","panel"),"float:right;",$innermenu);
     }
     return $menu;

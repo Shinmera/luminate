@@ -110,7 +110,7 @@ function displayOutboxPage(){
 }
 
 function displayWritePage(){
-    
+    include(MODULEPATH.'gui/Editor.php');new FullEditor();
 }
 
 function displayReadPage(){
@@ -136,6 +136,7 @@ function displayReadPage(){
         </div>
         <div class="box" style="display:block;">
             <h3>Reply</h3>
+            <? include(MODULEPATH.'gui/Editor.php');new SimpleEditor(); ?>
         </div><?
     }else echo('<center>No message found with ID'.$params[3].'</center>');
 }

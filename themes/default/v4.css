@@ -47,6 +47,9 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .medium{font-size: 12pt;}
 .large{font-size:18pt;}
 .huge{font-size:36pt;}
+ul.toolbar{
+    list-style:none;
+}
 
 #header{
     font-size:12pt;
