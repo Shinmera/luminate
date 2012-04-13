@@ -10,6 +10,7 @@
 |  \ |_  |_  | |\ | |  |  | /  \ |\ | 
 |__/ |__ |   | | \| |  |  | \__/ | \| 
                              
+FuncEM Markup - The way the user inputs FuncEM markup.
 Generally a tag is marked like so:
 
   tag{ text to be marked }
@@ -20,7 +21,7 @@ If the tag requires additional arguments, they are specified like so:
 
 For single word markup, syntactical sugar can be used:
 
-  #tText
+  t#Text
 
 To escape text from being marked, use the special nomarkup tag:
 
@@ -28,8 +29,35 @@ To escape text from being marked, use the special nomarkup tag:
 
 There's also a sugar equivalent:
 
-  #!NoParse
+  !#NoParse
 
+
+FuncEM Code - The way the html is structured that will be used in place of the markup.
+This code can contain argument placeholders, denoted by $$.
+Inside of the $$ can be a type specifier that checks if the argument is of a certain type.
+
+The following types are valid:
+ TEXT  : Same as specifying no type at all. Any kind of character sequence is allowed.
+ STRI  : An alphanumerical string.
+ URLS  : Any kind of string that passes the PHP URL filter.
+ MAIL  : Any kind of string that passes the PHP MAIL filter.
+ INTE  : Numerical value.
+ INTEx : A number smaller or equal to x.
+
+Separating the type by a | allows you to specify a default value, if the argument isn't given.
+The start and end tags are separated by a @ .
+EG for a simple url:
+
+  url(Link[,Title[,Target]]){Text}
+  <a href="$URLS$" title="$TEXT| $" target="$STRI|_self$" >@</a>
+
+Another example for an image tag:
+
+  img([AltText[,Title[,CSSClass]]]){ImageUrl}
+  <img alt="$STRI|image$" title="$TEXT| $" class="$STRI| $" src="@" />
+
+This allows for a very advanced tagging system.
+Note that due to the simple stack of the closing tag, any argument placeholders have to come before the start/end delimiter.
 
  __        __   __         __  
 |__)  /\  |__) (_  | |\ | / _  
@@ -54,5 +82,6 @@ Once it hits a }!, it'll reset the flag and continue on parsing as usual.
 Any kind of balance issues with the tags have to be cleared in advance by simply filling up the required amount of tags.
 The user's original intent is lost in this, but we don't really have to care since it's impossible to correctly guess the closing position.
 To get the correct order of opening/closing tags, a simple stack will do.
-Internally, the resulting tag forms get used with @@ annotations for the body and $$ annotations for arguments.
-Optionally the annotations can contain an indicator for the type of value allowed.
+
+A separate function handles the parsing of the FuncEMCode itself. 
+If the arguments requirement isn't met, the FEM tag is filled back in without parsing.
