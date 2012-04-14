@@ -5,10 +5,11 @@ class Editor{
     //TAG: array(name,title,tag) 
     //Tag format: $DESCRIPTION$ Inserts a queried variable with DESCRIPTION as query text.
     //            @             Placeholder for selected text. If nothing is selected, replaced by query.
-    function getSimpleToolbar($textareaname){
+    function getSimpleToolbar($textareaname,$suites=array("default")){
         global $l; 
         if($this->availableTags==null)
             $this->availableTags = $l->triggerHookSequentially("GETtags","CORE",array());
+        
         echo('<ul class="toolbar">');
         foreach($this->availableTags as $tag){
             echo('<li><img title="'.$tag[1].'" alt="'.$tag[0].'" class="icon" src="'.DATAPATH.'images/icons/'.$tag[0].'.png" tag="'.$tag[2].'" /></li>');
@@ -29,7 +30,7 @@ class Editor{
 class TinyEditor extends Editor{
     function __construct($postPath="#",$action="submit",$formname="editor",$unRegistered=false) {
         global $a;
-        ?><form name="editor" action="<?=$postPath?>" method="post" class="editor tinyeditor">
+        ?><form id="editor" action="<?=$postPath?>" method="post" class="editor tinyeditor">
             <? if($unRegistered&&$a->user==null){ ?>
                 <label>Username: </label>   <input type="text" maxlength="32" name="username" />
                 <label>Mail: </label>       <input type="email" maxlength="32" name="mail" />
@@ -37,18 +38,44 @@ class TinyEditor extends Editor{
             <textarea id="<?=$formname?>" name="text"><?=$_POST['text']?></textarea><br />
             <input type="hidden" name="action" value="<?=$action?>" />
             <input type="submit" value="Submit" />
-        </form><?
+        </form>  
+        <?
     }
 }
 
 class SimpleEditor extends Editor{
     function __construct($postPath="#",$action="submit",$formname="editor"){
-        ?><form name="editor" action="<?=$postPath?>" method="post" class="editor tinyeditor">
-            <? $this->getSimpleToolbar($formname); ?>
-            <textarea id="<?=$formname?>" name="text"><?=$_POST['text']?></textarea><br />
+        ?><form id="<?=$formname?>" action="<?=$postPath?>" method="post" class="editor simpleeditor">
+            <? $this->getSimpleToolbar($formname."txt"); ?>
+            <textarea name="text" id="<?=$formname?>txt"><?=$_POST['text']?></textarea>
+            <div id="preview" class="preview"></div><br />
             <input type="hidden" name="action" value="<?=$action?>" />
-            <input type="submit" value="Submit" />
-        </form><?
+            <input type="submit" value="Submit" /><input type="submit" value="Preview" id="previewbutton" />
+        </form>
+        <script type="text/javascript">
+            $().ready(function(){
+                $("#<?=$formname?> #previewbutton").click(function(){
+                    if($(this).attr("value")=="Preview"){
+                        $("#<?=$formname?> textarea").css({display:"none"});
+                        $("#preview").css({display:"inline-block",
+                                           width:$("#<?=$formname?> textarea").width()+"px",
+                                           height:$("#<?=$formname?> textarea").height()+"px"});
+                        $("#preview").html("Please wait...");
+                        
+                        $.post("<?=PROOT?>api/parse", $("#editor").serialize(), function(data){
+                            $("#preview").html(data);
+                            $("#previewbutton").attr("value","Edit");
+                        });
+                    }else{
+                        $("#<?=$formname?> textarea").css("display","inline-block");
+                        $("#preview").css("display","none");
+                        $("#previewbutton").attr("value","Preview");
+                    }
+                    return false;
+                });
+            });
+        </script>
+        <?
     }
 }
 
