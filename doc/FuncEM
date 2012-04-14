@@ -41,6 +41,7 @@ The following types are valid:
  STRI  : An alphanumerical string.
  URLS  : Any kind of string that passes the PHP URL filter.
  MAIL  : Any kind of string that passes the PHP MAIL filter.
+ DATE  : Any kind of string that passes the Toolkit DATE validity check.
  INTE  : Numerical value.
  INTEx : A number smaller or equal to x.
 

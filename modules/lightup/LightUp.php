@@ -1,5 +1,4 @@
 <?php
-
 class LightUp /*extends Module*/{
 public static $name="LightUp";
 public static $version=2.8;
@@ -7,18 +6,22 @@ public static $short='lightup';
 public static $required=array();
 public static $hooks=array("foo");
 
-    var $tags = array("image"   =>array('<img src="','" />',1),
-                      "url"     =>array('<a href="$URL$">','</a>',10),
+    var $tags = array("image"   =>array('<img alt="$STRI|image$" title="$TEXT|$" class="$STRI|$" src="','" />',2),
+                      "url"     =>array('<a href="$URLS$" title="$TEXT|$" target="$STRI|_self$" >','</a>',10),
                       "b"       =>array('<strong>','</strong>',-1),
                       "i"       =>array('<em>','</em>',-1),
                       "left"    =>array('<div style="text-align:left">','</div>',-1),
                       "right"   =>array('<div style="text-align:right">','</div>',-1),
                       "center"  =>array('<div style="text-align:center">','</div>',-1),
-                      "color"   =>array('<span style="color:$$pt">','</span>',-1),
-                      "size"    =>array('<span style="font-size:$$">','</span>',-1));
+                      "color"   =>array('<span style="color:$STRI|red$">','</span>',-1),
+                      "size"    =>array('<span style="font-size:$INTE48$pt">','</span>',-1));
     
     function __construct(){
-        //$tags = DataModel::getData("lightup_tags","SELECT * FROM lightup_tags");
+        /*$tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
+        foreach($tags as $tag){
+            $femcodeparts = explode("@",$tag->femcode);
+            $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);
+        }*/
     }
     
     function fixslashes($s){
@@ -64,17 +67,37 @@ public static $hooks=array("foo");
     }
     
     //This function parses a beginning tag with the included text into what we need.
+    //Return FALSE if the arguments are invalid.
     function parseStartTag($tagRaw,$arguments=array()){
+        global $k;
+        
         if(strpos($tagRaw,"$")!==FALSE){
             $parts = $this->getParts($tagRaw,"$");
-            $tagRaw=$parts[0].$arguments[0].$parts[2];
-            /*if($parts[1]!=="")
+            
+            if($parts[1]=="")$tagRaw=$parts[0].$arguments[0].$parts[2];
             else{
-                switch($parts[1]){
-                    //types, etc. If not matched, default to abort parsing and return the base shit.
+                if(strpos($parts[1],"|")!==FALSE){
+                    $parts[1]=explode("|",$parts[1]);
+                    if($arguments[0]=="")$arguments[0]=$parts[1][1]; //Default value
+                    $parts[1]=$parts[1][0];
                 }
-            }*/
-            array_splice($arguments, 1); //Pop one element from the stack.
+                $argumentOK=false;
+                switch($parts[1]){
+                    case 'TEXT':$argumentOK=true;break;
+                    case 'STRI':$argumentOK=($k->sanitizeString($arguments[0],"\-_")==$arguments[0]);break;
+                    case 'URLS':$argumentOK=$k->checkURLValidity($arguments[0]);break;
+                    case 'MAIL':$argumentOK=$k->checkMailVailidity($arguments[0]);break;
+                    case 'DATE':$argumentOK=$k->checkDateVailidity($arguments[0]);break;
+                    case 'INTE':$argumentOK=is_numeric($arguments[0]);break;
+                    default:
+                        if(substr($parts[1],0,4)=="INTE")
+                                $argumentOK=(is_numeric($arguments[0])&&(int)$arguments[0]<=(int)substr($parts[1],4));
+                        break;
+                }
+                if($argumentOK)$tagRaw=$parts[0].$arguments[0].$parts[2];
+                else           return FALSE;
+            }
+            $arguments = array_splice($arguments, 1); //Pop one element from the stack.
             
             return $this->parseStartTag($tagRaw,$arguments); //Needs more iterations.
         }else return $tagRaw;
@@ -94,16 +117,31 @@ public static $hooks=array("foo");
             strrpos($text,">",-1*($curLen-$open+1))
         ))+1;
     }
+    
+    function parseFuncEMShortTags($text){
+        global $FEMSTRAW;
+        foreach($this->tags as $tag=>$raw){
+            $FEMSTRAW=$raw;
+            $text=preg_replace_callback('`'.$tag.'#([-A-Z0-9+&@#/%=~_|$?!:,.]+)`is',array(&$this,'parseFuncEMShortTagsCallback') , $text, $raw[2]);
+        }
+        unset($FEMSTRAW);
+        return $text;
+    }
+    function parseFuncEMShortTagsCallback($matches){
+        global $FEMSTRAW;
+        $tag = $this->parseStartTag($FEMSTRAW[0]);
+        if($tag!==FALSE)return $tag.$matches[1].$FEMSTRAW[1];
+        else            return $matches[0];
+    }
 
-    //TODO: Parse sugar tags
-    //TODO: Make dynamic
     //TODO: Optimization
     function parseFuncEM($text){
         $text = " ".str_replace('$','&dollar;',trim($text)); //To prevent the opening tag from failing to be recognized
                                                              //and users from tampering with the arguments.
         if(strlen($text)==1)return $text;
         
-        $text = fixBracketBalance($text);
+        $text = $this->fixBracketBalance($text);
+        $text = $this->parseFuncEMShortTags($text);
         
         $endTags = array();
         $tagCounter = array();
@@ -140,7 +178,7 @@ public static $hooks=array("foo");
                 if($argsEnd<=$nextOpen&&$argsEnd!==FALSE){
                     $argsStart = strrpos($text,"(",-1*($curLen-$argsEnd))+1;
                     if($argsStart!==FALSE){
-                        $tagStart = $this->findTagStart($text, $curLen, $tagStart); 
+                        $tagStart = $this->findTagStart($text, $curLen, $argsStart); 
                         $tag =  substr($text,$tagStart ,$argsStart-$tagStart-1);
                         $args = substr($text,$argsStart,$argsEnd-$argsStart);
                         $args = explode(",",$args);
@@ -149,15 +187,21 @@ public static $hooks=array("foo");
                     $tagStart = $this->findTagStart($text, $curLen, $nextOpen);
                     $tag = substr($text,$tagStart,$nextOpen-$tagStart);
                 }
+                $tag = strtolower($tag);
                 
                 if(array_key_exists($tag,$tags)){
                     if(!array_key_exists($tag,$tagCounter))$tagCounter[$tag]=1;
                     else                                   $tagCounter[$tag]++;
                     
                     if($tagCounter[$tag]<=$tags[$tag][2]||$tags[$tag][2]<0){
-                        array_push($endTags,$tags[$tag][1]);
                         $parsedTag=$this->parseStartTag($tags[$tag][0],$args);
-                        $text = $this->replaceRegion($text,$tagStart,$nextOpen+1,$parsedTag);
+                        
+                        if($parsedTag!==FALSE){
+                            array_push($endTags,$tags[$tag][1]);
+                            $text = $this->replaceRegion($text,$tagStart,$nextOpen+1,$parsedTag);
+                        }else{
+                            array_push($endTags,"&rbrace;");
+                        }
                     }else{
                         //If the limit is exceeded, push a simple closing tag to prevent the stack from being screwed up.
                         array_push($endTags,"&rbrace;");
@@ -189,20 +233,70 @@ public static $hooks=array("foo");
 }?>
 
 
-<form action="#" method="post">
+<? 
+include("/var/www/Luminate/data/callables/toolkit.php");
+$k = new Toolkit();
+$p = new LightUp();
+
+if(!is_numeric($_POST['i'])||$_POST['i']=="")$_POST['i']=1;
+if($_POST['text']=="")$_POST['text']="center{
+  url(http://iwantyou.todo.me/Mithent){image(suiseiseki,Oh yes! Mithent! AH!){http://data2.tymoon.eu/fabulous/files/132445245593005.jpeg}}
+  color{size(40){♥♥♥}}
+}";
+
+?>
+<style type="text/css">
+    html,body{
+        font-family:Arial;
+        padding:0;margin:0;
+        background-color: #CCC;
+    }
+    #parseform{
+        padding: 10px;
+        border-bottom: 2px solid #00C8FF;
+        background-color:#000;
+        color: #FFF;
+    }
+    #parseform input,textarea{
+        border: 1px solid  #00C8FF;
+        background-color:#555;
+        color:#FFF;
+    }
+    #parsed{
+        margin:20px;
+        background-color:#FFF;
+    }
+    #timeelapsed{
+        border-top: 2px solid #00C8FF;
+        text-align:center;
+        position:fixed;
+        bottom:0;left:0;right:0;
+        background-color:#000;
+        color: #FFF;
+    }
+</style>
+
+<form action="#" method="post" id="parseform">
+    Available tags: 
+    <?foreach($p->tags as $tag=>$dicks){
+        echo($tag.' ');
+    } ?><br />
     <textarea name="text" style="width:100%;height:100px;"><?=$_POST['text']?></textarea><br />
+    Iterations:<input type="number" name="i" value="<?=$_POST['i']?>" style="width:50px" />
     <input type="submit" value="Parse" />
 </form>
 
 <?
-$p = new LightUp();
 $time = explode(' ',microtime());
 $time = $time[1]+$time[0];
 
-$text = $p->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
+for($i=0;$i<$_POST['i'];$i++){
+    $text = $p->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
+}
 
 $ntime = explode(' ',microtime());
 $ntime = $ntime[1]+$ntime[0];
-
-echo($text['text']."<br /><br />T: ".($ntime-$time)."s");
+$ftime = ($ntime-$time);
 ?>
+<div id="parsed"><?=$text['text']?></div>
+<div id="timeelapsed">Total time: <?=($ftime)?>s Time per pass: <?=($ftime/$_POST['i'])?>s</div>
