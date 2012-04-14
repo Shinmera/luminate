@@ -177,6 +177,9 @@ $(document).ready(function(){
 function displayPopupInput(completeFunc,question){
     var id=time();
     $("body").append('<div class="jqmWindow" id="popupInput'+id+'"><p>'+question+'</p><input class="in" type="text"/><br /><a href="#" class="jqmClose">Close</a></div>');
+    $("#popupInput"+id+" .in").keypress(function(e){
+      if(e.which == 13){$("#popupInput"+id+" .jqmClose").click();}
+    });
     $('#popupInput'+id).jqm({
         modal: false,overlay: 0,
         onHide: function(){
@@ -209,6 +212,7 @@ function insertAdv(object,tagform){
                 insertAdv(object,tagform);
             }
         }else{
+            console.log(object);
             object.val(object.val().substring(0,start)+text+object.val().substring(end,len));
         }
     }

@@ -6,6 +6,7 @@ public static $short='lightup';
 public static $required=array();
 public static $hooks=array("foo");
 
+    var $tagsLoaded = false;
     var $tags = array("image"   =>array('<img alt="$STRI|image$" title="$TEXT|$" class="$STRI|$" src="','" />',2),
                       "url"     =>array('<a href="$URLS$" title="$TEXT|$" target="$STRI|_self$" >','</a>',10),
                       "b"       =>array('<strong>','</strong>',-1),
@@ -15,13 +16,56 @@ public static $hooks=array("foo");
                       "center"  =>array('<div style="text-align:center">','</div>',-1),
                       "color"   =>array('<span style="color:$STRI|red$">','</span>',-1),
                       "size"    =>array('<span style="font-size:$INTE48$pt">','</span>',-1));
+    var $codesLoaded = false;
+    var $codes= array(array("image",  'Insert an image',      'image{@}',                   'plus'),
+                      array("url",    'Insert a link',        'url($Enter the URL$){@}',    'plus'),
+                      array("b",      'Bold text',            'b{@}',                       'default'),
+                      array("i",      'Italic text',          'i{@}',                       'default'),
+                      array("left",   'Align left',           'left{@}',                    'plus'),
+                      array("right",  'Align right',          'right{@}',                   'plus'),
+                      array("center", 'Center text',          'center{@}',                  'plus'),
+                      array("color",  'Color text',           'color{@}',                   'plus'),
+                      array("size",   'Change text size',     'size($Enter the font size$){@}','plus'),
+                      array("noparse",'Avoid parsing',        '!{@}!',                      'pro'));
     
-    function __construct(){
-        /*$tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
-        foreach($tags as $tag){
-            $femcodeparts = explode("@",$tag->femcode);
-            $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);
-        }*/
+    function __construct(){}
+    
+    function displayApiPage(){
+        $text=$this->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
+        echo($text['text']);
+    }
+    
+    function getTags($taglist){
+        if(/*$this->codes==null*/$this->codesLoaded==false){
+            $codes = DataModel::getData("lightup_tags","SELECT name,tagcode,description,suite FROM lightup_tags");
+            if($codes!=null){foreach($codes as $code){
+                $this->codes[]=array($code->name,$code->description,$code->tagcode,$code->suite);
+            }}
+            $this->codesLoaded=true;
+        }
+        return array_merge($taglist,$this->codes);
+    }
+
+    function deparse($args){
+        if(/*$this->tags==null*/$this->tagsLoaded==false){
+            $tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
+            if($tags!=null){foreach($tags as $tag){
+                $femcodeparts = explode("@",$tag->femcode);
+                $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);
+            }}
+            $this->tagsLoaded=true;
+        }
+        
+        $s = $args['text'];
+        $s = str_ireplace("\n","<br />",$s);
+        $s = $this->fixslashes($s);
+        if($args['allowRaw']) $s = preg_replace_callback("`html\{(.+?)\}html`is",array(&$this, 'reparseHTML'), $s);
+        if($args['formatted'])$s = $this->parseFuncEM($s);
+        //Following regex parses urls without parsing existing ones.
+        //Copied from http://stackoverflow.com/questions/287144/need-a-good-regex-to-convert-urls-to-links-but-leave-existing-links-alone
+        $s = preg_replace( '`(?<![\{\}"\'>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is', '<a href="\0" target="_blank">\0</a>', $s );
+        $args['text']=$s;
+        return $args;
     }
     
     function fixslashes($s){
@@ -29,19 +73,6 @@ public static $hooks=array("foo");
         $s = str_replace('\\"','"',$s);
         $s = str_replace('\\\\','\\',$s);
         return $s;
-    }
-
-    function deparse($args){
-        $s = $args['text'];
-        $s = str_ireplace("\n","<br />",$s);
-        $s = $this->fixslashes($s);
-        if($args['allowRaw']) $s = preg_replace_callback("`html\{(.+?)\}html`is",array(&$this, 'reparseHTML'), $s);
-        if($args['formatted'])$s = $this->parseFuncEM($s);
-        //Following regex parses urls without parsing existing <a>s.
-        //Copied from http://stackoverflow.com/questions/287144/need-a-good-regex-to-convert-urls-to-links-but-leave-existing-links-alone
-        $s = preg_replace( '`(?<![\{\}"\'>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is', '<a href="\0" target="_blank">\0</a>', $s );
-        $args['text']=$s;
-        return $args;
     }
 
     function reparseHTML($matches){
@@ -157,7 +188,7 @@ public static $hooks=array("foo");
             //Check for noparse sections.
             if($nextNoparse!==FALSE){
                 $nextNoparse = strpos($text,"!{",$pointer);
-                if($nextNoparse!==FALSE&&$nextNoparse==$nextOpen-1){
+                if($nextNoparse!==FALSE&&$nextNoparse==$nextOpen-1&&$nextNoparse<$nextClose){
                     $nextNoparse+=2;
                     $pointer = strpos($text,"}!",$nextNoparse)+2;
                     $nextOpen = strpos($text,"{",$pointer);
@@ -231,72 +262,3 @@ public static $hooks=array("foo");
         return $begin.$insert.$end;
     }
 }?>
-
-
-<? 
-include("/var/www/Luminate/data/callables/toolkit.php");
-$k = new Toolkit();
-$p = new LightUp();
-
-if(!is_numeric($_POST['i'])||$_POST['i']=="")$_POST['i']=1;
-if($_POST['text']=="")$_POST['text']="center{
-  url(http://iwantyou.todo.me/Mithent){image(suiseiseki,Oh yes! Mithent! AH!){http://data2.tymoon.eu/fabulous/files/132445245593005.jpeg}}
-  color{size(40){♥♥♥}}
-}";
-
-?>
-<style type="text/css">
-    html,body{
-        font-family:Arial;
-        padding:0;margin:0;
-        background-color: #CCC;
-    }
-    #parseform{
-        padding: 10px;
-        border-bottom: 2px solid #00C8FF;
-        background-color:#000;
-        color: #FFF;
-    }
-    #parseform input,textarea{
-        border: 1px solid  #00C8FF;
-        background-color:#555;
-        color:#FFF;
-    }
-    #parsed{
-        margin:20px;
-        background-color:#FFF;
-    }
-    #timeelapsed{
-        border-top: 2px solid #00C8FF;
-        text-align:center;
-        position:fixed;
-        bottom:0;left:0;right:0;
-        background-color:#000;
-        color: #FFF;
-    }
-</style>
-
-<form action="#" method="post" id="parseform">
-    Available tags: 
-    <?foreach($p->tags as $tag=>$dicks){
-        echo($tag.' ');
-    } ?><br />
-    <textarea name="text" style="width:100%;height:100px;"><?=$_POST['text']?></textarea><br />
-    Iterations:<input type="number" name="i" value="<?=$_POST['i']?>" style="width:50px" />
-    <input type="submit" value="Parse" />
-</form>
-
-<?
-$time = explode(' ',microtime());
-$time = $time[1]+$time[0];
-
-for($i=0;$i<$_POST['i'];$i++){
-    $text = $p->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
-}
-
-$ntime = explode(' ',microtime());
-$ntime = $ntime[1]+$ntime[0];
-$ftime = ($ntime-$time);
-?>
-<div id="parsed"><?=$text['text']?></div>
-<div id="timeelapsed">Total time: <?=($ftime)?>s Time per pass: <?=($ftime/$_POST['i'])?>s</div>
