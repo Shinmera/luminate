@@ -136,7 +136,11 @@ function displayReadPage(){
         </div>
         <div class="box" style="display:block;">
             <h3>Reply</h3>
-            <? include(MODULEPATH.'gui/Editor.php');new SimpleEditor(); ?>
+            <? include(MODULEPATH.'gui/Editor.php');
+            $editor = new SimpleEditor("#","sendMessage");
+            $editor->addTextField("recipient","",$mail->recipient,"hidden");
+            $editor->addTextField("title","","Re: ".$mail->title);
+            $editor->show();?>
         </div><?
     }else echo('<center>No message found with ID'.$params[3].'</center>');
 }

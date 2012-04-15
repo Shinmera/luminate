@@ -49,7 +49,8 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .large{font-size:18pt;}
 .huge{font-size:36pt;}
 .toolbar{list-style:none;margin:0;padding:0;}
-.toolbar li{list-style:none;display:inline-block;margin:0;padding:0;}
+.toolbar li{list-style:none;display:inline-block;margin:5px;padding:0;}
+.toolbar img{margin:0;padding:0;}
 .jqmWindow .in{width:100%;}
 
 #header{
@@ -461,7 +462,8 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 }
 
 .simpleeditor{
-    background-color:#000;
+    background-color:#CCC;
+    border: 2px solid #FFDD00;
     border-radius:5px;
     padding:5px;
     display:inline-block;
@@ -470,8 +472,13 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .simpleeditor textarea{
     min-width:500px;
     min-height:200px;
+    border: 1px solid #000;
 }
-
-.simpleeditor .toolbar img:hover{
-    box-shadow: 0px 0px 10px #FFDD00;
+.simpleeditor .toolbar{
+    border-radius: 5px 5px 0px 0px;
+    background-color: #000;
+    margin-left:2px;
+    margin-right:6px;
+    margin-bottom:-3px;
 }
+.simpleeditor .toolbar li:hover{background-color:#FFDD00;}

@@ -174,9 +174,9 @@ $(document).ready(function(){
     
 });
 
-function displayPopupInput(completeFunc,question){
-    var id=time();
-    $("body").append('<div class="jqmWindow" id="popupInput'+id+'"><p>'+question+'</p><input class="in" type="text"/><br /><a href="#" class="jqmClose">Close</a></div>');
+function displayPopupInput(completeFunc,question,type){
+    var id=time();if(type=="")type="text";
+    $("body").append('<div class="jqmWindow" id="popupInput'+id+'"><p>'+question+'</p><input class="in" type="'+type+'" required /><br /><a href="#" class="jqmClose">Close</a></div>');
     $("#popupInput"+id+" .in").keypress(function(e){
       if(e.which == 13){$("#popupInput"+id+" .jqmClose").click();}
     });
@@ -194,9 +194,14 @@ function insertAdv(object,tagform){
         var strings0 = tagform.substring(0,tagform.indexOf("$"));tagform = tagform.substring(tagform.indexOf("$")+1,tagform.length);
         var strings1 = tagform.substring(0,tagform.indexOf("$"));
         var strings2 = tagform.substring(tagform.indexOf("$")+1,tagform.length);
+        var type = "text";
+        if(stringContains(strings1,"|")){
+            type = strings1.substring(strings1.indexOf("|")+1);
+            strings1 = strings1.substring(0,strings1.indexOf("|"));
+        }
         displayPopupInput(function(receive){
             insertAdv(object,strings0+receive+strings2);
-        },strings1+":");
+        },strings1+":",type);
     }else{
         var start = object[0].selectionStart;
         var end = object[0].selectionEnd;
