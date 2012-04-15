@@ -11,21 +11,24 @@ public static $hooks=array("foo");
                       "url"     =>array('<a href="$URLS$" title="$TEXT|$" target="$STRI|_self$" >','</a>',10),
                       "b"       =>array('<strong>','</strong>',-1),
                       "i"       =>array('<em>','</em>',-1),
+                      "u"       =>array('<u>','</u>',-1),
                       "left"    =>array('<div style="text-align:left">','</div>',-1),
                       "right"   =>array('<div style="text-align:right">','</div>',-1),
                       "center"  =>array('<div style="text-align:center">','</div>',-1),
                       "color"   =>array('<span style="color:$STRI|red$">','</span>',-1),
                       "size"    =>array('<span style="font-size:$INTE48$pt">','</span>',-1));
     var $codesLoaded = false;
-    var $codes= array(array("image",  'Insert an image',      'image{@}',                   'plus'),
-                      array("url",    'Insert a link',        'url($Enter the URL$){@}',    'plus'),
+    var $codes= array(
                       array("b",      'Bold text',            'b{@}',                       'default'),
                       array("i",      'Italic text',          'i{@}',                       'default'),
+                      array("u",      'Underline text',       'u{@}',                       'default'),
+                      array("size",   'Change text size',     'size($Enter the font size (0-48)|number$){@}','plus'),
+                      array("color",  'Color text',           'color($Enter a color|color$){@}','plus'),
                       array("left",   'Align left',           'left{@}',                    'plus'),
                       array("right",  'Align right',          'right{@}',                   'plus'),
                       array("center", 'Center text',          'center{@}',                  'plus'),
-                      array("color",  'Color text',           'color{@}',                   'plus'),
-                      array("size",   'Change text size',     'size($Enter the font size$){@}','plus'),
+                      array("url",    'Insert a link',        'url($Enter the URL|url$){@}','plus'),
+                      array("image",  'Insert an image',      'image{@}',                   'plus'),
                       array("noparse",'Avoid parsing',        '!{@}!',                      'pro'));
     
     function __construct(){}
@@ -33,6 +36,33 @@ public static $hooks=array("foo");
     function displayApiPage(){
         $text=$this->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
         echo($text['text']);
+    }
+    
+    function displayPanel(){
+        global $k,$a;
+        ?><div class="box">
+            <div class="title">LightUp</div>
+            <ul class="menu">
+                <? if($a->check("lightup.admin.tags")){ ?>
+                <a href="<?=$k->url("admin","LightUp/tags")?>"><li>Tag Management</li></a><? } ?>
+                <? if($a->check("lightup.admin.suites")){ ?>
+                <a href="<?=$k->url("admin","LightUp/suites")?>"><li>Suite Management</li></a><? } ?>
+                <? if($a->check("lightup.admin.tags")){ ?>
+                <a href="<?=$k->url("admin","LightUp/create")?>"><li>Tag Creator</li></a><? } ?>
+            </ul>
+        </div><?
+    }
+    
+    function displayAdminPage(){
+        global $params,$c,$k,$a,$MODULECACHE;
+        if(!$a->check("lightup.admin.panel"))return;
+        include(MODULEPATH.$MODULECACHE['LightUpAdmin']);
+        $this->displayPanel();
+        switch($params[1]){
+            case 'suites':displaySuitesAdminPage();break;
+            case 'create':displayTagCreatorPage();break;
+            default:      displayTagsAdminPage();break;
+        }
     }
     
     function getTags($taglist){
@@ -50,7 +80,7 @@ public static $hooks=array("foo");
         if(/*$this->tags==null*/$this->tagsLoaded==false){
             $tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
             if($tags!=null){foreach($tags as $tag){
-                $femcodeparts = explode("@",$tag->femcode);
+                $femcodeparts = explode("@",str_replace("&lt;","<",str_replace("&gt;",">",$tag->femcode)));
                 $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);
             }}
             $this->tagsLoaded=true;
