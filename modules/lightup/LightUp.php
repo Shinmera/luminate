@@ -37,6 +37,17 @@ public static $hooks=array("foo");
         $text=$this->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
         echo($text['text']);
     }
+    function displayApiOrderPage(){
+        global $l,$k,$c;$a=$l->loadModule("Auth");if(!$a->check("lightup.admin.tags"))die("Not authorized.");
+        if($_POST['order']=="")die("No order received!");
+        $orders = explode(",",$_POST['order']);
+        foreach($orders as $order){
+            $order=explode(":",$order);
+            $c->query("UPDATE lightup_tags SET `order`=? WHERE name=?",array($order[1],$order[0]));
+        }
+        
+        die("Order saved!");
+    }
     
     function displayPanel(){
         global $k,$a;
@@ -67,7 +78,8 @@ public static $hooks=array("foo");
     
     function getTags($taglist){
         if(/*$this->codes==null*/$this->codesLoaded==false){
-            $codes = DataModel::getData("lightup_tags","SELECT name,tagcode,description,suite FROM lightup_tags");
+            $codes = DataModel::getData("lightup_tags","SELECT name,tagcode,description,suite FROM lightup_tags ORDER BY `order`,suite,tag");
+            $this->codes = array();
             if($codes!=null){foreach($codes as $code){
                 $this->codes[]=array($code->name,$code->description,$code->tagcode,$code->suite);
             }}
@@ -79,6 +91,7 @@ public static $hooks=array("foo");
     function deparse($args){
         if(/*$this->tags==null*/$this->tagsLoaded==false){
             $tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
+            $this->tags = array();
             if($tags!=null){foreach($tags as $tag){
                 $femcodeparts = explode("@",str_replace("&lt;","<",str_replace("&gt;",">",$tag->femcode)));
                 $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);

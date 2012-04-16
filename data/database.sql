@@ -1,10 +1,10 @@
 -- phpMyAdmin SQL Dump
--- version 3.4.10.1
+-- version 3.5.0
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 11, 2012 at 12:21 PM
--- Server version: 5.5.22
+-- Generation Time: Apr 17, 2012 at 12:41 AM
+-- Server version: 5.5.23-log
 -- PHP Version: 5.3.10
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
@@ -27,16 +27,25 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `derpy_messages` (
-  `messageID` int(11) NOT NULL AUTO_INCREMENT,
+  `messageID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `sender` varchar(32) NOT NULL,
   `recipient` varchar(32) NOT NULL,
   `type` varchar(1) NOT NULL DEFAULT 'm',
   `title` varchar(64) NOT NULL DEFAULT 'No Subject',
   `text` text NOT NULL,
-  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `time` int(8) unsigned NOT NULL,
   `read` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
+--
+-- Dumping data for table `derpy_messages`
+--
+
+INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
+(1, 'Shinmera', 'Shinmera', 'm', 'No Subject', 'A', 2012, 1),
+(2, 'Shinmera', 'Shinmera', 'm', 'Re: No Subject', 'TESTER', 2012, 1),
+(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1);
 
 -- --------------------------------------------------------
 
@@ -45,13 +54,13 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
 --
 
 CREATE TABLE IF NOT EXISTS `fenfire_comments` (
-  `commentID` int(11) NOT NULL AUTO_INCREMENT,
-  `FID` int(11) NOT NULL,
+  `commentID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `FID` int(11) unsigned NOT NULL,
   `username` varchar(32) NOT NULL,
   `mail` varchar(32) NOT NULL,
   `text` text NOT NULL,
   `time` int(11) NOT NULL,
-  `level` tinyint(4) NOT NULL,
+  `level` tinyint(4) unsigned NOT NULL,
   `moderation` tinyint(1) NOT NULL,
   PRIMARY KEY (`commentID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
@@ -71,7 +80,7 @@ INSERT INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `text`, 
 --
 
 CREATE TABLE IF NOT EXISTS `fenfire_folders` (
-  `folderID` int(11) NOT NULL AUTO_INCREMENT,
+  `folderID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `module` varchar(32) NOT NULL,
   `path` varchar(64) NOT NULL,
   `order` text,
@@ -86,6 +95,65 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
 INSERT INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
 (89, 'CORE', 'INDEX', ';0;9;1;0;7;10;8;2;3;4;5;6;11;12;13;14', 1),
 (90, 'Neon', 'Shinmera', ';15;16', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lightup_suites`
+--
+
+CREATE TABLE IF NOT EXISTS `lightup_suites` (
+  `name` varchar(16) NOT NULL,
+  `module` varchar(32) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `lightup_suites`
+--
+
+INSERT INTO `lightup_suites` (`name`, `module`) VALUES
+('default', 'CORE'),
+('extra', 'CORE'),
+('plus', 'CORE'),
+('pro', 'CORE');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lightup_tags`
+--
+
+CREATE TABLE IF NOT EXISTS `lightup_tags` (
+  `name` varchar(32) NOT NULL,
+  `suite` varchar(16) NOT NULL DEFAULT 'standard',
+  `tag` varchar(16) NOT NULL,
+  `femcode` varchar(128) NOT NULL,
+  `tagcode` varchar(128) NOT NULL,
+  `description` varchar(64) DEFAULT NULL,
+  `limit` int(11) NOT NULL DEFAULT '-1',
+  `order` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `lightup_tags`
+--
+
+INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `femcode`, `tagcode`, `description`, `limit`, `order`) VALUES
+('Bold', 'default', 'b', '&lt;strong&gt;@&lt;/strong&gt;', 'b{@}', 'Bold text', -1, 0),
+('Center', 'plus', 'center', '&lt;div class=&quot;center&quot;&gt;@&lt;/div&gt;', 'center{@}', 'Center the text', -1, 3),
+('Color', 'plus', 'color', '&lt;span style=&quot;color:&#36;STRI|red&#36;&gt;@&lt;/span&gt;', 'color(&#36;Choose a colour:|color&#36;){@}', 'Change the font colour', -1, 4),
+('Image', 'plus', 'image', '&lt;img alt=&quot;&#36;STRI|image&#36;&quot; title=&quot;&#36;TEXT|&#36;&quot; class=&quot;&#36;STRI|&#36;&quot; src=&quot;@&quo', 'img{@}', 'Insert an image', -1, 5),
+('Italic', 'default', 'i', '&lt;em&gt;@&lt;/em&gt;', 'i{@}', 'Italic text', -1, 1),
+('Left', 'plus', 'left', '&lt;div class=&quot;left&quot;&gt;@&lt;/div&gt;', 'left{@}', 'Align left', -1, 6),
+('Noparse', 'pro', '!', 'COMPILED', '!{@}!', 'Stop text from being parsed', -1, 12),
+('Paragraph', 'extra', 'p', '&lt;p&gt;@&lt;/p&gt;', 'p{@}', 'Create a text paragraph', -1, 10),
+('Quote', 'extra', 'quote', '&lt;div class=&quot;quote&quot;&gt;&lt;h5&gt;Quote &#36;STRI|&#36; &#36;STRI|&#36;&lt;/h5&gt;@&lt;/div&gt;', 'quote{@}', 'Quote a post', -1, 11),
+('Right', 'plus', 'right', '&lt;div class=&quot;right&quot;&gt;@&lt;/div&gt;', 'right{@}', 'Align right', -1, 7),
+('Size', 'plus', 'size', '&lt;span style=&quot;font-size:&#36;INTE36|18&#36;pt&quot;&gt;@&lt;/span&gt;', 'size(&#36;Enter the font size|number&#36;){@}', 'Change the font size', -1, 8),
+('Underline', 'default', 'u', '&lt;u&gt;@&lt;/u&gt;', 'u{@}', 'Underline text', -1, 2),
+('Url', 'plus', 'url', '&lt;a href=&quot;&#36;URLS&#36;&quot; title=&quot;&#36;TEXT|&#36;&quot; target=&quot;&#36;STRI|_self&#36;&quot; &gt;@&lt;/a&gt;', 'url(&#36;Enter the URL|url&#36;){@}', 'Insert a hyperlink', -1, 9);
 
 -- --------------------------------------------------------
 
@@ -141,11 +209,16 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Admin', 'PANELdisplay', 'Fenfire', 'displayPanel'),
 ('Admin', 'ADMINNavbar', 'Fenfire', 'adminNavbar'),
 ('CORE', 'APISubmitComment', 'Fenfire', 'submitCommentForm'),
-('CORE', 'PARSEText', 'Parser', 'deparse'),
+('CORE', 'APIparse', 'LightUp', 'displayApiPage'),
 ('Neon', 'PROFILEpage', 'Fenfire', 'commentSection'),
 ('User', 'buildMenu', 'Derpy', 'buildMenu'),
 ('User', 'SETTINGSNavbar', 'Derpy', 'userNavbar'),
-('User', 'SETTINGSMessages', 'Derpy', 'displayMessagesPage');
+('User', 'SETTINGSMessages', 'Derpy', 'displayMessagesPage'),
+('CORE', 'PARSE', 'LightUp', 'deparse'),
+('CORE', 'GETtags', 'LightUp', 'getTags'),
+('Admin', 'PANELdisplay', 'LightUp', 'displayPanel'),
+('Admin', 'ADMINLightUp', 'LightUp', 'displayAdminPage'),
+('CORE', 'APILightUpTagOrder', 'LightUp', 'displayApiOrderPage');
 
 -- --------------------------------------------------------
 
@@ -154,57 +227,27 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ms_log` (
-  `logID` int(11) NOT NULL AUTO_INCREMENT,
+  `logID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `subject` text NOT NULL,
-  `time` varchar(16) NOT NULL,
+  `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=40 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
 
 --
 -- Dumping data for table `ms_log`
 --
 
 INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
-(1, 'Log cleared.', '1332795359', 1),
-(2, 'Added field &#039;userfirstname&#039;', '1332799137', 1),
-(3, 'Added field &#039;userlastname&#039;', '1332799151', 1),
-(4, 'Updated user @1', '1332801088', 1),
-(5, 'Module &#039;Liroli&#039; added.', '1332884737', 1),
-(6, 'Module &#039;Display&#039; added.', '1332896480', 1),
-(7, 'Hook Themes::buildMenu =&gt; Display::buildMenu added.', '1332896505', 1),
-(8, 'Module &#039;Fenfire&#039; added.', '1332937555', 1),
-(9, 'Hook Admin::ADMINFenfire =&gt; Fenfire::displayAdminPage added.', '1332937673', 1),
-(10, 'Hook Admin::PANELdisplay =&gt; Fenfire::displayPanel added.', '1332937689', 1),
-(11, 'Hook Admin::ADMINNavbar =&gt; Fenfire::adminNavbar added.', '1332937781', 1),
-(12, 'Hook Admin::PANELdisplay =&gt; Fenfire::commentList added.', '1333918439', 1),
-(13, 'Hook CORE::APISubmitComment =&gt; Fenfire::submitCommentForm added.', '1333920237', 1),
-(14, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333920332', 1),
-(15, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921025', 1),
-(16, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921067', 1),
-(17, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921208', 1),
-(18, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921435', 1),
-(19, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921449', 1),
-(20, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921712', 1),
-(21, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921740', 1),
-(22, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921759', 1),
-(23, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921810', 1),
-(24, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921821', 1),
-(25, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921839', 1),
-(26, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333921864', 1),
-(27, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922562', 1),
-(28, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922696', 1),
-(29, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922727', 1),
-(30, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333922735', 1),
-(31, 'Hook CORE::PARSEText =&gt; Parser::deparse added.', '1333922882', 1),
-(32, 'Hook Neon::PROFILEpage =&gt; Fenfire::commentSection added.', '1333924256', 1),
-(33, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924316', 1),
-(34, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', '1333924490', 1),
-(35, 'Module &#039;Derpy&#039; added.', '1334133579', 1),
-(36, 'Hook User::buildMenu =&gt; Derpy::userNavbar added.', '1334136669', 1),
-(37, 'Hook User::SETTINGSNavbar =&gt; Derpy::userNavbar added.', '1334136753', 1),
-(38, 'Hook User::SETTINGSNavbar =&gt; Derpy::userNavbar added.', '1334136779', 1),
-(39, 'Hook User::SETTINGSMessages =&gt; Derpy::displayMessagesPage added.', '1334137612', 1);
+(1, 'Log cleared.', 2012, 1),
+(2, 'Updated user @1', 2012, 1),
+(3, 'Updated user @1', 2012, 1),
+(4, 'Updated user @1', 2012, 1),
+(5, 'Updated user @1', 2012, 1),
+(6, 'Updated user @1', 2012, 1),
+(7, 'Updated user @1', 2012, 1),
+(8, 'Updated user @1', 2012, 1),
+(9, 'Updated user @1', 2012, 1);
 
 -- --------------------------------------------------------
 
@@ -230,9 +273,9 @@ INSERT INTO `ms_modules` (`name`, `subject`) VALUES
 ('Derpy', 'Derpy Mail, a private user message system.'),
 ('Display', 'A gallery module with per-user gallery support.'),
 ('Fenfire', 'Provides a simple comment system.'),
+('LightUp', 'BBCode and text formatting system '),
 ('Liroli', 'Public user groups'),
 ('Neon', 'Provides user front-end.'),
-('Parser', 'Used to provide an extensive bbcode system.'),
 ('Themes', 'A simple theming system, making page construction very simple.'),
 ('User', 'Allows for user management and supplies AUTH login/logout functions.');
 
@@ -277,7 +320,7 @@ INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
 
 CREATE TABLE IF NOT EXISTS `ms_timer` (
   `IP` varchar(16) NOT NULL,
-  `time` int(11) NOT NULL,
+  `time` int(10) unsigned NOT NULL,
   `action` varchar(32) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -286,10 +329,10 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 --
 
 INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
-('127.0.0.1', 1332009384, 'visit:'),
-('127.0.0.1', 1332798331, 'visit'),
-('127.0.0.1', 1334138772, 'visit:1'),
-('127.0.0.1', 1333924490, 'comment');
+('127.0.0.1', 0, 'visit:'),
+('127.0.0.1', 0, 'visit'),
+('127.0.0.1', 0, 'visit:1'),
+('127.0.0.1', 0, 'comment');
 
 -- --------------------------------------------------------
 
@@ -298,8 +341,8 @@ INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `neon_friends` (
-  `uID1` int(11) NOT NULL,
-  `uID2` int(11) NOT NULL,
+  `uID1` int(11) unsigned NOT NULL,
+  `uID2` int(11) unsigned NOT NULL,
   `type` varchar(1) NOT NULL DEFAULT 'r',
   PRIMARY KEY (`uID1`,`uID2`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -339,7 +382,7 @@ INSERT INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable`, `dis
 
 CREATE TABLE IF NOT EXISTS `ud_field_values` (
   `varname` varchar(32) NOT NULL,
-  `userID` int(11) NOT NULL,
+  `userID` int(11) unsigned NOT NULL,
   `value` text NOT NULL,
   PRIMARY KEY (`varname`,`userID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -382,7 +425,7 @@ INSERT INTO `ud_groups` (`title`, `permissions`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ud_permissions` (
-  `UID` bigint(20) NOT NULL,
+  `UID` bigint(20) unsigned NOT NULL,
   `tree` text NOT NULL,
   PRIMARY KEY (`UID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -401,7 +444,7 @@ INSERT INTO `ud_permissions` (`UID`, `tree`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ud_users` (
-  `userID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `userID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(32) NOT NULL,
   `mail` varchar(35) NOT NULL,
   `password` varchar(128) NOT NULL,
@@ -410,7 +453,7 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   `filename` varchar(50) NOT NULL,
   `group` varchar(32) NOT NULL,
   `status` varchar(1) NOT NULL,
-  `time` int(11) NOT NULL,
+  `time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
@@ -421,5 +464,5 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
 --
 
 INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
-(2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 1332582153);
+(1, 'Shinmera', 'nhafner@gmx.ch', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0);

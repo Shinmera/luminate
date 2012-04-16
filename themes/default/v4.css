@@ -482,3 +482,35 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     margin-bottom:-3px;
 }
 .simpleeditor .toolbar li:hover{background-color:#FFDD00;}
+
+
+.quote{
+    border: 2px solid #000;
+    margin:5px;padding:5px;
+    margin-left:10px;
+    position:relative;
+    background: #FFF;
+    border-radius: 2px 5px 5px 5px;
+}
+
+.quote::before {
+  top: -2px;
+  bottom: auto;
+  left: -12px;
+  border-width: 0px 12px 10px 0;
+  border-color: transparent #000;
+
+  content: "";
+  position: absolute;
+  border-style: solid;
+  display: block;
+  width: 0;
+}
+
+.quote h5{
+    background-color:#000;
+    margin: -5px;
+    margin-bottom:5px;
+    color: #FFF;
+    padding-left:5px;
+}

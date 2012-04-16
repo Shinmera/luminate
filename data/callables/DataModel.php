@@ -50,17 +50,14 @@ class DataModel{
         if(count($this->fields)==0)$this->fields=$c->getTableColumns($this->table);
         
         $data = array();
-        $query = 'INSERT INTO '.$this->table.' VALUES(';
+        $query = 'INSERT INTO '.$this->table.' SET';
         foreach($this->fields as $field){
-            if(/*$this->holder[$field]===""||*/!isset($this->holder[$field])){
-                $query.='NULL,';
-            }else{
+            if(isset($this->holder[$field])){
                 $data[]=$this->holder[$field];
-                $query.='?,';
+                $query.=' `'.$field.'`=?,';
             }
         }
         $query=substr($query,0,strlen($query)-1);
-        $query.= ')';
         $c->query($query,$data);
     }
     

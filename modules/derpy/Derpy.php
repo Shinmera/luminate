@@ -37,7 +37,7 @@ function displayInboxPage(){
     $k->displayPager();
     
     if($max[0]['COUNT(messageID)']>0){
-    ?><form action='<?=PROOT?>Messages/Inbox' method='post'><table class='mailbox'>
+    ?><form action='<?=PROOT?>panel/Messages/Inbox' method='post'><table class='mailbox'>
         <thead>
             <tr>
                 <th style='width:20px;'></th>
@@ -77,7 +77,7 @@ function displayOutboxPage(){
     $k->displayPager();
     
     if($max[0]['COUNT(messageID)']>0){
-    ?><form action='<?=PROOT?>Messages/Outbox' method='post'><table class='mailbox'>
+    ?><form action='<?=PROOT?>panel/Messages/Outbox' method='post'><table class='mailbox'>
         <thead>
             <tr>
                 <th style='width:20px;'></th>
@@ -116,6 +116,15 @@ function displayWritePage(){
 function displayReadPage(){
     global $params,$l,$a,$k,$c;
     
+    if($_POST['recipient']!=""){
+        $mail = DataModel::getHull("derpy_messages");
+        $mail->sender=$a->user->username;
+        $mail->recipient=$_POST['recipient'];
+        $mail->title=$_POST['title'];
+        $mail->time=time();
+        $mail->text=$_POST['text'];
+        $mail->insertData();
+    }
     $mail = DataModel::getData('derpy_messages','SELECT messageID,sender,recipient,type,title,text,time,`read` FROM derpy_messages '.
                                'WHERE (sender LIKE ? OR recipient LIKE ?) AND messageID=?',array($a->user->username,$a->user->username,$params[3]));
     if($mail!=null){
