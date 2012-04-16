@@ -304,9 +304,9 @@ function pager($base,$max,$current=0,$step=25,$return=false){
 
 function toDate($time){
     if(is_numeric($time))
-        return date('d.m.Y H:i:s',$time);
+        return date('l d.m.Y H:i:s',$time);
     else
-        return $time;
+        return date('l d.m.Y H:i:s',strtotime($time));
 }
 
 function convertHTML($html){
@@ -488,7 +488,7 @@ function displayImageSized($imgpath,$limit=800,$title="",$alt="image"){
 }
 
 function updateTimeout($action,$timeout){
-    return $this->updateTimeout($action,$timeout);
+    return $this->updateTimestamp($action,$timeout);
 }
 
 function updateTimestamp($action,$timeout){
@@ -496,7 +496,7 @@ function updateTimestamp($action,$timeout){
     $result=$c->getData("SELECT `time` FROM ms_timer WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],$action));
     if(count($result)>0){
         if((time()-$result[0]['time'])<=$timeout)return false;
-        $c->query("UPDATE ms_timer SET time=? WHERE IP=? AND action=?",array(time(),$_SERVER['REMOTE_ADDR'],$action));
+        $c->query("UPDATE ms_timer SET time=? WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],time(),$action));
     }else{
         $c->query("INSERT INTO ms_timer VALUES(?,?,?)",array($_SERVER['REMOTE_ADDR'],time(),$action));
     }

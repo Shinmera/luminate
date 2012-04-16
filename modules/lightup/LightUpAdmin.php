@@ -2,11 +2,15 @@
     function displayTagsAdminPage(){
         global $k,$c;
         
-        if($_GET['action']=="Delete")$c->query("DELETE FROM lightup_tags WHERE name=?",array($_GET['tag']));
+        if($_GET['action']=="Delete"){
+            $c->query("DELETE FROM lightup_tags WHERE name=?",array($_GET['tag']));
+            $err="Tag deleted.";
+        }
         
         ?><div class="box">
-            <a class="button" href="<?=PROOT?>LightUp/create/<?=$tag->name?>">Add a new tag</a><br />
-        <table>
+            <a class="button" href="<?=PROOT?>LightUp/create/<?=$tag->name?>">Add a new tag</a>
+            <span style="color:red;font-weight:bold;" id="err"><?=$err?></span><br />
+        <table id="table">
             <thead>
                 <tr>
                     <th style="width:100px;"></th>
@@ -16,10 +20,11 @@
                 </tr>
             </thead>
             <tbody>
-                <? $tags = DataModel::getData("lightup_tags","SELECT name,suite,description FROM lightup_tags ORDER BY suite,name");
+                <? $tags = DataModel::getData("lightup_tags","SELECT `order`,name,suite,description FROM lightup_tags ORDER BY `order`,suite,name");
                 if($tags!=null){
+                    $i=0;
                     foreach($tags as $tag){
-                        ?><tr>
+                        ?><tr id="<?=$i?>" name="<?=$tag->name?>">
                             <td>
                                 <a href="<?=PROOT?>LightUp/create/<?=$tag->name?>" class="button">Edit</a>
                                 <a href="?action=Delete&tag=<?=$tag->name?>" class="button">Delete</a>
@@ -28,11 +33,30 @@
                             <td><?=$tag->suite?></td>
                             <td><?=$tag->description?></td>
                         </tr><?
+                        $i++;
                     }
                 }
                 ?>
             </tbody>
-        </table></div><?
+        </table>
+        <script type="text/javascript" src="<?=DATAPATH?>js/jquery.tablednd.js" ></script>
+        <script type="text/javascript">
+            $("#table").tableDnD({
+                onDrop: function(table,row){
+                    var rows = table.tBodies[0].rows;
+                    var queryString = "";
+                    for (var i=0; i<rows.length; i++) {
+                        queryString += $(rows[i]).attr("name")+":"+i;
+                        if(i<rows.length-1)queryString+=",";
+                    }
+                    $("#err").html("Please wait...");
+                    $.post("<?=PROOT?>api/LightUpTagOrder",{order:queryString},function(data){
+                        $("#err").html(data);
+                    });
+                }
+            });
+        </script>
+        </div><?
     }
     
     function displaySuitesAdminPage(){
@@ -98,7 +122,7 @@
                 $tag->$name = $value;
             }
             if($params[2]!=""){$tag->saveData();$err="Tag updated!";}
-            else              {$tag->insertData();$err="Tag added!";}
+            else              {$tag->insertData();$err="Tag added!";$tag->femcode=htmlspecialchars($tag->femcode);}
         }
         
         ?><form action="#" method="post" class="box">
@@ -110,7 +134,7 @@
             <input type="text" name="description" value="<?=$tag->description?>" style="width:100%" placeholder="Markup Tag" autocomplete="off" maxlength="64" /><br />
             <br />
             Femcode:<br />
-            <input type="text" id="femcode" name="femcode" value="<?=htmlspecialchars($tag->femcode)?>" style="width:100%" placeholder='<tag attr="$TYPE|default$">@</tag>' autocomplete="off" maxlength="128" required /><br />
+            <input type="text" id="femcode" name="femcode" value="<?=$tag->femcode?>" style="width:100%" placeholder='<tag attr="$TYPE|default$">@</tag>' autocomplete="off" maxlength="128" required /><br />
             Tagcode:<br />
             <input type="text" id="tagcode" name="tagcode" value="<?=$tag->tagcode?>" style="width:100%" placeholder='tag($Enter TYPE|type$){@}' autocomplete="off" maxlength="128" required /><br />
             Preview:<br />
