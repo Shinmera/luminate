@@ -7,6 +7,17 @@ public static $hooks=array("foo");
 
 function __construct(){}
 
+function apiUserSearch(){
+    global $c;
+    $users = $c->getData('SELECT username FROM ud_users WHERE username LIKE ? ORDER BY username DESC LIMIT 10',array($_GET['query'].'%'));
+    if(!is_array($users))die();
+    $string = "";
+    foreach($users as $user){
+        $string.='"'.$user['username'].'",';
+    }
+    die('['.substr($string,0,strlen($string)-1).']');
+}
+
 function displayPanel(){
     global $k,$a;
     ?><div class="box">

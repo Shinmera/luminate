@@ -6,6 +6,7 @@ class Editor{
     var $action = "submit";
     var $formname = "editor";
     var $suites = array("default","plus");
+    var $style = "";
     
     function __construct($postPath="#",$action="submit",$formname="editor",$suites=array("default","plus")){
         $this->postPath=$postPath;$this->action=$action;
@@ -30,6 +31,10 @@ class Editor{
             $select.='<option value="'.$c.'" '.$selected.' />';
         }
         $this->extrafields[]=$select.'</select>';
+    }
+    
+    function addCustom($html){
+        $this->extrafields[]=$html;
     }
     
     //TAG: array(name,title,tag) 
@@ -77,7 +82,7 @@ class TinyEditor extends Editor{
 
 class SimpleEditor extends Editor{
     function show(){
-        ?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor">
+        ?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor" style="<?=$this->style?>">
             <?=implode("<br />",$this->extrafields)?>
             <? $this->getSimpleToolbar(); ?>
             <textarea name="text" id="<?=$this->formname?>txt" required><?=$_POST['text']?></textarea>

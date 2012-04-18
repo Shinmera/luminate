@@ -31,11 +31,22 @@ function displayMessagesPage(){
 
 function displayInboxPage(){
     global $c,$a,$k;
+    
+    if($_POST['action']=="Delete"){
+        $query="DELETE FROM derpy_messages WHERE ";$data=array();
+        foreach($_POST['toDelete'] as $mID){
+            $query.="messageID=? OR ";$data[]=$mID;
+        }
+        $c->query(substr($query,0,strlen($query)-4),$data);
+        $suc="Messages deleted.";
+    }
+    
     $max = $c->getData('SELECT COUNT(messageID) FROM derpy_messages WHERE recipient LIKE ? '.
                                                     'AND (type LIKE ? OR type LIKE ?)',array($a->user->username,'m','a'));
     $k->sanitizePager($max[0]['COUNT(messageID)'],array('sender','title','time'),'time');
     $k->displayPager();
     
+    if($suc!="")echo("<div class='success'>".$suc."</div>");
     if($max[0]['COUNT(messageID)']>0){
     ?><form action='<?=PROOT?>panel/Messages/Inbox' method='post'><table class='mailbox'>
         <thead>
@@ -64,18 +75,37 @@ function displayInboxPage(){
             }
             ?>
         </tbody>
-    </table><input type='submit' name='action' value='Delete' /></form>
+    </table><input type='submit' name='action' value='Delete' /><input type="submit" id="selall" value="Invert Selection" /></form>
+    <script type="text/javascript">
+        $().ready(function(){
+            $("#selall").click(function(){
+                $(".mailbox input").click();
+                return false;
+            });
+        });
+    </script>
     <?
     }else echo('<center>No messages to display.</center>');
 }
 
 function displayOutboxPage(){
     global $c,$a,$k;
+    
+    if($_POST['action']=="Delete"){
+        $query="DELETE FROM derpy_messages WHERE ";$data=array();
+        foreach($_POST['toDelete'] as $mID){
+            $query.="messageID=? OR ";$data[]=$mID;
+        }
+        $c->query(substr($query,0,strlen($query)-4),$data);
+        $suc="Messages deleted.";
+    }
+    
     $max = $c->getData('SELECT COUNT(messageID) FROM derpy_messages WHERE sender LIKE ? '.
                                                     'AND type LIKE ?',array($a->user->username,'o'));
     $k->sanitizePager($max[0]['COUNT(messageID)'],array('recipient','title','time'),'time');
     $k->displayPager();
     
+    if($suc!="")echo("<div class='success'>".$suc."</div>");
     if($max[0]['COUNT(messageID)']>0){
     ?><form action='<?=PROOT?>panel/Messages/Outbox' method='post'><table class='mailbox'>
         <thead>
@@ -104,27 +134,79 @@ function displayOutboxPage(){
             }
             ?>
         </tbody>
-    </table><input type='submit' name='action' value='Delete' /></form>
+    </table><input type='submit' name='action' value='Delete' /><input type="submit" id="selall" value="Invert Selection" /></form>
+    <script type="text/javascript">
+        $().ready(function(){
+            $("#selall").click(function(){
+                $(".mailbox input").click();
+                return false;
+            });
+        });
+    </script>
     <?
     }else echo('<center>No messages to display.</center>');
 }
 
 function displayWritePage(){
-    include(MODULEPATH.'gui/Editor.php');new FullEditor();
+    global $k,$a;
+    if($_POST['recipient']!=""){
+        if($k->updateTimeout("sendmessage",2*60)){
+            $mail = DataModel::getHull("derpy_messages");
+            $mail->sender=$a->user->username;
+            $mail->title=$_POST['title'];
+            $mail->time=time();
+            $mail->text=$_POST['text'];
+
+            if(strpos($_POST['recipient'],",")===FALSE){
+                $recipient=trim($_POST['recipient']);
+                if($recipient!=""){
+                    if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
+                        $err.='User '.$recipient.' not found.<br />';
+                    else{
+                        $mail->recipient=$recipient;
+                        $mail->insertData();
+                    }
+                }
+            }else{
+                $recipients = explode(",",$_POST['recipient']);
+                foreach($recipients as $recipient){
+                    $recipient=trim($recipient);
+                    if($recipient!=""){
+                        if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
+                            $err.='User '.$recipient.' not found.<br />';
+                        else{
+                            $mail->recipient=$recipient;
+                            $mail->insertData();
+                        }
+                    }
+                }
+            }
+            $mail->recipient=$_POST['recipient'];
+            $mail->type="o";
+            $mail->read=1;
+            $mail->insertData();
+        }else{
+            $err="Please wait 2 minutes between sending messages.";
+        }
+        if($err=="")$suc="Message sent!";
+    }
+    
+    
+    include(MODULEPATH.'gui/Editor.php');
+    $editor = new SimpleEditor("#","sendMessage");
+    $editor->addCustom("Recipients:".$k->suggestedTextField("recipient","USERsearch",$_POST['recipient'],true));
+    $editor->addTextField("title","","Re: ".$mail->title,"text","","box-sizing: border-box;width:100%;");
+    ?><style>.simpleeditor{display:block;}
+        .simpleeditor textarea{box-sizing: border-box;width:100%;}
+        .simpleeditor .toolbar{box-sizing: border-box;width:100%;}</style><?
+    if($err!="")echo('<div class="failure">'.$err.'</div>');if($suc!="")echo('<div class="success">'.$suc.'</div>');
+    $editor->show();
+    
 }
 
 function displayReadPage(){
     global $params,$l,$a,$k,$c;
     
-    if($_POST['recipient']!=""){
-        $mail = DataModel::getHull("derpy_messages");
-        $mail->sender=$a->user->username;
-        $mail->recipient=$_POST['recipient'];
-        $mail->title=$_POST['title'];
-        $mail->time=time();
-        $mail->text=$_POST['text'];
-        $mail->insertData();
-    }
     $mail = DataModel::getData('derpy_messages','SELECT messageID,sender,recipient,type,title,text,time,`read` FROM derpy_messages '.
                                'WHERE (sender LIKE ? OR recipient LIKE ?) AND messageID=?',array($a->user->username,$a->user->username,$params[3]));
     if($mail!=null){
@@ -146,7 +228,7 @@ function displayReadPage(){
         <div class="box" style="display:block;">
             <h3>Reply</h3>
             <? include(MODULEPATH.'gui/Editor.php');
-            $editor = new SimpleEditor("#","sendMessage");
+            $editor = new SimpleEditor(PROOT."panel/Messages/Write","sendMessage");
             $editor->addTextField("recipient","",$mail->recipient,"hidden");
             $editor->addTextField("title","","Re: ".$mail->title);
             $editor->show();?>
