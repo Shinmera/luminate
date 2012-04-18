@@ -52,6 +52,9 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .toolbar li{list-style:none;display:inline-block;margin:5px;padding:0;}
 .toolbar img{margin:0;padding:0;}
 .jqmWindow .in{width:100%;}
+.failure,.success{padding:10px;margin:5px;color:#FFF;font-weight:bold;}
+.failure{border: 1px solid #4D0606;background-color:#FF0000;}
+.success{border: 1px solid #0A4D06;background-color:#00FF00;}
 
 #header{
     font-size:12pt;

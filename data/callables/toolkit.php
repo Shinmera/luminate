@@ -22,6 +22,51 @@ function convertArrayDown($array,$field,$ret=array()){
     return $ret;
 }
 
+function suggestedTextField($name,$apisource,$default="",$return=false){
+    $var='<input type="text" id="'.$name.'" name="'.$name.'" value="'.$default.'" />
+        <script type="text/javascript">
+	$(function() {
+            function split( val ) {
+                return val.split( /,\s*/ );
+            }
+            function extractLast( term ) {
+                return split( term ).pop();
+            }
+
+            $( "#'.$name.'" )
+                // dont navigate away from the field on tab when selecting an item
+                .bind( "keydown", function( event ) {
+                    if ( event.keyCode === $.ui.keyCode.TAB && $( this ).data( "autocomplete" ).menu.active ) {
+                            event.preventDefault();
+                    }
+                })
+                .autocomplete({
+                    source: function( request, response ) {
+                        $.getJSON( "'.PROOT.'api/'.$apisource.'", { query: extractLast( request.term ) }, response );
+                    },
+                    search: function() {
+                        // custom minLength
+                        var term = extractLast( this.value );
+                        if ( term.length < 2 ) {return false;}
+                    },
+                    focus: function() {
+                        // prevent value inserted on focus
+                        return false;
+                    },
+                    select: function( event, ui ) {
+                        var terms = split( this.value );
+                        terms.pop();
+                        terms.push( ui.item.value );
+                        terms.push( "" );
+                        this.value = terms.join( ", " );
+                        return false;
+                    }
+                });
+	});
+	</script>';
+    if($return)return $var;else echo($var);
+}
+
 function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false){
     ?><div class='interactiveSelect' id='<?=$name?>'>
     <input autocomplete="off" type="text" id="sel_<?=$name?>_add" placeholder="New Value" ><ul><?
