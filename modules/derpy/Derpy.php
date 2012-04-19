@@ -6,16 +6,56 @@ public static $short='Derpy';
 public static $required=array();
 public static $hooks=array('foo');
 
-function userNavbar($menu){$menu[]='Messages';return $menu;}
-function buildMenu($menu){$menu[]=array('Messages',Toolkit::url('user','panel/Messages'));return $menu;}
+function handlePostHook($args){
+    global $a,$k;
+    if($args['toModule']=="User"){
+        $this->sendNotification($args['sectionID'], "@".$a->user->username." posted on url(".$k->url("user",$args['sectionID'])."){your profile}.");
+    }
+    if($args['toUser']!=""){
+        $this->sendNotification($args['toUser'], "@".$a->user->username." url(".$args['permalink']."){replied} to your post.");
+    }
+}
+function handleAPINotificationDelete(){
+    $msg = DataModel::getData("derpy_messages","SELECT recipient FROM derpy_messages WHERE messageID=?",array($_POST['messageID']));
+    if($msg==null)die("No such notification.");
+    else{
+        global $l;$a = $l->loadModule("Auth");
+        if($a->user->username==$msg->recipient){
+            global $c;$c->query("DELETE FROM derpy_messages WHERE messageID=?",array($_POST['messageID']));
+            die("Notification deleted!");
+        }else{
+            die("Action not permitted.");
+        }
+    }
+}
+
+function userNavbar($menu){
+    $menu[]='Messages';
+    return $menu;
+}
+function buildMenu($menu){
+    global $c;
+    $newmails = $c->getData("SELECT COUNT(messageID) FROM derpy_messages 
+                             WHERE recipient LIKE ? AND `read`=0",array($a->user->username));
+    $menu[]=array('Messages ('.$newmails[0]['COUNT(messageID)'].')',Toolkit::url('user','panel/Messages'));
+    return $menu;
+}
 
 function displayMessagesPage(){
-    global $params,$a;
-    $pages = array('Inbox','Outbox','Read','Write');
+    global $params,$a,$c;
+    
+    $newnotes = $c->getData("SELECT COUNT(messageID) FROM derpy_messages 
+                             WHERE recipient LIKE ? AND type LIKE ? AND `read`=0",array($a->user->username,'n'));
+    $newmails = $c->getData("SELECT COUNT(messageID) FROM derpy_messages 
+                             WHERE recipient LIKE ? AND type LIKE ? AND `read`=0",array($a->user->username,'m'));
+    
+    $pages = array('Notifications'=>"(".$newnotes[0]['COUNT(messageID)'].")",'Inbox'=>"(".$newmails[0]['COUNT(messageID)'].")",
+                   'Outbox'=>"",'Read'=>"",'Write'=>"");
+    if($params[2]=="")$params[2]="Inbox";
     ?><ul class='tabBar'>
-        <? foreach($pages as $p){
+        <? foreach($pages as $p=>$amount){
             if($params[2]==$p)$sel='selected';else $sel='';
-            echo('<li class="'.$sel.'"><a href="'.Toolkit::url('user','panel/Messages/'.$p).'">'.$p.'</a></li>');
+            echo('<li class="'.$sel.'"><a href="'.Toolkit::url('user','panel/Messages/'.$p).'">'.$p." ".$amount.'</a></li>');
         } ?>
     </ul>
     <div class='tabContainer'>
@@ -23,6 +63,7 @@ function displayMessagesPage(){
             case 'Write': $this->displayWritePage();break;
             case 'Read':  $this->displayReadPage();break;
             case 'Outbox':$this->displayOutboxPage();break;
+            case 'Notifications':$this->displayNotificationsPage();break;
             case 'Inbox':
             default:      $this->displayInboxPage();break;
         } ?>
@@ -42,7 +83,7 @@ function displayInboxPage(){
     }
     
     $max = $c->getData('SELECT COUNT(messageID) FROM derpy_messages WHERE recipient LIKE ? '.
-                                                    'AND (type LIKE ? OR type LIKE ?)',array($a->user->username,'m','a'));
+                                                    'AND type LIKE ?',array($a->user->username,'m'));
     $k->sanitizePager($max[0]['COUNT(messageID)'],array('sender','title','time'),'time');
     $k->displayPager();
     
@@ -86,6 +127,42 @@ function displayInboxPage(){
     </script>
     <?
     }else echo('<center>No messages to display.</center>');
+}
+
+function displayNotificationsPage(){
+    global $c,$l,$a,$k;
+    
+    $c->query("UPDATE derpy_messages SET `read`=1 WHERE recipient LIKE ? AND type LIKE ?",array($a->user->username,'n'));
+    $notifys = DataModel::getData("derpy_messages","SELECT messageID,text,time FROM derpy_messages WHERE ".
+                                                    'recipient LIKE ? AND type LIKE ? ORDER BY time DESC',array($a->user->username,'n'));
+    
+    if($notifys!=null){
+        if(!is_array($notifys))$notifys=array($notifys);
+        
+        ?><div id="notifications"><?
+        foreach($notifys as $n){
+            ?><div class="notification" id="<?=$n->messageID?>">
+                <a class="roundbutton" href="#">X</a>
+                <span class="time"><?=$k->timeAgo($n->time)?></span>
+                <?=$l->triggerPARSE($this,$n->text)?>
+            </div><?
+        }
+        
+        ?></div><script type="text/javascript">
+            $(".roundbutton").each(function(){
+                $(this).click(function(){
+                    var parent = $(this).parent();
+                    $.post("<?=PROOT?>api/NOTIFICATIONdelete",{messageID: parent.attr("id")}, function(data){
+                            if(data!="Notification deleted!"){
+                                $("#notifications").prepend("<div class='failure' id='tempsuc'>"+data+"</div>");
+                                $("#tempsuc").fadeOut(2000);
+                            }else parent.remove();
+                    });
+                    return false;
+                });
+            });
+        </script><?
+    }else echo('<center>No notifications to display.</center>');
 }
 
 function displayOutboxPage(){
@@ -151,40 +228,7 @@ function displayWritePage(){
     global $k,$a;
     if($_POST['recipient']!=""){
         if($k->updateTimeout("sendmessage",2*60)){
-            $mail = DataModel::getHull("derpy_messages");
-            $mail->sender=$a->user->username;
-            $mail->title=$_POST['title'];
-            $mail->time=time();
-            $mail->text=$_POST['text'];
-
-            if(strpos($_POST['recipient'],",")===FALSE){
-                $recipient=trim($_POST['recipient']);
-                if($recipient!=""){
-                    if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
-                        $err.='User '.$recipient.' not found.<br />';
-                    else{
-                        $mail->recipient=$recipient;
-                        $mail->insertData();
-                    }
-                }
-            }else{
-                $recipients = explode(",",$_POST['recipient']);
-                foreach($recipients as $recipient){
-                    $recipient=trim($recipient);
-                    if($recipient!=""){
-                        if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
-                            $err.='User '.$recipient.' not found.<br />';
-                        else{
-                            $mail->recipient=$recipient;
-                            $mail->insertData();
-                        }
-                    }
-                }
-            }
-            $mail->recipient=$_POST['recipient'];
-            $mail->type="o";
-            $mail->read=1;
-            $mail->insertData();
+            $err=implode("<br />",$this->sendMessage($_POST['recpient'], $_POST['text'], $_POST['title']));
         }else{
             $err="Please wait 2 minutes between sending messages.";
         }
@@ -234,6 +278,53 @@ function displayReadPage(){
             $editor->show();?>
         </div><?
     }else echo('<center>No message found with ID'.$params[3].'</center>');
+}
+
+function sendNotification($recipient,$title){
+    $this->sendMessage($recipient,$title,"","n");
+}
+function sendMessage($recipients,$text,$title,$type="m"){
+    global $a;
+    $err=array();
+    $mail = DataModel::getHull("derpy_messages");
+    $mail->sender=$a->user->username;
+    $mail->title=$title;
+    $mail->time=time();
+    $mail->type=$type;
+    $mail->text=$text;
+
+    if(strpos($recipients,",")===FALSE){
+        $recipient=trim($recipients);
+        if($recipient!=""){
+            if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
+                $err[]='User '.$recipient.' not found.';
+            else{
+                $mail->recipient=$recipient;
+                $mail->insertData();
+            }
+        }
+    }else{
+        $recipients = explode(",",$recipients);
+        foreach($recipients as $recipient){
+            $recipient=trim($recipient);
+            if($recipient!=""){
+                if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
+                    $err[]='User '.$recipient.' not found.';
+                else{
+                    $mail->recipient=$recipient;
+                    $mail->insertData();
+                }
+            }
+        }
+    }
+    
+    if($type=="m"){
+        $mail->recipient=$recipients;
+        $mail->type="o";
+        $mail->read=1;
+        $mail->insertData();
+    }
+    return $err;
 }
 
 }
