@@ -14,7 +14,7 @@ label{min-width:150px;display:inline-block;}
 input,.button,textarea,.preview{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;}
 input:hover,.button:hover,textarea:hover{box-shadow: 0px 0px 10px #FFDD00;}
 input[disabled='disabled'],textarea[disabled='disabled']{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
-input.roundbutton{
+input.roundbutton,a.roundbutton{
     width:20px;height:20px;border-radius:10px;border: 2px solid #000;padding:0px;color:#FFF;margin:0;
     background: rgb(69,72,77);
     background: -moz-linear-gradient(top, rgba(69,72,77,1) 0%, rgba(0,0,0,1) 100%);
@@ -124,7 +124,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     box-shadow: 0px 5px 5px #000;
 }
 #navbar ul ul li { float:none; }
-#navbar ul ul a { padding:5px; border-left:none; border-right:none; font-size:14px; }
+#navbar ul ul a { padding:2px; border-left:none; border-right:none; font-size:12px; }
 
 #pageNav{
     font-size:18pt;
@@ -516,4 +516,15 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     margin-bottom:5px;
     color: #FFF;
     padding-left:5px;
+}
+
+.notification{
+    padding:2px;
+    margin:2px;
+    border: 2px solid #FFDD00;
+    border-radius: 5px;
+}
+
+.notification .time{
+    float:right;
 }
