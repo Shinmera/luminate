@@ -150,6 +150,13 @@ var $tableColumnCache=array();
         $s = str_ireplace("'","&lsquo;",$s);
         return $s;
     }
+    
+    function desecureHTML($s){
+        $s = htmlspecialchars_decode($s, ENT_QUOTES);
+        $s = str_ireplace("&#36;","$",$s);
+        $s = str_ireplace("&lsquo;","'",$s);
+        return $s;
+    }
 
     function loadOptions(){
         $result=$this->getData("SELECT `key`,`value` FROM ms_options");
