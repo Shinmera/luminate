@@ -89,11 +89,12 @@ public static $hooks=array("foo");
     }
 
     function deparse($args){
+        global $c;
         if(/*$this->tags==null*/$this->tagsLoaded==false){
             $tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
             $this->tags = array();
             if($tags!=null){foreach($tags as $tag){
-                $femcodeparts = explode("@",str_replace("&lt;","<",str_replace("&gt;",">",$tag->femcode)));
+                $femcodeparts = explode("@",$c->desecureHTML($tag->femcode));
                 $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);
             }}
             $this->tagsLoaded=true;
@@ -107,6 +108,7 @@ public static $hooks=array("foo");
         //Following regex parses urls without parsing existing ones.
         //Copied from http://stackoverflow.com/questions/287144/need-a-good-regex-to-convert-urls-to-links-but-leave-existing-links-alone
         $s = preg_replace( '`(?<![\{\}"\'>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is', '<a href="\0" target="_blank">\0</a>', $s );
+        $s = preg_replace( '`@([-A-Z0-9._-]*)`is', '<a href="'.Toolkit::url("user","").'\1" target="_blank">@\1</a>',$s);
         $args['text']=$s;
         return $args;
     }
