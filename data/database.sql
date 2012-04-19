@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 17, 2012 at 12:41 AM
+-- Generation Time: Apr 19, 2012 at 11:34 AM
 -- Server version: 5.5.23-log
 -- PHP Version: 5.3.10
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
   `time` int(8) unsigned NOT NULL,
   `read` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `derpy_messages`
@@ -45,7 +45,8 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
 INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
 (1, 'Shinmera', 'Shinmera', 'm', 'No Subject', 'A', 2012, 1),
 (2, 'Shinmera', 'Shinmera', 'm', 'Re: No Subject', 'TESTER', 2012, 1),
-(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1);
+(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1),
+(10, 'Shinmera', 'Shinmera', 'n', '', '@Shinmera posted on url(http://user.linuz.com/Luminate/Shinmera){your profile}.', 1334824258, 1);
 
 -- --------------------------------------------------------
 
@@ -63,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `fenfire_comments` (
   `level` tinyint(4) unsigned NOT NULL,
   `moderation` tinyint(1) NOT NULL,
   PRIMARY KEY (`commentID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=24 ;
 
 --
 -- Dumping data for table `fenfire_comments`
@@ -71,7 +72,14 @@ CREATE TABLE IF NOT EXISTS `fenfire_comments` (
 
 INSERT INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `text`, `time`, `level`, `moderation`) VALUES
 (15, 90, 'Someone Else', 'nigger', 'LOL UR GHEY FOR MITHENT', 1333924316, 0, 0),
-(16, 90, 'Shinmera', 'nhafner@gmx.ch', 'IKNORITE', 1333924490, 1, 0);
+(16, 90, 'Shinmera', 'nhafner@gmx.ch', 'IKNORITE', 1333924490, 1, 0),
+(17, 90, 'Shinmera', 'nhafner@gmx.ch', 'TEST', 1334818953, 0, 0),
+(18, 90, 'Shinmera', 'nhafner@gmx.ch', 'ANOTHER TEST', 1334818969, 0, 0),
+(19, 91, 'Shinmera', 'nhafner@gmx.ch', 'TESTOR', 1334820601, 0, 0),
+(20, 91, 'Shinmera', 'nhafner@gmx.ch', 'TEST2', 1334820811, 0, 0),
+(21, 91, 'Shinmera', 'nhafner@gmx.ch', 'AAAAAAA', 1334823218, 1, 0),
+(22, 91, 'Shinmera', 'nhafner@gmx.ch', 'WHOOO', 1334823785, 2, 0),
+(23, 91, 'Shinmera', 'nhafner@gmx.ch', 'MITHEEENT', 1334824258, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -86,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
   `order` text,
   `open` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`folderID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=91 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=92 ;
 
 --
 -- Dumping data for table `fenfire_folders`
@@ -94,7 +102,8 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
 
 INSERT INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
 (89, 'CORE', 'INDEX', ';0;9;1;0;7;10;8;2;3;4;5;6;11;12;13;14', 1),
-(90, 'Neon', 'Shinmera', ';15;16', 1);
+(90, 'Neon', 'Shinmera', ';15;16;17;18', 1),
+(91, 'User', 'Shinmera', ';19;20;21;22;23', 1);
 
 -- --------------------------------------------------------
 
@@ -143,7 +152,7 @@ CREATE TABLE IF NOT EXISTS `lightup_tags` (
 INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `femcode`, `tagcode`, `description`, `limit`, `order`) VALUES
 ('Bold', 'default', 'b', '&lt;strong&gt;@&lt;/strong&gt;', 'b{@}', 'Bold text', -1, 0),
 ('Center', 'plus', 'center', '&lt;div class=&quot;center&quot;&gt;@&lt;/div&gt;', 'center{@}', 'Center the text', -1, 3),
-('Color', 'plus', 'color', '&lt;span style=&quot;color:&#36;STRI|red&#36;&gt;@&lt;/span&gt;', 'color(&#36;Choose a colour:|color&#36;){@}', 'Change the font colour', -1, 4),
+('Color', 'plus', 'color', '&lt;span style=&quot;color:&#36;STRI|red&#36;&gt;@&lt;/span&gt;', 'color(&#36;Choose a colour|color&#36;){@}', 'Change the font colour', -1, 4),
 ('Image', 'plus', 'image', '&lt;img alt=&quot;&#36;STRI|image&#36;&quot; title=&quot;&#36;TEXT|&#36;&quot; class=&quot;&#36;STRI|&#36;&quot; src=&quot;@&quo', 'img{@}', 'Insert an image', -1, 5),
 ('Italic', 'default', 'i', '&lt;em&gt;@&lt;/em&gt;', 'i{@}', 'Italic text', -1, 1),
 ('Left', 'plus', 'left', '&lt;div class=&quot;left&quot;&gt;@&lt;/div&gt;', 'left{@}', 'Align left', -1, 6),
@@ -218,7 +227,9 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'GETtags', 'LightUp', 'getTags'),
 ('Admin', 'PANELdisplay', 'LightUp', 'displayPanel'),
 ('Admin', 'ADMINLightUp', 'LightUp', 'displayAdminPage'),
-('CORE', 'APILightUpTagOrder', 'LightUp', 'displayApiOrderPage');
+('CORE', 'APILightUpTagOrder', 'LightUp', 'displayApiOrderPage'),
+('Fenfire', 'POST', 'Derpy', 'handlePostHook'),
+('CORE', 'APINOTIFICATIONdelete', 'Derpy', 'handleAPINotificationDelete');
 
 -- --------------------------------------------------------
 
@@ -232,7 +243,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -247,7 +258,16 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (6, 'Updated user @1', 2012, 1),
 (7, 'Updated user @1', 2012, 1),
 (8, 'Updated user @1', 2012, 1),
-(9, 'Updated user @1', 2012, 1);
+(9, 'Updated user @1', 2012, 1),
+(10, 'Hook Fenfire::POST =&gt; Derpy::handlePostHook added.', 1334818939, 1),
+(11, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334818954, 1),
+(12, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334818969, 1),
+(13, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334820602, 1),
+(14, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334820811, 1),
+(15, 'Hook CORE::APINOTIFICATIONdelete =&gt; Derpy::handleAPINotificationDelete added.', 1334822921, 1),
+(16, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334823218, 1),
+(17, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334823785, 1),
+(18, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334824258, 1);
 
 -- --------------------------------------------------------
 
