@@ -1,6 +1,6 @@
 <? global $c,$k,$t,$a,$l; ?>
 <div id="header">
-    <?=$c->o['sitename']?>
+    <h1><?=$c->o['sitename']?></h1>
 
     <nav id="navbar">
         <? $t->printMenu(); ?>
