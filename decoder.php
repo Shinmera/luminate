@@ -21,8 +21,11 @@ try{
         $params=array_slice($params, 1);
     }
     define("DOMAIN",$domain);
-    
     $l->triggerHook("HIT".DOMAIN,"CORE",array($params),array(),true);
+    
+    //No hook registered for the domain, call default.
+    if($DOMINATINGMODULE=="")
+        $l->triggerHook("HITDOMAIN","CORE",array($params),array(),true);
 
     ob_end_flush();
     flush();
