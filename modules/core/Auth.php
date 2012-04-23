@@ -43,7 +43,7 @@ var $user;
         if($hash)$pass=hash("sha512",$pass);
         $this->loadUser($name);
         
-        if($name==$this->user->username&&$this->user->password===$pass){
+        if($name==$this->user->username&&$this->user->password===$pass&&$this->user->status=="a"){
             $l->triggerHook('USERlogin',$this);
             $token = $this->composeToken($name,$this->user->secret);
             setcookie('username',$name,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);

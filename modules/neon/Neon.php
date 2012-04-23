@@ -10,31 +10,133 @@ public static $hooks=array("foo");
 function displayLogin(){
     global $t,$a,$k,$params;
     if($a->user == null){
-        if($_POST['action']=="Login"){
-            if($_POST['username']=="")$err[1]="Username missing!";
-            if($_POST['password']=="")$err[2]="Password missing!";
-            if(!isset($err)){
-                if($a->login($_POST['username'],$_POST['password']))    header("Location: ".$k->url("www",""));
-                else                                                    $err[0]="Invalid username or password.";
-            }
-        }
         $t->openPage("Login");
         ?><div id='pageNav'>
-            <div class="description">Login</div>
-            <div class="tabs">
+            <div style="display:inline-block">
+                <h1 class="sectionheader">Login</h1>
             </div>
-        </div>
-        <center><form action="#" method="post">
-            <?=$err[0]?><br />
-            <label>Username: </label><input autofocus="autofocus" name="username" type="text" maxlength="64" /><label><?=$err[1]?></label><br />
-            <label>Password: </label><input                       name="password" type="password" maxlength="64" /><label><?=$err[2]?></label><br />
-            <input type="submit" name="action" value="Login" />
-        </form></center><?
+            <div class="tabs">
+                <a href="<?=$k->url("login","")?>" class="tab <? if($params[0]!="register")echo("activated"); ?>">Login</a>
+                <a href="<?=$k->url("login","register")?>" class="tab <? if($params[0]=="register")echo("activated"); ?>">Register</a>
+            </div>
+        </div><?
+        
+        if($params[0]=="register")$this->displayRegisterPage();
+        else{
+            if($_POST['action']=="Login"){
+                $err=null;
+                if($_POST['username']=="")$err[1]="Username missing!";
+                if($_POST['password']=="")$err[2]="Password missing!";
+                if($err==null){
+                    if($a->login($_POST['username'],$_POST['password']))    header("Location: ".$k->url("www",""));
+                    else                                                    $err[0]="Invalid username or password.";
+                }
+            }
+            ?>
+            <center><form action="#" method="post">
+                <?=$err[0]?><br />
+                <label>Username: </label><input autofocus="autofocus" name="username" type="text" maxlength="32" required /><label><?=$err[1]?></label><br />
+                <label>Password: </label><input                       name="password" type="password" maxlength="64" required /><label><?=$err[2]?></label><br />
+                <input type="submit" name="action" value="Login" />
+            </form></center><?
+        }
+        $t->closePage();
     }else{
         if($params[0]=='logout')$a->logout();
         header("Location: ".$k->url("www",""));
     }
-    $t->closePage();
+}
+
+function displayRegisterPage(){
+    global $k,$c;
+    require_once(CALLABLESPATH.'recaptchalib.php');
+    if($_POST['action']=="Register"){
+        
+        $err=null;
+        if(strlen($_POST['username'])<=3){
+            $err[1]="Username must be longer than 3 characters.";
+        }
+        
+        if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE LOWER(username) = ? LIMIT 1",array(strtolower($_POST['username'])))!=null){
+            $err[1]="This username is taken.";
+        }
+        
+        if($_POST['username']!=$k->sanitizeString($_POST['username'])){
+            $_POST['username']=$k->sanitizeString($_POST['username']);
+            $err[1]="Username adapted. Is this ok?";
+        }
+        
+        
+        if(strlen($_POST['password'])<=5){
+            $err[2]="Password must be longer than 5 characters.";
+        }
+        
+        if($_POST['password']!=$_POST['repeat']){
+            $err[3]="The passwords don't match.";
+        }
+        
+        if(!$k->checkMailValidity($_POST['email'])){
+            $err[4]="This address is invalid.";
+        }
+        
+        if($_POST['toc']!="accepted"&&$c->o['toc_url']!=""){
+            $err[5]="You must read and accept the TOC.";
+        }
+        
+        if($c->o['recaptcha_key_private']!=""){
+            $resp = recaptcha_check_answer ($c->o['recaptcha_key_private'],
+                                            $_SERVER["REMOTE_ADDR"],
+                                            $_POST["recaptcha_challenge_field"],
+                                            $_POST["recaptcha_response_field"]);
+            if(!$resp->is_valid)$err[6]="Sorry, the captcha wasn't entered correctly.";
+        }
+        
+        if($err==null){
+            $activationCode=$k->generateRandomString(31);
+            $user = DataModel::getHull("ud_users");
+            $user->username=$_POST['username'];
+            $user->mail=$_POST['email'];
+            $user->password=hash('sha512',$_POST['password']);
+            $user->secret=$k->generateRandomString(31);
+            $user->displayname=$_POST['username'];
+            $user->status=$activationCode;
+            $user->time=time();
+            
+            if(mail($_POST['email'],'Account confirmation for TyNET',
+                    'Welcome to TymoonNET, '.$_POST['username'].'.<br /><br />'.
+                    'To complete the registration procedure, please open this URL in your browser:<br />'.
+                    '<a href="'.$k->url('login','register/'.$activationCode).'">'.$k->url('login','activate/'.$activationCode).'</a><br />'.
+                    'After that, you will be able to log in and change your account settings.<br /><br />'.
+                    'Greetings, the TyNET staff.',
+                    'From: noreply')){
+                $user->insertData();
+                $suc[0]='Your account has been registered successfully! Please check your e-mail for the activation code.';
+            }else{
+                $user->status="a";
+                $user->insertData();
+                $suc[0]='Your account has been registered successfully! You can now <a href="/">log in</a>.';
+            }
+        }
+    }
+    
+    if($suc[0]!=""){ ?><div class="success"><?=$suc[0]?></div>
+    <? }else{ ?>
+        <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
+        <center><form action="#" method="post" style="text-align:left;display:inline-block;width:450px;white-space:nowrap;">
+            <label>Username: </label><input autofocus="autofocus" name="username" type="text"     maxlength="32" required value="<?=$_POST['username']?>" /> <label class="fixed"><?=$err[1]?></label><br />
+            <label>Password: </label><input                       name="password" type="password" maxlength="64" required value="<?=$_POST['password']?>" /> <label class="fixed"><?=$err[2]?></label><br />
+            <label>Repeat:   </label><input                       name="repeat"   type="password" maxlength="64" required value="<?=$_POST['repeat']?>" />   <label class="fixed"><?=$err[3]?></label><br />
+            <label>E-Mail:   </label><input                       name="email"    type="mail"     maxlength="35" required value="<?=$_POST['email']?>" />    <label class="fixed"><?=$err[4]?></label><br />
+            <? if($c->o['toc_url']!=""){ ?>
+                <label><a href="<?=$c->o['toc_url']?>">Terms Of Content:</a></label>
+                    <label><input         name="toc"      type="checkbox" value="accepted" required /> I accept.</label><label><?=$err[5]?></label><br />
+            <? } ?>
+            <? if($c->o['recaptcha_key_public']!=""){ ?>
+                <div style="display:inline-block;"><?=recaptcha_get_html($c->o['recaptcha_key_public']);?></div><br /><label><?=$err[6]?></label><br />
+            <? } ?>
+            <input type="submit" name="action" value="Register" />
+        </form></center>
+    <? }
 }
 
 function buildMenu($menu){

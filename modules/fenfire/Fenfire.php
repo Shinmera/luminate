@@ -220,7 +220,7 @@ function commentBox($FID=null){
         <textarea Name="varsubject" id="varsubject" style="height:100px;"></textarea><br />
         
         <? if($a->user==null&&$c->o['recaptcha_key_public']!=''){
-            require_once(TROOT.'callables/recaptchalib.php'); ?>
+            require(CALLABLESPATH.'recaptchalib.php'); ?>
             <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
             <?=recaptcha_get_html($c->o['recaptcha_key_public']);?>
         <? } ?>
