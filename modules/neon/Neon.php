@@ -61,6 +61,7 @@ function displayRegisterPage(){
                 $user->status='a';
                 $user->saveData();
                 $suc[0]='Account activated successfully! You can now <a href="/">log in</a>.';
+                Toolkit::log('User "'.$params[1].'" activated.');
             }else{
                 $err[0]='This account has already been activated.';
             }
@@ -120,6 +121,7 @@ function displayRegisterPage(){
             $user->status='u';
             $user->time=time();
             
+            Toolkit::log('User "'.$_POST['username'].'" ('.$_POST['email'].') registered.');
             $regurl=$k->url('login','register/'.$_POST['username'].'/'.$activationCode);
             if(mail($_POST['email'],'Account confirmation for TyNET',
                     'Welcome to TymoonNET, '.$_POST['username'].'.<br /><br />'.
