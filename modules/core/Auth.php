@@ -70,8 +70,7 @@ var $user;
     
     function resetUser(){
         $this->user = null;
-        $this->udPBase = array();
-        $this->udPTree = array();
+        //$this->udPTree = array();
     }
 
     function loadUser($name){
@@ -81,22 +80,25 @@ var $user;
         if($this->user == null){
             $this->udPTree=array();
             $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array('Unregistered'));
-            for($i=0;$i<count($results);$i++){
-                $base = explode(".",$results[$i]['permissions']);
-                $this->udPTree[$base[0]]=  array_slice($base,1);
+            $results=explode("\n",$results[0]['permissions']);
+            foreach($results as $result){
+                $base = explode(".",$result);
+                $this->udPTree[$base[0]][]=array_slice($base,1);
             }
         }else{
             $this->udPTree=array();
             $results=$c->getData("SELECT permissions FROM ud_groups WHERE title=?",array($this->user->group));
-            for($i=0;$i<count($results);$i++){
-                $base = explode(".",$results[$i]['permissions']);
-                $this->udPTree[$base[0]]=  array_slice($base,1);
+            $results=explode("\n",$results[0]['permissions']);
+            foreach($results as $result){
+                $base = explode(".",$result);
+                $this->udPTree[$base[0]][]=array_slice($base,1);
             }
             //Individual permissions override group permissions.
             $results=$c->getData("SELECT tree FROM ud_permissions WHERE UID=?",array($this->user->userID));
-            for($i=0;$i<count($results);$i++){
-                $base = explode(".",$results[$i]['tree']);
-                $this->udPTree[$base[0]]=  array_slice($base,1);
+            $results=explode("\n",$results[0]['permissions']);
+            foreach($results as $result){
+                $base = explode(".",$result);
+                $this->udPTree[$base[0]][]=array_slice($base,1);
             }
         }
     }
@@ -104,19 +106,17 @@ var $user;
     //TODO: Add exclusion masks
     function check($tree){
         $tree=explode(".",trim(strtolower($tree)));
-        if(array_key_exists("*",$this->udPTree))return true;
+        if(array_key_exists('*',$this->udPTree))return true;
         if(!isset($this->udPTree[$tree[0]]))    return false;
         
-        $perms=explode("\n",$this->udPTree[$tree[0]]);
-        for($i=0;$i<count($perms);$i++){
-            $perms[$i]=trim(strtolower($perms[$i]));
-            if(strrpos($perms[$i], ".*")===FALSE)$perms[$i].='.*';
-            
-            $permtree=explode(".",$perms[$i]);
-            for($j=0;$j<count($permtree);$j++){
-                if($permtree[$j]=="*")return true;
-                if($permtree[$j]!=$tree[$j+1])break;
-                if($j==count($tree)-2)return true;
+        foreach($this->udPTree[$tree[0]] as $branch){
+            if($branch=="*")return true;
+            $level=1;
+            foreach($branch as $node){
+                if($node=="*")return true;
+                if($node!==$tree[$level])break;
+                if(count($branch)==$level)return true;
+                $level++;
             }
         }
         return false;
