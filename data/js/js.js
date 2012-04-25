@@ -113,9 +113,9 @@ function implode (glue, pieces) {
 }
 
 $(document).ready(function(){
-    $(".date").each(function(){
-        $(this).datepicker({dateFormat:'dd.mm.yy',yearRange:'1940:2040'});
-    });
+    //$(".date").each(function(){
+    //    $(this).datepicker({dateFormat:'dd.mm.yy',yearRange:'1940:2040'});
+    //});
     
     $(".text").each(function(){
         $(this).resizable({minWidth:200,minHeight:100});
