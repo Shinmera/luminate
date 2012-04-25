@@ -34,7 +34,7 @@ function userNavbar($menu){
     return $menu;
 }
 function buildMenu($menu){
-    global $c;
+    global $c,$a;
     $newmails = $c->getData("SELECT COUNT(messageID) FROM derpy_messages 
                              WHERE recipient LIKE ? AND `read`=0",array($a->user->username));
     $menu[]=array('Messages ('.$newmails[0]['COUNT(messageID)'].')',Toolkit::url('user','panel/Messages'));
