@@ -16,7 +16,8 @@ function printTimePassed(){
     $t->openPage("INDEX");
     $SUPERIORPATH="INDEX";
     
-    echo("");
+    echo('<h2 style="text-align:center;font-size:36pt;">Welcome to TyNET, Electric Boogaloo Part 4</h2>');
+    echo('<div style="text-align:center;"><img style="box-shadow: 0px 0px 50px #FFF;" src="http://img.tymoon.eu/img//bronies/tumblr_lyjy38QdW81qbfyjbo1_1280.jpeg" alt="lol" /></div>');
     
     $t->closePage();
 }
