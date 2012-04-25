@@ -53,7 +53,7 @@ function displayRegisterPage(){
     require_once(CALLABLESPATH.'recaptchalib.php');
     
     if($params[1]!=''&&$params[2]!=''){
-        $user = DataModel::getData('ud_users','SELECT `group`,`status` FROM ud_users WHERE `username`=? AND `secret`=? LIMIT 1;',array($params[1],$params[2]));
+        $user = DataModel::getData('ud_users','SELECT `username`,`group`,`status` FROM ud_users WHERE `username`=? AND `secret`=? LIMIT 1;',array($params[1],$params[2]));
         if($user==null)$err[0]='Wrong activation code or user!';
         else{
             if($user->status=='u'){
