@@ -10,6 +10,7 @@ function __construct(){}
 
 function printTimePassed(){
     global $k,$l,$SUPERIORPATH;
+    $l->loadModule("Auth");
     $t = $l->loadModule("Themes");
     $fenfire = $l->loadModule("Fenfire");
     
