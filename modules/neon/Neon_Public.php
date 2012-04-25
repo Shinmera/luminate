@@ -96,7 +96,7 @@ function displayUserPage($username){
             switch($params[1]){
                 case '':
                 case 'Profile':displayUserProfile($username,$user);break;
-                case 'Add Friend':break;//FIXME: Add Add Friend page.
+                case 'Add Friend':break;//FIXME: Add Add Friend page. As if anyone would want to be friends anyway tho...
                 default:$l->triggerHook('PAGE'.$site,"Neon",array($user->username,$user));break;
             }
         }else{
