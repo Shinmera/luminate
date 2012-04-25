@@ -85,7 +85,7 @@ function displayUserPage($username){
                 </div>
                 <div class="tabs">
                     <? foreach($pages as $page){
-                        if($a->check("admin.".$page)){
+                        if($a->check("user.".$page)){
                             if($page==$params[1])echo('<a href="'.$k->url("user",$site.'/'.$page).'" class="tab activated">'.$page.'</a>');
                             else                 echo('<a href="'.$k->url("user",$site.'/'.$page).'" class="tab">'.$page.'</a>');
                         }
