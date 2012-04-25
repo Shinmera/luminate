@@ -36,7 +36,7 @@ function displayControlPanelProfile(){
             try{
                 $dest = $k->uploadFile("avatar",ROOT.AVATARPATH,$c->o['avatar_maxsize'],array("image/png","image/gif","image/jpeg","image/jpg"),false,$filename);
                 $k->createThumbnail($dest,$dest,$c->o['avatar_maxdim'],$c->o['avatar_maxdim'],false,true,false);
-                unlink(ROOT.AVATARPATH.$a->user->filename);
+                if($a->user->filename!="")unlink(ROOT.AVATARPATH.$a->user->filename);
                 $a->user->filename=substr($dest,  strrpos($dest, "/"));
                 $a->user->saveData();
                 $l->triggerHook("UPDATEavatar",'User');

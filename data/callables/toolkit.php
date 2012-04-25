@@ -22,6 +22,7 @@ function convertArrayDown($array,$field,$ret=array()){
     return $ret;
 }
 
+//FIXME: Seems to have broken. Check.
 function suggestedTextField($name,$apisource,$default="",$return=false){
     $var='<input type="text" id="'.$name.'" name="'.$name.'" value="'.$default.'" />
         <script type="text/javascript">
