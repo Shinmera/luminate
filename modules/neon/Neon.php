@@ -177,8 +177,8 @@ function buildMenu($menu){
 }
 
 function displayMainPage(){
-    global $params,$MODULECACHE,$DOMINATINGMODULE;
-    $DOMINATINGMODULE="User"; //Spoof module.
+    global $params,$l,$MODULECACHE,$DOMINATINGMODULE;
+    $DOMINATINGMODULE=$l->loadModule('User'); //Spoof module.
     switch($params[0]){
         case 'ucp':
         case 'panel':$this->displayControlPanelPage();break;
