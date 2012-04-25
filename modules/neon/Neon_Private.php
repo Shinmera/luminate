@@ -58,8 +58,11 @@ function displayControlPanelProfile(){
             foreach($fields as $f){
                 echo('<label>'.$f->title.':</label>');
                 $v = null;
-                foreach($values as $value){
-                    if($value->varname==$f->varname){$v=$value->value;break;}
+                if($values!=null){
+                    if(!is_array($values))$values=array($values);
+                    foreach($values as $value){
+                        if($value->varname==$f->varname){$v=$value->value;break;}
+                    }
                 }
                 switch($f->type){
                     case 'i':echo('<input type="number" class="number" name="val'.$f->varname.'" value="'.$v.'" placeholder="'.$f->default.'" />');break;
