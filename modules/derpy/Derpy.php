@@ -273,7 +273,7 @@ function displayReadPage(){
             <h3>Reply</h3>
             <? include(MODULEPATH.'gui/Editor.php');
             $editor = new SimpleEditor(PROOT."panel/Messages/Write","sendMessage");
-            $editor->addTextField("recipient","",$mail->recipient,"hidden");
+            $editor->addTextField("recipient","",$mail->sender,"hidden");
             $editor->addTextField("title","","Re: ".$mail->title);
             $editor->show();?>
         </div><?
