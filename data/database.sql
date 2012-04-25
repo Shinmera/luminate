@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 19, 2012 at 11:34 AM
+-- Generation Time: Apr 25, 2012 at 03:24 PM
 -- Server version: 5.5.23-log
 -- PHP Version: 5.3.10
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
   `time` int(8) unsigned NOT NULL,
   `read` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `derpy_messages`
@@ -45,8 +45,7 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
 INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
 (1, 'Shinmera', 'Shinmera', 'm', 'No Subject', 'A', 2012, 1),
 (2, 'Shinmera', 'Shinmera', 'm', 'Re: No Subject', 'TESTER', 2012, 1),
-(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1),
-(10, 'Shinmera', 'Shinmera', 'n', '', '@Shinmera posted on url(http://user.linuz.com/Luminate/Shinmera){your profile}.', 1334824258, 1);
+(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1);
 
 -- --------------------------------------------------------
 
@@ -94,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
   `order` text,
   `open` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`folderID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=92 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=94 ;
 
 --
 -- Dumping data for table `fenfire_folders`
@@ -103,7 +102,9 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
 INSERT INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
 (89, 'CORE', 'INDEX', ';0;9;1;0;7;10;8;2;3;4;5;6;11;12;13;14', 1),
 (90, 'Neon', 'Shinmera', ';15;16;17;18', 1),
-(91, 'User', 'Shinmera', ';19;20;21;22;23', 1);
+(91, 'User', 'Shinmera', ';19;20;21;22;23', 1),
+(92, 'User', 'Faggot', NULL, 1),
+(93, 'User', 'McDick', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -468,21 +469,22 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   `username` varchar(32) NOT NULL,
   `mail` varchar(35) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `secret` varchar(128) NOT NULL,
+  `secret` varchar(32) NOT NULL,
   `displayname` varchar(32) NOT NULL,
-  `filename` varchar(50) NOT NULL,
-  `group` varchar(32) NOT NULL,
-  `status` varchar(1) NOT NULL,
+  `filename` varchar(50) DEFAULT NULL,
+  `group` varchar(32) NOT NULL DEFAULT 'Registered',
+  `status` varchar(1) NOT NULL DEFAULT 'u',
   `time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `ud_users`
 --
 
 INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
-(2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0);
+(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0),
+(3, 'Faggot', 'shinmera@tymoon.eu', '6f9525ee811f516cbfa0ab580f23410d2e18843fad1b8a6ea866b5b62f22d7c1d728b9bdf25aa27e5693cc42d013ede6f4004ef0e9790f36723feb25b79f8bda', 'J73Xq6HrgF081Ql130e8v8l3349Jc06', 'Faggot', NULL, 'Registered', 'a', 1335212007);
