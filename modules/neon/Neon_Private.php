@@ -161,7 +161,7 @@ function displayControlPanelFriends(){
                 $err[1]="Friend request sent.";
             }else $err[1]="No such user.";
             break;
-        case 'Accept':
+        case 'Accept': //FIXME Adding oneself.
             $friend = DataModel::getHull("neon_friends");
             foreach($_POST['requests'] as $request){
                 $friend->uID1=$a->user->userID;

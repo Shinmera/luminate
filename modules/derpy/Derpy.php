@@ -228,7 +228,7 @@ function displayWritePage(){
     global $k,$a;
     if($_POST['recipient']!=""){
         if($k->updateTimeout("sendmessage",2*60)){
-            $err=implode("<br />",$this->sendMessage($_POST['recpient'], $_POST['text'], $_POST['title']));
+            $err=implode("<br />",$this->sendMessage($_POST['recipient'], $_POST['text'], $_POST['title']));
         }else{
             $err="Please wait 2 minutes between sending messages.";
         }
@@ -293,6 +293,7 @@ function sendMessage($recipients,$text,$title,$type="m"){
     $mail->type=$type;
     $mail->text=$text;
 
+    //FIXME: Recipients fail completely.
     if(strpos($recipients,",")===FALSE){
         $recipient=trim($recipients);
         if($recipient!=""){
