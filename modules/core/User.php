@@ -342,6 +342,7 @@ function updateUserFields($userID,$values,$prefix="val"){
     //Toolkit::log("Updated user fields for @".$userID);
 }
 
+//FIXME: Seems to have broken. fix.
 function updateUserPermissions($userID,$tree){
     global $c,$l;
     $ftree = "";
