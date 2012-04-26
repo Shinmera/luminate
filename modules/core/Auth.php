@@ -11,7 +11,7 @@ var $user;
 
     public function __construct() {
         global $k;
-        $this->auth($_COOKIE['username'],$_COOKIE['hash']);
+        $this->auth($_COOKIE['v4username'],$_COOKIE['v4hash']);
     }
 
     function composeToken($name,$pass){
@@ -46,10 +46,10 @@ var $user;
         if($name==$this->user->username&&$this->user->password===$pass&&$this->user->status=="a"){
             $l->triggerHook('USERlogin',$this);
             $token = $this->composeToken($name,$this->user->secret);
-            setcookie('username',$name,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
-            setcookie('hash',$token,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
-            setcookie('username',$name,time()+60*60*$c->o['cookie_life_h'],'/');
-            setcookie('hash',$token,time()+60*60*$c->o['cookie_life_h'],'/');
+            setcookie('v4username',$name,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+            setcookie('v4hash',$token,time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+            setcookie('v4username',$name,time()+60*60*$c->o['cookie_life_h'],'/');
+            setcookie('v4hash',$token,time()+60*60*$c->o['cookie_life_h'],'/');
             return true;
         }else{
             $this->resetUser();
@@ -60,10 +60,10 @@ var $user;
     function logout(){
         global $c,$l;
         $l->triggerHook('USERlogout',$this);
-        setcookie('username',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
-        setcookie('hash',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
-        setcookie('username',' ',time()+60*60*$c->o['cookie_life_h'],'/');
-        setcookie('hash',' ',time()+60*60*$c->o['cookie_life_h'],'/');
+        setcookie('v4username',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+        setcookie('v4hash',' ',time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+        setcookie('v4username',' ',time()+60*60*$c->o['cookie_life_h'],'/');
+        setcookie('v4hash',' ',time()+60*60*$c->o['cookie_life_h'],'/');
         $this->resetUser();
         return true;
     }
