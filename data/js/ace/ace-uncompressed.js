@@ -268,19 +268,19 @@ if (!Function.prototype.bind) {
         )
         // 16. The length own property of F is given attributes as specified in
         //   15.3.5.1.
-        // TODO
+
         // 17. Set the [[Extensible]] internal property of F to true.
-        // TODO
+
         // 18. Call the [[DefineOwnProperty]] internal method of F with
         //   arguments "caller", PropertyDescriptor {[[Value]]: null,
         //   [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]:
         //   false}, and false.
-        // TODO
+
         // 19. Call the [[DefineOwnProperty]] internal method of F with
         //   arguments "arguments", PropertyDescriptor {[[Value]]: null,
         //   [[Writable]]: false, [[Enumerable]]: false, [[Configurable]]:
         //   false}, and false.
-        // TODO
+
         // NOTE Function objects created using Function.prototype.bind do not
         // have a prototype property.
         // XXX can't delete it in pure-js.
@@ -918,7 +918,6 @@ if (isNaN(Date.parse("T00:00"))) {
         Date.prototype.constructor = Date;
 
         // Upgrade Date.parse to handle the ISO dates we use
-        // TODO review specification to ascertain whether it is
         // necessary to implement partial ISO date strings.
         Date.parse = function parse(string) {
             var match = isoDateExpression.exec(string);
@@ -1413,7 +1412,6 @@ function ArrayType(typeSpec) {
 ArrayType.prototype = new Type();
 
 ArrayType.prototype.stringify = function(values) {
-    // TODO: Check for strings with spaces and add quotes
     return values.join(' ');
 };
 
@@ -1494,7 +1492,6 @@ define('pilot/types', ['require', 'exports', 'module' ], function(require, expor
 /**
  * Some types can detect validity, that is to say they can distinguish between
  * valid and invalid values.
- * TODO: Change these constants to be numbers for more performance?
  */
 var Status = {
     /**
@@ -1861,7 +1858,6 @@ var types = require('pilot/types');
 var lang = require('pilot/lang');
 
 /*
-// TODO: this doesn't belong here - or maybe anywhere?
 var dimensionsChangedExtensionSpec = {
     name: 'dimensionsChanged',
     description: 'A dimensionsChanged is a way to be notified of ' +
@@ -1885,7 +1881,6 @@ var commandExtensionSpec = {
 };
 
 exports.startup = function(data, reason) {
-    // TODO: this is probably all kinds of evil, but we need something working
     catalog.addExtensionSpec(commandExtensionSpec);
 };
 
@@ -1900,7 +1895,6 @@ exports.shutdown = function(data, reason) {
 /**
  * A Command is a discrete action optionally with a set of ways to customize
  * how it happens. This is here for documentation purposes.
- * TODO: Document better
  */
 var thingCommand = {
     name: 'thing',
@@ -2047,7 +2041,6 @@ var commandNames = [];
  * This registration method isn't like other Ace registration methods because
  * it doesn't return a decorated command because there is no functional
  * decoration to be done.
- * TODO: Are we sure that in the future there will be no such decoration?
  */
 function addCommand(command) {
     if (!command.name) {
@@ -2177,7 +2170,6 @@ function exec(command, env, sender, args, typed) {
         command = commands[command];
     }
     if (!command) {
-        // TODO: Should we complain more than returning false?
         return false;
     }
 
@@ -2244,7 +2236,6 @@ exports.upgradeType = upgradeType;
 
 /**
  * We publish a 'output' event whenever new command begins output
- * TODO: make this more obvious
  */
 oop.implement(exports, EventEmitter);
 
@@ -2719,7 +2710,6 @@ var decoders = {
 
             //Opera bug: if curr.caller does not exist, Opera returns curr (WTF)
             if (curr === curr.caller && window.opera) {
-                //TODO: check for same arguments if possible
                 break;
             }
             curr = curr.caller;
@@ -3668,7 +3658,6 @@ var env;
  * Registration and de-registration.
  */
 exports.startup = function(data, reason) {
-    // TODO: this is probably all kinds of evil, but we need something working
     env = data.env;
     types.registerType(setting);
     types.registerType(settingValue);
@@ -4257,7 +4246,6 @@ var helpCommandSpec = {
                     continue;
                 }
 
-                // todo add back a column with parameter information, perhaps?
 
                 output.push('<tr>');
                 output.push('<th class="right">' + command.name + '</th>');
@@ -5102,7 +5090,6 @@ exports.getParentWindow = function(document) {
 };
 
 exports.getSelectionStart = function(textarea) {
-    // TODO IE
     var start;
     try {
         start = textarea.selectionStart || 0;
@@ -5113,12 +5100,10 @@ exports.getSelectionStart = function(textarea) {
 };
 
 exports.setSelectionStart = function(textarea, start) {
-    // TODO IE
     return textarea.selectionStart = start;
 };
 
 exports.getSelectionEnd = function(textarea) {
-    // TODO IE
     var end;
     try {
         end = textarea.selectionEnd || 0;
@@ -5129,7 +5114,6 @@ exports.getSelectionEnd = function(textarea) {
 };
 
 exports.setSelectionEnd = function(textarea, end) {
-    // TODO IE
     return textarea.selectionEnd = end;
 };
 
@@ -5507,7 +5491,7 @@ var Editor =function(renderer, session) {
     this.textInput  = new TextInput(renderer.getTextAreaContainer(), this);
     this.keyBinding = new KeyBinding(this);
 
-    // TODO detect touch event support
+    //  detect touch event support
     if (useragent.isIPad) {
         //this.$mouseHandler = new TouchHandler(this);
     } else {
@@ -5844,7 +5828,7 @@ var Editor =function(renderer, session) {
         // Update the active line marker as due to folding changes the current
         // line range on the screen might have changed.
         this.$updateHighlightActiveLine();
-        // TODO: This might be too much updating. Okay for now.
+        // : This might be too much updating. Okay for now.
         this.renderer.updateFull();
     };
 
@@ -5921,7 +5905,7 @@ var Editor =function(renderer, session) {
 
         var lineState = session.getState(cursor.row);
 
-        // TODO disabled multiline auto indent
+        //  disabled multiline auto indent
         // possibly doing the indent before inserting the text
         // if (cursor.row !== end.row) {
         if (session.getDocument().isNewLine(text)) {
@@ -6390,7 +6374,7 @@ var Editor =function(renderer, session) {
 
         var selection = this.getSelection();
         var leadScreenPos = this.session.documentToScreenPosition(selection.getSelectionLead());
-        var dest = this.session.screenToDocumentPosition(row, leadScreenPos.column);
+        var dest = this.session.screencumentPosition(row, leadScreenPos.column);
         selection.selectTo(dest.row, dest.column);
     };
 
@@ -6402,7 +6386,7 @@ var Editor =function(renderer, session) {
 
         var selection = this.getSelection();
         var leadScreenPos = this.session.documentToScreenPosition(selection.getSelectionLead());
-        var dest = this.session.screenToDocumentPosition(row, leadScreenPos.column);
+        var dest = this.session.screencumentPosition(row, leadScreenPos.column);
         selection.selectTo(dest.row, dest.column);
     };
 
@@ -8712,8 +8696,8 @@ var EditSession = function(text, mode) {
     };
 
     this.duplicateLines = function(firstRow, lastRow) {
-        var firstRow = this.$clipRowToDocument(firstRow);
-        var lastRow = this.$clipRowToDocument(lastRow);
+        var firstRow = this.$clipRowcument(firstRow);
+        var lastRow = this.$clipRowcument(lastRow);
 
         var lines = this.getLines(firstRow, lastRow);
         this.doc.insertLines(firstRow, lines);
@@ -8722,11 +8706,11 @@ var EditSession = function(text, mode) {
         return addedRows;
     };
 
-    this.$clipRowToDocument = function(row) {
+    this.$clipRowcument = function(row) {
         return Math.max(0, Math.min(row, this.doc.getLength()-1));
     };
     
-    this.$clipPositionToDocument = function(row, column) {
+    this.$clipPositioncument = function(row, column) {
         column = Math.max(0, column);
 
         if (row < 0) {
@@ -9220,7 +9204,7 @@ var EditSession = function(text, mode) {
     }
 
     this.getScreenLastRowColumn = function(screenRow) {
-        //return this.screenToDocumentColumn(screenRow, Number.MAX_VALUE / 10)
+        //return this.screencumentColumn(screenRow, Number.MAX_VALUE / 10)
         return this.documentToScreenColumn(screenRow, this.doc.getLine(screenRow).length);
     };
 
@@ -9231,7 +9215,7 @@ var EditSession = function(text, mode) {
 
     this.getDocumentLastRowColumnPosition = function(docRow, docColumn) {
         var screenRow = this.documentToScreenRow(docRow, docColumn);
-        return this.screenToDocumentPosition(screenRow, Number.MAX_VALUE / 10);
+        return this.screencumentPosition(screenRow, Number.MAX_VALUE / 10);
     };
 
     this.getRowSplitData = function(row) {
@@ -9249,15 +9233,15 @@ var EditSession = function(text, mode) {
         return this.$tabSize - screenColumn % this.$tabSize;
     };
 
-    this.screenToDocumentRow = function(screenRow, screenColumn) {
-        return this.screenToDocumentPosition(screenRow, screenColumn).row;
+    this.screencumentRow = function(screenRow, screenColumn) {
+        return this.screencumentPosition(screenRow, screenColumn).row;
     };
 
-    this.screenToDocumentColumn = function(screenRow, screenColumn) {
-        return this.screenToDocumentPosition(screenRow, screenColumn).column;
+    this.screencumentColumn = function(screenRow, screenColumn) {
+        return this.screencumentPosition(screenRow, screenColumn).column;
     };
 
-    this.screenToDocumentPosition = function(screenRow, screenColumn) {
+    this.screencumentPosition = function(screenRow, screenColumn) {
         if (screenRow < 0) {
             return {
                 row: 0,
@@ -9362,9 +9346,9 @@ var EditSession = function(text, mode) {
     this.documentToScreenPosition = function(docRow, docColumn) {
         // Normalize the passed in arguments.
         if (typeof docColumn === "undefined")
-            var pos = this.$clipPositionToDocument(docRow.row, docRow.column);
+            var pos = this.$clipPositioncument(docRow.row, docRow.column);
         else 
-            pos = this.$clipPositionToDocument(docRow, docColumn);
+            pos = this.$clipPositioncument(docRow, docColumn);
 
         docRow = pos.row;
         docColumn = pos.column;
@@ -9873,7 +9857,7 @@ var Selection = function(session) {
         var screenRow = this.session.documentToScreenRow(row, column);
 
         // Determ the doc-position of the first character at the screen line.
-        var firstColumnPosition = this.session.screenToDocumentPosition(screenRow, 0);
+        var firstColumnPosition = this.session.screencumentPosition(screenRow, 0);
 
         // Determ the line
         var beforeCursor = this.session.getDisplayLine(
@@ -9988,7 +9972,7 @@ var Selection = function(session) {
             this.selectionLead.column
         );
         var screenCol = (chars == 0 && this.$desiredColumn) || screenPos.column;
-        var docPos = this.session.screenToDocumentPosition(screenPos.row + rows, screenCol);
+        var docPos = this.session.screencumentPosition(screenPos.row + rows, screenCol);
         this.moveCursorTo(docPos.row, docPos.column + chars, chars == 0);
     };
 
@@ -10013,7 +9997,7 @@ var Selection = function(session) {
     };
 
     this.moveCursorToScreen = function(row, column, preventUpdateDesiredColumn) {
-        var pos = this.session.screenToDocumentPosition(row, column);
+        var pos = this.session.screencumentPosition(row, column);
         row = pos.row;
         column = pos.column;
         this.moveCursorTo(row, column, preventUpdateDesiredColumn);
@@ -11495,7 +11479,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
     oop.implement(this, EventEmitter);
     
     this.getPosition = function() {
-        return this.$clipPositionToDocument(this.row, this.column);
+        return this.$clipPositioncument(this.row, this.column);
     };
     
     this.getDocument = function() {
@@ -11576,7 +11560,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
             };
         }
         else {
-            pos = this.$clipPositionToDocument(row, column);
+            pos = this.$clipPositioncument(row, column);
         }
         
         if (this.row == pos.row && this.column == pos.column)
@@ -11599,7 +11583,7 @@ var Anchor = exports.Anchor = function(doc, row, column) {
         this.document.removeEventListener("change", this.$onChange);
     };
     
-    this.$clipPositionToDocument = function(row, column) {
+    this.$clipPositioncument = function(row, column) {
         var pos = {};
     
         if (row >= this.document.getLength()) {
@@ -11939,7 +11923,7 @@ function Folding() {
         var lastFold = {
             end: { column: 0 }
         };
-        // TODO: Refactor to use getNextFoldTo function.
+        // : Refactor to use getNextFoldTo function.
         for (var i = 0; i < foldLine.folds.length; i++) {
             var fold = foldLine.folds[i];
             var cmp = fold.range.compareEnd(row, column);
@@ -13570,7 +13554,7 @@ var VirtualRenderer = function(container, theme) {
         // Map lines on the screen to lines in the document.
         var firstRowScreen, firstRowHeight;
         var lineHeight = { lineHeight: this.lineHeight };
-        firstRow = session.screenToDocumentRow(firstRow, 0);
+        firstRow = session.screencumentRow(firstRow, 0);
 
         // Check if firstRow is inside of a foldLine. If true, then use the first
         // row of the foldLine.
@@ -13582,7 +13566,7 @@ var VirtualRenderer = function(container, theme) {
         firstRowScreen = session.documentToScreenRow(firstRow, 0);
         firstRowHeight = session.getRowHeight(lineHeight, firstRow);
 
-        lastRow = Math.min(session.screenToDocumentRow(lastRow, 0), session.getLength() - 1);
+        lastRow = Math.min(session.screencumentRow(lastRow, 0), session.getLength() - 1);
         minHeight = this.$size.scrollerHeight + session.getRowHeight(lineHeight, lastRow)+
                                                 firstRowHeight;
 
@@ -13793,7 +13777,7 @@ var VirtualRenderer = function(container, theme) {
         var row = Math.floor((pageY + this.scrollTop - canvasPos.top - dom.getPageScrollTop())
                 / this.lineHeight);
 
-        return this.session.screenToDocumentPosition(row, Math.max(col, 0));
+        return this.session.screencumentPosition(row, Math.max(col, 0));
     };
 
     this.textToScreenCoordinates = function(row, column) {
@@ -14785,7 +14769,7 @@ var Text = function(parentEl) {
             }
         }.bind(this), foldLine.end.row, this.session.getLine(foldLine.end.row).length);
 
-        // TODO: Build a fake splits array!
+        // : Build a fake splits array!
         var splits = this.session.$useWrapMode?this.session.$wrapData[row]:null;
         this.$renderLineCore(stringBuilder, row, renderTokens, splits, onlyContents);
     };
@@ -16908,7 +16892,7 @@ define("text/lib/ace/css/editor.css", [], ".ace_editor {" +
 define("text/node_modules/uglify-js/docstyle.css", [], "html { font-family: \"Lucida Grande\",\"Trebuchet MS\",sans-serif; font-size: 12pt; }" +
   "body { max-width: 60em; }" +
   ".title  { text-align: center; }" +
-  ".todo   { color: red; }" +
+  ".   { color: red; }" +
   ".done   { color: green; }" +
   ".tag    { background-color:lightblue; font-weight:normal }" +
   ".target { }" +

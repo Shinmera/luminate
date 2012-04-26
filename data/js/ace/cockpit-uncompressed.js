@@ -117,7 +117,7 @@ exports.startup = function(data, reason) {
 /**
  * The information required to tell the user there is a problem with their
  * input.
- * TODO: There a several places where {start,end} crop up. Perhaps we should
+ * : There a several places where {start,end} crop up. Perhaps we should
  * have a Cursor object.
  */
 function Hint(status, message, start, end, predictions) {
@@ -230,7 +230,7 @@ function Argument(emitter, text, start, end, prefix, suffix) {
 Argument.prototype = {
     /**
      * Return the result of merging these arguments.
-     * TODO: What happens when we're merging arguments for the single string
+     * : What happens when we're merging arguments for the single string
      * case and some of the arguments are in quotation marks?
      */
     merge: function(following) {
@@ -262,7 +262,7 @@ Argument.prototype = {
      * Helper when we're putting arguments back together
      */
     toString: function() {
-        // TODO: There is a bug here - we should re-escape escaped characters
+        // : There is a bug here - we should re-escape escaped characters
         // But can we do that reliably?
         return this.prefix + this.text + this.suffix;
     }
@@ -374,7 +374,7 @@ Assignment.prototype = {
         }
         this.arg = arg;
         this.conversion = this.param.type.parse(arg.text);
-        this.conversion.arg = arg; // TODO: make this automatic?
+        this.conversion.arg = arg; // : make this automatic?
         this.value = this.conversion.value;
         this.requisition._assignmentChanged(this);
     },
@@ -399,7 +399,7 @@ Assignment.prototype = {
         // If there is no argument, use the cursor position
         var message = '<strong>' + this.param.name + '</strong>: ';
         if (this.param.description) {
-            // TODO: This should be a short description - do we need to trim?
+            // : This should be a short description - do we need to trim?
             message += this.param.description.trim();
 
             // Ensure the help text ends with '. '
@@ -695,7 +695,7 @@ Requisition.prototype = {
      * The hints returned are sorted by severity
      */
     _updateHints: function() {
-        // TODO: work out when to clear this out for the plain Requisition case
+        // : work out when to clear this out for the plain Requisition case
         // this._hints = [];
         this.getAssignments(true).forEach(function(assignment) {
             this._hints.push(assignment.getHint());
@@ -706,7 +706,7 @@ Requisition.prototype = {
         // a complete novice a 'type help' message is very annoying, so we
         // need to find a way to only display this message once, or for
         // until the user click a 'close' button or similar
-        // TODO: Add special case for '' input
+        // : Add special case for '' input
     },
 
     /**
@@ -774,7 +774,7 @@ Requisition.prototype = {
         Object.keys(this._assignments).forEach(function(name) {
             var assignment = this._assignments[name];
             var type = assignment.param.type;
-            // TODO: This will cause problems if there is a non-default value
+            // : This will cause problems if there is a non-default value
             // after a default value. Also we need to decide when to use
             // named parameters in place of positional params. Both can wait.
             if (assignment.value !== assignment.param.defaultValue) {
@@ -818,7 +818,7 @@ function CliRequisition(env, options) {
 
     if (options && options.flags) {
         /**
-         * TODO: We were using a default of keyboard.buildFlags({ });
+         * : We were using a default of keyboard.buildFlags({ });
          * This allowed us to have commands that only existed in certain contexts
          * - i.e. Javascript specific commands.
          */
@@ -885,7 +885,7 @@ oop.inherits(CliRequisition, Requisition);
      *   they can't be completed by typing
      * - Finds the most severe hint, and annotates the array with it
      * - Finds the hint to display, and also annotates the array with it
-     * TODO: I'm wondering if array annotation is evil and we should replace
+     * : I'm wondering if array annotation is evil and we should replace
      * this with an object. Need to find out more.
      */
     CliRequisition.prototype._updateHints = function() {
@@ -1135,7 +1135,7 @@ oop.inherits(CliRequisition, Requisition);
         // Create an error if the command does not take parameters, but we have
         // been given them ...
         if (this.assignmentCount === 0) {
-            // TODO: previously we were doing some extra work to avoid this if
+            // : previously we were doing some extra work to avoid this if
             // we determined that we had args that were all whitespace, but
             // probably given our tighter tokenize() this won't be an issue?
             this._hints.push(new Hint(Status.INVALID,
@@ -1390,7 +1390,7 @@ function CliView(cli, env) {
     this.win = dom.getParentWindow(this.doc);
     this.env = env;
 
-    // TODO: we should have a better way to specify command lines???
+    // : we should have a better way to specify command lines???
     this.element = this.doc.getElementById('cockpitInput');
     if (!this.element) {
         // console.log('No element with an id of cockpit. Bailing on cli');
@@ -1463,7 +1463,7 @@ CliView.prototype = {
         event.addCommandKeyListener(input, this.onCommandKey.bind(this));
         event.addListener(input, 'keyup', this.onKeyUp.bind(this));
 
-        // cursor position affects hint severity. TODO: shortcuts for speed
+        // cursor position affects hint severity. : shortcuts for speed
         event.addListener(input, 'mouseup', function(ev) {
             this.isUpdating = true;
             this.update();
@@ -1572,7 +1572,7 @@ onCommandKey: function(ev, hashId, keyCode) {
             else {
                 // If we've denied RETURN because the command was not VALID,
                 // select the part of the command line that is causing problems
-                // TODO: if there are 2 errors are we picking the right one?
+                // : if there are 2 errors are we picking the right one?
                 dom.setSelectionStart(this.element, worst.start);
                 dom.setSelectionEnd(this.element, worst.end);
             }
@@ -1769,7 +1769,7 @@ var row = templates.querySelector('.cptRow');
 
 /**
  * Work out the path for images.
- * TODO: This should probably live in some utility area somewhere
+ * : This should probably live in some utility area somewhere
  */
 function imageUrl(path) {
     var dataUrl;
