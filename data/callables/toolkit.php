@@ -531,15 +531,15 @@ function checkMailValidity($mail){
 }
 
 function checkDateValidity($date){
-    //FIXME: Do this but also for / / / and 2-year
-    //$date=explode(".",$date);
-    //if(count($date)!=3)return false;
-    //if(strlen($date[0])==0||strlen($date[0])>2)return false;
-    //if(strlen($date[1])==0||strlen($date[1])>2)return false;
-    //if(strlen($date[2])<2 ||strlen($date[2])>4)return false;
-    //if(!is_numeric($date[0]))return false;
-    //if(!is_numeric($date[1]))return false;
-    //if(!is_numeric($date[2]))return false;
+    if(strpos($date,'.')!==FALSE)$date=explode('.',$date);
+    else                         $date=explode('/',$date);
+    if(count($date)!=3)return false;
+    if(!is_numeric($date[0]))return false;
+    if(!is_numeric($date[1]))return false;
+    if(!is_numeric($date[2]))return false;
+    if(strlen($date[0])==0||strlen($date[0])>2)return false;
+    if(strlen($date[1])==0||strlen($date[1])>2)return false;
+    if(strlen($date[2])<2 ||strlen($date[2])>4)return false;
     return true;
 }
 
