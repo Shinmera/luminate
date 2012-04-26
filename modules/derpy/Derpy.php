@@ -293,7 +293,6 @@ function sendMessage($recipients,$text,$title,$type="m"){
     $mail->type=$type;
     $mail->text=$text;
 
-    //FIXME: Recipients fail completely.
     if(strpos($recipients,",")===FALSE){
         $recipient=trim($recipients);
         if($recipient!=""){
@@ -305,8 +304,8 @@ function sendMessage($recipients,$text,$title,$type="m"){
             }
         }
     }else{
-        $recipients = explode(",",$recipients);
-        foreach($recipients as $recipient){
+        $temp = explode(",",$recipients);
+        foreach($temp as $recipient){
             $recipient=trim($recipient);
             if($recipient!=""){
                 if(DataModel::getData("ud_users","SELECT userID FROM ud_users WHERE username LIKE ? LIMIT 1",array($recipient))==null)
