@@ -9,6 +9,7 @@ function __construct(){}
 
 function apiUserSearch(){
     global $c;
+    if(strlen($_GET['query'])<3)die();
     $users = $c->getData('SELECT username FROM ud_users WHERE username LIKE ? ORDER BY username DESC LIMIT 10',array($_GET['query'].'%'));
     if(!is_array($users))die();
     $string = "";
