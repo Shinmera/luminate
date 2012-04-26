@@ -238,7 +238,7 @@ function displayWritePage(){
     
     include(MODULEPATH.'gui/Editor.php');
     $editor = new SimpleEditor("#","sendMessage");
-    $editor->addCustom("Recipients:".$k->suggestedTextField("recipient","USERsearch",$_POST['recipient'],true));
+    $editor->addCustom("Recipients:".$k->suggestedTextField("recipient","USERsearch",$_POST['recipient'],'',true));
     $editor->addTextField("title","","Re: ".$mail->title,"text","","box-sizing: border-box;width:100%;");
     ?><style>.simpleeditor{display:block;}
         .simpleeditor textarea{box-sizing: border-box;width:100%;}

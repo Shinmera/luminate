@@ -230,7 +230,7 @@ function displayControlPanelFriends(){
             </form>
             <br />
             <form action="#" method="post">
-                <input type="text" name="user" class="userpick" />
+                <?=$k->suggestedTextField("user","USERsearch",'','userpick');?>
                 <input type="submit" name="action" value="Add Friend" /><?=$err[1]?>
             </form>
         </div>
@@ -260,7 +260,7 @@ function displayControlPanelFriends(){
             </form>
             <br />
             <form action="#" method="post">
-                <input type="text" name="user" class="userpick" />
+                <?=$k->suggestedTextField("user","USERsearch",'','userpick');?>
                 <input type="submit" name="action" value="Block" /><?=$err[4]?>
             </form>
         </div>
