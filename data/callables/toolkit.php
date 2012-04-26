@@ -22,8 +22,8 @@ function convertArrayDown($array,$field,$ret=array()){
     return $ret;
 }
 
-function suggestedTextField($name,$apisource,$default="",$return=false){
-    $var='<input type="text" id="'.$name.'" name="'.$name.'" value="'.$default.'" />
+function suggestedTextField($name,$apisource,$default="",$class="",$return=false){
+    $var='<input type="text" id="'.$name.'" name="'.$name.'" class="'.$class.'" value="'.$default.'" autocomplete="off" />
         <script type="text/javascript">
 	$(function() {
             function split( val ) {
