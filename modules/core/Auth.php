@@ -122,18 +122,17 @@ var $user;
         return false;
     }
 
-    //FIXME: Update this function.
-    function grant($uid,$base,$tree){
+    function grant($uid,$tree){
         global $c;
-        if(!$this->check("auth.permissions.grant"))return XERR_NO_ACCESS;
-        $results=$c->getData("SELECT tree FROM ud_permissions WHERE UID=? AND BASE LIKE ?",array($uid,$base));
+        if(!$this->check('auth.permissions.grant'))return false;
+        $results=$c->getData('SELECT tree FROM ud_permissions WHERE UID=?',array($uid));
         if(count($results)==0){
-            $c->query("INSERT INTO ud_permissions VALUES(?,?,?)",array($uid,$base,$tree),false);
+            $c->query("INSERT INTO ud_permissions VALUES(?,?)",array($uid,$tree),false);
         }else{
             $perms=explode("\n",$results[0]['tree']);
             if(!in_array($tree,$perms)){
                 $perms[]=$tree;
-                $c->query("UPDATE ud_permissions SET tree=? WHERE UID=? AND BASE LIKE ?",array(implode("\n",$perms),$uid,$base),false);
+                $c->query("UPDATE ud_permissions SET tree=? WHERE UID=?",array(implode("\n",$perms),$uid),false);
             }
         }
     }
