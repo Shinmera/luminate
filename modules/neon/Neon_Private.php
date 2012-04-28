@@ -149,6 +149,7 @@ function displayControlPanelFriends(){
             }
             break;
         case 'Add Friend':
+            //TODO: Add multi-user support
             $friend = DataModel::getHull("neon_friends");
             $exists = $c->getData("SELECT userID FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($_POST['user'],$_POST['user']));
             $exists = $exists[0]['userID'];
@@ -176,6 +177,7 @@ function displayControlPanelFriends(){
             }
             break;
         case 'Block':
+            //TODO: Add multi-user support
             $exists = $c->getData("SELECT userID FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($_POST['user'],$_POST['user']));
             $exists = $exists[0]['userID'];
             if($exists!=''){
