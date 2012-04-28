@@ -6,10 +6,25 @@ public static $short='c';
 public static $required=array();
 public static $hooks=array(); //An empty array blocks hook loading.
 
+var $comparisonOperators = array('=','!=','<=','>=','<','>','IS','IS NULL','IS NOT','IS NOT NULL','LIKE','NOT LIKE','REGEXP','NOT REGEXP','RLIKE','SOUNDS LIKE');
+//TODO: Once DataModel supports multi-argument functions, extend this list accordingly.
+var $fieldOperators = array('ASCII','BIN','BIT_LENGTH','CHAR_LENGTH','CHAR','CHARACTER_LENGTH','EXPORT_SET','HEX','LCASE','LOWER',          //STRING
+                            'LTRIM','OCTET_LENGTH','ORD','POSITION','QUOTE','REVERSE','RTRIM','SOUNDEX','TRIM','UCASE','UNHEX','UPPER',     //STRING
+                            'ABS','ACOS','ASIN','ATAN','ATAN2','CEIL','CEILING','CONV','COS','COT','CRC32','DEGREES','FLOOR','LN','LOG10',  //MATH
+                            'LOG2','OCT','RADIANS','ROUND','SIGN','SIN','SQRT','TAN',                                                       //MATH
+                            'AES_DECRYPT','AES_ENCRPYT','COMPRESS','DECODE','DES_DECRYPT','DES_ENCRYPT','ENCODE','ENCRYPT','MD5',           //ENCRYPTION/COMPRESSION
+                            'OLD_PASSWORD','PASSWORD','SHA1','SHA','UNCOMPRESS','UNCOMPRESSED_LENGTH',                                      //ENCRYPTION/COMPRESSION
+                            'CHARSET','COERCIBILITY','COLLATION',                                                                           //INFORMATION
+                            'DEFAULT','GET_LOCK','INET_ATON','INET_NTOA','IS_FREE_LOCK','IS_USED_LOCK','RELEASE_LOCK','SLEEP',              //MISCELLANEOUS
+                            'DAYNAME','DAYOFMONTH','DAYOFWEEK','DAYOFYEAR','FROM_DAYS','FROM_UNIXTIME','HOUR','LAST_DAY','MICROSECOND',     //DATE & TIME
+                            'MINUTE','MONTH','MONTHNAME','QUARTER','SEC_TO_TIME','SECOND','STR_TO_DATE','TIME_FORMAT','TIME_TO_SEC',        //DATE & TIME
+                            'TIMESTAMP','TO_DAYS','UNIX_TIMESTAMP','WEEK','WEEKDAY','WEEKOFYEAR','YEAR','YEARWEEK');                        //DATE & TIME
+
 var $mysqli;
 var $o=array();
 var $queries=0;
 var $tableColumnCache=array();
+var $lastQuery="";
 
     function __construct(){
     }
@@ -53,6 +68,7 @@ var $tableColumnCache=array();
             if(!$stmt->execute())throw new Exception("MySQL error: ".$this->mysqli->error."<br>Query: $query".$msqli->errno."<br>Args: ".implode(";",$data));
             $stmt->close();
             $this->queries++;
+            $this->lastQuery=$query;
             return true;
         }else{
             throw new Exception("MySQL error: ".$this->mysqli->error."<br>Query: $query".$msqli->errno."<br>Args: ".implode(";",$data));
@@ -85,6 +101,7 @@ var $tableColumnCache=array();
                 $i++;
             }
             $this->queries++;
+            $this->lastQuery=$query;
             $stmt->close();
             return $result;
         }else{
