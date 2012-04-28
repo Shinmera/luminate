@@ -196,6 +196,10 @@ function cleanArray($array){
     return $ret;
 }
 
+function isAssociative($array){
+    return (bool)count(array_filter(array_keys($array), 'is_string'));
+}
+
 function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=false){
     if(!file_exists($in))return -1;
     if($out=="")return -1;
