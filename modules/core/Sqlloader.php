@@ -24,6 +24,7 @@ var $mysqli;
 var $o=array();
 var $queries=0;
 var $tableColumnCache=array();
+var $tablePrimaryKeyCache=array();
 var $lastQuery="";
 
     function __construct(){
@@ -105,19 +106,19 @@ var $lastQuery="";
             $stmt->close();
             return $result;
         }else{
-            throw new Exception("MySQL error: ".$this->mysqli->error."<br>Query: $query".$msqli->errno."<br>Args: ".implode(";",$data));
+            throw new Exception("MySQL error: ".$this->mysqli->error."\nQuery: $query".$msqli->errno."\nArgs: ".implode(";",$data));
         }
         }catch(Exception $e){
             global $k;
-            $k->err("Error Code: ".$e->getCode()."<br>Error Message: ".$e->getMessage()."<br>Strack Trace: <br>".$e->getTraceAsString());
+            $k->err("Error Code: ".$e->getCode()."<br />Error Message: ".$e->getMessage()."<br />Strack Trace: <br />".$e->getTraceAsString());
         }
     }
 
     function bindVars($stmt,$params=array(),$secureHTML=true) {
         global $p;
         if (count($params)>0) {
-            $types = '';                        //initial sting with types
-            foreach($params as &$param) {        //for each element, determine type and add
+            $types = '';                        //initial string with types
+            foreach($params as &$param) {       //for each element, determine type and add
                 if(is_int($param)) {            $types .= 'i';
                 } elseif (is_float($param)) {   $types .= 'd';
                 } elseif (is_string($param)) {  $types .= 's';
@@ -135,7 +136,7 @@ var $lastQuery="";
                 $bind_names[] = &$$bind_name;   //now associate the variable as an element in an array
             }
             if(!call_user_func_array(array($stmt,'bind_param'),$bind_names)){
-                throw new Exception("Failed to bind parameters properly!<br />Parameters: "+implode(",",$params));
+                throw new Exception("Failed to bind parameters properly!\nParameters: "+implode(",",$params));
             }
         }
         return $stmt;                           //return the bound statement 
@@ -147,6 +148,18 @@ var $lastQuery="";
             foreach($fields as $field)$this->tableColumnCache[$table][] = $field['name'];
         }
         return $this->tableColumnCache[$table];
+    }
+    
+    function getTablePrimaryKeys($table){
+        if(!array_key_exists($table,$this->tablePrimaryKeyCache)){
+            $fields = $this->getData('SELECT column_name AS name FROM information_schema.columns WHERE column_key = ? AND table_name=? AND table_schema=?',array('PRI',$table,SQLDB));
+            foreach($fields as $field)$this->tablePrimaryKeyCache[$table][] = $field['name'];
+        }
+        return $this->tablePrimaryKeyCache[$table];
+    }
+    
+    function getTableInformation($table){
+        
     }
     
     function enparse($s){
