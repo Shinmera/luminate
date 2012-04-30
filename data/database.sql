@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 25, 2012 at 03:24 PM
+-- Generation Time: Apr 30, 2012 at 02:50 PM
 -- Server version: 5.5.23-log
--- PHP Version: 5.3.10
+-- PHP Version: 5.3.11
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
   `time` int(8) unsigned NOT NULL,
   `read` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
 
 --
 -- Dumping data for table `derpy_messages`
@@ -45,7 +45,14 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
 INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
 (1, 'Shinmera', 'Shinmera', 'm', 'No Subject', 'A', 2012, 1),
 (2, 'Shinmera', 'Shinmera', 'm', 'Re: No Subject', 'TESTER', 2012, 1),
-(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1);
+(3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1),
+(4, 'Shinmera', '', 'o', 'Hello you two', 'Heeeeyyyyy\r\nHow&#039;s it gooiiin&#039;', 1335395795, 1),
+(5, 'Shinmera', '', 'o', 'Re: ', 'How are you doing tonight, darling?\r\nI&#039;m sorry for all the bugs, I should have really tested with an account that doesn&#039;t have all the privs first.\r\nI hope I can fix it all soon tomorrow.', 1335395939, 1),
+(6, 'Shinmera', 'Shinmera', 'm', 'DICKS', 'img{http://img.tymoon.eu/img//bronies/derpy/13084238311013.jpg}', 1335396763, 1),
+(7, 'Shinmera', 'Shinmera', 'o', 'DICKS', 'img{http://img.tymoon.eu/img//bronies/derpy/13084238311013.jpg}', 1335396763, 1),
+(8, 'Shinmera', 'Shinmera', 'm', 'Re: ', 'DDD', 1335432690, 1),
+(9, 'Shinmera', 'Faggot', 'm', 'Re: ', 'DDD', 1335432690, 0),
+(10, 'Shinmera', '', 'o', 'Re: ', 'DDD', 1335432690, 1);
 
 -- --------------------------------------------------------
 
@@ -138,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `lightup_tags` (
   `name` varchar(32) NOT NULL,
   `suite` varchar(16) NOT NULL DEFAULT 'standard',
   `tag` varchar(16) NOT NULL,
-  `femcode` varchar(128) NOT NULL,
+  `femcode` varchar(256) NOT NULL,
   `tagcode` varchar(128) NOT NULL,
   `description` varchar(64) DEFAULT NULL,
   `limit` int(11) NOT NULL DEFAULT '-1',
@@ -164,6 +171,87 @@ INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `femcode`, `tagcode`, `descr
 ('Size', 'plus', 'size', '&lt;span style=&quot;font-size:&#36;INTE36|18&#36;pt&quot;&gt;@&lt;/span&gt;', 'size(&#36;Enter the font size|number&#36;){@}', 'Change the font size', -1, 8),
 ('Underline', 'default', 'u', '&lt;u&gt;@&lt;/u&gt;', 'u{@}', 'Underline text', -1, 2),
 ('Url', 'plus', 'url', '&lt;a href=&quot;&#36;URLS&#36;&quot; title=&quot;&#36;TEXT|&#36;&quot; target=&quot;&#36;STRI|_self&#36;&quot; &gt;@&lt;/a&gt;', 'url(&#36;Enter the URL|url&#36;){@}', 'Insert a hyperlink', -1, 9);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_articles`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_articles` (
+  `title` varchar(128) NOT NULL,
+  `revision` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  `time` int(11) NOT NULL,
+  `editor` varchar(32) NOT NULL,
+  `type` varchar(1) NOT NULL DEFAULT 'o',
+  `portal` varchar(128) NOT NULL,
+  `categories` text NOT NULL,
+  PRIMARY KEY (`title`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_categories` (
+  `title` varchar(128) NOT NULL,
+  `revision` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  `editor` varchar(32) NOT NULL,
+  `time` int(11) NOT NULL,
+  `type` varchar(1) NOT NULL DEFAULT 'o',
+  PRIMARY KEY (`title`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_files`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_files` (
+  `title` varchar(128) NOT NULL,
+  `revision` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  `filename` varchar(128) NOT NULL,
+  `editor` varchar(32) NOT NULL,
+  `time` int(11) NOT NULL,
+  `type` varchar(1) NOT NULL DEFAULT 'o',
+  PRIMARY KEY (`title`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_portals`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_portals` (
+  `title` varchar(128) NOT NULL,
+  `revision` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  `time` int(11) NOT NULL,
+  `editor` varchar(32) NOT NULL,
+  `type` varchar(1) NOT NULL DEFAULT 'o',
+  PRIMARY KEY (`title`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_users`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_users` (
+  `editor` varchar(32) NOT NULL,
+  `revision` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text NOT NULL,
+  `time` int(11) NOT NULL,
+  PRIMARY KEY (`editor`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -230,7 +318,9 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Admin', 'ADMINLightUp', 'LightUp', 'displayAdminPage'),
 ('CORE', 'APILightUpTagOrder', 'LightUp', 'displayApiOrderPage'),
 ('Fenfire', 'POST', 'Derpy', 'handlePostHook'),
-('CORE', 'APINOTIFICATIONdelete', 'Derpy', 'handleAPINotificationDelete');
+('CORE', 'APINOTIFICATIONdelete', 'Derpy', 'handleAPINotificationDelete'),
+('CORE', 'APIUSERsearch', 'User', 'apiUserSearch'),
+('CORE', 'HITtest', 'Test', 'runTests');
 
 -- --------------------------------------------------------
 
@@ -244,7 +334,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -268,7 +358,13 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (15, 'Hook CORE::APINOTIFICATIONdelete =&gt; Derpy::handleAPINotificationDelete added.', 1334822921, 1),
 (16, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334823218, 1),
 (17, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334823785, 1),
-(18, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334824258, 1);
+(18, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1334824258, 1),
+(19, 'Updated user @3', 1335432434, 1),
+(20, 'Updated permissions for @3', 1335432447, 1),
+(21, 'Added user @4', 1335432455, 1),
+(22, 'Hook CORE::APIUSERsearch =&gt; User::apiUserSearch added.', 1335434322, 1),
+(23, 'Module &#039;Test&#039; added.', 1335636138, 1),
+(24, 'Hook CORE::HITtest =&gt; Test::runTests added.', 1335636165, 1);
 
 -- --------------------------------------------------------
 
@@ -297,6 +393,7 @@ INSERT INTO `ms_modules` (`name`, `subject`) VALUES
 ('LightUp', 'BBCode and text formatting system '),
 ('Liroli', 'Public user groups'),
 ('Neon', 'Provides user front-end.'),
+('Test', 'To run test suites.'),
 ('Themes', 'A simple theming system, making page construction very simple.'),
 ('User', 'Allows for user management and supplies AUTH login/logout functions.');
 
@@ -353,7 +450,8 @@ INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 0, 'visit:'),
 ('127.0.0.1', 0, 'visit'),
 ('127.0.0.1', 0, 'visit:1'),
-('127.0.0.1', 0, 'comment');
+('127.0.0.1', 0, 'comment'),
+('127.0.0.1', 1335395795, 'sendmessage');
 
 -- --------------------------------------------------------
 
@@ -478,7 +576,7 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `ud_users`
@@ -487,4 +585,5 @@ CREATE TABLE IF NOT EXISTS `ud_users` (
 INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
 (1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
 (2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0),
-(3, 'Faggot', 'shinmera@tymoon.eu', '6f9525ee811f516cbfa0ab580f23410d2e18843fad1b8a6ea866b5b62f22d7c1d728b9bdf25aa27e5693cc42d013ede6f4004ef0e9790f36723feb25b79f8bda', 'J73Xq6HrgF081Ql130e8v8l3349Jc06', 'Faggot', NULL, 'Registered', 'a', 1335212007);
+(3, 'Faggot', 'shinmera@tymoon.eu', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'J73Xq6HrgF081Ql130e8v8l3349Jc06', 'Faggot', '', 'Registered', 'a', 1335212007),
+(4, '', '', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', '45KM04407K1i23J57U42fap5E1Tk823', '', '', '', 'i', 1335432455);
