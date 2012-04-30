@@ -1,5 +1,5 @@
 <?
-class Fenfire{
+class Fenfire extends Module{
 public static $name="Fenfire";
 public static $author="NexT";
 public static $version=2.01;

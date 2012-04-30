@@ -1,5 +1,5 @@
 <?
-class Sqlloader{
+class Sqlloader extends Module{
 public static $name="Sqlloader";
 public static $version=2.4;
 public static $short='c';

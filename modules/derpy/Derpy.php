@@ -1,4 +1,4 @@
-<? class Derpy{
+<? class Derpy extends Module{
 public static $name='Derpy';
 public static $author='NexT';
 public static $version=0.01;

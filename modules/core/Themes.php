@@ -80,7 +80,7 @@ function closePage(){
     include(PAGEPATH.'global_footer.php');
 }
 
-function printMenu($menu=null){
+function printMenu($menu=null,$nostyle=false){
     /**
      * Sample menu format:
      * Pseudo: [ [ A, link, (style) ], [ B, link, (style) ], [ C, link, (style), [ CA, link, (style) ]]]
@@ -99,6 +99,7 @@ function printMenu($menu=null){
     
     echo('<ul>');
     foreach($menu as $item){
+        if($nostyle)$item[2]='';
         echo('<li style="'.$item[2].'"><a href="'.$item[1].'">'.$item[0].'</a>');
             if(count($item)==4)$this->printMenu($item[3]);
         echo('</li>');
