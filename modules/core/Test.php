@@ -17,28 +17,35 @@ function runTests(){
 
 function testDataModel(){
     global $ntest;$ntest=0;
-    $this->runDataModelQuery("",array(),null,array(),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array(),null,array(),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username"),null,array(),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),null,array(),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera")),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"(?|?)",array(array("username","Shinmera"),array("username","Faggot")),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE")),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE",null)),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE",null,null)),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE",null,null,'LOWER')),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE",null,null,'LOWER','LOWER')),null,null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE",null,null,'LOWER','LOWER')),'1',null,null,false);
-    $this->runDataModelQuery("ud_users",array("username","mail"),"?",array(array("username","Shinmera","LIKE",null,null,'LOWER','LOWER')),'1','fenfire_comments',array('username'),false);
-    $this->runDataModelQuery("ud_users",array("username"=>'ud_users',"mail"=>'fenfire_comments'),"?",array(array("username","Shinmera","LIKE",null,null,'LOWER','LOWER')),'1','fenfire_comments',array('username'),false);
+    $this->runDataModelQuery(array());
+    $this->runDataModelQuery(array("table"=>"ud_users","fields"=>array("username")));
+    $this->runDataModelQuery(array("table"=>"ud_users","fields"=>array(array("field"=>"userID","function"=>"COUNT","as"=>"count"))));
+    $this->runDataModelQuery(array("table"=>"ud_users",
+                                   "fields"=>array("username"),
+                                   "where"=>"?",
+                                   "vars"=>array(
+                                               array("group","%istered%","LIKE")
+                             )));
+    $this->runDataModelQuery(array("table"          =>"ud_users",
+                                   "fields"         =>array("username",
+                                                            array("field"=>"title","table"=>"derpy_messages")),
+                                   "where"          =>"?",
+                                   "vars"           =>array(array("status","a","LIKE")),
+                                   "jointable"      =>"derpy_messages",
+                                   "joinvars"       =>array("username","sender"),
+                                   "joincomparison" =>"LIKE",
+                                   "limit"          =>5,
+                                   "order"          =>array(array("time","ASC","derpy_messages"),
+                                                            "username")));
+    //"users",array("username","relationship"),array("where"=>"?","vars"=>array(array("awesomeness",100))));
 }
 
-function runDataModelQuery($table,$fields,$whereString=null,$whereVars=array(),$limit=null,$innerJoinTable=null,$innerJoinVars=null,$loadFields=false){    
+function runDataModelQuery($args){    
     global $c,$k,$ntest;$ntest++;
     echo('<br /><b>['.$ntest.']Running test:</b><br />');
     try{
         $time = $k->getMicrotime();
-        $resp = DataModel::selectData($table, $fields, $whereString, $whereVars, $limit, $innerJoinTable, $innerJoinVars, $loadFields);
+        $resp = DataModel::selectData($args);
         $time = $k->getMicrotime()-$time;
         
         echo('<b>Time:</b> '.round($time,4).'s<br />');
