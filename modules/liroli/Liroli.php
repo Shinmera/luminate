@@ -1,4 +1,4 @@
-<? class Liroli{
+<? class Liroli extends Module{
 public static $name="Liroli";
 public static $author="NexT";
 public static $version=1.01;

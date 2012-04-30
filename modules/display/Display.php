@@ -1,4 +1,4 @@
-<? class Display{
+<? class Display extends Module{
 public static $name="Display";
 public static $author="NexT";
 public static $version=2.01;

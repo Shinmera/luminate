@@ -1,4 +1,4 @@
-<? class Neon{
+<? class Neon extends Module{
 public static $name='Neon';
 public static $author='NexT';
 public static $version=2.01;

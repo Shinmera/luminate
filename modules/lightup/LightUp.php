@@ -1,5 +1,5 @@
 <?php
-class LightUp /*extends Module*/{
+class LightUp  extends Module{
 public static $name="LightUp";
 public static $version=2.8;
 public static $short='lightup';

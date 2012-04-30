@@ -1,4 +1,4 @@
-<? class Test{
+<? class Test extends Module{
 public static $name="Test";
 public static $author="NexT";
 public static $version=0.01;
