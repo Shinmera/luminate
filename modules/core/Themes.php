@@ -40,7 +40,7 @@ function loadTheme($themename,$override=true){
         if($key=="author")$this->tauthor=$value;
         if($key=="css")$this->css[]=$value;
         if($key=="js")$this->js[]=$value;
-        if($key=="images")$this->img=THEMEPATH.$themename."/".$value;
+        if($key=="images")$this->img=THEMEPATH.$themename."/".$value.'/';
         if($key=="description")$this->tdescription=$value;
         if($key=="header")$this->headerf=$value;
         if($key=="footer")$this->footerf=$value;
@@ -109,15 +109,14 @@ function printMenu($menu=null,$nostyle=false){
 
 function displayPanel(){
     global $k,$a;
-    ?><div class="box">
-        <div class="title">Themes</div>
+    ?><li>Themes
         <ul class="menu">
             <? if($a->check("themes.admin")){ ?>
             <a href="<?=$k->url("admin","Themes")?>"><li>Manage Themes</li></a><? } ?>
             <? if($a->check("themes.admin.edit")){ ?>
             <a href="<?=$k->url("admin","Themes/edit")?>"><li>Edit Theme Files</li></a><? } ?>
         </ul>
-    </div><?
+    </li><?
 }
 
 function adminNavbar($menu){$menu[]='Themes';return $menu;}

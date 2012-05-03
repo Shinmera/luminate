@@ -532,3 +532,56 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .notification .time{
     float:right;
 }
+
+.sidebar-container{
+    position:relative;
+    margin-top:-33px;
+    margin-bottom:-33px;
+    margin-left:-10px;
+    min-height:500px;
+}
+
+.sidebar{
+    position:absolute;
+    top:0;left:0;bottom:0;
+    width:200px;
+    border-right:1px solid #CCC;
+    overflow: auto;
+}
+.sidebar li{
+    border-bottom:1px solid #CCC;
+    background-color: #FFF;
+    padding:3px;
+    position:relative;
+}
+.sidebar li:hover{
+    background-color: #EEE;
+}
+.sidebar li:last-child{border-bottom:none;}
+.sidebar li.menu:after{
+    content:"-";
+    position:absolute;
+    display:block;
+    right:0;top:0;height:20px;
+    text-align:center;
+    width:20px;
+    border-left: 1px solid #CCC;
+}
+
+.sidebar li ul{
+    display: none;
+    margin: 0 -3px 0 -3px;padding:0;
+}
+
+.sidebar li ul li{
+    border-bottom:none;
+    text-indent:10px;
+}
+.sidebar li ul li:hover{
+    background-color: #FFDD00;
+}
+
+.sidebar-content{
+    margin-left:200px;
+    padding:5px;
+}

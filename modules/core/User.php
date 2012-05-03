@@ -21,8 +21,7 @@ function apiUserSearch(){
 
 function displayPanel(){
     global $k,$a;
-    ?><div class="box">
-        <div class="title">User</div>
+    ?><li>User
         <ul class="menu">
             <a href="<?=$k->url("admin","User")?>"><li>Overview</li></a>
             <? if($a->check("user.admin.users")){ ?>
@@ -32,14 +31,13 @@ function displayPanel(){
             <? if($a->check("user.admin.fields")){ ?>
             <a href="<?=$k->url("admin","User/fields")?>"><li>Custom Fields</li></a><? } ?>
         </ul>
-    </div><?
+    </li><?
 }
 
 function adminNavbar($menu){$menu[]='User';return $menu;}
 function displayAdminPage(){
     global $params,$c,$k,$a;
     if(!$a->check("user.admin.panel"))return;
-    $this->displayPanel();
     switch($params[1]){
         case 'users':   if($a->check("user.admin.users"))$this->displayUserManagementPage();break;
         case 'groups':  if($a->check("user.admin.groups"))$this->displayGroupsManagementPage();break;

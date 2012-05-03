@@ -51,8 +51,7 @@ public static $hooks=array("foo");
     
     function displayPanel(){
         global $k,$a;
-        ?><div class="box">
-            <div class="title">LightUp</div>
+        ?><li>LightUp
             <ul class="menu">
                 <? if($a->check("lightup.admin.tags")){ ?>
                 <a href="<?=$k->url("admin","LightUp/tags")?>"><li>Tag Management</li></a><? } ?>
@@ -61,14 +60,13 @@ public static $hooks=array("foo");
                 <? if($a->check("lightup.admin.tags")){ ?>
                 <a href="<?=$k->url("admin","LightUp/create")?>"><li>Tag Creator</li></a><? } ?>
             </ul>
-        </div><?
+        </li><?
     }
     
     function displayAdminPage(){
         global $params,$c,$k,$a,$MODULECACHE;
         if(!$a->check("lightup.admin.panel"))return;
         include(MODULEPATH.$MODULECACHE['LightUpAdmin']);
-        $this->displayPanel();
         switch($params[1]){
             case 'suites':displaySuitesAdminPage();break;
             case 'create':displayTagCreatorPage();break;

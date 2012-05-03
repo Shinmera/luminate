@@ -14,8 +14,7 @@ function buildMenu($menu){
 
 function displayPanel(){
     global $k,$a;
-    ?><div class="box">
-        <div class="title">Gallery</div>
+    ?><li>Gallery
         <ul class="menu">
             <a href="<?=$k->url("admin","Gallery")?>"><li>Overview</li></a>
             <? if($a->check("gallery.admin.pictures")){ ?>
@@ -23,7 +22,7 @@ function displayPanel(){
             <? if($a->check("gallery.admin.folders")){ ?>
             <a href="<?=$k->url("admin","Gallery/folders")?>"><li>Organize Folders</li></a><? } ?>
         </ul>
-    </div><?
+    </li><?
 }
 function adminNavbar($menu){$menu[]='Gallery';return $menu;}
 

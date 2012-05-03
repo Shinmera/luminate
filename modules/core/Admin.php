@@ -23,46 +23,83 @@ function buildMenu($menu){
 }
 
 function displayPage($params){
-    global $a,$t,$l,$site;
+    global $a,$t,$l,$k,$site;
     if($site=="index")$site="Panel";
     $t->openPage("Administration");
-    $this->displayNavbar();
     
-    if($a->check('admin.panel')){
-        switch($site){
-            case 'Options': if($a->check("admin.options"))$this->displayOptionsPage();break;
-            case 'Log':     if($a->check("admin.log"))$this->displayLogPage();break;
-            case 'Modules': if($a->check("admin.modules"))$this->displayModulesPage();break;
-            case 'Hooks':   if($a->check("admin.hooks"))$this->displayHooksPage();break;
-            case 'Panel':   if($a->check("admin.panel"))$this->displayPanelPage();break;
-            default:        if($a->check("admin.panel"))$l->triggerHook("ADMIN".$site,$this);break;
-        }
-    }else{
-        echo("<center>You are not authorized to view this page.</center>");
-    }
-    $t->closePage();
-}
-
-function displayNavbar(){
-    global $site,$k,$a,$l;
-    $pages = array('Panel','Options','Log','Modules','Hooks');
-    $pages = $l->triggerHookSequentially('ADMINNavbar',$this,$pages);
     ?><div id='pageNav'>
         <h1 class="sectionheader">Administration</h1>
         <div class="tabs">
-            <? foreach($pages as $page){
-                if($a->check("admin.".$page)){
-                    if($page==$site)echo('<a href="'.$k->url("admin",$page).'" class="tab activated">'.$page.'</a>');
-                    else            echo('<a href="'.$k->url("admin",$page).'" class="tab">'.$page.'</a>');
-                }
-            }if(!in_array($site, $pages))echo('<a href="'.$k->url("admin",$site).'" class="tab activated">'.$site.'</a>'); ?>
+            <a href="" class="tab activated">Panel</a>
         </div>
-    </div><?
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".sidebar li ul").css("display","none");
+            $(".sidebar").find("li").each(function() {
+                
+                if ($(this).find("ul").length > 0){
+                    $(this).addClass("menu");
+
+                    $(this).click(function() {
+                        $(this).find("ul").stop(true, true).slideToggle();
+                    });
+                }
+                
+                copyOf = $(this).clone();
+                copysKids = copyOf.children();
+                copysKids.remove();
+                if( copyOf.text().trim() == "<?=$site?>"){
+                    $(this).find("ul").stop(true, true).slideDown();
+                }
+            });
+        });
+    </script>
+    <div class="sidebar-container" id="adminsidebar">
+        <ul class="sidebar">
+            <? $l->triggerHook("PANELdisplay",$this); ?>
+        </ul>
+        <div class="sidebar-content"><?
+            if($a->check('admin.panel')){
+                $l->triggerHook("ADMIN".$site,$this);
+            }else{
+                echo("<center>You are not authorized to view this page.</center>");
+            }
+    ?></div></div><?
+    $t->closePage();
+}
+
+function displayPanel(){
+    global $k,$a;
+    ?><li>Admin
+        <ul>
+            <a href="<?=$k->url("admin","")?>"><li>Overview</li></a>
+            <? if($a->check("admin.options")){ ?>
+            <a href="<?=$k->url("admin","Admin/options")?>"><li>Options</li></a><? } ?>
+            <? if($a->check("admin.log")){ ?>
+            <a href="<?=$k->url("admin","Admin/log")?>"><li>Log</li></a><? } ?>
+            <? if($a->check("admin.modules")){ ?>
+            <a href="<?=$k->url("admin","Admin/modules")?>"><li>Modules</li></a><? } ?>
+            <? if($a->check("admin.hooks")){ ?>
+            <a href="<?=$k->url("admin","Admin/hooks")?>"><li>Hooks</li></a><? } ?>
+        </ul>
+    </li><?
+}
+
+function displayAdminPage(){
+    global $a,$params;
+    switch($params[1]){
+        case 'options': if($a->check("admin.options"))$this->displayOptionsPage();break;
+        case 'log':     if($a->check("admin.log"))$this->displayLogPage();break;
+        case 'modules': if($a->check("admin.modules"))$this->displayModulesPage();break;
+        case 'hooks':   if($a->check("admin.hooks"))$this->displayHooksPage();break;
+        case 'panel':
+        default:        if($a->check("admin.panel"))$this->displayPanelPage();break;
+    }
 }
 
 function displayPanelPage(){
     global $l;
-    $l->triggerHook("PANELdisplay",$this);
 }
 
 function displayOptionsPage(){

@@ -14,21 +14,19 @@ function adminNavbar($menu){
 
 function displayPanel(){
     global $k,$a;
-    ?><div class="box">
-        <div class="title">Fenfire</div>
-        <ul class="menu">
-            <? if($a->check("fenfire.admin.comments")){ ?>
-            <a href="<?=$k->url("admin","Fenfire/comments")?>"><li>Comment Management</li></a><? } ?>
-            <? if($a->check("fenfire.admin.folders")){ ?>
-            <a href="<?=$k->url("admin","Fenfire/folders")?>"><li>Organize Comment Folders</li></a><? } ?>
-        </ul>
-    </div><?
+    ?>
+    <li>Fenfire
+    <ul class="menu">
+        <? if($a->check("fenfire.admin.comments")){ ?>
+        <a href="<?=$k->url("admin","Fenfire/comments")?>"><li>Comment Management</li></a><? } ?>
+        <? if($a->check("fenfire.admin.folders")){ ?>
+        <a href="<?=$k->url("admin","Fenfire/folders")?>"><li>Organize Comment Folders</li></a><? } ?>
+    </ul></li><?
 }
 
 function displayAdminPage(){
     global $a,$c,$k,$params;
     if(!$a->check('fenfire.admin'))return;
-    $this->displayPanel();
     switch($params[1]){
         case 'comments':if($a->check("fenfire.admin.comments"))$this->displayAdminComments();break;
         case 'folders':if($a->check("fenfire.admin.folders"))$this->displayAdminFolders();break;

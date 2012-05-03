@@ -12,7 +12,7 @@ function runTests(){
         .error{color:red;}
         .data{color:green;}
     </style><?
-    $this->testDataModel();
+    
 }
 
 function testDataModel(){
