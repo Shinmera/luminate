@@ -166,6 +166,12 @@ function pf($message){
     ob_flush();flush();
 }
 
+function swap(&$a,&$b){
+    $temp=$a;
+    $a=$b;
+    $b=$temp;
+}
+
 function toKeyArray($array,$delim1=";",$delim2="="){
     $temp=explode($delim1,$array);
     $args=array();
@@ -351,11 +357,11 @@ function pager($base,$max,$current=0,$step=25,$return=false){
     if($return)return $ret;else echo($ret);
 }
 
-function toDate($time){
+function toDate($time,$format='H:i:s l d.m.Y'){
     if(is_numeric($time))
-        return date('l d.m.Y H:i:s',$time);
+        return date($format,$time);
     else
-        return date('l d.m.Y H:i:s',strtotime($time));
+        return $time;
 }
 
 function timeAgo($time){
