@@ -181,8 +181,10 @@ function displayPopupInput(completeFunc,question,type){
       if(e.which == 13){$("#popupInput"+id+" .jqmClose").click();}
     });
     $('#popupInput'+id).jqm({
-        modal: false,overlay: 0,
+        modal: false,
+        overlay: 50,
         onHide: function(){
+            $(".jqmOverlay").remove();
             completeFunc($("#popupInput"+id+" .in").attr("value"));
             $("#popupInput"+id).remove();
         }
