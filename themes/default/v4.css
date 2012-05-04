@@ -232,11 +232,11 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .box{
     display: inline-block;
     vertical-align: text-top;
-    border-radius: 10px;
+    border-radius: 3px;
     padding: 10px;
-    margin: 10px;
+    margin: 3px;
     
-    box-shadow: 0px 0px 10px #000;
+    box-shadow: 0px 0px 2px #000;
     border: 2px solid #CCC;
     background-color: #DDD;
 }
@@ -427,7 +427,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 
 .commentSection{
   padding: 10px;
-  margin:10px;
+  margin: 3px;
   border: 2px solid #490093;
   border-radius: 10px;
   position:relative;
@@ -583,5 +583,5 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 
 .sidebar-content{
     margin-left:200px;
-    padding:5px;
+    padding:15px;
 }
