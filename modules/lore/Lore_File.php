@@ -1,15 +1,5 @@
 <? 
-class File extends Article{
-    
-    function __construct($name,$revision=-1){
-        if($revision==-1)
-            $this->data = DataModel::getData('lore_categories','SELECT title,revision,text,time,editor,type FROM lore_categories
-                                                              WHERE title LIKE ? ORDER BY revision DESC LIMIT 1',array($name));
-        else
-            $this->data = DataModel::getData('lore_categories','SELECT title,revision,text,time,editor,type FROM lore_categories 
-                                                              WHERE title LIKE ? AND revision = ? LIMIT 1',array($name,$revision));
-    }
-    
+class File{
     function displayView(){
         parent::displayView();
     }
