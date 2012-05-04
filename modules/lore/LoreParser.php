@@ -7,6 +7,10 @@ public static $short='loreparser';
 public static $required=array();
 public static $hooks=array("foo");
 
+    //{{category:}}
+    //{{portal:}}
+    //#!history
+    //#!redirect:
     static function parse($text){
         
     }
