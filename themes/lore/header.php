@@ -1,4 +1,4 @@
-<? global $c,$t,$SUPERIORPATH,$params,$action; ?>
+<? global $c,$t,$SUPERIORPATH,$params,$action,$existing; ?>
 <script type="text/javascript">
     $(document).ready(function(){
         var nav = $("#navbar");
@@ -50,9 +50,9 @@
     </div>
 
     <ul id="content-tabs">
-        <li <? if($action=='view')echo('class="selected"'); ?>><a href="<?=Toolkit::url("wiki",$SUPERIORPATH)?>">View</a></li>
-        <li <? if($action=='edit')echo('class="selected"'); ?>><a href="<?=Toolkit::url("wiki",$SUPERIORPATH."/edit")?>">Edit</a></li>
-        <li <? if($action=='history')echo('class="selected"'); ?>><a href="<?=Toolkit::url("wiki",$SUPERIORPATH."/history")?>">History</a></li>
-        <li class="flRight <? if($params[1]=='discuss')echo('selected'); ?>"><a href="<?=Toolkit::url("wiki",$SUPERIORPATH."/discuss")?>">Discuss</a></li>
+        <li class="<? echo($existing);if($action=='view')   echo('selected');?>" ><a href="<?=Toolkit::url("wiki",$SUPERIORPATH)?>">           View</a></li>
+        <li class="<? echo($existing);if($action=='history')echo('selected');?>" ><a href="<?=Toolkit::url("wiki",$SUPERIORPATH."/history")?>">History</a></li>
+        <li class="<? echo($existing);if($action=='edit')   echo('selected');?>" ><a href="<?=Toolkit::url("wiki",$SUPERIORPATH."/edit")?>">   Edit</a></li>
+        <li class="<? echo($existing);if($params[1]=='discuss')echo('selected'); ?> flRight"><a href="<?=Toolkit::url("wiki",$SUPERIORPATH."/discuss")?>">Discuss</a></li>
     </ul>
     <article id="content">
