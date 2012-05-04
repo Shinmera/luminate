@@ -2,6 +2,7 @@
 class Editor{
     var $availableTags = null;
     var $extrafields = array();
+    var $extraactions = array();
     var $postPath = "#";
     var $action = "submit";
     var $formname = "editor";
@@ -23,18 +24,23 @@ class Editor{
         $this->extrafields[]='<input type="checkbox" name="'.$name.'" stlye="'.$style.'" '.$checked.' '.$arguments.' />'.$label;
     }
     
-    function addDropDown($name,$choices,$label="",$selected="",$arguments="",$style=""){
+    function addDropDown($name,$choices,$labels=null,$label="",$selected="",$arguments="",$style=""){
         if($label!=="")$label='<label>'.$label.'</label>';
         $select=$label.'<select name="'.$name.'" style="'.$style.'" '.$arguments.' >';
-        foreach($choices as $c){
-            if($c==$selected)$selected='selected="selected"';else $selected='';
-            $select.='<option value="'.$c.'" '.$selected.' />';
+        for($i=0,$temp=count($choices);$i<$temp;$i++){
+            if($labels==null)$label=$choices[$i];else $label=$labels[$i];
+            if($choices[$i]==$selected)$sel='selected';else $sel='';
+            $select.='<option value="'.$choices[$i].'" '.$sel.'>'.$label.'</option>';
         }
         $this->extrafields[]=$select.'</select>';
     }
     
     function addCustom($html){
         $this->extrafields[]=$html;
+    }
+    
+    function addExtraAction($action){
+        $this->extraactions[]='<input type="submit" name="action" value="'.$action.'" />';
     }
     
     //TAG: array(name,title,tag) 
@@ -81,15 +87,17 @@ class TinyEditor extends Editor{
 }
 
 class SimpleEditor extends Editor{
-    function show(){
-        ?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor" style="<?=$this->style?>">
-            <?=implode("<br />",$this->extrafields)?>
+    function show($form=true){
+        if($form){?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor" style="<?=$this->style?>"><? } ?>
+            <div id="extrafields"><?=implode("<br />",$this->extrafields)?></div>
             <? $this->getSimpleToolbar(); ?>
             <textarea name="text" id="<?=$this->formname?>txt" required><?=$_POST['text']?></textarea>
             <div id="preview" class="preview"></div><br />
             <input type="hidden" name="action" value="<?=$this->action?>" />
+            <input type="hidden" name="suites" value="<?=implode(',',$this->suites)?>" />
             <input type="submit" value="Submit" /><input type="submit" value="Preview" id="previewbutton" />
-        </form>
+            <?=implode(' ',$this->extraactions)?>
+        <? if($form){?></form><? } ?>
         <script type="text/javascript">
             $().ready(function(){
                 $("#<?=$this->formname?> #previewbutton").click(function(){
