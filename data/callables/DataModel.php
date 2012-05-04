@@ -1,8 +1,9 @@
 <?
 class DataModel{
     private $table;
-    private $fields;
-    private $holder;
+    private $fields=array();
+    private $primary=array();
+    private $holder=array();
   
     public function __get($key){
         return isset($this->holder[$key]) ? $this->holder[$key] : false;
@@ -25,11 +26,10 @@ class DataModel{
         }
     }
     
-    //TODO: Add support for multiple primary keys.
-    //TODO: Add support for functions on values.
     public function saveData(){
         global $c;
         if(count($this->fields)==0)$this->fields=$c->getTableColumns($this->table);
+        if(count($this->primary)==0)$this->primary=$c->getTablePrimaryKeys($this->table);
             
         $data = array();
         $query = 'UPDATE '.$this->table.' SET';
@@ -39,10 +39,13 @@ class DataModel{
                 $query.=' `'.$key.'`=?,';
             }
         }
-        $data[]=$this->holder[$this->fields[0]];
-        $query=substr($query,0,strlen($query)-1);
-        if(is_numeric($this->holder[$this->fields[0]]))$query.= ' WHERE `'.$this->fields[0].'`=?';
-        else                                           $query.= ' WHERE `'.$this->fields[0].'` LIKE ?';
+        $query=substr($query,0,strlen($query)-1).' WHERE ';
+        
+        foreach($this->primary as $primary){
+            if(is_numeric($this->holder[$primary]))$query.= '`'.$primary.'`=?';
+            else                                   $query.= '`'.$primary.'` LIKE ?';
+            $data[]=$this->holder[$primary];
+        }
         $c->query($query,$data);
     }
     
@@ -120,7 +123,7 @@ class DataModel{
      *       ORDER BY `users`.`firstname` ASC,`users`.`lastname` ASC,`users`.`awesomeness` DESC 
      *       LIMIT 20"
      */
-    public static function selectData($args){
+    public static function selectData($args,$loadFields=false){
         global $k;$data=array();
         
         $table=$args['table'];
@@ -280,6 +283,7 @@ class DataModel{
     public static function getHull($table,$loadFields=false){
         global $c;
         if($loadFields)$fields=$c->getTableColumns($this->table);
+        else           $fields=array();
         return new DataModel($table,$fields);
     }
 }
