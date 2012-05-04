@@ -13,11 +13,11 @@ function buildMenu($menu){
     global $a,$k;
     if($a->check('admin.panel'))
         $menu[]=array('Admin',$k->url("admin",""),"float:right;",array(
-                                array('Panel',   $k->url("admin","Panel")),
-                                array('Options', $k->url("admin","Options")),
-                                array('Log',     $k->url("admin","Log")),
-                                array('Modules', $k->url("admin","Modules")),
-                                array('Hooks',   $k->url("admin","Hooks"))
+                                array('Panel',   $k->url("admin","Admin/panel")),
+                                array('Options', $k->url("admin","Admin/options")),
+                                array('Log',     $k->url("admin","Admin/log")),
+                                array('Modules', $k->url("admin","Admin/modules")),
+                                array('Hooks',   $k->url("admin","Admin/hooks"))
                             ));
     return $menu;
 }
@@ -29,9 +29,7 @@ function displayPage($params){
     
     ?><div id='pageNav'>
         <h1 class="sectionheader">Administration</h1>
-        <div class="tabs">
-            <a href="" class="tab activated">Panel</a>
-        </div>
+        <div class="tabs"></div>
     </div>
     <script type="text/javascript">
         $(document).ready(function(){
