@@ -61,8 +61,7 @@ class Special{
     }
     
     function displayHelp(){
-        global $t;
-        
+        header('Location: '.PROOT.'Help');
     }
 }
 ?>
