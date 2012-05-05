@@ -4,7 +4,9 @@ $time = $time[1]+$time[0];
 define("STARTTIME",$time);
 define("INIT",TRUE);
 //local reference variables
-define("HOST","linuz.com");
+//define("HOST","linuz.com");
+if(substr_count($_SERVER['SERVER_NAME'],'.')==1)define("HOST",$_SERVER['SERVER_NAME']);
+else                                            define("HOST",substr($_SERVER['SERVER_NAME'],strpos($_SERVER['SERVER_NAME'],'.')+1));
 define("ROOT","/var/www");
 define("PROOT","/Luminate/");
 define("TROOT",ROOT.PROOT);
@@ -27,7 +29,7 @@ define('COOKIE_AUTH','authcook');
 define('SECRET_KEY','dk;l1894!851éds-fghjg4lui:è3afàzgq_f4fá.');
 //mysql information
 define("SQLUSER","tymoon");
-define("SQLPASS","XprogOdbc1");
+define("SQLPASS","DtuyAEuNesZMhLNc");
 define("SQLDB","tymoonD");
 //other bs
 define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
