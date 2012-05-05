@@ -122,13 +122,29 @@ function displayRegisterPage(){
             
             Toolkit::log('User "'.$_POST['username'].'" ('.$_POST['email'].') registered.');
             $regurl=$k->url('login','register/'.$_POST['username'].'/'.$activationCode);
-            if(mail($_POST['email'],'Account confirmation for TyNET',
-                    'Welcome to TymoonNET, '.$_POST['username'].'.<br /><br />'.
-                    'To complete the registration procedure, please open this URL in your browser:<br />'.
-                    '<a href="'.$regurl.'">'.$regurl.'</a><br />'.
-                    'After that, you will be able to log in and change your account settings.<br /><br />'.
-                    'Greetings, the TyNET staff.',
-                    'From: noreply')){
+            
+            $message = '
+                <html>
+                <head>
+                    <title>Account confirmation for TyNET</title>
+                </head>
+                <body>
+                    Welcome to TymoonNET, '.$_POST['username'].'.<br /><br />
+                    To complete the registration procedure, please open this URL in your browser:<br />
+                    <a href="'.$regurl.'">'.$regurl.'</a><br />
+                    After that, you will be able to log in and change your account settings.<br /><br />
+                    Greetings, the TyNET staff.
+                </body>
+                </html>
+            ';
+            $headers  = 'MIME-Version: 1.0' . "\r\n";
+            $headers .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
+
+            // Additional headers
+            $headers .= 'To: <'.$_POST['email'].'>' . "\r\n";
+            $headers .= 'From: TymoonNET <noreply@tymoon.eu>' . "\r\n";
+            
+            if(mail($_POST['email'],'Account confirmation for TyNET',$message,$headers)){
                 $user->insertData();
                 $suc[0]='Your account has been registered successfully! Please check your e-mail for the activation code.';
             }else{
