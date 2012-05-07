@@ -11,7 +11,7 @@ class Article{
     }
     
     function displayView(){
-        global $k,$t,$l,$c;
+        global $k,$t,$l,$c,$page;
         $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,time,current FROM lore_articles WHERE title LIKE ?',array($this->page));
         
         if($article==null){
@@ -24,7 +24,8 @@ class Article{
             $article->status='o';
             $article->revision='-1';
             $article->editor='System';
-        }
+        }$page=$article->title;
+        
         if($this->rev!=-1){
             $revision = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND revision=?',array($article->title,$this->rev));
             if($revision==null)$article->current='The revision you are looking for does not exist.';
@@ -166,37 +167,41 @@ class Article{
         $t->openPage($article->title.' - Edit');
         echo('<h1>Edit '.ucfirst($this->type).'</h1>');
         
-        if($_POST['action']=='Save'&&$_POST['reason']!=''){
-            try{$suc=$this->updateArticle($article);}
-            catch(Exception $e){$err=$e->getMessage();}
-            if($suc!='')echo('<div class="success">'.$suc.'</div>');
-            if($err!='')echo('<div class="failure">'.$err.'</div>');
-        }else{
-            $_POST['text']=$article->current;
-        }
-        
-        include(MODULEPATH.'gui/Editor.php');
-        $editor = new SimpleEditor("#","Save","wikieditor",array("default","plus","wiki"));
-        if($a->check('lore.admin')){
-            if($a->check('lore.admin.status'))
-                $editor->addDropDown('status', array('o','p','l'), array('Open','Protected','Locked'), 'Status',$article->status);
-            if($a->check('lore.admin.rollback')){
-                $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? ORDER BY revision DESC',array($article->title));
-                $revisions = array('CURRENT');
-                if($a->check('lore.admin.delete'))$revisions[]='DELETE';
-                if($data!=null){
-                    if(!is_array($data))$data=array($data);
-                    foreach($data as $dat){$revisions[]=$dat->revision;}
-                }
-                $editor->addDropDown('rollback',$revisions,null, 'Rollback', 'CURRENT');
+        if($a->check("lore.admin")||$article->status=='o'||($article->status=='l'&&$a->check('lore.access.'.$article->title))){
+            if($_POST['action']=='Save'&&$_POST['reason']!=''){
+                try{$suc=$this->updateArticle($article);}
+                catch(Exception $e){$err=$e->getMessage();}
+                if($suc!='')echo('<div class="success">'.$suc.'</div>');
+                if($err!='')echo('<div class="failure">'.$err.'</div>');
+            }else{
+                $_POST['text']=$article->current;
             }
-            if($a->check('lore.admin.type'))
-                $editor->addDropDown('type',array('a','c','p','u'),array('Article','Category','Portal','User'),'Type',$article->type);
-            if($a->check('lore.admin.move'))
-                $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
+
+            include(MODULEPATH.'gui/Editor.php');
+            $editor = new SimpleEditor("#","Save","wikieditor",array("default","plus","wiki"));
+            if($a->check('lore.admin')){
+                if($a->check('lore.admin.status'))
+                    $editor->addDropDown('status', array('o','p','l'), array('Open','Protected','Locked'), 'Status',$article->status);
+                if($a->check('lore.admin.rollback')){
+                    $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? ORDER BY revision DESC',array($article->title));
+                    $revisions = array('CURRENT');
+                    if($a->check('lore.admin.delete'))$revisions[]='DELETE';
+                    if($data!=null){
+                        if(!is_array($data))$data=array($data);
+                        foreach($data as $dat){$revisions[]=$dat->revision;}
+                    }
+                    $editor->addDropDown('rollback',$revisions,null, 'Rollback', 'CURRENT');
+                }
+                if($a->check('lore.admin.type'))
+                    $editor->addDropDown('type',array('a','c','p','u'),array('Article','Category','Portal','User'),'Type',$article->type);
+                if($a->check('lore.admin.move'))
+                    $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
+            }
+            $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
+            $editor->show();
+        }else{
+            echo('This page is '.$this->toStatusString($article->status).'. You do not have the permissions to edit it.');
         }
-        $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
-        $editor->show();
         
         $t->closePage();
     }
@@ -313,8 +318,11 @@ class Article{
             return('Rollback to '.$_POST['rollback'].' performed.');
         }
 
-        if($_POST['text']==$article->current)throw new Exception('No changes noticed.');
-        else if(strlen($_POST['text'])<10)throw new Exception('Minimum length requirement not met.');
+        if($_POST['text']==$article->current){
+            if(!isset($suc))throw new Exception('No changes noticed.');
+            else            return $suc;
+        }
+        else if(strlen($_POST['text'])<$c->o['lore_minlength'])throw new Exception('Minimum length requirement not met.');
         else{
             $article->revision++;
             $article->current=$_POST['text'];
@@ -332,8 +340,9 @@ class Article{
             $action->action='edit';
             $action->args=$article->revision;
             $action->insertData();
-
-            $this->cacheRevision($revision);
+            
+            if(strpos($_POST['text'],'#!nocache')===FALSE)
+                $this->cacheRevision($revision);
         }
         return($suc.' Page updated.');
     }
