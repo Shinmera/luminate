@@ -7,6 +7,7 @@ class Special{
             case 'latest':$this->displayLatest();break;
             case 'newest':$this->displayNewest();break;
             case 'random':$this->displayRandom();break;
+            case 'templates':$this->displayTemplates();break;
             case 'help':  $this->displayHelp();break;
             default:
                 $t->openPage('404');
@@ -60,8 +61,13 @@ class Special{
         header('Location: '.PROOT.$name[0]['title']);
     }
     
+    function displayTemplates(){
+        
+    }
+    
     function displayHelp(){
         header('Location: '.PROOT.'Help');
     }
+    
 }
 ?>
