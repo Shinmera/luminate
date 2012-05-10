@@ -5,6 +5,7 @@
 | |  | |_| | | | | (__| |____| |  | |
 |_|   \__,_|_| |_|\___|______|_|  |_|
 =--  Functional Extensive Markup  --=
+=--   Specification Version 1.3   --=
 
  __   __  __          ___    __      
 |  \ |_  |_  | |\ | |  |  | /  \ |\ | 
@@ -19,6 +20,10 @@ If the tag requires additional arguments, they are specified like so:
 
   tag(args1,args2){ text to be marked }
 
+Arguments can either be specified in the sequence that they are required by the function or through keys (Since v1.3):
+
+  tag(:key1 args1,:key2 args2){ text to be marked }
+
 For single word markup, syntactical sugar can be used:
 
   t#Text
@@ -31,12 +36,22 @@ There's also a sugar equivalent:
 
   !#NoParse
 
+The deftag structure allows you to build your own tags inside the document (Since v1.3).
+It takes the tag name and a rest body of argument placeholders as arguments.
 
-FuncEM Code - The way the html is structured that will be used in place of the markup.
-This code can contain argument placeholders, denoted by $$.
-Inside of the $$ can be a type specifier that checks if the argument is of a certain type.
+  deftag(name,argument1placeholder,argument2placeholder){ Tag instructions }
 
-The following types are valid:
+Further language constructs available to build tags are only active inside deftag bodies.
+
+  tag(class,style,extra){tagname} div(class,style,extra){content}
+  set(var){value} get{var} if(val1,val2,op){instructions} loop(from,to,stepsize){instructions}
+
+Recursion is NOT supported. The variable holding the loop counter is called loop.
+Available OPs for IF are: ==, !=, <, >, <=, >=, like, !like. The latter two are for string nocase comparison.
+
+Argument placeholders are structured by NAME TYPE DEFAULT. Name and type cannot contain spaces.
+The following types are available:
+
  TEXT  : Same as specifying no type at all. Any kind of character sequence is allowed.
  STRI  : An alphanumerical string.
  URLS  : Any kind of string that passes the PHP URL filter.
@@ -45,17 +60,18 @@ The following types are valid:
  INTE  : Numerical value.
  INTEx : A number smaller or equal to x.
 
-Separating the type by a | allows you to specify a default value, if the argument isn't given.
+The HTML end-result is called FuncEM Code.
+This code can contain argument placeholders, denoted by $$.
 The start and end tags are separated by a @ .
-EG for a simple url:
+F.e. a simple url:
 
-  url(Link[,Title[,Target]]){Text}
-  <a href="$URLS$" title="$TEXT| $" target="$STRI|_self$" >@</a>
+  url(link URLS [,title TEXT [,target STRI _self]]){Text}
+  <a href="$link URLS$" title="$title TEXT $" target="$target STRI _self$" >@</a>
 
-Another example for an image tag:
+Another example, for an image tag:
 
-  img([AltText[,Title[,CSSClass]]]){ImageUrl}
-  <img alt="$STRI|image$" title="$TEXT| $" class="$STRI| $" src="@" />
+  img([alt STRI [,title TEXT [,class TEXT]]]){ImageUrl}
+  <img alt="$alt STRI image$" title="$title TEXT$" class="$class TEXT$" src="@" />
 
 This allows for a very advanced tagging system.
 Note that due to the simple stack of the closing tag, any argument placeholders have to come before the start/end delimiter.
@@ -86,3 +102,8 @@ To get the correct order of opening/closing tags, a simple stack will do.
 
 A separate function handles the parsing of the FuncEMCode itself. 
 If the arguments requirement isn't met, the FEM tag is filled back in without parsing.
+
+--Since 1.3:
+Any kind of tag, be it functional or regular gets its own lambda function that the parser invokes.
+deftag blocks get read in as a pre-compile phase and the resulting tag function is saved in the tag array.
+Regular functions saved in the database get translated upon load.
