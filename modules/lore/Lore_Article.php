@@ -215,11 +215,11 @@ class Article{
             echo('<blockquote>This '.$this->type.' does not exist yet.</blockquote>');
         else
             $l->triggerHook('DISPLAYdiscussion','Lore');
-            
+        
     }
     
     function updateArticle($article){
-        global $a,$c,$k,$existing;
+        global $a,$c,$l,$k,$existing;
         $_POST['text']=trim($_POST['text']);
         $_POST['move']=str_replace('_',' ',$k->sanitizeString($_POST['move'],'\s\-_'));
         
@@ -292,6 +292,7 @@ class Article{
             $action->args='';
             $action->insertData();
             
+            $l->triggerPOST('Lore','Lore',$article->title,'Article '.$article->title.' deleted.','',$k->url('wiki',$article->title.'/history'),'Article '.$article->title.' deleted.');
             return('Page deleted.');
         }
         
@@ -313,6 +314,7 @@ class Article{
             $action->args=$_POST['rollback'];
             $action->insertData();
             
+            $l->triggerPOST('Lore','Lore',$article->title,'Article '.$article->title.' rolled back.','',$k->url('wiki',$article->title.'/history'),'Article '.$article->title.' rolled back.');
             return('Rollback to '.$_POST['rollback'].' performed.');
         }
 
@@ -339,6 +341,7 @@ class Article{
             $action->args=$article->revision;
             $action->insertData();
             
+            $l->triggerPOST('Lore','Lore',$article->title,'Article '.$article->title.' edited.','',$k->url('wiki',$article->title.'/history'),'Article '.$article->title.' edited.');
             if(strpos($_POST['text'],'#!nocache')===FALSE)
                 $this->cacheRevision($revision);
         }
