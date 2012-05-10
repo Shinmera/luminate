@@ -14,6 +14,7 @@ textarea{min-width:200px;min-height:100px;}
 .preview{overflow: scroll;display:none;}
 a{text-decoration: none;color:blue;}
 a:hover{text-shadow: 0px 0px 5px #FFDD00;}
+a.inexistent{color:red;}
 ul{list-style:none;padding-left:10px;}
 hr{border: none;border-bottom:1px solid #FFF;box-shadow: 0px 0px 3px #FFF;}
 h1,h2,h3,h4,h5,h6{margin-top:0;}
