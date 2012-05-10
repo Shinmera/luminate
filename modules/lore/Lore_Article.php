@@ -35,15 +35,13 @@ class Article{
         
         if(substr($article->current,0,11)=='#!redirect:')header('Location: '.PROOT.str_replace('#!redirect:','',$article->current));
         $t->openPage($article->title);
-        ?>  
-        <h1><?=$article->title?></h1>
         
-        <? $path=CACHEPATH.'articles/'.$article->title.'/'.$article->revision.'.html';
+        if($article->type!='p'){ ?><h1><?=$article->title?></h1><? }
+        $path=CACHEPATH.'articles/'.$article->title.'/'.$article->revision.'.html';
         if(file_exists($path))echo(file_get_contents($path));
-        else                  echo($l->triggerPARSE('Lore',$article->current));?>
-        <br class="clear"/>
+        else                  echo($this->parseText($article->current));
+        echo('<br class="clear"/>');
         
-        <?
         if($article->type=='c'){
             $cats = $c->getData('SELECT article FROM lore_categories WHERE title LIKE ? ORDER BY article',array($article->title));
             if(count($cats)>0){
@@ -52,7 +50,7 @@ class Article{
                 foreach($cats as $cat){
                     if($lastchar!=strtoupper(substr($cat['article'],0,1))){
                         $lastchar=strtoupper(substr($cat['article'],0,1));
-                        echo('<h2>'.$lastchar.'</h2>');
+                        echo('<h4>'.$lastchar.'</h4>');
                     }
                     echo('<a href="'.Toolkit::url('wiki','category/'.$cat['article']).'">'.$cat['article'].'</a><br />');
                 }
@@ -78,7 +76,7 @@ class Article{
     
     //TODO: Add blanking warning if change is too big
     function displayHistory(){
-        global $k,$t;
+        global $k,$t,$lore;
         if(!isset($_GET['from']))$_GET['from']=1;
         
         $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,time FROM lore_articles WHERE title LIKE ?',array($this->page));
@@ -102,8 +100,8 @@ class Article{
                             Revision no. <?=$k->p($action->args)?> 
                         <?
                         break;
-                    case 'status':   ?><div class="status">  Status change to <?=$this->toStatusString($action->args)?> <?break;
-                    case 'type':     ?><div class="type">    Type change to <?=$this->toTypeString($action->args)?>     <?break;
+                    case 'status':   ?><div class="status">  Status change to <?=$lore->toStatusString($action->args)?> <?break;
+                    case 'type':     ?><div class="type">    Type change to <?=$lore->toTypeString($action->args)?>     <?break;
                     case 'move from':?><div class="moveFrom">Moved from <?=$action->args?>                              <?break;
                     case 'move to':  ?><div class="moveTo">  Moved to <?=$action->args?>                                <?break;
                     case 'delete':   ?><div class="delete">  Page deleted                                               <?break;
@@ -149,7 +147,7 @@ class Article{
     }
     
     function displayEdit(){
-        global $a,$t;
+        global $a,$t,$lore;
         
         $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,current,time FROM lore_articles WHERE title LIKE ?',array($this->page));
         if($article==null){
@@ -200,7 +198,7 @@ class Article{
             $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
             $editor->show();
         }else{
-            echo('This page is '.$this->toStatusString($article->status).'. You do not have the permissions to edit it.');
+            echo('This page is '.$lore->toStatusString($article->status).'. You do not have the permissions to edit it.');
         }
         
         $t->closePage();
@@ -352,39 +350,27 @@ class Article{
     }
 
     function cacheRevision($revision){
-        global $l;
         $path=CACHEPATH.'articles/'.$revision->title.'/';
         if(!file_exists($path)){
             mkdir($path,0777,true);
             file_put_contents($path.'index.html', '');
         }
             
-        $text = $l->triggerPARSE('Lore',$revision->text);
+        $text = $this->parseText($revision->text);
+        
         if(!file_put_contents($path.$revision->revision.'.html',$text,LOCK_EX))
             throw new Exception('Failed to generate '.$path.$revision->revision.'.html');
         else
             return true;
     }
     
-    
-    function toStatusString($s){
-        switch($s){
-            case 'o':return 'Open';break;
-            case 'p':return 'Protected';break;
-            case 'l':return 'Locked';break;
-            default: return $s;break;
-        }
+    function parseText($text){
+        global $l,$MODULECACHE;
+        $text = $l->triggerPARSE('Lore',$text);
+        include(MODULEPATH.$MODULECACHE['LoreParser']);
+        $parser = new LoreParser();
+        $text = $parser->parse($text);
+        return $text;
     }
-    
-    function toTypeString($s){
-        switch($s){
-            case 'a':return 'Article';break;
-            case 'c':return 'Category';break;
-            case 'p':return 'Portal';break;
-            case 'u':return 'User';break;
-            default: return $s;break;
-        }
-    }
-    
 }
 ?>
