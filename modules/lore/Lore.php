@@ -71,6 +71,24 @@ function displayPage(){
     }
 }
 
+function toStatusString($s){
+    switch($s){
+        case 'o':return 'Open';break;
+        case 'p':return 'Protected';break;
+        case 'l':return 'Locked';break;
+        default: return $s;break;
+    }
+}
+
+function toTypeString($s){
+    switch($s){
+        case 'a':return 'Article';break;
+        case 'c':return 'Category';break;
+        case 'p':return 'Portal';break;
+        case 'u':return 'User';break;
+        default: return $s;break;
+    }
+}
 
 }
 ?>
