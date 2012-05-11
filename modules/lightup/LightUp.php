@@ -7,29 +7,8 @@ public static $required=array();
 public static $hooks=array("foo");
 
     var $tagsLoaded = false;
-    var $tags = array("image"   =>array('<img alt="$STRI|image$" title="$TEXT|$" class="$STRI|$" src="','" />',2),
-                      "url"     =>array('<a href="$URLS$" title="$TEXT|$" target="$STRI|_self$" >','</a>',10),
-                      "b"       =>array('<strong>','</strong>',-1),
-                      "i"       =>array('<em>','</em>',-1),
-                      "u"       =>array('<u>','</u>',-1),
-                      "left"    =>array('<div style="text-align:left">','</div>',-1),
-                      "right"   =>array('<div style="text-align:right">','</div>',-1),
-                      "center"  =>array('<div style="text-align:center">','</div>',-1),
-                      "color"   =>array('<span style="color:$STRI|red$">','</span>',-1),
-                      "size"    =>array('<span style="font-size:$INTE48$pt">','</span>',-1));
-    var $codesLoaded = false;
-    var $codes= array(
-                      array("b",      'Bold text',            'b{@}',                       'default'),
-                      array("i",      'Italic text',          'i{@}',                       'default'),
-                      array("u",      'Underline text',       'u{@}',                       'default'),
-                      array("size",   'Change text size',     'size($Enter the font size (0-48)|number$){@}','plus'),
-                      array("color",  'Color text',           'color($Enter a color|color$){@}','plus'),
-                      array("left",   'Align left',           'left{@}',                    'plus'),
-                      array("right",  'Align right',          'right{@}',                   'plus'),
-                      array("center", 'Center text',          'center{@}',                  'plus'),
-                      array("url",    'Insert a link',        'url($Enter the URL|url$){@}','plus'),
-                      array("image",  'Insert an image',      'image{@}',                   'plus'),
-                      array("noparse",'Avoid parsing',        '!{@}!',                      'pro'));
+    var $tags = array("div"     =>array('<div class="$TEXT| $" style="$TEXT| $" $TEXT| $ >','</div>',-1),
+                      "tag"     =>array('<$STRI$ class="$TEXT| $" stlye="$TEXT| $" $TEXT| $ />','',-1));
     
     function __construct(){}
     
@@ -74,29 +53,45 @@ public static $hooks=array("foo");
         }
     }
     
+    function parseDeftag($deftag){
+        $block = substr($deftag,strpos($deftag,'{')+1);
+        $block = substr($block,0,strlen($block)-1);
+        $args  = substr($deftag,strpos($deftag,'(')+1);
+        $args  = substr($args,0,strpos($args,')'));
+        
+        if(count($args)==0||!is_array($args))return;
+        if(trim($block)=='')return;
+        
+        return 'PDTAG';
+        
+    }
+    
     function getTags($taglist){
-        if(/*$this->codes==null*/$this->codesLoaded==false){
+        if($this->codes==null){
             $codes = DataModel::getData("lightup_tags","SELECT name,tagcode,description,suite FROM lightup_tags ORDER BY `order`,suite,tag");
             $this->codes = array();
             if($codes!=null){foreach($codes as $code){
                 $this->codes[]=array($code->name,$code->description,$code->tagcode,$code->suite);
             }}
-            $this->codesLoaded=true;
         }
         return array_merge($taglist,$this->codes);
     }
-
-    function deparse($args){
-        global $c;
-        if(/*$this->tags==null*/$this->tagsLoaded==false){
-            $tags = DataModel::getData("lightup_tags","SELECT tag,femcode,`limit` FROM lightup_tags");
+    
+    function loadCode(){
+        if($this->tagsLoaded==false){
+            $tags = DataModel::getData("lightup_tags","SELECT tag,deftag,suite,`limit` FROM lightup_tags");
             $this->tags = array();
             if($tags!=null){foreach($tags as $tag){
-                $femcodeparts = explode("@",$c->desecureHTML($tag->femcode));
-                $this->tags[$tag->tag]=array($femcodeparts[0],$femcodeparts[1],$tag->limit);
+                $function = $this->parseDeftag(trim($tag->deftag));
+                $tag->function = $function;
+                $this->tags[$tag->tag]=$tag;
             }}
             $this->tagsLoaded=true;
         }
+    }
+
+    function deparse($args){
+        $this->loadCode();
         
         $s = $args['text'];
         $s = str_ireplace("\n","<br />",$s);
@@ -141,6 +136,13 @@ public static $hooks=array("foo");
         return $parts;
     }
     
+    //TODO: Move into Tag class
+    function parseTag($tag,$args,$content){
+        return $content;
+    }
+    
+    //TODO: Move into Tag class
+    //TODO: Turn into checkArguments
     //This function parses a beginning tag with the included text into what we need.
     //Return FALSE if the arguments are invalid.
     function parseStartTag($tagRaw,$arguments=array()){
@@ -195,21 +197,20 @@ public static $hooks=array("foo");
     
     function parseFuncEMShortTags($text){
         global $FEMSTRAW;
-        foreach($this->tags as $tag=>$raw){
-            $FEMSTRAW=$raw;
-            $text=preg_replace_callback('`'.$tag.'#([-A-Z0-9+&@#/%=~_|$?!:,.]+)`is',array(&$this,'parseFuncEMShortTagsCallback') , $text, $raw[2]);
+        foreach($this->tags as $name=>$tag){
+            $FEMSTRAW=$tag;
+            $text=preg_replace_callback('`'.$name.'#([-A-Z0-9+&@#/%=~_|$?!:,.]+)`is',array(&$this,'parseFuncEMShortTagsCallback') , $text, $tag->limit);
         }
         unset($FEMSTRAW);
         return $text;
     }
     function parseFuncEMShortTagsCallback($matches){
         global $FEMSTRAW;
-        $tag = $this->parseStartTag($FEMSTRAW[0]);
-        if($tag!==FALSE)return $tag.$matches[1].$FEMSTRAW[1];
+        $tag = $this->parseStartTag($FEMSTRAW);
+        if($tag!==FALSE)return $tag.$matches[1];
         else            return $matches[0];
     }
 
-    //TODO: Optimization
     function parseFuncEM($text){
         $text = " ".str_replace('$','&dollar;',trim($text)); //To prevent the opening tag from failing to be recognized
                                                              //and users from tampering with the arguments.
@@ -244,7 +245,7 @@ public static $hooks=array("foo");
             
             if($nextOpen<$nextClose&&$nextOpen!==FALSE){
                 $pointer=$nextOpen+1;
-                
+                //FIXME: a{b{}}
                 $tag = "";
                 $args=array();
                 $argsEnd=strpos($text,")",$nextOpen-2);
@@ -268,24 +269,42 @@ public static $hooks=array("foo");
                     if(!array_key_exists($tag,$tagCounter))$tagCounter[$tag]=1;
                     else                                   $tagCounter[$tag]++;
                     
-                    if($tagCounter[$tag]<=$tags[$tag][2]||$tags[$tag][2]<0){
-                        $parsedTag=$this->parseStartTag($tags[$tag][0],$args);
+                    if($tagCounter[$tag]<=$tags[$tag]->limit||$tags[$tag]->limit<0){
+                        
+                        //Find closing tag
+                        $level=1;
+                        $endTagPos=strpos($text,'}',$nextOpen+1);
+                        $staTagPos=strpos($text,'{',$nextOpen+1);
+                        while($level>0){
+                            if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
+                                $level++;
+                                $endTagPos=strpos($text,'}',$staTagPos+1);
+                                $staTagPos=strpos($text,'{',$staTagPos+1);
+                            }
+                            if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
+                                $level--;
+                                if($level!=0){
+                                    $endTagPos=strpos($text,'}',$endTagPos+1);
+                                    $staTagPos=strpos($text,'{',$endTagPos+1);
+                                }
+                            }
+                        }
+                        //Get content and parse
+                        $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
+                        echo('<br />TEXT: '.$text);
+                        echo('<br />CONTENT: '.$content.'<br />');
+                        $parsedTag=$this->parseTag($tags[$tag],$args,$content);
                         
                         if($parsedTag!==FALSE){
-                            array_push($endTags,$tags[$tag][1]);
-                            $text = $this->replaceRegion($text,$tagStart,$nextOpen+1,$parsedTag);
+                            $text = $this->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
                         }else{
-                            array_push($endTags,"&rbrace;");
+                            $text = $this->replaceRegion($text,$endTagPos,$endTagPos+1,'&rbrace;');
                         }
+                        $nextOpen=$tagStart-1;
                     }else{
-                        //If the limit is exceeded, push a simple closing tag to prevent the stack from being screwed up.
-                        array_push($endTags,"&rbrace;");
+                        $text = $this->replaceRegion($text,$endTagPos-1,$endTagPos,'&rbrace;');
                     }
                 }
-            
-            }else if($nextClose!==FALSE&&count($endTags)>0){
-                $pointer=$nextClose+1;
-                $text = $this->replaceRegion($text,$nextClose,$nextClose+1,array_pop($endTags));
             }else{
                 $pointer++;
             }
