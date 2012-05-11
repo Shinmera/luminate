@@ -4,13 +4,13 @@ public static $name="LoreParser";
 public static $author="Shinmera";
 public static $version=0.01;
 public static $short='loreparser';
-public static $required=array();
+public static $required=array('LightUp');
 public static $hooks=array("foo");
 
     //TODO: Following tags:
     // [BOX]
     // footnote([n]){BLA}
-    // {{templates}}
+    // {include:}
     function parse($text){
         //$text = preg_replace(         '`\[([\w\s]*)\]`is',                         '<div class="box">\1</div>',        $text);
         $text = preg_replace_callback('`\>([-A-Z0-9_-]*)\<`is',             array(&$this,'pageCallback'),       $text);
@@ -19,6 +19,7 @@ public static $hooks=array("foo");
         $text = preg_replace_callback('`\{category:([-A-Z0-9_-]*)\}`is',    array(&$this,'categoryCallback'),   $text);
         $text = preg_replace_callback('`\{portal:([-A-Z0-9_-]*)\}`is',      array(&$this,'portalCallback'),     $text);
         $text = preg_replace_callback('`\{file:([-A-Z0-9_-]*)\}`is',        array(&$this,'fileCallback'),       $text);
+        $text = preg_replace_callback('`\{include:([-A-Z0-9_-]*)\}`is',     array(&$this,'includeCallback'),    $text);
         
         $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
         $text = str_replace(          '#!noparse',                          '',                                 $text);
@@ -66,6 +67,13 @@ public static $hooks=array("foo");
         }else{
             return '<img alt="'.$file->title.'" title="'.$file->title.'" src="'.DATAPATH.'cache/lore/files/'.$file->filename.'/'.$file->revision.'" />';
         }
+    }
+    
+    function includeCallback($matches){
+        global $lightup;
+        $template = DataModel::getData('lore_articles','SELECT current FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'t'));
+        
+        return '';
     }
     
     function historyCallback($matches){
