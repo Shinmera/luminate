@@ -3,7 +3,7 @@ public static $name="Test";
 public static $author="NexT";
 public static $version=0.01;
 public static $short='test';
-public static $required=array();
+public static $required=array("LightUp");
 public static $hooks=array("foo");
 
 function runTests(){
@@ -11,8 +11,15 @@ function runTests(){
         .null{color:gray;}
         .error{color:red;}
         .data{color:green;}
-    </style><?
+    </style><form method="post">
+        <textarea name="text" style="width:500px;height:200px;"><?=$_POST['text']?></textarea><br />
+        <input type="submit" />
+    </form><br /><?
     
+    global $lightup;
+    $lightup->loadCode();
+    $text = $lightup->parseFuncEM($_POST['text']);
+    echo('<br />'.$text);
 }
 
 function testDataModel(){

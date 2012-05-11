@@ -32,6 +32,7 @@ function displayPage(){
         case 'portal':
         case 'special':
         case 'file':
+        case 'template':
         case 'user':
             $type=strtolower($params[0]);
             $page=$params[1];
@@ -85,6 +86,7 @@ function toTypeString($s){
         case 'a':return 'Article';break;
         case 'c':return 'Category';break;
         case 'p':return 'Portal';break;
+        case 't':return 'Template';break;
         case 'u':return 'User';break;
         default: return $s;break;
     }
