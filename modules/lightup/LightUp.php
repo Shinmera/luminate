@@ -6,11 +6,9 @@ public static $short='lightup';
 public static $required=array();
 public static $hooks=array("foo");
 
-    var $tagsLoaded = false;
-    var $tags = array("div"     =>array('<div class="$TEXT| $" style="$TEXT| $" $TEXT| $ >','</div>',-1),
-                      "tag"     =>array('<$STRI$ class="$TEXT| $" stlye="$TEXT| $" $TEXT| $ />','',-1));
+    var $tags = null;
     
-    function __construct(){}
+    function __construct(){include('Tag.php');}
     
     function displayApiPage(){
         $text=$this->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
@@ -24,7 +22,6 @@ public static $hooks=array("foo");
             $order=explode(":",$order);
             $c->query("UPDATE lightup_tags SET `order`=? WHERE name=?",array($order[1],$order[0]));
         }
-        
         die("Order saved!");
     }
     
@@ -53,19 +50,6 @@ public static $hooks=array("foo");
         }
     }
     
-    function parseDeftag($deftag){
-        $block = substr($deftag,strpos($deftag,'{')+1);
-        $block = substr($block,0,strlen($block)-1);
-        $args  = substr($deftag,strpos($deftag,'(')+1);
-        $args  = substr($args,0,strpos($args,')'));
-        
-        if(count($args)==0||!is_array($args))return;
-        if(trim($block)=='')return;
-        
-        return 'PDTAG';
-        
-    }
-    
     function getTags($taglist){
         if($this->codes==null){
             $codes = DataModel::getData("lightup_tags","SELECT name,tagcode,description,suite FROM lightup_tags ORDER BY `order`,suite,tag");
@@ -78,16 +62,19 @@ public static $hooks=array("foo");
     }
     
     function loadCode(){
-        if($this->tagsLoaded==false){
+        if($this->tags==null){
             $tags = DataModel::getData("lightup_tags","SELECT tag,deftag,suite,`limit` FROM lightup_tags");
             $this->tags = array();
             if($tags!=null){foreach($tags as $tag){
-                $function = $this->parseDeftag(trim($tag->deftag));
-                $tag->function = $function;
-                $this->tags[$tag->tag]=$tag;
+                $tagc = new Tag($tag->tag,$tag->deftag,$tag->suite);
+                $this->tags[$tag->tag]=$tagc;
             }}
-            $this->tagsLoaded=true;
         }
+    }
+    
+    function addTag($tag,$deftag,$suite='default'){
+        $tagc = new Tag($tag,$deftag,$suite);
+        $this->tags[$tag]=$tagc;
     }
 
     function deparse($args){
@@ -134,50 +121,6 @@ public static $hooks=array("foo");
         $parts[1] = substr($text,0,strpos($text,$delim));
         $parts[2] = substr($text,strpos($text,$delim)+1);
         return $parts;
-    }
-    
-    //TODO: Move into Tag class
-    function parseTag($tag,$args,$content){
-        return $content;
-    }
-    
-    //TODO: Move into Tag class
-    //TODO: Turn into checkArguments
-    //This function parses a beginning tag with the included text into what we need.
-    //Return FALSE if the arguments are invalid.
-    function parseStartTag($tagRaw,$arguments=array()){
-        global $k;
-        
-        if(strpos($tagRaw,"$")!==FALSE){
-            $parts = $this->getParts($tagRaw,"$");
-            
-            if($parts[1]=="")$tagRaw=$parts[0].$arguments[0].$parts[2];
-            else{
-                if(strpos($parts[1],"|")!==FALSE){
-                    $parts[1]=explode("|",$parts[1]);
-                    if($arguments[0]=="")$arguments[0]=$parts[1][1]; //Default value
-                    $parts[1]=$parts[1][0];
-                }
-                $argumentOK=false;
-                switch($parts[1]){
-                    case 'TEXT':$argumentOK=true;break;
-                    case 'STRI':$argumentOK=($k->sanitizeString($arguments[0],"\-_")==$arguments[0]);break;
-                    case 'URLS':$argumentOK=$k->checkURLValidity($arguments[0]);break;
-                    case 'MAIL':$argumentOK=$k->checkMailVailidity($arguments[0]);break;
-                    case 'DATE':$argumentOK=$k->checkDateVailidity($arguments[0]);break;
-                    case 'INTE':$argumentOK=is_numeric($arguments[0]);break;
-                    default:
-                        if(substr($parts[1],0,4)=="INTE")
-                                $argumentOK=(is_numeric($arguments[0])&&(int)$arguments[0]<=(int)substr($parts[1],4));
-                        break;
-                }
-                if($argumentOK)$tagRaw=$parts[0].$arguments[0].$parts[2];
-                else           return FALSE;
-            }
-            $arguments = array_splice($arguments, 1); //Pop one element from the stack.
-            
-            return $this->parseStartTag($tagRaw,$arguments); //Needs more iterations.
-        }else return $tagRaw;
     }
     
     function fixBracketBalance($text,$bA="{",$bB="}"){
@@ -291,16 +234,15 @@ public static $hooks=array("foo");
                         }
                         //Get content and parse
                         $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
-                        echo('<br />TEXT: '.$text);
-                        echo('<br />CONTENT: '.$content.'<br />');
-                        $parsedTag=$this->parseTag($tags[$tag],$args,$content);
+                        $parsedTag=$tags[$tag]->parse($content,$args);
                         
                         if($parsedTag!==FALSE){
                             $text = $this->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
                         }else{
                             $text = $this->replaceRegion($text,$endTagPos,$endTagPos+1,'&rbrace;');
                         }
-                        $nextOpen=$tagStart-1;
+                        $pointer=$tagStart;
+                        echo('<br />REST: '.$this->replaceRegion($text,$pointer,$pointer+1,'#'));
                     }else{
                         $text = $this->replaceRegion($text,$endTagPos-1,$endTagPos,'&rbrace;');
                     }
