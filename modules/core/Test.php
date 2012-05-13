@@ -19,7 +19,7 @@ function runTests(){
     global $lightup;
     $lightup->loadCode();
     $text = $lightup->parseFuncEM($_POST['text']);
-    echo('<br />'.$text);
+    echo('<br /><br />'.nl2br($text));
 }
 
 function testDataModel(){
