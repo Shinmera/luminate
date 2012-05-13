@@ -20,7 +20,7 @@ If the tag requires additional arguments, they are specified like so:
 
   tag(args1,args2){ text to be marked }
 
-Arguments can either be specified in the sequence that they are required by the function or through keys (Since v1.3):
+Arguments can either be specified in the sequence that they are required by the function or through keys (Since v1.2):
 
   tag(:key1 args1,:key2 args2){ text to be marked }
 
@@ -74,7 +74,6 @@ Another example, for an image tag:
   <img alt="$alt STRI image$" title="$title TEXT$" class="$class TEXT$" src="@" />
 
 This allows for a very advanced tagging system.
-Note that due to the simple stack of the closing tag, any argument placeholders have to come before the start/end delimiter.
 
  __        __   __         __  
 |__)  /\  |__) (_  | |\ | / _  
