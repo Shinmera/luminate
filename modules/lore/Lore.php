@@ -22,7 +22,7 @@ function displayAdminPage(){
 }
 
 function displayPage(){
-    global $t,$k,$params,$SUPERIORPATH,$MODULECACHE,$page,$type,$action;
+    global $t,$k,$params,$SUPERIORPATH,$page,$type,$action;
     define('CACHEPATH',ROOT.DATAPATH.'cache/lore/');
     
     $params[0]=str_replace('_',' ',$k->sanitizeString($params[0],'\s\-_'));
@@ -55,17 +55,22 @@ function displayPage(){
     $t->loadTheme("lore");
     switch($type){
         case 'special':
-            include(MODULEPATH.$MODULECACHE['Lore_Special']);
+            include('Lore_Special.php');
             $special = new Special();
             $special->display($page);
             break;
         case 'file':
-            include(MODULEPATH.$MODULECACHE['Lore_File']);
+            include('Lore_File.php');
             $file = new File($page,$revision);
             call_user_func(array(&$file,'display'.ucfirst($action)));
             break;
+        case 'template':
+            include('Lore_Template.php');
+            $template = new Template($page);
+            call_user_func(array(&$template,'display'.ucfirst($action)));
+            break;
         default:
-            include(MODULEPATH.$MODULECACHE['Lore_Article']);
+            include('Lore_Article.php');
             $article = new Article($page,$type,$revision);
             call_user_func(array(&$article,'display'.ucfirst($action)));
             break;
