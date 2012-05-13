@@ -49,6 +49,7 @@ public static $hooks=array("foo");
     }
     
     function portalCallback($matches){
+        global $k;
         $portal = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'p'));
         if($portal==null){
             return '';
@@ -72,7 +73,9 @@ public static $hooks=array("foo");
     function includeCallback($matches){
         global $lightup;
         $template = DataModel::getData('lore_articles','SELECT current FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'t'));
-        
+        if($template!=null){
+            $lightup->addTag($matches[1],$template->current);
+        }
         return '';
     }
     

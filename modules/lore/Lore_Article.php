@@ -347,10 +347,6 @@ class Article{
         }
         return($suc.' Page updated.');
     }
-        
-    function rebuildHistory($article){
-        
-    }
 
     function cacheRevision($revision){
         $path=CACHEPATH.'articles/'.$revision->title.'/';
@@ -368,10 +364,9 @@ class Article{
     }
     
     function parseText($text){
-        global $l,$MODULECACHE;
+        global $l;
         $text = $l->triggerPARSE('Lore',$text);
-        include(MODULEPATH.$MODULECACHE['LoreParser']);
-        $parser = new LoreParser();
+        $parser = $l->loadModule('LoreParser');
         $text = $parser->parse($text);
         return $text;
     }
