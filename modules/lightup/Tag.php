@@ -23,7 +23,7 @@ class Tag{
     }
     
     function parseDeftag(){
-        global $k;
+        global $k,$lightup;
         $deftag = &$this->deftag;
         $block = substr($deftag,strpos($deftag,'{')+1);
         $block = substr($block,0,strlen($block)-1);
@@ -59,12 +59,86 @@ class Tag{
             }
         }
         
-        $function = '';
+        $function = '$r="";$v=&$args;
+                     $v["content"]=$content;';
         //Parse the body
+        //We only need to parse the special tags like div, tag, if and loop.
+        //The rest can just be returned and will automatically be parsed by the main loop once its inserted.
+        //Regardless, we do sadly need yet another loop, similar to the main one.
+        $text = &$block;
+        $pointer = 0;
         
+        while($pointer<strlen($text)){
+            $nextOpen = strpos($text,"{",$pointer);
+            $nextClose = strpos($text,"}",$pointer);
+            $curLen = strlen($text);
+            
+            if($nextClose==FALSE||$nextOpen==FALSE)break;
+            if($nextOpen<$nextClose&&$nextOpen!==FALSE){
+                $pointer=$nextOpen+1;
+                
+                $tag = "";
+                $args=array();
+                $argsEnd=strpos($text,")",$nextOpen-2);
+                $tagStart = 0;
+                //Filter out the tag name and arguments, if any.
+                if($argsEnd<=$nextOpen&&$argsEnd!==FALSE){
+                    $argsStart = strrpos($text,"(",-1*($curLen-$argsEnd))+1;
+                    if($argsStart!==FALSE){
+                        $tagStart = $lightup->findTagStart($text, $curLen, $argsStart); 
+                        $tag =  substr($text,$tagStart ,$argsStart-$tagStart-1);
+                        $args = substr($text,$argsStart,$argsEnd-$argsStart);
+                        $args = explode(",",$args);
+                    }
+                }else{
+                    $tagStart = $lightup->findTagStart($text, $curLen, $nextOpen);
+                    $tag = substr($text,$tagStart,$nextOpen-$tagStart);
+                }
+                $tag = strtolower($tag);
+                
+                //Find closing tag
+                $level=1;
+                $endTagPos=strpos($text,'}',$nextOpen+1);
+                $staTagPos=strpos($text,'{',$nextOpen+1);
+                while($level>0){
+                    if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
+                        $level++;
+                        $endTagPos=strpos($text,'}',$staTagPos+2);
+                        $staTagPos=strpos($text,'{',$staTagPos+2);
+                    }
+                    if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
+                        $level--;
+                        if($level!=0){
+                            $endTagPos=strpos($text,'}',$endTagPos+1);
+                            $staTagPos=strpos($text,'{',$endTagPos+1);
+                        }else break;
+                    }
+                }
+                
+                $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
+                
+                if(array_key_exists($tag,$lightup->Stags)){
+                    $parsedTag=$lightup->Stags[$tag]->parse($content,$args);
+
+                    $text = $lightup->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
+
+                    $pointer=$tagStart;
+                    echo('<br />TRES: '.htmlspecialchars($parsedTag));
+                }else{
+                    $text = $lightup->replaceRegion($text,$endTagPos,$endTagPos+1,'$r.=\'}\';');
+                    $text = $lightup->replaceRegion($text,$tagStart,$argsEnd+2,'$r.=\''.$tag.'('.implode(',',$args).'){\'');
+                    echo('<br />TRES: '.htmlspecialchars($parsedTag));
+                }
+            }else{
+                $pointer++;
+            }
+        }
         
+        $function.=$text.'return $r;';
+        echo('<br />FUNC: '.htmlspecialchars($function).'<br />');
+        $this->function = create_function('$content,$args', $function);
         
-        return FALSE;
+        return TRUE;
     }
     
     function parse($content,$args){
@@ -74,7 +148,8 @@ class Tag{
         if($this->function===null)$this->parseDeftag();
         if($this->function===FALSE)          return FALSE;
         if(!function_exists($this->function))return FALSE;
-        $content = $this->function($content,$args);
+        $func = $this->function;
+        $content = $func($content,$args);
         
         return $content;
     }
@@ -92,12 +167,13 @@ class Tag{
                     $type=$this->args[$key]['type'];
                 }else{$type="TEXT";}
             }else{
-                 list($argc) = array_slice($this->args,$i,1);
-                 $key = $argc['name'];
-                 $type= $argc['type'];
+                $keys = array_keys($this->args);
+                $argc = $this->args[$keys[$i]];
+                $key = $argc['name'];
+                $type= $argc['type'];
            }
             
-            $argumentOk=false;
+            $argumentOK=false;
             switch($type){
                 case 'TEXT':$argumentOK=true;                                  break;
                 case 'STRI':$argumentOK=($k->sanitizeString($arg,"\-_")==$arg);break;
@@ -110,7 +186,8 @@ class Tag{
                             $argumentOK=(is_numeric($arg)&&(int)$arg<=(int)substr($parts[1],4));
                     break;
             }
-            if(!$argumentOk)return FALSE;
+            
+            if(!$argumentOK)return FALSE;
             else            $vals[$key]=$arg;
             
             $i++;

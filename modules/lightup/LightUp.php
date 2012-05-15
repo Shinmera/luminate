@@ -7,8 +7,19 @@ public static $required=array();
 public static $hooks=array("foo");
 
     var $tags = null;
+    var $Stags = array();
     
-    function __construct(){include('Tag.php');}
+    function __construct(){
+        include('Tag.php');
+        include('STags.php');
+        $this->Stags['div']= new DIVTag('div','','sys');
+        $this->Stags['tag']= new TAGTag('tag','','sys');
+        $this->Stags['if'] = new IFTag('if','','sys');
+        $this->Stags['loop']=new LOOPTag('loop','','sys');
+        $this->Stags['set']= new SETTag('set','','sys');
+        $this->Stags['get']= new GETTag('get','','sys');
+        $this->Stags['echo']=new ECHOTag('echo','','sys');
+    }
     
     function displayApiPage(){
         $text=$this->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
@@ -132,6 +143,7 @@ public static $hooks=array("foo");
     function findTagStart($text,$curLen,$open){
         return max(array(
             strrpos($text," ",-1*($curLen-$open+1)),
+            strrpos($text,".",-1*($curLen-$open+1)),
             strrpos($text,"{",-1*($curLen-$open+1)),
             strrpos($text,"\n",-1*($curLen-$open+1)),
             strrpos($text,">",-1*($curLen-$open+1))
@@ -149,8 +161,8 @@ public static $hooks=array("foo");
     }
     function parseFuncEMShortTagsCallback($matches){
         global $FEMSTRAW;
-        $tag = $this->parseStartTag($FEMSTRAW);
-        if($tag!==FALSE)return $tag.$matches[1];
+        $tag = $FEMSTRAW->parse($matches[1],array());
+        if($tag!==FALSE)return $tag;
         else            return $matches[0];
     }
 
@@ -162,7 +174,6 @@ public static $hooks=array("foo");
         $text = $this->fixBracketBalance($text);
         $text = $this->parseFuncEMShortTags($text);
         
-        $endTags = array();
         $tagCounter = array();
         $tags = &$this->tags;
         $nextNoparse = true;
@@ -184,7 +195,7 @@ public static $hooks=array("foo");
                 }
             }
 
-            if($nextClose==FALSE||($nextOpen==FALSE&&count($endTags)==0))break;
+            if($nextClose==FALSE||$nextOpen==FALSE)break;
             
             if($nextOpen<$nextClose&&$nextOpen!==FALSE){
                 $pointer=$nextOpen+1;
@@ -221,15 +232,15 @@ public static $hooks=array("foo");
                         while($level>0){
                             if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
                                 $level++;
-                                $endTagPos=strpos($text,'}',$staTagPos+1);
-                                $staTagPos=strpos($text,'{',$staTagPos+1);
+                                $endTagPos=strpos($text,'}',$staTagPos+2);
+                                $staTagPos=strpos($text,'{',$staTagPos+2);
                             }
                             if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
                                 $level--;
                                 if($level!=0){
                                     $endTagPos=strpos($text,'}',$endTagPos+1);
                                     $staTagPos=strpos($text,'{',$endTagPos+1);
-                                }
+                                }else break;
                             }
                         }
                         //Get content and parse
@@ -239,12 +250,14 @@ public static $hooks=array("foo");
                         if($parsedTag!==FALSE){
                             $text = $this->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
                         }else{
-                            $text = $this->replaceRegion($text,$endTagPos,$endTagPos+1,'&rbrace;');
+                            $text = $this->replaceRegion($text,$nextOpen,   $nextOpen+1, '&lbrace;');
+                            $text = $this->replaceRegion($text,$endTagPos+7,$endTagPos+8,'&rbrace;');
                         }
                         $pointer=$tagStart;
-                        echo('<br />REST: '.$this->replaceRegion($text,$pointer,$pointer+1,'#'));
+                        echo('<br />RES: '.$this->replaceRegion($text,$pointer,$pointer+1,'#'));
                     }else{
-                        $text = $this->replaceRegion($text,$endTagPos-1,$endTagPos,'&rbrace;');
+                        $text = $this->replaceRegion($text,$nextOpen,   $nextOpen+1, '&lbrace;');
+                        $text = $this->replaceRegion($text,$endTagPos+6,$endTagPos+7,'&rbrace;');
                     }
                 }
             }else{
