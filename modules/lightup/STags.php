@@ -5,8 +5,9 @@ class DIVTag extends Tag{
                             'style'=>array('name'=>'style','type'=>'TEXT','required'=>false,'default'=>''));
         $args = $this->checkArguments($args);
         if($args===FALSE)return FALSE;
-        $content = '$r.=\'<div class="'.$args['class'].'" style="'.$args['style'].'">'.$content.'</div>\';';
+        $this->makeVarsInArgs($args);
         
+        $content = '$r.=\'<div class="'.$args['class'].'" style="'.$args['style'].'">'.$content.'</div>\';';
         return preg_replace('`get\{([-A-Z0-9]*)\}`is','\'.\0.\'',$content);
     }
 }
@@ -19,6 +20,8 @@ class TAGTag extends Tag{
                             'extra'=>array('name'=>'extra','type'=>'TEXT','required'=>false,'default'=>''));
         $args = $this->checkArguments($args);
         if($args===FALSE)return FALSE;
+        $this->makeVarsInArgs($args);
+        
         if(trim($content)=='')
             $content='$r.=\'<'.$args['tag'].' class="'.$args['class'].'" style="'.$args['style'].'" '.$args['extra'].' />\';';
         else
@@ -30,7 +33,7 @@ class TAGTag extends Tag{
 
 class IFTag extends Tag{
     function parse($content,$args){
-        
+        return 'if('.$args[0].'){'.$content.'}';
     }
 }
 

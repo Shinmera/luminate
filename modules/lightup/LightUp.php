@@ -144,6 +144,8 @@ public static $hooks=array("foo");
         return max(array(
             strrpos($text," ",-1*($curLen-$open+1)),
             strrpos($text,".",-1*($curLen-$open+1)),
+            strrpos($text,"'",-1*($curLen-$open+1)),
+            strrpos($text,'"',-1*($curLen-$open+1)),
             strrpos($text,"{",-1*($curLen-$open+1)),
             strrpos($text,"\n",-1*($curLen-$open+1)),
             strrpos($text,">",-1*($curLen-$open+1))
@@ -254,7 +256,7 @@ public static $hooks=array("foo");
                             $text = $this->replaceRegion($text,$endTagPos+7,$endTagPos+8,'&rbrace;');
                         }
                         $pointer=$tagStart;
-                        echo('<br />RES: '.$this->replaceRegion($text,$pointer,$pointer+1,'#'));
+                        echo('<br />RES: '.htmlspecialchars($this->replaceRegion($text,$pointer,$pointer+1,'#')));
                     }else{
                         $text = $this->replaceRegion($text,$nextOpen,   $nextOpen+1, '&lbrace;');
                         $text = $this->replaceRegion($text,$endTagPos+6,$endTagPos+7,'&rbrace;');
