@@ -34,6 +34,7 @@ define("SQLDB","tymoonD");
 //other bs
 define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
 define("NO_ACCESS",'<div class="large" style="text-align:center;">You are not authorized to view this page.</div>');
+define("COMPRESS",FALSE);
 
 $SUPERIORPATH="";
 $DOMINATINGMODULE="";

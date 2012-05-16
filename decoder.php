@@ -1,6 +1,7 @@
-<? if(!ob_start("ob_gzhandler")) ob_start();
+<?
 try{
     include("config.php");
+    if(COMPRESS){if(!ob_start("ob_gzhandler")) ob_start();}
     $k->checkShitBrowser();
 
     //PARSE URL
