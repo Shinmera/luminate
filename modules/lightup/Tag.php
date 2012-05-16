@@ -25,11 +25,12 @@ class Tag{
     function parseDeftag(){
         global $k,$lightup;
         $deftag = &$this->deftag;
-        $block = substr($deftag,strpos($deftag,'{')+1);
-        $block = substr($block,0,strlen($block)-1);
         $args  = substr($deftag,strpos($deftag,'(')+1);
         $args  = substr($args,0,strpos($args,')'));
         $args  = explode(',',$args);
+        $temp = strpos($deftag,')');if($temp===FALSE)$temp=0;
+        $block = substr($deftag,strpos($deftag,'{',$temp)+1);
+        $block = substr($block,0,strlen($block)-1);
         
         if(count($args)==0||!is_array($args))return;
         if(trim($block)=='')return;
@@ -116,7 +117,6 @@ class Tag{
                 }
                 
                 $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
-                
                 if(array_key_exists($tag,$lightup->Stags)){
                     $parsedTag=$lightup->Stags[$tag]->parse($content,$args);
 
@@ -127,7 +127,7 @@ class Tag{
                 }else{
                     $text = $lightup->replaceRegion($text,$endTagPos,$endTagPos+1,'$r.=\'}\';');
                     $text = $lightup->replaceRegion($text,$tagStart,$argsEnd+2,'$r.=\''.$tag.'('.implode(',',$args).'){\'');
-                    echo('<br />TRES: '.htmlspecialchars($parsedTag));
+                    echo('<br />TRES: '.htmlspecialchars('$r.=\''.$tag.'('.implode(',',$args).'){\''));
                 }
             }else{
                 $pointer++;
@@ -154,22 +154,32 @@ class Tag{
         return $content;
     }
     
+    function makeVarsInArgs(&$args){
+        foreach($args as $key => $val){
+            $args[$key]=$this->makeVarsInString($val);
+        }
+    }
+    
+    function makeVarsInString($str){
+        return preg_replace('`\$v\[\"([-A-Z0-9]*)\"\]`is','\'.\0.\'',$str);
+    }
+    
     function checkArguments($arguments){
         global $k;
-        
         $vals = array();
         $i=0;
         foreach($arguments as $arg){
             $arg = trim($arg);
             if(substr($arg,0,1)==':'){
-                $key = strtolower(substr($arg,1,strpos($arg,' ')));
+                $key = trim(strtolower(substr($arg,1,strpos($arg,' '))));
                 if(array_key_exists($key, $this->args)){
+                    $arg = substr($arg,strlen($key)+2);
                     $type=$this->args[$key]['type'];
                 }else{$type="TEXT";}
             }else{
                 $keys = array_keys($this->args);
                 $argc = $this->args[$keys[$i]];
-                $key = $argc['name'];
+                $key = trim($argc['name']);
                 $type= $argc['type'];
            }
             
@@ -182,19 +192,22 @@ class Tag{
                 case 'DATE':$argumentOK=$k->checkDateVailidity($arg);          break;
                 case 'INTE':$argumentOK=is_numeric($arg);                      break;
                 default:
-                    if(substr($parts[1],0,4)=="INTE")
-                            $argumentOK=(is_numeric($arg)&&(int)$arg<=(int)substr($parts[1],4));
+                    if(substr($type,0,4)=="INTE")
+                            $argumentOK=(is_numeric($arg)&&(int)$arg<=(int)substr($type,4));
                     break;
             }
             
-            if(!$argumentOK)return FALSE;
-            else            $vals[$key]=$arg;
+            if(!$argumentOK){
+                if($this->args[$key]['required']===FALSE)$arg=$this->args[$key]['default'];
+                else                                     return FALSE;
+            }else            $vals[$key]=$arg;
             
             $i++;
         }
         
         foreach($this->args as $name => $arg){
             if(!array_key_exists($name, $vals)&&$arg['required']==TRUE)return FALSE;
+            if(!array_key_exists($name, $vals)&&$vals[$name]=='')$vals[$name]=$arg['default'];
         }
         
         return $vals;
