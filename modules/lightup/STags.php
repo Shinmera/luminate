@@ -33,7 +33,30 @@ class TAGTag extends Tag{
 
 class IFTag extends Tag{
     function parse($content,$args){
-        return 'if('.$args[0].'){'.$content.'}';
+        if(count($args)!=3)return FALSE;
+        switch($args[2]){
+            case '==':
+            case '!=':
+            case '<=':
+            case '>=':
+            case '>':
+            case '<':
+                break;
+            case 'like':
+                $args[0]='strtolower(trim('.$args[0].'))';
+                $args[1]='strtolower(trim('.$args[1].'))';
+                $args[2]='==';
+                break;
+            case '!like':
+                $args[0]='strtolower(trim('.$args[0].'))';
+                $args[1]='strtolower(trim('.$args[1].'))';
+                $args[2]='!=';
+                break;
+            default:
+                return FALSE;
+        }
+        $content='if('.$args[0].' '.$args[2].' '.$args[1].'){ '.$content.' }';
+        return $content;
     }
 }
 
@@ -45,7 +68,9 @@ class LOOPTag extends Tag{
 
 class SETTag extends Tag{
     function parse($content,$args){
-        return '$v["'.$args[0].'"]="'.$content.'";';
+        if(substr($content,0,4)=='get{')
+                return '$v["'.$args[0].'"]='.$content.';';
+        return '$v["'.$args[0].'"]=\''.$content.'\';';
     }
 }
 

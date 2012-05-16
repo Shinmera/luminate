@@ -65,7 +65,9 @@ public static $hooks=array("foo");
         if($this->codes==null){
             $codes = DataModel::getData("lightup_tags","SELECT name,tagcode,description,suite FROM lightup_tags ORDER BY `order`,suite,tag");
             $this->codes = array();
-            if($codes!=null){foreach($codes as $code){
+            if($codes!=null){
+                if(!is_array($codes))$codes=array($codes);
+                foreach($codes as $code){
                 $this->codes[]=array($code->name,$code->description,$code->tagcode,$code->suite);
             }}
         }
@@ -76,7 +78,9 @@ public static $hooks=array("foo");
         if($this->tags==null){
             $tags = DataModel::getData("lightup_tags","SELECT tag,deftag,suite,`limit` FROM lightup_tags");
             $this->tags = array();
-            if($tags!=null){foreach($tags as $tag){
+            if($tags!=null){
+                if(!is_array($tags))$tags=array($tags);
+                foreach($tags as $tag){
                 $tagc = new Tag($tag->tag,$tag->deftag,$tag->suite);
                 $this->tags[$tag->tag]=$tagc;
             }}
@@ -141,15 +145,9 @@ public static $hooks=array("foo");
     }
     
     function findTagStart($text,$curLen,$open){
-        return max(array(
-            strrpos($text," ",-1*($curLen-$open+1)),
-            strrpos($text,".",-1*($curLen-$open+1)),
-            strrpos($text,"'",-1*($curLen-$open+1)),
-            strrpos($text,'"',-1*($curLen-$open+1)),
-            strrpos($text,"{",-1*($curLen-$open+1)),
-            strrpos($text,"\n",-1*($curLen-$open+1)),
-            strrpos($text,">",-1*($curLen-$open+1))
-        ))+1;
+        $s = strrev(substr($text,0,$open));$match=array();
+        preg_match('`\W`is',$s,$match,PREG_OFFSET_CAPTURE);
+        return $open-$match[0][1];
     }
     
     function parseFuncEMShortTags($text){
@@ -210,7 +208,7 @@ public static $hooks=array("foo");
                 if($argsEnd<=$nextOpen&&$argsEnd!==FALSE){
                     $argsStart = strrpos($text,"(",-1*($curLen-$argsEnd))+1;
                     if($argsStart!==FALSE){
-                        $tagStart = $this->findTagStart($text, $curLen, $argsStart); 
+                        $tagStart = $this->findTagStart($text, $curLen, $argsStart-1); 
                         $tag =  substr($text,$tagStart ,$argsStart-$tagStart-1);
                         $args = substr($text,$argsStart,$argsEnd-$argsStart);
                         $args = explode(",",$args);
