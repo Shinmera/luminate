@@ -11,15 +11,21 @@ function runTests(){
         .null{color:gray;}
         .error{color:red;}
         .data{color:green;}
+        textarea{box-sizing: border-box;width:100%;min-height:150px;}
+        #debug{font-family:monospace;margin-top:20px;border:2px solid red;padding:5px;}
+        #output{margin-top:20px;border:2px solid green;padding:5px;}
     </style><form method="post">
-        <textarea name="text" style="width:500px;height:200px;"><?=$_POST['text']?></textarea><br />
+        <textarea name="text"><?=$_POST['text']?></textarea><br />
         <input type="submit" />
-    </form><br /><?
-    
-    global $lightup;
-    $lightup->loadCode();
-    $text = $lightup->parseFuncEM($_POST['text']);
-    echo('<br /><br />'.nl2br($text));
+    </form>
+    <div id="debug"><h2>Debug:</h2><?
+        global $lightup,$l;
+        //$lightup->loadCode();
+        //$text = $lightup->deparse($_POST['text']);
+        $text = $l->triggerPARSE('CORE',$_POST['text']);
+    ?></div><div id="output"><h2>Output:</h2>
+        <?=$text?>
+    </div><?
 }
 
 function testDataModel(){

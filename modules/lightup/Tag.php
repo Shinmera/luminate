@@ -24,7 +24,7 @@ class Tag{
     
     function parseDeftag(){
         global $k,$lightup;
-        $deftag = &$this->deftag;
+        $deftag = str_replace('$','&dollar;',$this->deftag);
         $args  = substr($deftag,strpos($deftag,'(')+1);
         $args  = substr($args,0,strpos($args,')'));
         $args  = explode(',',$args);
@@ -34,6 +34,7 @@ class Tag{
         
         if(count($args)==0||!is_array($args))return;
         if(trim($block)=='')return;
+        echo('<br />DEFT: '.$deftag);
         
         //Create arguments list
         $this->tag=$args[0];
@@ -48,10 +49,12 @@ class Tag{
                     case 3:$arg[3]='';
                     default:
                         $name = $k->sanitizeString($arg[0]);
-                        if(!in_array(strtolower($arg[1]),array('TEXT','STRI','URLS','MAIL','DATE','INTE'))){
+                        
+                        if(!in_array(strtoupper($arg[1]),array('TEXT','STRI','URLS','MAIL','DATE','INTE'))){
                             if(substr($arg[1],0,4)!='INTE')$type='TEXT';
-                            else                           $type=$arg[1];
-                        }if(in_array(strtolower($arg[2]),array('true','1','yes')))$required=TRUE;
+                            else                           $type=strtoupper($arg[1]);
+                        }else $type=strtoupper($arg[1]);
+                        if(in_array(strtolower($arg[2]),array('true','1','yes')))$required=TRUE;
                         else                                                      $required=FALSE;
                         $default = implode(' ',array_slice($arg,3));
                         break;
@@ -86,7 +89,7 @@ class Tag{
                 if($argsEnd<=$nextOpen&&$argsEnd!==FALSE){
                     $argsStart = strrpos($text,"(",-1*($curLen-$argsEnd))+1;
                     if($argsStart!==FALSE){
-                        $tagStart = $lightup->findTagStart($text, $curLen, $argsStart); 
+                        $tagStart = $lightup->findTagStart($text, $curLen, $argsStart-1); 
                         $tag =  substr($text,$tagStart ,$argsStart-$tagStart-1);
                         $args = substr($text,$argsStart,$argsEnd-$argsStart);
                         $args = explode(",",$args);
@@ -115,23 +118,27 @@ class Tag{
                         }else break;
                     }
                 }
-                
                 $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
+                
                 if(array_key_exists($tag,$lightup->Stags)){
                     $parsedTag=$lightup->Stags[$tag]->parse($content,$args);
 
                     $text = $lightup->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
 
-                    $pointer=$tagStart;
+                    if(substr($parsedTag,0,2)=='if'||substr($parsedTag,0,3)=='for') $pointer=strpos($text,'{',$tagStart)+1;
+                    else $pointer=$tagStart;
                     echo('<br />TRES: '.htmlspecialchars($parsedTag));
                 }else{
                     $text = $lightup->replaceRegion($text,$endTagPos,$endTagPos+1,'$r.=\'}\';');
                     $text = $lightup->replaceRegion($text,$tagStart,$argsEnd+2,'$r.=\''.$tag.'('.implode(',',$args).'){\'');
+                    
+                    $pointer = $tagStart+strlen('$r.=\''.$tag.'('.implode(',',$args).'){\'')+1;
                     echo('<br />TRES: '.htmlspecialchars('$r.=\''.$tag.'('.implode(',',$args).'){\''));
                 }
             }else{
                 $pointer++;
             }
+            ob_flush();flush();
         }
         
         $function.=$text.'return $r;';
@@ -182,15 +189,14 @@ class Tag{
                 $key = trim($argc['name']);
                 $type= $argc['type'];
            }
-            
             $argumentOK=false;
             switch($type){
-                case 'TEXT':$argumentOK=true;                                  break;
-                case 'STRI':$argumentOK=($k->sanitizeString($arg,"\-_")==$arg);break;
-                case 'URLS':$argumentOK=$k->checkURLValidity($arg);            break;
-                case 'MAIL':$argumentOK=$k->checkMailVailidity($arg);          break;
-                case 'DATE':$argumentOK=$k->checkDateVailidity($arg);          break;
-                case 'INTE':$argumentOK=is_numeric($arg);                      break;
+                case 'TEXT':$argumentOK=true;$arg=str_replace('{','&lbrace;',str_replace('}','&rbrace;',$arg));break;
+                case 'STRI':$argumentOK=($k->sanitizeString($arg,"\-_#")==$arg);break;
+                case 'URLS':$argumentOK=$k->checkURLValidity($arg);             break;
+                case 'MAIL':$argumentOK=$k->checkMailVailidity($arg);           break;
+                case 'DATE':$argumentOK=$k->checkDateVailidity($arg);           break;
+                case 'INTE':$argumentOK=is_numeric($arg);                       break;
                 default:
                     if(substr($type,0,4)=="INTE")
                             $argumentOK=(is_numeric($arg)&&(int)$arg<=(int)substr($type,4));
