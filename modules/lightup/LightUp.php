@@ -1,7 +1,7 @@
 <?php
 class LightUp  extends Module{
 public static $name="LightUp";
-public static $version=2.8;
+public static $version=3.21;
 public static $short='lightup';
 public static $required=array();
 public static $hooks=array("foo");
@@ -18,6 +18,7 @@ public static $hooks=array("foo");
         $this->Stags['loop']=new LOOPTag('loop','','sys');
         $this->Stags['set']= new SETTag('set','','sys');
         $this->Stags['get']= new GETTag('get','','sys');
+        $this->Stags['print']=new PRINTTag('print','','sys');
         $this->Stags['echo']=new ECHOTag('echo','','sys');
     }
     
@@ -199,7 +200,7 @@ public static $hooks=array("foo");
             
             if($nextOpen<$nextClose&&$nextOpen!==FALSE){
                 $pointer=$nextOpen+1;
-                //FIXME: a{b{}}
+                
                 $tag = "";
                 $args=array();
                 $argsEnd=strpos($text,")",$nextOpen-2);
@@ -225,25 +226,7 @@ public static $hooks=array("foo");
                     
                     if($tagCounter[$tag]<=$tags[$tag]->limit||$tags[$tag]->limit<0){
                         
-                        //Find closing tag
-                        $level=1;
-                        $endTagPos=strpos($text,'}',$nextOpen+1);
-                        $staTagPos=strpos($text,'{',$nextOpen+1);
-                        while($level>0){
-                            if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
-                                $level++;
-                                $endTagPos=strpos($text,'}',$staTagPos+2);
-                                $staTagPos=strpos($text,'{',$staTagPos+2);
-                            }
-                            if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
-                                $level--;
-                                if($level!=0){
-                                    $endTagPos=strpos($text,'}',$endTagPos+1);
-                                    $staTagPos=strpos($text,'{',$endTagPos+1);
-                                }else break;
-                            }
-                        }
-                        //Get content and parse
+                        $endTagPos=$this->findClosingTag($text, $nextOpen);
                         $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
                         $parsedTag=$tags[$tag]->parse($content,$args);
                         
@@ -254,7 +237,7 @@ public static $hooks=array("foo");
                             $text = $this->replaceRegion($text,$endTagPos+7,$endTagPos+8,'&rbrace;');
                         }
                         $pointer=$tagStart;
-                        echo('<br />RES: '.htmlspecialchars($this->replaceRegion($text,$pointer,$pointer+1,'#')));
+                        //echo('<br />RES: '.htmlspecialchars($this->replaceRegion($text,$pointer,$pointer+1,'#'))); //DEBUG
                     }else{
                         $text = $this->replaceRegion($text,$nextOpen,   $nextOpen+1, '&lbrace;');
                         $text = $this->replaceRegion($text,$endTagPos+6,$endTagPos+7,'&rbrace;');
@@ -266,6 +249,27 @@ public static $hooks=array("foo");
         }
         
         return str_replace(array("!{","}!"),"",trim($text));
+    }
+    
+    function findClosingTag($text,$nextOpen){
+        $level=1;
+        $endTagPos=strpos($text,'}',$nextOpen+1);
+        $staTagPos=strpos($text,'{',$nextOpen+1);
+        while($level>0){
+            if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
+                $level++;
+                $endTagPos=strpos($text,'}',$staTagPos+2);
+                $staTagPos=strpos($text,'{',$staTagPos+2);
+            }
+            if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
+                $level--;
+                if($level!=0){
+                    $staTagPos=strpos($text,'{',$endTagPos+1);
+                    $endTagPos=strpos($text,'}',$endTagPos+1);
+                }
+            }
+        }
+        return $endTagPos;
     }
     
     function replaceRegion($string,$start,$end,$insert){

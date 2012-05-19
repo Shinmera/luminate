@@ -19,12 +19,20 @@ class Tag{
         $this->deftag=$deftag;
         $this->description=$tag.' tag';
         
-        $this->parseDeftag($deftag);
+        try{$this->parseDeftag($deftag);}catch(Exception $e){Toolkit::err($e->getMessage().' '.$e->getTraceAsString());}
     }
     
     function parseDeftag(){
-        global $k,$lightup;
+        global $k,$plevel;
+        $plevel=0;
+        
         $deftag = str_replace('$','&dollar;',$this->deftag);
+        
+        if(strpos($deftag,'(')===FALSE||strpos($deftag,')')===FALSE||
+           strpos($deftag,'{')===FALSE||strpos($deftag,'}')===FALSE)return false;
+        if(substr_count($deftag,'{')!=substr_count($deftag,'}'))
+            throw new Exception('Brackets are unbalanced.');
+        
         $args  = substr($deftag,strpos($deftag,'(')+1);
         $args  = substr($args,0,strpos($args,')'));
         $args  = explode(',',$args);
@@ -32,9 +40,8 @@ class Tag{
         $block = substr($deftag,strpos($deftag,'{',$temp)+1);
         $block = substr($block,0,strlen($block)-1);
         
-        if(count($args)==0||!is_array($args))return;
-        if(trim($block)=='')return;
-        echo('<br />DEFT: '.$deftag);
+        if(count($args)==0||!is_array($args))throw new Exception('Tag name missing.');
+        if(trim($block)=='')throw new Exception('Empty body.');
         
         //Create arguments list
         $this->tag=$args[0];
@@ -55,7 +62,7 @@ class Tag{
                             else                           $type=strtoupper($arg[1]);
                         }else $type=strtoupper($arg[1]);
                         if(in_array(strtolower($arg[2]),array('true','1','yes')))$required=TRUE;
-                        else                                                      $required=FALSE;
+                        else                                                     $required=FALSE;
                         $default = implode(' ',array_slice($arg,3));
                         break;
                 }
@@ -65,13 +72,23 @@ class Tag{
         
         $function = '$r="";$v=&$args;
                      $v["content"]=$content;';
-        //Parse the body
-        //We only need to parse the special tags like div, tag, if and loop.
-        //The rest can just be returned and will automatically be parsed by the main loop once its inserted.
-        //Regardless, we do sadly need yet another loop, similar to the main one.
-        $text = &$block;
-        $pointer = 0;
         
+        $block = $this->parseDeftagRecursively($block);
+        
+        $function.=$block.' return $r;';
+        
+        //echo('<br />DEFT: '.$deftag); //DEBUG
+        //echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
+        $this->function = create_function('$content,$args', $function);
+        
+        return TRUE;
+    }
+    
+    function parseDeftagRecursively($text){
+        global $lightup,$plevel;$plevel++;
+        if(substr_count($text,'{')!=substr_count($text,'}'))throw new Exception('BAILOUT!');
+        
+        $pointer = 0;
         while($pointer<strlen($text)){
             $nextOpen = strpos($text,"{",$pointer);
             $nextClose = strpos($text,"}",$pointer);
@@ -95,57 +112,34 @@ class Tag{
                         $args = explode(",",$args);
                     }
                 }else{
-                    $tagStart = $lightup->findTagStart($text, $curLen, $nextOpen);
+                    $tagStart = $lightup->findTagStart($text, $curLen, $nextOpen-1);
                     $tag = substr($text,$tagStart,$nextOpen-$tagStart);
                 }
                 $tag = strtolower($tag);
                 
-                //Find closing tag
-                $level=1;
-                $endTagPos=strpos($text,'}',$nextOpen+1);
-                $staTagPos=strpos($text,'{',$nextOpen+1);
-                while($level>0){
-                    if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
-                        $level++;
-                        $endTagPos=strpos($text,'}',$staTagPos+2);
-                        $staTagPos=strpos($text,'{',$staTagPos+2);
-                    }
-                    if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
-                        $level--;
-                        if($level!=0){
-                            $endTagPos=strpos($text,'}',$endTagPos+1);
-                            $staTagPos=strpos($text,'{',$endTagPos+1);
-                        }else break;
-                    }
-                }
+                $endTagPos = $lightup->findClosingTag($text, $nextOpen);
                 $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
+                $content = $this->parseDeftagRecursively(' '.$content);
                 
                 if(array_key_exists($tag,$lightup->Stags)){
                     $parsedTag=$lightup->Stags[$tag]->parse($content,$args);
-
                     $text = $lightup->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
 
-                    if(substr($parsedTag,0,2)=='if'||substr($parsedTag,0,3)=='for') $pointer=strpos($text,'{',$tagStart)+1;
-                    else $pointer=$tagStart;
-                    echo('<br />TRES: '.htmlspecialchars($parsedTag));
+                    $pointer = $tagStart+strlen($parsedTag);
+                    //echo('<br />'.str_repeat('&nbsp;',$plevel*2).'RESP: '.htmlspecialchars($parsedTag)); //DEBUG
                 }else{
-                    $text = $lightup->replaceRegion($text,$endTagPos,$endTagPos+1,'$r.=\'}\';');
-                    $text = $lightup->replaceRegion($text,$tagStart,$argsEnd+2,'$r.=\''.$tag.'('.implode(',',$args).'){\'');
+                    $parsedTag = $lightup->Stags['echo']->parse(' '.$tag.'('.implode(',',$args).'){','').$content.' $r.=\'}\';';
+                    $text = $lightup->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
                     
-                    $pointer = $tagStart+strlen('$r.=\''.$tag.'('.implode(',',$args).'){\'')+1;
-                    echo('<br />TRES: '.htmlspecialchars('$r.=\''.$tag.'('.implode(',',$args).'){\''));
+                    $pointer = $tagStart+strlen($parsedTag);
+                    //echo('<br />'.str_repeat('&nbsp;',$plevel*2).'RESF: '.htmlspecialchars($parsedTag)); //DEBUG
                 }
             }else{
                 $pointer++;
             }
             ob_flush();flush();
-        }
-        
-        $function.=$text.'return $r;';
-        echo('<br />FUNC: '.htmlspecialchars($function).'<br />');
-        $this->function = create_function('$content,$args', $function);
-        
-        return TRUE;
+        }$plevel--;
+        return trim($text);
     }
     
     function parse($content,$args){
