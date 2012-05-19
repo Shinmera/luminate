@@ -43,7 +43,7 @@ It takes the tag name and a rest body of argument placeholders as arguments.
 
 Further language constructs available to build tags are only active inside deftag bodies.
 
-  tag(class,style,extra){tagname} div(class,style,extra){content}
+  tag(class,style,extra){tagname} div(class,style,extra){content} echo{string} print{var}
   set(var){value} get{var} if(val1,val2,op){instructions} loop(from,to,stepsize){instructions}
 
 Recursion is NOT supported. The variable holding the loop counter is called loop.
