@@ -14,7 +14,7 @@ class DIVTag extends Tag{
 
 class TAGTag extends Tag{
     function parse($content,$args){
-        $this->args = array('tag'=>array('name'=>'tag','type'=>'STRI','required'=>true,'default'=>''),
+        $this->args = array('tag' => array('name'=>'tag',  'type'=>'STRI','required'=>true,'default'=>''),
                             'class'=>array('name'=>'class','type'=>'TEXT','required'=>false,'default'=>''),
                             'style'=>array('name'=>'style','type'=>'TEXT','required'=>false,'default'=>''),
                             'extra'=>array('name'=>'extra','type'=>'TEXT','required'=>false,'default'=>''));
@@ -102,8 +102,10 @@ class GETTag extends Tag{
 
 class PRINTTag extends Tag{
     function parse($content,$args){
+        global $k;
         if(trim($content)=='')return FALSE;
-        return '$r.= $v["'.$content.'"];';
+        if($k->sanitizeString($content)!=$content)return '$r.= '.$content;
+        else return '$r.= $v["'.$content.'"];';
     }
 }
 
@@ -112,6 +114,15 @@ class ECHOTag extends Tag{
         if(trim($content)=='')return FALSE;
         $content = $this->makeVarsInString($content);
         return '$r.=\''.$content.'\';';
+    }
+}
+
+class REPLACETag extends Tag{
+    function parse($content,$args){
+        if(trim($content)=='')return FALSE;
+        $this->makeVarsInArgs($args);
+        $content = $this->makeVarsInString($content);
+        return 'str_replace("'.$args[0].'",\''.$args[1].'\',\''.$content.'\');';
     }
 }
 ?>
