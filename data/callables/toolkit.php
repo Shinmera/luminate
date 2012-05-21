@@ -153,10 +153,10 @@ function modCategorySelect($name,$module,$presel=-1,$none=false){
 
 
 static function err($message,$die=false,$return=false){
-    $message="<div style='padding:10px;margin:10px;
-                          color:white;font-weight:bold;font-family: Arial;
-                          background-color: #FF0000;box-shadow: 0px 0px 10px #FF0000;
-                          border-radius: 10px;
+    $message="<div style='padding:2px;margin:2px;
+                          color:#000;font-weight:bold;font-family: Arial;font-size:10pt;
+                          background-color: #DDD;box-shadow: 0px 0px 2px #FF0000;
+                          border-radius: 5px;
                           display:inline-block;vertical-align:text-top;'><div class='error'>".nl2br ($message);
     if($return)$message.="<br /><a href='".$_SERVER['HTTP_REFERER']."'>Return</a>";
     $message.="</div></div>";
