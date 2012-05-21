@@ -23,7 +23,13 @@ public static $hooks=array("foo");
         
         $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
         $text = str_replace(          '#!noparse',                          '',                                 $text);
-        return $text;
+        
+        global $lightup;
+        $args = array("text"=>$text,"source"=>'Lore',"formatted"=>true,"allowRaw"=>false,
+                      "blockedTags"=>array(),"suites"=>array('default','plus',''));
+        $args = $lightup->deparse($args);
+        
+        return $args['text'];
     }
     
     function pageCallback($matches){
@@ -74,7 +80,7 @@ public static $hooks=array("foo");
         global $lightup;
         $template = DataModel::getData('lore_articles','SELECT current FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'t'));
         if($template!=null){
-            $lightup->addTag($matches[1],$template->current);
+            $lightup->parseFuncEM($template->current,array('deftag'));
         }
         return '';
     }
