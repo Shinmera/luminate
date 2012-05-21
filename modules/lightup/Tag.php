@@ -57,7 +57,7 @@ class Tag{
                     default:
                         $name = $k->sanitizeString($arg[0]);
                         
-                        if(!in_array(strtoupper($arg[1]),array('TEXT','STRI','URLS','MAIL','DATE','INTE'))){
+                        if(!in_array(strtoupper($arg[1]),array('TEXT','STRI','URLS','MAIL','DATE','INTE','BOOL'))){
                             if(substr($arg[1],0,4)!='INTE')$type='TEXT';
                             else                           $type=strtoupper($arg[1]);
                         }else $type=strtoupper($arg[1]);
@@ -80,6 +80,7 @@ class Tag{
         //echo('<br />DEFT: '.$deftag); //DEBUG
         //echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
         $this->function = create_function('$content,$args', $function);
+        if($this->function===FALSE)throw new Exception(htmlspecialchars ($function));
         
         return TRUE;
     }
@@ -98,13 +99,13 @@ class Tag{
             if($nextOpen<$nextClose&&$nextOpen!==FALSE){
                 $pointer=$nextOpen+1;
                 
-                $tag = "";
+                $tag = '';
                 $args=array();
-                $argsEnd=strpos($text,")",$nextOpen-2);
+                $argsEnd=strpos($text,')',$nextOpen-2);
                 $tagStart = 0;
                 //Filter out the tag name and arguments, if any.
                 if($argsEnd<=$nextOpen&&$argsEnd!==FALSE){
-                    $argsStart = strrpos($text,"(",-1*($curLen-$argsEnd))+1;
+                    $argsStart = strrpos($text,'(',-1*($curLen-$argsEnd))+1;
                     if($argsStart!==FALSE){
                         $tagStart = $lightup->findTagStart($text, $curLen, $argsStart-1); 
                         $tag =  substr($text,$tagStart ,$argsStart-$tagStart-1);
@@ -186,11 +187,12 @@ class Tag{
             $argumentOK=false;
             switch($type){
                 case 'TEXT':$argumentOK=true;$arg=str_replace('{','&lbrace;',str_replace('}','&rbrace;',$arg));break;
-                case 'STRI':$argumentOK=($k->sanitizeString($arg,"\-_#")==$arg);break;
+                case 'STRI':$argumentOK=($k->sanitizeString($arg,'\-_#${}[]"')==$arg);break;
                 case 'URLS':$argumentOK=$k->checkURLValidity($arg);             break;
                 case 'MAIL':$argumentOK=$k->checkMailVailidity($arg);           break;
                 case 'DATE':$argumentOK=$k->checkDateVailidity($arg);           break;
                 case 'INTE':$argumentOK=is_numeric($arg);                       break;
+                case 'BOOL':$argumentOK=is_bool($arg);break;
                 default:
                     if(substr($type,0,4)=="INTE")
                             $argumentOK=(is_numeric($arg)&&(int)$arg<=(int)substr($type,4));

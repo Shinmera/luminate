@@ -43,8 +43,15 @@ It takes the tag name and a rest body of argument placeholders as arguments.
 
 Further language constructs available to build tags are only active inside deftag bodies.
 
-  tag(class,style,extra){tagname} div(class,style,extra){content} echo{string} print{var}
-  set(var){value} get{var} if(val1,val2,op){instructions} loop(from,to,stepsize){instructions}
+ tag(tag,class,style,extra){content}
+ div(class,style,extra){content} 
+ echo{string} 
+ print{var}                                 (since 3.1)
+ set(var){value} 
+ get{var} 
+ if(val1,val2,op){instructions} 
+ loop(from,to,stepsize){instructions}       (since 3.1)
+ replace(search,replace){content}           (since 3.15)
 
 Recursion is NOT supported. The variable holding the loop counter is called loop.
 Available OPs for IF are: ==, !=, <, >, <=, >=, like, !like. The latter two are for string nocase comparison.
@@ -59,6 +66,7 @@ The following types are available:
  DATE  : Any kind of string that passes the Toolkit DATE validity check.
  INTE  : Numerical value.
  INTEx : A number smaller or equal to x.
+ BOOL  : A boolean (1,0,true,false) (since 1.35)
 
 The HTML end-result is called FuncEM Code.
 This code can contain argument placeholders, denoted by $$.
