@@ -20,9 +20,9 @@ function runTests(){
     </form>
     <div id="debug"><h2>Debug:</h2><?
         global $lightup,$l;
-        //$lightup->loadCode();
-        //$text = $lightup->deparse($_POST['text']);
-        $text = $l->triggerPARSE('CORE',$_POST['text']);
+        $args = array("text"=>$_POST['text'],"source"=>'Test',"formatted"=>true,"allowRaw"=>false,"blockedTags"=>array(),"suites"=>array('*','deftag'));
+        $args = $lightup->deparse($args);
+        $text = $args['text'];
     ?></div><div id="output"><h2>Output:</h2>
         <?=$text?>
     </div><?
