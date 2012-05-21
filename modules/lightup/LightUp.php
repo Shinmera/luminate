@@ -20,6 +20,7 @@ public static $hooks=array("foo");
         $this->Stags['get']= new GETTag('get','','sys');
         $this->Stags['print']=new PRINTTag('print','','sys');
         $this->Stags['echo']=new ECHOTag('echo','','sys');
+        $this->Stags['replace']=new REPLACETag('replace','','sys');
     }
     
     function displayApiPage(){
@@ -78,7 +79,7 @@ public static $hooks=array("foo");
     function loadCode(){
         if($this->tags==null){
             $tags = DataModel::getData("lightup_tags","SELECT tag,deftag,suite,`limit` FROM lightup_tags");
-            $this->tags = array();
+            $this->tags['deftag'] = new Tag('deftag','','deftag');
             if($tags!=null){
                 if(!is_array($tags))$tags=array($tags);
                 foreach($tags as $tag){
@@ -96,16 +97,19 @@ public static $hooks=array("foo");
     function deparse($args){
         $this->loadCode();
         
-        $s = $args['text'];
-        $s = str_ireplace("\n","<br />",$s);
+        $s = &$args['text'];
         $s = $this->fixslashes($s);
         if($args['allowRaw']) $s = preg_replace_callback("`html\{(.+?)\}html`is",array(&$this, 'reparseHTML'), $s);
-        if($args['formatted'])$s = $this->parseFuncEM($s);
+        if($args['formatted']){
+            if(isset($args['suites']))$s = $this->parseFuncEM($s,$args['suites']);
+            else                      $s = $this->parseFuncEM($s);
+        }
         //Following regex parses urls without parsing existing ones.
         //Copied from http://stackoverflow.com/questions/287144/need-a-good-regex-to-convert-urls-to-links-but-leave-existing-links-alone
         $s = preg_replace( '`(?<![\{\}"\'>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is',
                            '<a href="\0" target="_blank">\0'.$c->o['link_symbol'].'</a>', $s );
         $s = preg_replace( '`@([-A-Z0-9._-]*)`is', '<a href="'.Toolkit::url("user","").'\1" target="_blank">@\1</a>',$s);
+        $s = str_ireplace("\n","<br />",$s);
         $args['text']=$s;
         return $args;
     }
@@ -167,7 +171,7 @@ public static $hooks=array("foo");
         else            return $matches[0];
     }
 
-    function parseFuncEM($text){
+    function parseFuncEM($text,$suites=array('*')){
         $text = " ".str_replace('$','&dollar;',trim($text)); //To prevent the opening tag from failing to be recognized
                                                              //and users from tampering with the arguments.
         if(strlen($text)==1)return $text;
@@ -224,11 +228,16 @@ public static $hooks=array("foo");
                     if(!array_key_exists($tag,$tagCounter))$tagCounter[$tag]=1;
                     else                                   $tagCounter[$tag]++;
                     
-                    if($tagCounter[$tag]<=$tags[$tag]->limit||$tags[$tag]->limit<0){
+                    if(($tagCounter[$tag]<=$tags[$tag]->limit||$tags[$tag]->limit<0)&&
+                       (in_array($tags[$tag]->suite,$suites)||in_array('*',$suites))){
                         
                         $endTagPos=$this->findClosingTag($text, $nextOpen);
                         $content = substr($text,$nextOpen+1,$endTagPos-$nextOpen-1);
-                        $parsedTag=$tags[$tag]->parse($content,$args);
+                        
+                        if($tag=='deftag'&&in_array('deftag',$suites)){
+                            $this->addTag(strtolower($args[0]), $tag.'('.implode(',',$args).'){'.$content.'}', 'defined');
+                            $parsedTag='';
+                        }else $parsedTag=$tags[$tag]->parse($content,$args);
                         
                         if($parsedTag!==FALSE){
                             $text = $this->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
