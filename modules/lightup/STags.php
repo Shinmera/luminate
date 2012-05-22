@@ -104,7 +104,7 @@ class PRINTTag extends Tag{
     function parse($content,$args){
         global $k;
         if(trim($content)=='')return FALSE;
-        if($k->sanitizeString($content)!=$content)return '$r.= '.$content;
+        if($k->sanitizeString($content)!=$content)return '$r.= '.str_replace(';','&#59;',$content).';';
         else return '$r.= $v["'.$content.'"];';
     }
 }
@@ -113,7 +113,7 @@ class ECHOTag extends Tag{
     function parse($content,$args){
         if(trim($content)=='')return FALSE;
         $content = $this->makeVarsInString($content);
-        return '$r.=\''.$content.'\';';
+        return '$r.=\''.str_replace(';','&#59;',$content).'\';';
     }
 }
 
@@ -122,7 +122,7 @@ class REPLACETag extends Tag{
         if(trim($content)=='')return FALSE;
         $this->makeVarsInArgs($args);
         $content = $this->makeVarsInString($content);
-        return 'str_replace("'.$args[0].'",\''.$args[1].'\',\''.$content.'\');';
+        return 'str_replace("'.$args[0].'",\''.$args[1].'\',\''.$content.'\')';
     }
 }
 ?>

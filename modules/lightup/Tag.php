@@ -77,8 +77,8 @@ class Tag{
         
         $function.=$block.' return $r;';
         
-        //echo('<br />DEFT: '.$deftag); //DEBUG
-        //echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
+        echo('<br />DEFT: '.$deftag); //DEBUG
+        echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
         $this->function = create_function('$content,$args', $function);
         if($this->function===FALSE)throw new Exception(htmlspecialchars ($function));
         
@@ -88,7 +88,9 @@ class Tag{
     function parseDeftagRecursively($text){
         global $lightup,$plevel;$plevel++;
         if(substr_count($text,'{')!=substr_count($text,'}'))throw new Exception('BAILOUT!');
+        if(substr_count($text,'{')==0)return trim($text);
         
+        $final = '';
         $pointer = 0;
         while($pointer<strlen($text)){
             $nextOpen = strpos($text,"{",$pointer);
@@ -124,13 +126,15 @@ class Tag{
                 
                 if(array_key_exists($tag,$lightup->Stags)){
                     $parsedTag=$lightup->Stags[$tag]->parse($content,$args);
+                    
+                    if($tag!='get'){$final.=$parsedTag;} //FIXME: Cheap fix to simply check for no-get... find a proper fix sometime.
                     $text = $lightup->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
 
                     $pointer = $tagStart+strlen($parsedTag);
                     //echo('<br />'.str_repeat('&nbsp;',$plevel*2).'RESP: '.htmlspecialchars($parsedTag)); //DEBUG
                 }else{
                     $parsedTag = $lightup->Stags['echo']->parse(' '.$tag.'('.implode(',',$args).'){','').$content.' $r.=\'}\';';
-                    $text = $lightup->replaceRegion($text,$tagStart,$endTagPos+1,$parsedTag);
+                    $final.=$parsedTag;
                     
                     $pointer = $tagStart+strlen($parsedTag);
                     //echo('<br />'.str_repeat('&nbsp;',$plevel*2).'RESF: '.htmlspecialchars($parsedTag)); //DEBUG
@@ -140,7 +144,8 @@ class Tag{
             }
             ob_flush();flush();
         }$plevel--;
-        return trim($text);
+        if($final!='')return trim($final);
+        else          return trim($text);
     }
     
     function parse($content,$args){
