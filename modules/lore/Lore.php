@@ -65,8 +65,9 @@ function displayPage(){
             call_user_func(array(&$file,'display'.ucfirst($action)));
             break;
         case 'template':
+            include('Lore_Article.php');
             include('Lore_Template.php');
-            $template = new Template($page);
+            $template = new Template($page,$type,$revision);
             call_user_func(array(&$template,'display'.ucfirst($action)));
             break;
         default:
