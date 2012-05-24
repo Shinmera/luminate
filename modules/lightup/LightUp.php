@@ -37,6 +37,20 @@ public static $hooks=array("foo");
         }
         die("Order saved!");
     }
+    function displayApiCustomParse(){
+        global $l;
+        if(trim($_POST['deftag'])=="")die('No deftag received!');
+        if(trim($_POST['text'])=="")die('No text to parse received!');
+        $this->tags['deftag'] = new Tag('deftag','','deftag');
+        
+        try{$ret = $this->parseFuncEM($_POST['deftag'],array('deftag'));}
+        catch(Exception $e){$ret = nl2br($e->getMessage());}
+        if(trim($ret)!='')die('Failed to compile: <br />'.$ret);
+        else{
+            $this->loadCode(true);
+            die($this->parseFuncEM($_POST['text'],array('*')));
+        }
+    }
     
     function displayPanel(){
         global $k,$a;
@@ -76,15 +90,15 @@ public static $hooks=array("foo");
         return array_merge($taglist,$this->codes);
     }
     
-    function loadCode(){
-        if($this->tags==null){
+    function loadCode($override=false){
+        if($this->tags==null||$override){
             $tags = DataModel::getData("lightup_tags","SELECT tag,deftag,suite,`limit` FROM lightup_tags");
             $this->tags['deftag'] = new Tag('deftag','','deftag');
             if($tags!=null){
                 if(!is_array($tags))$tags=array($tags);
                 foreach($tags as $tag){
                 $tagc = new Tag($tag->tag,$tag->deftag,$tag->suite);
-                $this->tags[$tag->tag]=$tagc;
+                if($this->tags[$tag->tag]=='')$this->tags[$tag->tag]=$tagc;
             }}
         }
     }
@@ -223,7 +237,6 @@ public static $hooks=array("foo");
                     $tag = substr($text,$tagStart,$nextOpen-$tagStart);
                 }
                 $tag = strtolower($tag);
-                
                 if(array_key_exists($tag,$tags)){
                     if(!array_key_exists($tag,$tagCounter))$tagCounter[$tag]=1;
                     else                                   $tagCounter[$tag]++;
@@ -267,8 +280,8 @@ public static $hooks=array("foo");
         while($level>0){
             if($staTagPos!==FALSE&&$staTagPos<$endTagPos){
                 $level++;
-                $endTagPos=strpos($text,'}',$staTagPos+2);
-                $staTagPos=strpos($text,'{',$staTagPos+2);
+                $endTagPos=strpos($text,'}',$staTagPos+1);
+                $staTagPos=strpos($text,'{',$staTagPos+1);
             }
             if($endTagPos!==FALSE&&($endTagPos<$staTagPos||$staTagPos===FALSE)){
                 $level--;

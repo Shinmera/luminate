@@ -122,10 +122,10 @@
                 $tag->$name = $value;
             }
             if($params[2]!=""){$tag->saveData();$err="Tag updated!";}
-            else              {$tag->insertData();$err="Tag added!";$tag->femcode=htmlspecialchars($tag->femcode);}
+            else              {$tag->insertData();$err="Tag added!";}
         }
         
-        ?><form action="#" method="post" class="box">
+        ?><form action="#" method="post" class="box" style="width:100%;box-sizing: border-box;">
             <label>Name: </label><input type="text" name="name" value="<?=$tag->name?>" placeholder="Tag" autocomplete="off" maxlength="32" required />
             <label>Suite:</label><?=$k->printSelectObj("suite",$suites,"name","name",$tag->suite);?><br />
             <label>Tag:  </label><input type="text" name="tag" value="<?=$tag->tag?>" placeholder="tag" autocomplete="off" maxlength="16" required />
@@ -133,10 +133,10 @@
             Description:<br />
             <input type="text" name="description" value="<?=$tag->description?>" style="width:100%" placeholder="Markup Tag" autocomplete="off" maxlength="64" /><br />
             <br />
-            Femcode:<br />
-            <input type="text" id="femcode" name="femcode" value="<?=$tag->femcode?>" style="width:100%" placeholder='<tag attr="$TYPE|default$">@</tag>' autocomplete="off" maxlength="128" required /><br />
             Tagcode:<br />
             <input type="text" id="tagcode" name="tagcode" value="<?=$tag->tagcode?>" style="width:100%" placeholder='tag($Enter TYPE|type$){@}' autocomplete="off" maxlength="128" required /><br />
+            Deftag:<br />
+            <textarea id="deftag" name="deftag" style="width:100%;box-sizing: border-box;" placeholder="deftag(<?=$tag->tag?>){ }" ><?=$tag->deftag?></textarea><br />
             Preview:<br />
             <style>.previewbox{border: 1px solid #CCC;background-color:#EEE;}</style>
             <div class="previewbox" id="userpreview">i{lol}</div>
@@ -144,10 +144,14 @@
             <input type="submit" value="Submit" /><span style="color:red;font-weight:bold;"><?=$err?></span>
         </form>
         <script type="text/javascript">
+            var prevtag;
+            var prevcode;
+            
             function updatePreviewBoxes(){
-                var tagcode = $("#tagcode").attr("value")+" ";
-                var femcode = $("#femcode").attr("value")+" ";
-                tagcode = tagcode.replace("@","This is something random.");
+                if(prevtag==$("#deftag").val()&&prevcode==$("#tagcode").attr("value")+" ")return;
+                prevtag = $("#deftag").val();
+                prevcode = $("#tagcode").attr("value")+" ";
+                tagcode = prevcode.replace("@","This is something random.");
                 while(stringContains(tagcode,"$")){
                     var strings0 = tagcode.substring(0,tagcode.indexOf("$"));tagcode = tagcode.substring(tagcode.indexOf("$")+1,tagcode.length);
                     var strings1 = tagcode.substring(0,tagcode.indexOf("$"));
@@ -157,6 +161,7 @@
                         type = strings1.substring(strings1.indexOf("|")+1);
                     }
                     switch(type){
+                        case 'string':  tagcode=strings0+"STRING01"+strings2;break;
                         case "text":    tagcode=strings0+"Random text"+strings2;break;
                         case "number":  tagcode=strings0+"42"+strings2;break;
                         case "email":   tagcode=strings0+"text@code.ty"+strings2;break;
@@ -164,35 +169,23 @@
                         case "url":     tagcode=strings0+"http://<?=HOST?>"+strings2;break;
                     }
                 }
-                femcode = femcode.replace("@","This is something random.");
-                while(stringContains(femcode,"$")){
-                    var strings0 = femcode.substring(0,femcode.indexOf("$"));femcode = femcode.substring(femcode.indexOf("$")+1,femcode.length);
-                    var strings1 = femcode.substring(0,femcode.indexOf("$"));
-                    var strings2 = femcode.substring(femcode.indexOf("$")+1,femcode.length);
-                    var type = "TEXT";
-                    if(stringContains(strings1,"|")){
-                        type = strings1.substring(0,strings1.indexOf("|"));
-                    }
-                    switch(type){
-                        case "TEXT":femcode=strings0+"Random text"+strings2;break;
-                        case "STRI":femcode=strings0+"String"+strings2;break;
-                        case "INTE":femcode=strings0+"42"+strings2;break;
-                        case "MAIL":femcode=strings0+"text@code.ty"+strings2;break;
-                        case "DATE":femcode=strings0+"1.1.1970"+strings2;break;
-                        case "URLS":femcode=strings0+"http://<?=HOST?>"+strings2;break;
-                        default    :femcode=strings0+"20"+strings2;break;
-                    }
-                }
+                
+                $("#parsepreview").html('Plase wait...');
+                $.post('<?=Toolkit::url('admin','api/lightupCUSTOM')?>',{'deftag':prevtag,'text':tagcode},function(text){
+                    $("#parsepreview").html(text);
+                });
                 
                 $("#userpreview").html(tagcode);
-                $("#parsepreview").html(femcode);
             }
             
             $().ready(function(){
                 updatePreviewBoxes();
+                $("#femcode").keyup(function(){updatePreviewBoxes();});
                 $("#femcode").keypress(function(){updatePreviewBoxes();});
-                $("#tagcode").keypress(function(){updatePreviewBoxes();});
+                $("#deftag").change(function(){updatePreviewBoxes();});
+                $("#deftag").keyup(function(){updatePreviewBoxes();});
             });
         </script><?
     }
 ?>
+        
