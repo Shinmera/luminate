@@ -191,7 +191,7 @@ class Article{
                     $editor->addDropDown('rollback',$revisions,null, 'Rollback', 'CURRENT');
                 }
                 if($a->check('lore.admin.type'))
-                    $editor->addDropDown('type',array('a','c','p','u'),array('Article','Category','Portal','User'),'Type',$article->type);
+                    $editor->addDropDown('type',array('a','c','p','u','t'),array('Article','Category','Portal','User','Template'),'Type',$article->type);
                 if($a->check('lore.admin.move'))
                     $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
             }
@@ -265,7 +265,7 @@ class Article{
             $suc.=' Status changed.';
         }
         
-        if($a->check('lore.admin.type')&&$_POST['type']!=$article->type&&in_array($_POST['type'],array('a','c','p','u'))){
+        if($a->check('lore.admin.type')&&$_POST['type']!=$article->type&&in_array($_POST['type'],array('a','c','p','u','t'))){
             if(($article->type=='c'||$article->type=='p')&&($_POST['type']!='c'&&$_POST['type']!='p'))
                 $c->query('DELETE FROM lore_categories WHERE title LIKE ?',array($article->title));
                 

@@ -16,17 +16,17 @@ public static $hooks=array("foo");
         $text = preg_replace_callback('`\>([-A-Z0-9_-]*)\<`is',             array(&$this,'pageCallback'),       $text);
         $text = preg_replace_callback('`\>([-A-Z0-9_-]*)\|([-A-Z0-9_-]*)\<`is',array(&$this,'pageCallback'),    $text);
         
-        $text = preg_replace_callback('`\{category:([-A-Z0-9_-]*)\}`is',    array(&$this,'categoryCallback'),   $text);
-        $text = preg_replace_callback('`\{portal:([-A-Z0-9_-]*)\}`is',      array(&$this,'portalCallback'),     $text);
-        $text = preg_replace_callback('`\{file:([-A-Z0-9_-]*)\}`is',        array(&$this,'fileCallback'),       $text);
-        $text = preg_replace_callback('`\{include:([-A-Z0-9_-]*)\}`is',     array(&$this,'includeCallback'),    $text);
+        $text = preg_replace_callback('`\#\!category:([-A-Z0-9_-]*)`is',    array(&$this,'categoryCallback'),   $text);
+        $text = preg_replace_callback('`\#\!portal:([-A-Z0-9_-]*)`is',      array(&$this,'portalCallback'),     $text);
+        $text = preg_replace_callback('`\#\!file:([-A-Z0-9_-]*)`is',        array(&$this,'fileCallback'),       $text);
+        $text = preg_replace_callback('`\#\!include:([-A-Z0-9_-]*)`is',     array(&$this,'includeCallback'),    $text);
         
         $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
         $text = str_replace(          '#!noparse',                          '',                                 $text);
         
         global $lightup;
-        $args = array("text"=>$text,"source"=>'Lore',"formatted"=>true,"allowRaw"=>false,
-                      "blockedTags"=>array(),"suites"=>array('default','plus',''));
+        $args = array("text"=>$text,"source"=>'Lore',"formatted"=>true,
+            "allowRaw"=>false,"blockedTags"=>array(),"suites"=>array('*'));
         $args = $lightup->deparse($args);
         
         return $args['text'];
@@ -77,10 +77,10 @@ public static $hooks=array("foo");
     }
     
     function includeCallback($matches){
-        global $lightup;
+        global $lightup,$c;
         $template = DataModel::getData('lore_articles','SELECT current FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'t'));
         if($template!=null){
-            $lightup->parseFuncEM($template->current,array('deftag'));
+            $lightup->parseFuncEM($c->desecureHTML($template->current),array('deftag'));
         }
         return '';
     }

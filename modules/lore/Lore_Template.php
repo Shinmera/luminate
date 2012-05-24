@@ -33,20 +33,40 @@ class Template extends Article{
                 $_POST['text']=$article->current;
             }
 
-            ?><form action="#" method="post">
-                <textarea id="deftag" name="text" style="width:100%;min-height:300px;box-sizing: border-box;" placeholder="deftag(<?=$article->title?>){ }" ><?=$_POST['text']?></textarea><br />
-                Preview:<br />
-                <style>.previewbox{border: 1px solid #CCC;background-color:#EEE;}</style>
-                <div class="previewbox" id="userpreview"></div>
-                <div class="previewbox" id="parsepreview" style="min-height:100px;"></div>
-                <input type="submit" value="Submit" /><span style="color:red;font-weight:bold;"><?=$err?></span>
-            </form>
+            include(MODULEPATH.'gui/Editor.php');
+            $editor = new SimpleEditor("#","Save","wikieditor",array(""));
+            if($a->check('lore.admin')){
+                if($a->check('lore.admin.status'))
+                    $editor->addDropDown('status', array('o','p','l'), array('Open','Protected','Locked'), 'Status',$article->status);
+                if($a->check('lore.admin.rollback')){
+                    $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? ORDER BY revision DESC',array($article->title));
+                    $revisions = array('CURRENT');
+                    if($a->check('lore.admin.delete'))$revisions[]='DELETE';
+                    if($data!=null){
+                        if(!is_array($data))$data=array($data);
+                        foreach($data as $dat){$revisions[]=$dat->revision;}
+                    }
+                    $editor->addDropDown('rollback',$revisions,null, 'Rollback', 'CURRENT');
+                }
+                if($a->check('lore.admin.type'))
+                    $editor->addDropDown('type',array('a','c','p','u','t'),array('Article','Category','Portal','User','Template'),'Type',$article->type);
+                if($a->check('lore.admin.move'))
+                    $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
+            }
+            $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
+            $editor->show();
+            
+            ?>
+            Preview:<br />
+            <style>.previewbox{border: 1px solid #CCC;background-color:#EEE;}</style>
+            <div class="previewbox" id="userpreview"></div>
+            <div class="previewbox" id="parsepreview" style="min-height:100px;"></div>
             <script type="text/javascript">
                 var deftag;
                 function updatePreviewBoxes(){
-                    if(deftag==$("#deftag").val())return;
-                    deftag = $("#deftag").val();
-                    var prevtag = $("#deftag").val().split('deftag');
+                    if(deftag==$("#wikieditortxt").val())return;
+                    deftag = $("#wikieditortxt").val();
+                    var prevtag = $("#wikieditortxt").val().split('deftag');
                     var alltags = '';
                     
                     for(var n=1;n<prevtag.length;n++){
@@ -88,8 +108,8 @@ class Template extends Article{
 
                 $().ready(function(){
                     updatePreviewBoxes();
-                    $("#deftag").change(function(){updatePreviewBoxes();});
-                    $("#deftag").keyup(function(){updatePreviewBoxes();});
+                    $("#wikieditortxt").change(function(){updatePreviewBoxes();});
+                    $("#wikieditortxt").keyup(function(){updatePreviewBoxes();});
                 });
             </script><?
         }else{
@@ -97,136 +117,6 @@ class Template extends Article{
         }
         
         $t->closePage();
-    }
-    
-    function updateArticle($article){
-        global $a,$c,$l,$k,$existing;
-        $_POST['text']=trim($_POST['text']);
-        $_POST['move']=str_replace('_',' ',$k->sanitizeString($_POST['move'],'\s\-_'));
-        
-        $action = DataModel::getHull('lore_actions');
-        $action->title=$article->title;
-        $action->reason=$_POST['reason'];
-        $action->editor=$a->user->username;
-        $action->time=time();
-        
-        if($a->check('lore.admin.move')&&$_POST['move']!=$article->title){
-            if(DataModel::getData('lore_revisions','SELECT title FROM lore_revisions WHERE title LIKE ?',array($_POST['move']))==null){
-                $c->query('UPDATE lore_revisions SET title=? WHERE title LIKE ?',array($_POST['move'],$article->title));
-                if($article->type=='c'||$article->type=='p')
-                    $c->query('UPDATE lore_categories SET title=? WHERE title LIKE ?',array($_POST['move'],$article->title));
-                
-                $action->action='move to';
-                $action->args=$_POST['move'];
-                $action->insertData();
-                
-                $action->title=$_POST['move'];
-                $action->action='move from';
-                $action->args=$article->title;
-                $action->insertData();
-                
-                rename(CACHEPATH.'articles/'.$article->title.'/',CACHEPATH.'articles/'.$_POST['move'].'/');
-                $article->current='#!history';
-                $article->saveData();
-                
-                $article->current=$_POST['text'];
-                $article->title=$_POST['move'];
-                $article->insertData();
-                $suc.=' Page moved.';
-            }else throw new Exception('Cannot move to '.$_POST['move'].', destination already exists!');
-        }
-        
-        if($a->check('lore.admin.status')&&$_POST['status']!=$article->status&&in_array($_POST['status'],array('o','p','l'))){
-            $article->status=$_POST['status'];
-            $article->saveData();
-            
-            $action->action='status';
-            $action->args=$_POST['status'];
-            $action->insertData();
-            $suc.=' Status changed.';
-        }
-        
-        if($a->check('lore.admin.type')&&$_POST['type']!=$article->type&&in_array($_POST['type'],array('a','c','p','u'))){
-            if(($article->type=='c'||$article->type=='p')&&($_POST['type']!='c'&&$_POST['type']!='p'))
-                $c->query('DELETE FROM lore_categories WHERE title LIKE ?',array($article->title));
-                
-            $article->type=$_POST['type'];
-            $article->saveData();
-            
-            
-            $action->action='type';
-            $action->args=$_POST['type'];
-            $action->insertData();
-            $suc.=' Type changed.';
-        }
-        
-        if($a->check('lore.admin.delete')&&$_POST['rollback']=='DELETE'){
-            $c->query('DELETE FROM lore_revisions WHERE title=?',array($article->title));
-            if($article->type=='c'||$article->type=='p')
-                $c->query('DELETE FROM lore_categories WHERE title LIKE ?',array($article->title));
-            
-            unlink(CACHEPATH.'articles/'.$article->title);
-            $article->current='#!history';
-            $article->saveData();
-            
-            $action->action='delete';
-            $action->args='';
-            $action->insertData();
-            
-            $l->triggerPOST('Lore','Lore',$article->title,'Article '.$article->title.' deleted.','',$k->url('wiki',$article->title.'/history'),'Article '.$article->title.' deleted.');
-            return('Page deleted.');
-        }
-        
-        if($a->check('lore.admin.rollback')&&$_POST['rollback']!='DELETE'&&$_POST['rollback']!='CURRENT'){
-            $revision = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND revision=?',
-                                                             array($article->title,$_POST['rollback']));
-            if($revision==null)throw new Exception('Cannot rollback to '.$_POST['rollback'].': Revision does not exist.');
-            
-            $c->query('DELETE FROM lore_revisions WHERE title LIKE ? AND revision > ?',
-                                                             array($article->title,$_POST['rollback']));
-            $c->query('UPDATE lore_actions SET args*=-1 WHERE args > 0 AND title LIKE ? AND revision > ?',
-                                                             array($article->title,$_POST['rollback']));
-            
-            $article->current=$revision->text;
-            $article->revision=$_POST['rollback'];
-            $article->saveData();
-            
-            $action->action='rollback';
-            $action->args=$_POST['rollback'];
-            $action->insertData();
-            
-            $l->triggerPOST('Lore','Lore',$article->title,'Article '.$article->title.' rolled back.','',$k->url('wiki',$article->title.'/history'),'Article '.$article->title.' rolled back.');
-            return('Rollback to '.$_POST['rollback'].' performed.');
-        }
-
-        if($_POST['text']==$article->current){
-            if(!isset($suc))throw new Exception('No changes noticed.');
-            else            return $suc;
-        }
-        else if(strlen($_POST['text'])<$c->o['lore_minlength'])throw new Exception('Minimum length requirement not met.');
-        else{
-            $article->revision++;
-            $article->current=$_POST['text'];
-            if($existing=='')$article->saveData();
-            else             $article->insertData();
-            
-            $revision = DataModel::getHull('lore_revisions');
-            $revision->title=$article->title;
-            $revision->revision=$article->revision;
-            $revision->text=$_POST['text'];
-            $revision->time=time();
-            $revision->editor=$a->user->username;
-            $revision->insertData();
-
-            $action->action='edit';
-            $action->args=$article->revision;
-            $action->insertData();
-            
-            $l->triggerPOST('Lore','Lore',$article->title,'Article '.$article->title.' edited.','',$k->url('wiki',$article->title.'/history'),'Article '.$article->title.' edited.');
-            if(strpos($_POST['text'],'#!nocache')===FALSE)
-                $this->cacheRevision($revision);
-        }
-        return($suc.' Page updated.');
     }
     
     function parseText($text){
