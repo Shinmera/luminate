@@ -173,6 +173,8 @@ class Tag{
     
     function checkArguments($arguments){
         global $k;
+        if(count($this->args)==0)return array();
+        
         $vals = array();
         $i=0;
         foreach($arguments as $arg){
