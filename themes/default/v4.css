@@ -521,6 +521,9 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     color: #FFF;
     padding-left:5px;
 }
+.quote h5 a{
+    color:#FFDD00;
+}
 
 .notification{
     padding:2px;
