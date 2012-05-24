@@ -8,7 +8,7 @@ class DIVTag extends Tag{
         $this->makeVarsInArgs($args);
         
         $content = '$r.=\'<div class="'.$args['class'].'" style="'.$args['style'].'">\';'.$content.'$r.=\'</div>\';';
-        return $content;
+        return $content."\n";
     }
 }
 
@@ -60,6 +60,8 @@ class IFTag extends Tag{
             default:
                 return FALSE;
         }
+        $args[0] = str_replace(';','&#59;',$args[0]);
+        $args[1] = str_replace(';','&#59;',$args[1]);
         $content='if('.$args[0].' '.$args[2].' '.$args[1].'){ '.$content.' }';
         return $content;
     }
@@ -87,15 +89,15 @@ class LOOPTag extends Tag{
 
 class SETTag extends Tag{
     function parse($content,$args){
-        if(substr($content,0,4)=='get{')
-                return '$v["'.$args[0].'"]='.$content.';';
-        return '$v["'.$args[0].'"]=\''.$content.'\';';
+        return '$v["'.$args[0].'"]='.str_replace(';','&#59;',$content).';';
     }
 }
 
 class GETTag extends Tag{
     function parse($content,$args){
+        global $k;
         if(trim($content)=='')return FALSE;
+        if($k->sanitizeString($content)!=$content)return '$v['.str_replace(';','&#59;',$content).']';
         return '$v["'.$content.'"]';
     }
 }

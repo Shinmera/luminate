@@ -19,7 +19,7 @@ class Tag{
         $this->deftag=$deftag;
         $this->description=$tag.' tag';
         
-        try{$this->parseDeftag($deftag);}catch(Exception $e){Toolkit::err($e->getMessage().' '.$e->getTraceAsString());}
+        $this->parseDeftag($deftag);
     }
     
     function parseDeftag(){
@@ -71,15 +71,15 @@ class Tag{
         }
         
         $function = '$r="";$v=&$args;
-                     $v["content"]=$content;';
+                     $v["content"]=$content;'."\n";
         
         $block = $this->parseDeftagRecursively($block);
         
-        $function.=$block.' return $r;';
+        $function.=$block."\n".' return $r;';
         
-        echo('<br />DEFT: '.$deftag); //DEBUG
-        echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
-        $this->function = create_function('$content,$args', $function);
+        //echo('<br />DEFT: '.$deftag); //DEBUG
+        //echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
+        $this->function = @create_function('$content,$args', $function);
         if($this->function===FALSE)throw new Exception(htmlspecialchars ($function));
         
         return TRUE;
