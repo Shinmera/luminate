@@ -237,7 +237,9 @@ public static $hooks=array("foo");
                     $tag = substr($text,$tagStart,$nextOpen-$tagStart);
                 }
                 $tag = strtolower($tag);
+                
                 if(array_key_exists($tag,$tags)){
+                    
                     if(!array_key_exists($tag,$tagCounter))$tagCounter[$tag]=1;
                     else                                   $tagCounter[$tag]++;
                     
