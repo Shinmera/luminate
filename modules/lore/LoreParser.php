@@ -16,7 +16,6 @@ public static $hooks=array("foo");
         $args = $lightup->deparse($args);
         $text = $args['text'];
         
-        //$text = preg_replace(         '`\[([\w\s]*)\]`is',                         '<div class="box">\1</div>',        $text);
         $text = preg_replace_callback('`\[([-A-Z0-9_-]*)\]`is',             array(&$this,'pageCallback'),       $text);
         $text = preg_replace_callback('`\[([-A-Z0-9_-]*)\|([-A-Z0-9_-]*)\]`is',array(&$this,'pageCallback'),    $text);
         
