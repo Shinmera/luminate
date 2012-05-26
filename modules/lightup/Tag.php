@@ -70,8 +70,8 @@ class Tag{
             }
         }
         
-        $function = '$r="";$v=&$args;
-                     $v["content"]=$content;'."\n";
+        $function = 'global $_g;$r="";$v=&$args;
+                     $v["content"][0]=$content;'."\n";
         
         $block = $this->parseDeftagRecursively($block);
         
@@ -168,7 +168,8 @@ class Tag{
     }
     
     function makeVarsInString($str){
-        return preg_replace('`\$v\[\"([-A-Z0-9]*)\"\]`is','\'.\0.\'',$str);
+        $str = preg_replace('`\$_g\[\"(\*[-A-Z0-9]*)\"\]\[[0-9]*\]`is','\'.\0.\'',$str);
+        return preg_replace('`\$v\[\"([-A-Z0-9]*)\"\]\[[0-9]*\]`is','\'.\0.\'',$str);
     }
     
     function checkArguments($arguments){
