@@ -96,7 +96,7 @@ class Template extends Article{
                             }
                         }
                         if(args.length>1)tagcode=tagcode.substr(0,tagcode.length-1);
-                        alltags+=tagcode+'){Body Part}\n';
+                        alltags+=tagcode+'){Body Part '+n+'}\n';
                     }
                     
                     $("#userpreview").html(alltags);
