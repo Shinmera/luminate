@@ -82,7 +82,7 @@ class LOOPTag extends Tag{
                 $args[3]=$k->sanitizeString($args[3]);if($args[3]=='') return FALSE;
                 break;
         }
-        $content = 'for($v["'.$args[3].'"]= '.$args[0].' ;$v["'.$args[3].'"]< '.$args[1].' ;$v["'.$args[3].'"]+= '.$args[2].' ){ '.$content.' }';
+        $content = 'for($v["'.$args[3].'"][0] = '.$args[0].' ;$v["'.$args[3].'"][0]< '.$args[1].' ;$v["'.$args[3].'"][0]+= '.$args[2].' ){ '.$content.' }';
         return $content;
     }
 }
