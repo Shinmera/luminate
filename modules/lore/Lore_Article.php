@@ -11,7 +11,7 @@ class Article{
     }
     
     function displayView(){
-        global $k,$t,$l,$c,$page;
+        global $k,$t,$l,$lore,$c,$page;
         $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,time,current FROM lore_articles WHERE title LIKE ?',array($this->page));
         
         if($article==null){
@@ -68,7 +68,8 @@ class Article{
                     case 'l':echo('<img width="16" height="16" src="'.$t->img.'locked.png" alt="Locked" title="This page is locked and can only be edited by moderators." />');break;
                 } ?>
             </div>
-            Current Revision: <em><a href='<?=$k->url('wiki',$article->title.'/history?to='.$article->revision)?>'><?=$article->revision?></a></em><br />
+            Current Revision: <em><a href='<?=$k->url('wiki',$article->title.'/history?to='.$article->revision)?>'><?=$article->revision?></a></em>
+            Type: <?=$lore->toTypeString($article->type);?><br />
             Created on: <em><?=$k->toDate($article->time);?></em>
         </div><?
         $t->closePage();
