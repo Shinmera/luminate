@@ -74,11 +74,11 @@ class LOOPTag extends Tag{
             case 0:return FALSE;break;
             case 1:$args[1]=$args[0];$args[0]=0;
             case 2:$args[2]=1;
-            case 3:$args[3]='loop';
+            case 3:$args[3]='pos';
             default:
-                if(!is_numeric($args[0])&&substr($args[0],0,4)!='$v["')return FALSE;
-                if(!is_numeric($args[1])&&substr($args[1],0,4)!='$v["')return FALSE;
-                if(!is_numeric($args[2])&&substr($args[2],0,4)!='$v["')return FALSE;
+                if(!is_numeric($args[0])&&substr($args[0],0,4)!='$v["'&&substr($args[0],0,5)!='$_g["')return FALSE;
+                if(!is_numeric($args[1])&&substr($args[1],0,4)!='$v["'&&substr($args[0],0,5)!='$_g["')return FALSE;
+                if(!is_numeric($args[2])&&substr($args[2],0,4)!='$v["'&&substr($args[0],0,5)!='$_g["')return FALSE;
                 $args[3]=$k->sanitizeString($args[3]);if($args[3]=='') return FALSE;
                 break;
         }
@@ -87,9 +87,26 @@ class LOOPTag extends Tag{
     }
 }
 
+class EACHTag extends Tag{
+    function parse($content,$args){
+        switch(count($args)){
+            case 0:return FALSE;break;
+            case 1:$args[1]='item';
+            case 2:$args[2]='pos';
+        }
+        if(substr($args[0],0,1)=='*')$p='$_g';else $p='$v';
+        $content = 'foreach('.$p.'["'.$args[0].'"] as $v["'.$args[2].'"][0] => $v["'.$args[1].'"][0]){'.$content.'}';
+        return $content;
+    }
+}
+
 class SETTag extends Tag{
     function parse($content,$args){
-        return '$v["'.$args[0].'"]='.str_replace(';','&#59;',$content).';';
+        global $k;
+        if($args[1]=='')$args[1]=0;
+        if($k->sanitizeString($args[0],'*-_')!=$args[0])return FALSE;
+        if(substr($args[0],0,1)=='*')$p='$_g';else $p='$v';
+        return $p.'["'.$args[0].'"]['.$args[1].']='.str_replace(';','&#59;',$content).';';
     }
 }
 
@@ -97,8 +114,10 @@ class GETTag extends Tag{
     function parse($content,$args){
         global $k;
         if(trim($content)=='')return FALSE;
-        if($k->sanitizeString($content)!=$content)return '$v['.str_replace(';','&#59;',$content).']';
-        return '$v["'.$content.'"]';
+        if($args[0]=='')$args[0]=0;
+        if(substr($content,0,1)=='*')$p='$_g';else $p='$v';
+        if($k->sanitizeString($content,'*-_')!=$content)return $p.'['.str_replace(';','&#59;',$content).']['.$args[0].']';
+        return $p.'["'.$content.'"]['.$args[0].']';
     }
 }
 
@@ -106,8 +125,10 @@ class PRINTTag extends Tag{
     function parse($content,$args){
         global $k;
         if(trim($content)=='')return FALSE;
-        if($k->sanitizeString($content)!=$content)return '$r.= '.str_replace(';','&#59;',$content).';';
-        else return '$r.= $v["'.$content.'"];';
+        if($args[0]=='')$args[0]=0;
+        if(substr($content,0,1)=='*')$p='$_g';else $p='$v';
+        if($k->sanitizeString($content,'*-_')!=$content)return '$r.= '.str_replace(';','&#59;',$content).';';
+        else return '$r.= '.$p.'["'.$content.'"]['.$args[0].'];';
     }
 }
 
@@ -125,6 +146,48 @@ class REPLACETag extends Tag{
         $this->makeVarsInArgs($args);
         $content = $this->makeVarsInString($content);
         return 'str_replace("'.$args[0].'",\''.$args[1].'\',\''.$content.'\')';
+    }
+}
+
+class MATHTag extends Tag{
+    function parse($content,$args){
+        global $k;
+        foreach($args as $key => $val)$args[$key] = str_replace(';','&#59;',$val);
+        switch($content){
+            case 'add':
+            case '+':
+                $final = '';
+                foreach($args as $arg)$final.=$arg.'+';
+                return substr($final,0,strlen($final)-1);
+                break;
+            case 'sub':
+            case 'subtract':
+            case '-':
+                $final = '';
+                foreach($args as $arg)$final.=$arg.'-';
+                return substr($final,0,strlen($final)-1);
+                break;
+            case 'mult':
+            case 'multiply':
+            case '*':
+                $final = '';
+                foreach($args as $arg)$final.=$arg.'*';
+                return substr($final,0,strlen($final)-1);
+                break;
+            case 'div':
+            case 'divide':
+            case '/':
+                $final = '';
+                foreach($args as $arg)$final.=$arg.'/';
+                return substr($final,0,strlen($final)-1);
+                break;
+            case 'pow':
+            case 'power':
+            case '^':
+                return 'pow('.$args[0].','.$args[1].')';
+                break;
+            default: return FALSE;
+        }
     }
 }
 ?>

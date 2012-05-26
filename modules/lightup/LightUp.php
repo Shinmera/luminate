@@ -16,11 +16,13 @@ public static $hooks=array("foo");
         $this->Stags['tag']= new TAGTag('tag','','sys');
         $this->Stags['if'] = new IFTag('if','','sys');
         $this->Stags['loop']=new LOOPTag('loop','','sys');
+        $this->Stags['each']=new EACHTag('each','','sys');
         $this->Stags['set']= new SETTag('set','','sys');
         $this->Stags['get']= new GETTag('get','','sys');
         $this->Stags['print']=new PRINTTag('print','','sys');
         $this->Stags['echo']=new ECHOTag('echo','','sys');
         $this->Stags['replace']=new REPLACETag('replace','','sys');
+        $this->Stags['math']=new MATHTag('math','','sys');
     }
     
     function displayApiPage(){
@@ -120,7 +122,7 @@ public static $hooks=array("foo");
         }
         //Following regex parses urls without parsing existing ones.
         //Copied from http://stackoverflow.com/questions/287144/need-a-good-regex-to-convert-urls-to-links-but-leave-existing-links-alone
-        $s = preg_replace( '`(?<![\{\}"\'>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is',
+        $s = preg_replace( '`(?<![\{\}"\'/>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is',
                            '<a href="\0" target="_blank">\0'.$c->o['link_symbol'].'</a>', $s );
         $s = preg_replace( '`@([-A-Z0-9._-]*)`is', '<a href="'.Toolkit::url("user","").'\1" target="_blank">@\1</a>',$s);
         $s = str_ireplace("\n","<br />",$s);
