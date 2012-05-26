@@ -7,29 +7,27 @@ public static $short='loreparser';
 public static $required=array('LightUp');
 public static $hooks=array("foo");
 
-    //TODO: Following tags:
-    // [BOX]
-    // footnote([n]){BLA}
-    // {include:}
     function parse($text){
-        //$text = preg_replace(         '`\[([\w\s]*)\]`is',                         '<div class="box">\1</div>',        $text);
-        $text = preg_replace_callback('`\>([-A-Z0-9_-]*)\<`is',             array(&$this,'pageCallback'),       $text);
-        $text = preg_replace_callback('`\>([-A-Z0-9_-]*)\|([-A-Z0-9_-]*)\<`is',array(&$this,'pageCallback'),    $text);
-        
-        $text = preg_replace_callback('`\#\!category:([-A-Z0-9_-]*)`is',    array(&$this,'categoryCallback'),   $text);
-        $text = preg_replace_callback('`\#\!portal:([-A-Z0-9_-]*)`is',      array(&$this,'portalCallback'),     $text);
-        $text = preg_replace_callback('`\#\!file:([-A-Z0-9_-]*)`is',        array(&$this,'fileCallback'),       $text);
         $text = preg_replace_callback('`\#\!include:([-A-Z0-9_-]*)`is',     array(&$this,'includeCallback'),    $text);
-        
-        $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
-        $text = str_replace(          '#!noparse',                          '',                                 $text);
         
         global $lightup;
         $args = array("text"=>$text,"source"=>'Lore',"formatted"=>true,
             "allowRaw"=>false,"blockedTags"=>array(),"suites"=>array('*'));
         $args = $lightup->deparse($args);
+        $text = $args['text'];
         
-        return $args['text'];
+        //$text = preg_replace(         '`\[([\w\s]*)\]`is',                         '<div class="box">\1</div>',        $text);
+        $text = preg_replace_callback('`\[([-A-Z0-9_-]*)\]`is',             array(&$this,'pageCallback'),       $text);
+        $text = preg_replace_callback('`\[([-A-Z0-9_-]*)\|([-A-Z0-9_-]*)\]`is',array(&$this,'pageCallback'),    $text);
+        
+        $text = preg_replace_callback('`\#\!category:([-A-Z0-9_-]*)`is',    array(&$this,'categoryCallback'),   $text);
+        $text = preg_replace_callback('`\#\!portal:([-A-Z0-9_-]*)`is',      array(&$this,'portalCallback'),     $text);
+        $text = preg_replace_callback('`\#\!file:([-A-Z0-9_-]*)`is',        array(&$this,'fileCallback'),       $text);
+        
+        $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
+        $text = str_replace(          '#!noparse',                          '',                                 $text);
+        
+        return $text;
     }
     
     function pageCallback($matches){
