@@ -197,6 +197,7 @@ class Article{
                     $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
             }
             $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
+            $editor->setParseAPI('LoreParse');
             $editor->show();
         }else{
             echo('This page is '.$lore->toStatusString($article->status).'. You do not have the permissions to edit it.');
@@ -364,7 +365,7 @@ class Article{
             return true;
     }
     
-    function parseText($text){
+    static function parseText($text){
         global $l;
         $text = $l->triggerPARSE('Lore',$text);
         $parser = $l->loadModule('LoreParser');
