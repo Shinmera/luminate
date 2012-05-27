@@ -7,7 +7,7 @@ class DIVTag extends Tag{
         if($args===FALSE)return FALSE;
         $this->makeVarsInArgs($args);
         
-        $content = '$r.=\'<div class="'.$args['class'].'" style="'.$args['style'].'">\';'.$content.'$r.=\'</div>\';';
+        $content = '$r.=\'<div class="'.$args['class'][0].'" style="'.$args['style'][0].'">\';'.$content.'$r.=\'</div>\';';
         return $content."\n";
     }
 }
@@ -23,9 +23,9 @@ class TAGTag extends Tag{
         $this->makeVarsInArgs($args);
         
         if(trim($content)=='')
-            $content='$r.=\'<'.$args['tag'].' class="'.$args['class'].'" style="'.$args['style'].'" '.$args['extra'].' />\';';
+            $content='$r.=\'<'.$args['tag'][0].' class="'.$args['class'][0].'" style="'.$args['style'][0].'" '.$args['extra'][0].' />\';';
         else
-            $content='$r.=\'<'.$args['tag'].' class="'.$args['class'].'" style="'.$args['style'].'" '.$args['extra'].' >\';'.$content.'$r.=\'</'.$args['tag'].'>\';';
+            $content='$r.=\'<'.$args['tag'][0].' class="'.$args['class'][0].'" style="'.$args['style'][0].'" '.$args['extra'][0].' >\';'.$content.'$r.=\'</'.$args['tag'][0].'>\';';
         return $content;
     }
 }
