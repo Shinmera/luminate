@@ -87,6 +87,12 @@ class TinyEditor extends Editor{
 }
 
 class SimpleEditor extends Editor{
+    var $apiUrl='parse';
+    
+    function setParseAPI($url){
+        $this->apiUrl=$url;
+    }
+    
     function show($form=true){
         if($form){?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor" style="<?=$this->style?>"><? } ?>
             <div id="extrafields"><?=implode("<br />",$this->extrafields)?></div>
@@ -108,7 +114,7 @@ class SimpleEditor extends Editor{
                                            height:$("#<?=$this->formname?> textarea").height()+"px"});
                         $("#preview").html("Please wait...");
                         
-                        $.post("<?=PROOT?>api/parse", $("#editor").serialize(), function(data){
+                        $.post("<?=PROOT?>api/<?=$this->apiUrl?>", $("#<?=$this->formname?>").serialize(), function(data){
                             $("#preview").html(data);
                             $("#previewbutton").attr("value","Edit");
                         });
