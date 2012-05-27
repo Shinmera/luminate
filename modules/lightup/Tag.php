@@ -78,7 +78,7 @@ class Tag{
         $function.=$block."\n".' return $r;';
         
         //echo('<br />DEFT: '.$deftag); //DEBUG
-        //echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
+        echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
         $this->function = @create_function('$content,$args', $function);
         if($this->function===FALSE)throw new Exception(htmlspecialchars ($function));
         
@@ -210,14 +210,14 @@ class Tag{
             if(!$argumentOK){
                 if($this->args[$key]['required']===FALSE)$arg=$this->args[$key]['default'];
                 else                                     return FALSE;
-            }else            $vals[$key]=$arg;
+            }else            $vals[$key][0]=$arg;
             
             $i++;
         }
         
         foreach($this->args as $name => $arg){
             if(!array_key_exists($name, $vals)&&$arg['required']==TRUE)return FALSE;
-            if(!array_key_exists($name, $vals)&&$vals[$name]=='')$vals[$name]=$arg['default'];
+            if(!array_key_exists($name, $vals)&&$vals[$name]=='')$vals[$name][0]=$arg['default'];
         }
         
         return $vals;
