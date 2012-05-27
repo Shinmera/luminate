@@ -9,6 +9,11 @@ public static $hooks=array("foo");
 function buildMenu($menu){$menu[]=array('Wiki',Toolkit::url("wiki",""));return $menu;}
 function adminNavbar($menu){$menu[]='Lore';return $menu;}
 
+function displayApiParse(){
+    include('Lore_Article.php');
+    echo(Article::parseText($_POST['text']));
+}
+
 function displayPanel(){
     global $MODULECACHE;
     include(MODULEPATH.$MODULECACHE['Lore_Admin']);
