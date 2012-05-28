@@ -42,11 +42,11 @@ class DataModel{
         $query=substr($query,0,strlen($query)-1).' WHERE ';
         
         foreach($this->primary as $primary){
-            if(is_numeric($this->holder[$primary]))$query.= '`'.$primary.'`=?';
-            else                                   $query.= '`'.$primary.'` LIKE ?';
+            if(is_numeric($this->holder[$primary]))$query.= ' `'.$primary.'`=? AND';
+            else                                   $query.= ' `'.$primary.'` LIKE ? AND';
             $data[]=$this->holder[$primary];
         }
-        $c->query($query,$data);
+        $c->query(substr($query,0,strlen($query)-3),$data);
     }
     
     //TODO: Add support for functions on values.
