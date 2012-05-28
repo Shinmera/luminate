@@ -10,8 +10,10 @@ function buildMenu($menu){$menu[]=array('Wiki',Toolkit::url("wiki",""));return $
 function adminNavbar($menu){$menu[]='Lore';return $menu;}
 
 function displayApiParse(){
-    include('Lore_Article.php');
-    echo(Article::parseText($_POST['text']));
+    global $l;
+    $text = $l->triggerPARSE('Lore',$text);
+    $parser = $l->loadModule('LoreParser');
+    echo($parser->parse($text));
 }
 
 function displayPanel(){
@@ -27,11 +29,13 @@ function displayAdminPage(){
 }
 
 function displayPage(){
-    global $t,$k,$params,$SUPERIORPATH,$page,$type,$action;
+    global $t,$k,$a,$params,$SUPERIORPATH,$page,$type,$action;
     define('CACHEPATH',ROOT.DATAPATH.'cache/lore/');
     
-    $params[0]=str_replace('_',' ',$k->sanitizeString($params[0],'\s\-_'));
-    $params[1]=str_replace('_',' ',$k->sanitizeString($params[1],'\s\-_'));
+    $params[0]=str_replace(' '  ,'_',$k->sanitizeString($params[0],'\s\-_'));
+    $params[1]=str_replace(' '  ,'_',$k->sanitizeString($params[1],'\s\-_'));
+    $params[0]=str_replace('%20','_',$params[0]);
+    $params[1]=str_replace('%20','_',$params[1]);
     switch(strtolower($params[0])){
         case 'category':
         case 'portal':
@@ -57,6 +61,22 @@ function displayPage(){
     else                                                       $action=$params[1];
     if(strlen($page)>127)$page=substr($page,0,127);
     
+    //Create article model.
+    $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,current,time 
+                                                   FROM lore_articles WHERE title LIKE ? AND type=?',
+                                                   array($page,substr($type,0,1)));
+    if($article==null){
+        global $existing;$existing='inexistent';
+        $article = DataModel::getHull('lore_articles');
+        $article->title=$page;
+        $article->type=substr($type,0,1);
+        $article->current='';
+        $article->time=time();
+        $article->status='o';
+        $article->revision=0;
+        $article->editor=$a->user->username;
+    }
+    
     $t->loadTheme("lore");
     switch($type){
         case 'special':
@@ -64,21 +84,13 @@ function displayPage(){
             $special = new Special();
             $special->display($page);
             break;
-        case 'file':
-            include('Lore_File.php');
-            $file = new File($page,$revision);
-            call_user_func(array(&$file,'display'.ucfirst($action)));
-            break;
-        case 'template':
-            include('Lore_Article.php');
-            include('Lore_Template.php');
-            $template = new Template($page,$type,$revision);
-            call_user_func(array(&$template,'display'.ucfirst($action)));
-            break;
         default:
+            $ttype=ucfirst($type);
             include('Lore_Article.php');
-            $article = new Article($page,$type,$revision);
-            call_user_func(array(&$article,'display'.ucfirst($action)));
+            if($type=='template'||$type=='file')include('Lore_'.$ttype.'.php');
+            else                                $ttype='Article';
+            $page = new $ttype($page,$type,$revision,$article);
+            call_user_func(array(&$page,'display'.ucfirst($action)));
             break;
     }
 }
@@ -95,6 +107,7 @@ function toStatusString($s){
 function toTypeString($s){
     switch($s){
         case 'a':return 'Article';break;
+        case 'f':return 'File';break;
         case 'c':return 'Category';break;
         case 'p':return 'Portal';break;
         case 't':return 'Template';break;

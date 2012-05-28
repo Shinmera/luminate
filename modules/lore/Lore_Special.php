@@ -17,18 +17,17 @@ class Special{
     }
     
     function displayLatest(){
-        global $t,$k;
-        $actions = DataModel::getData('lore_actions','SELECT lore_actions.title AS title,lore_actions.action AS action,lore_actions.editor AS editor,
-                                                       lore_actions.time AS time,lore_actions.args AS args,lore_actions.reason AS reason, lore_articles.type AS type
-                                                       FROM lore_actions INNER JOIN lore_articles USING(title) ORDER BY lore_actions.time DESC LIMIT 25');
+        global $t,$k,$lore;
+        $actions = DataModel::getData('lore_actions','SELECT title,type,action,editor,time,args,reason,type
+                                                       FROM lore_actions ORDER BY time DESC LIMIT 25');
         $t->openPage('Latest Changes');
         echo('<h1>Latest Changes</h1>');
         foreach($actions as $action){
-            ?><?=$k->toDate($action->time)?> <label><a href='<?=PROOT.$action->title?>'><?=$action->title?></a></label><?
+            ?><?=$k->toDate($action->time)?> <label><a href='<?=PROOT.$lore->toTypeString($action->type).'/'.$action->title?>'><?=$action->title?></a></label><?
             switch($action->action){
                 case 'edit':     ?><span class="revision">Revision no. <?=$k->p($action->args)?>                     <?break;
-                case 'status':   ?><span class="status">  Status change to <?=$this->toStatusString($action->args)?> <?break;
-                case 'type':     ?><span class="type">    Type change to <?=$this->toTypeString($action->args)?>     <?break;
+                case 'status':   ?><span class="status">  Status change to <?=$lore->toStatusString($action->args)?> <?break;
+                case 'type':     ?><span class="type">    Type change to <?=$lore->toTypeString($action->args)?>     <?break;
                 case 'move from':?><span class="moveFrom">Moved from <?=$action->args?>                              <?break;
                 case 'move to':  ?><span class="moveTo">  Moved to <?=$action->args?>                                <?break;
                 case 'delete':   ?><span class="delete">  Page deleted                                               <?break;
@@ -41,13 +40,14 @@ class Special{
     }
     
     function displayNewest(){
-        global $t,$k;
+        global $t,$k,$lore;
         $articles = DataModel::getData('lore_articles','SELECT title,type,time FROM lore_articles ORDER BY time DESC LIMIT 25');
         
         $t->openPage('Newest Articles');
         echo('<h1>Newest Articles</h1>');
         foreach($articles as $article){
-            ?><?=$k->toDate($article->time)?> <label><a href='<?=PROOT.$article->title?>'><?=$article->title?></a></label><br /><?
+            ?><?=$k->toDate($article->time)?>
+            <label><a href='<?=PROOT.$lore->toTypeString($article->type).'/'.$article->title?>'><?=$lore->toTypeString($article->type).': '.$article->title?></a></label><br /><?
         }
 
         $t->closePage();

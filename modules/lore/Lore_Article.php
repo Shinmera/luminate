@@ -3,31 +3,23 @@ class Article{
     var $page;
     var $rev;
     var $type;
+    var $article;
     
-    function __construct($page,$type='a',$revision=-1){
+    function __construct($page,$type='a',$revision=-1,$article){
         $this->page=$page;
         $this->type=$type;
         $this->rev=$revision;
+        $this->article=$article;
     }
     
     function displayView(){
         global $k,$t,$l,$lore,$c,$page;
-        $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,time,current FROM lore_articles WHERE title LIKE ?',array($this->page));
         
-        if($article==null){
-            global $existing;$existing='inexistent';
-            $article = DataModel::getHull('lore_articles');
-            $article->title=$this->page;
-            $article->type=substr($this->type,0,1);
-            $article->current='This '.$this->type.' does not exist yet.';
-            $article->time='Never';
-            $article->status='o';
-            $article->revision='-1';
-            $article->editor='System';
-        }$page=$article->title;
+        $article=&$this->article;
+        $page=$article->title;
         
         if($this->rev!=-1){
-            $revision = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND revision=?',array($article->title,$this->rev));
+            $revision = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND revision=? AND type=?',array($article->title,$this->rev,$article->type));
             if($revision==null)$article->current='The revision you are looking for does not exist.';
             else               $article->current=$revision->text;
             $article->revision=$this->rev;
@@ -36,7 +28,10 @@ class Article{
         if(substr($article->current,0,11)=='#!redirect:')header('Location: '.PROOT.str_replace('#!redirect:','',$article->current));
         $t->openPage($article->title);
         
-        if($article->type!='p'){ ?><h1><?=$article->title?></h1><? }
+        if($article->type!='p'){
+            if($article->tpye!='a')echo('<h1>'.ucfirst($this->type).': '.str_replace('_',' ',$article->title).'</h1>');
+            else                   echo('<h1>'.str_replace('_',' ',$article->title).'</h1>');
+        }
         $path=CACHEPATH.'articles/'.$article->title.'/'.$article->revision.'.html';
         if(file_exists($path))echo(file_get_contents($path));
         else                  echo($this->parseText($article->current));
@@ -75,20 +70,19 @@ class Article{
         $t->closePage();
     }
     
-    //TODO: Add blanking warning if change is too big
     function displayHistory(){
         global $k,$t,$lore;
         if(!isset($_GET['from']))$_GET['from']=1;
         
-        $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,time FROM lore_articles WHERE title LIKE ?',array($this->page));
-        if($article==null){global $existing;$existing='inexistent';}
+        $article=&$this->article;
+        if($article->revision==0){global $existing;$existing='inexistent';}
         
         $t->openPage($article->title.' - History');
         echo('<h1>Action History</h1>');
-        if($article==null){
+        if($article->revision==0){
             echo('<blockquote>This '.$this->type.' does not exist yet.</blockquote>');
         }else{
-            $actions = DataModel::getData('lore_actions','SELECT action,args,time,editor,reason FROM lore_actions WHERE title LIKE ? ORDER BY time DESC',array($article->title));
+            $actions = DataModel::getData('lore_actions','SELECT action,args,time,editor,reason FROM lore_actions WHERE title LIKE ? AND type=? ORDER BY time DESC',array($article->title,$article->type));
             if(!is_array($actions))$actions=array($actions);
 
             ?><form><?
@@ -119,8 +113,8 @@ class Article{
             if($_GET['from']>$_GET['to'])$k->swap($_GET['from'],$_GET['to']);
             echo('<h1>Revision Comparison '.$_GET['from'].' <> '.$_GET['to'].'</h1>');
             
-            $revisions = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND (revision=? OR revision=?)',
-                                            array($article->title,$_GET['from'],$_GET['to']));
+            $revisions = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND type=? AND (revision=? OR revision=?)',
+                                            array($article->title,$article->type,$_GET['from'],$_GET['to']));
             if(count($revisions)==2){
                 ?><script type="text/javascript" src="<?=DATAPATH?>js/diff_match_patch.js"></script>
                 <script type="text/javascript">
@@ -150,19 +144,7 @@ class Article{
     function displayEdit(){
         global $a,$t,$lore;
         
-        $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,current,time FROM lore_articles WHERE title LIKE ?',array($this->page));
-        if($article==null){
-            global $existing;$existing='inexistent';
-            $article = DataModel::getHull('lore_articles');
-            $article->title=$this->page;
-            $article->type=substr($this->type,0,1);
-            $article->current='';
-            $article->time=time();
-            $article->status='o';
-            $article->revision=0;
-            $article->editor=$a->user->username;
-        }
-        
+        $article = &$this->article;
         $t->openPage($article->title.' - Edit');
         echo('<h1>Edit '.ucfirst($this->type).'</h1>');
         
@@ -182,7 +164,7 @@ class Article{
                 if($a->check('lore.admin.status'))
                     $editor->addDropDown('status', array('o','p','l'), array('Open','Protected','Locked'), 'Status',$article->status);
                 if($a->check('lore.admin.rollback')){
-                    $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? ORDER BY revision DESC',array($article->title));
+                    $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? AND type=? ORDER BY revision DESC',array($article->title,$article->type));
                     $revisions = array('CURRENT');
                     if($a->check('lore.admin.delete'))$revisions[]='DELETE';
                     if($data!=null){
@@ -192,10 +174,11 @@ class Article{
                     $editor->addDropDown('rollback',$revisions,null, 'Rollback', 'CURRENT');
                 }
                 if($a->check('lore.admin.type'))
-                    $editor->addDropDown('type',array('a','c','p','u','t'),array('Article','Category','Portal','User','Template'),'Type',$article->type);
+                    $editor->addDropDown('type',array('a','c','p','u','t','f'),array('Article','Category','Portal','User','Template','File'),'Type',$article->type);
                 if($a->check('lore.admin.move'))
                     $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
             }
+            $editor->addCustom('<br style="display:block;" />');
             $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
             $editor->setParseAPI('LoreParse');
             $editor->show();
@@ -208,12 +191,13 @@ class Article{
     
     function displayDiscuss(){
         global $t,$l;
-        $article = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ?',array($this->page));
-        if($article==null){global $existing;$existing='inexistent';}
+        
+        $article = &$this->article;
+        if($article->revision==0){global $existing;$existing='inexistent';}
         
         $t->openPage($article->title.' - Discussion');
         echo('<h1>Discussion</h1>');
-        if($article==null)
+        if($article->revision==0)
             echo('<blockquote>This '.$this->type.' does not exist yet.</blockquote>');
         else
             $l->triggerHook('DISPLAYdiscussion','Lore');
@@ -227,13 +211,14 @@ class Article{
         
         $action = DataModel::getHull('lore_actions');
         $action->title=$article->title;
+        $action->type=$article->type;
         $action->reason=$_POST['reason'];
         $action->editor=$a->user->username;
         $action->time=time();
         
         if($a->check('lore.admin.move')&&$_POST['move']!=$article->title){
-            if(DataModel::getData('lore_revisions','SELECT title FROM lore_revisions WHERE title LIKE ?',array($_POST['move']))==null){
-                $c->query('UPDATE lore_revisions SET title=? WHERE title LIKE ?',array($_POST['move'],$article->title));
+            if(DataModel::getData('lore_revisions','SELECT title FROM lore_revisions WHERE title LIKE ? AND type=?',array($_POST['move'],$article->type))==null){
+                $c->query('UPDATE lore_revisions SET title=? WHERE title LIKE ? AND type=?',array($_POST['move'],$article->title,$article->type));
                 if($article->type=='c'||$article->type=='p')
                     $c->query('UPDATE lore_categories SET title=? WHERE title LIKE ?',array($_POST['move'],$article->title));
                 
@@ -267,13 +252,17 @@ class Article{
             $suc.=' Status changed.';
         }
         
-        if($a->check('lore.admin.type')&&$_POST['type']!=$article->type&&in_array($_POST['type'],array('a','c','p','u','t'))){
+        if($a->check('lore.admin.type')&&$_POST['type']!=$article->type&&in_array($_POST['type'],array('a','c','p','u','t','f'))){
             if(($article->type=='c'||$article->type=='p')&&($_POST['type']!='c'&&$_POST['type']!='p'))
                 $c->query('DELETE FROM lore_categories WHERE title LIKE ?',array($article->title));
+            
+            $c->query('UPDATE lore_revisions SET type=? WHERE title LIKE ? AND type=?',
+                    array($_POST['type'],$article->title,$article->type));
+            $c->query('UPDATE lore_actions SET type=? WHERE title LIKE ? AND type=?',
+                    array($_POST['type'],$article->title,$article->type));
                 
             $article->type=$_POST['type'];
             $article->saveData();
-            
             
             $action->action='type';
             $action->args=$_POST['type'];
@@ -282,7 +271,7 @@ class Article{
         }
         
         if($a->check('lore.admin.delete')&&$_POST['rollback']=='DELETE'){
-            $c->query('DELETE FROM lore_revisions WHERE title=?',array($article->title));
+            $c->query('DELETE FROM lore_revisions WHERE title=? AND type=?',array($article->title,$article->type));
             if($article->type=='c'||$article->type=='p')
                 $c->query('DELETE FROM lore_categories WHERE title LIKE ?',array($article->title));
             
@@ -299,14 +288,14 @@ class Article{
         }
         
         if($a->check('lore.admin.rollback')&&$_POST['rollback']!='DELETE'&&$_POST['rollback']!='CURRENT'){
-            $revision = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND revision=?',
-                                                             array($article->title,$_POST['rollback']));
+            $revision = DataModel::getData('lore_revisions','SELECT text FROM lore_revisions WHERE title LIKE ? AND type=? AND revision=?',
+                                                             array($article->title,$article->type,$_POST['rollback']));
             if($revision==null)throw new Exception('Cannot rollback to '.$_POST['rollback'].': Revision does not exist.');
             
-            $c->query('DELETE FROM lore_revisions WHERE title LIKE ? AND revision > ?',
-                                                             array($article->title,$_POST['rollback']));
-            $c->query('UPDATE lore_actions SET args*=-1 WHERE args > 0 AND title LIKE ? AND revision > ?',
-                                                             array($article->title,$_POST['rollback']));
+            $c->query('DELETE FROM lore_revisions WHERE title LIKE ? AND type=? AND revision > ?',
+                                                             array($article->title,$article->type,$_POST['rollback']));
+            $c->query('UPDATE lore_actions SET args*=-1 WHERE args > 0 AND title LIKE ? AND type=? AND revision > ?',
+                                                             array($article->title,$article->type,$_POST['rollback']));
             
             $article->current=$revision->text;
             $article->revision=$_POST['rollback'];
@@ -333,6 +322,7 @@ class Article{
             
             $revision = DataModel::getHull('lore_revisions');
             $revision->title=$article->title;
+            $revision->type=$article->type;
             $revision->revision=$article->revision;
             $revision->text=$_POST['text'];
             $revision->time=time();
@@ -365,7 +355,7 @@ class Article{
             return true;
     }
     
-    static function parseText($text){
+    function parseText($text){
         global $l;
         $text = $l->triggerPARSE('Lore',$text);
         $parser = $l->loadModule('LoreParser');
