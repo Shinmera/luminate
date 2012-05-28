@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.0
+-- version 3.5.1
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 30, 2012 at 02:50 PM
--- Server version: 5.5.23-log
--- PHP Version: 5.3.11
+-- Generation Time: May 29, 2012 at 12:04 AM
+-- Server version: 5.5.24-log
+-- PHP Version: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -145,8 +145,8 @@ CREATE TABLE IF NOT EXISTS `lightup_tags` (
   `name` varchar(32) NOT NULL,
   `suite` varchar(16) NOT NULL DEFAULT 'standard',
   `tag` varchar(16) NOT NULL,
-  `femcode` varchar(256) NOT NULL,
-  `tagcode` varchar(128) NOT NULL,
+  `tagcode` varchar(512) NOT NULL,
+  `deftag` text NOT NULL,
   `description` varchar(64) DEFAULT NULL,
   `limit` int(11) NOT NULL DEFAULT '-1',
   `order` int(10) unsigned DEFAULT NULL,
@@ -157,20 +157,85 @@ CREATE TABLE IF NOT EXISTS `lightup_tags` (
 -- Dumping data for table `lightup_tags`
 --
 
-INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `femcode`, `tagcode`, `description`, `limit`, `order`) VALUES
-('Bold', 'default', 'b', '&lt;strong&gt;@&lt;/strong&gt;', 'b{@}', 'Bold text', -1, 0),
-('Center', 'plus', 'center', '&lt;div class=&quot;center&quot;&gt;@&lt;/div&gt;', 'center{@}', 'Center the text', -1, 3),
-('Color', 'plus', 'color', '&lt;span style=&quot;color:&#36;STRI|red&#36;&gt;@&lt;/span&gt;', 'color(&#36;Choose a colour|color&#36;){@}', 'Change the font colour', -1, 4),
-('Image', 'plus', 'image', '&lt;img alt=&quot;&#36;STRI|image&#36;&quot; title=&quot;&#36;TEXT|&#36;&quot; class=&quot;&#36;STRI|&#36;&quot; src=&quot;@&quo', 'img{@}', 'Insert an image', -1, 5),
-('Italic', 'default', 'i', '&lt;em&gt;@&lt;/em&gt;', 'i{@}', 'Italic text', -1, 1),
-('Left', 'plus', 'left', '&lt;div class=&quot;left&quot;&gt;@&lt;/div&gt;', 'left{@}', 'Align left', -1, 6),
-('Noparse', 'pro', '!', 'COMPILED', '!{@}!', 'Stop text from being parsed', -1, 12),
-('Paragraph', 'extra', 'p', '&lt;p&gt;@&lt;/p&gt;', 'p{@}', 'Create a text paragraph', -1, 10),
-('Quote', 'extra', 'quote', '&lt;div class=&quot;quote&quot;&gt;&lt;h5&gt;Quote &#36;STRI|&#36; &#36;STRI|&#36;&lt;/h5&gt;@&lt;/div&gt;', 'quote{@}', 'Quote a post', -1, 11),
-('Right', 'plus', 'right', '&lt;div class=&quot;right&quot;&gt;@&lt;/div&gt;', 'right{@}', 'Align right', -1, 7),
-('Size', 'plus', 'size', '&lt;span style=&quot;font-size:&#36;INTE36|18&#36;pt&quot;&gt;@&lt;/span&gt;', 'size(&#36;Enter the font size|number&#36;){@}', 'Change the font size', -1, 8),
-('Underline', 'default', 'u', '&lt;u&gt;@&lt;/u&gt;', 'u{@}', 'Underline text', -1, 2),
-('Url', 'plus', 'url', '&lt;a href=&quot;&#36;URLS&#36;&quot; title=&quot;&#36;TEXT|&#36;&quot; target=&quot;&#36;STRI|_self&#36;&quot; &gt;@&lt;/a&gt;', 'url(&#36;Enter the URL|url&#36;){@}', 'Insert a hyperlink', -1, 9);
+INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `tagcode`, `deftag`, `description`, `limit`, `order`) VALUES
+('Bold', 'default', 'b', 'b{@}', 'deftag(b){\r\n    tag(strong){print{content}}\r\n}', 'Bold text', -1, 0),
+('Color', 'plus', 'color', 'color(&#36;Choose a colour|color&#36;){@}', 'deftag(color,color STRI true){\r\n    tag(span,:style color: get{color}){ print{content}}\r\n}', 'Change the font colour', -1, 4),
+('Image', 'plus', 'img', 'img{@}', 'deftag(img,alt TEXT false,title TEXT false){\r\n    tag(img,:extra alt="get{alt}" title="get{title}" src="get{content}"){}\r\n}', 'Insert an image', -1, 5),
+('Italic', 'default', 'i', 'i{@}', 'deftag(i){\r\n    tag(em){print{content}}\r\n}', 'Italic text', -1, 1),
+('Quote', 'extra', 'quote', 'quote(&#36;user|string&#36;,&#36;urls|url&#36;){@}', 'deftag(quote,user STRI false,url URLS false){\r\n div(quote){\r\n   tag(h5){\r\n    if(get{user},false,!=){echo{By: }url(http://user.linuz.com/Luminate/get{user}){print{user}}}\r\n    if(get{url},false,!=){url(get{url}){echo{↗}}}\r\n   }\r\n   tag(p){print{content}}\r\n  }\r\n}', 'Quote a post', -1, 11),
+('Size', 'plus', 'size', 'size(&#36;Enter the font size|number&#36;){@}', 'deftag(size,size INTE46 false 12){\r\n   tag(span,:style font-size: get{size} pt;){print{content}}\r\n}', 'Change the font size', -1, 8),
+('Url', 'plus', 'url', 'url(&#36;Enter the URL|url&#36;){@}', 'deftag(url,url URLS false NIL,title TEXT false,target TEXT false _blank){\r\n    if(get{url},''NIL'',==){set(url){get{content}}}\r\n    tag(a,:extra href="get{url}" title="get{title}" target="get{target}"){print{content}}\r\n}', 'Insert a hyperlink', -1, 9);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_actions`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_actions` (
+  `title` varchar(128) NOT NULL,
+  `type` varchar(1) NOT NULL,
+  `action` varchar(16) NOT NULL,
+  `args` varchar(32) NOT NULL,
+  `reason` varchar(256) NOT NULL,
+  `editor` varchar(32) NOT NULL,
+  `time` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `lore_actions`
+--
+
+INSERT INTO `lore_actions` (`title`, `type`, `action`, `args`, `reason`, `editor`, `time`) VALUES
+('Index', '', 'edit', '1', 'Need an index page.', 'Shinmera', 1336374874),
+('Index', '', 'status', 'l', 'Locked it.', 'Shinmera', 1336374889),
+('test', '', 'edit', '1', 'TESTING FOR TEST PURPOSES', 'Shinmera', 1336596327),
+('test', '', 'edit', '2', 'Category.', 'Shinmera', 1336597146),
+('cat', '', 'edit', '1', 'cat.', 'Shinmera', 1336597240),
+('cat', '', 'type', 'c', 'Category.', 'Shinmera', 1336597249),
+('Index', '', 'edit', '2', 'CAAAT!', 'Shinmera', 1336597470),
+('cat', '', 'edit', '2', 'TOOT', 'Shinmera', 1336598646),
+('cat', '', 'edit', '3', ':I', 'Shinmera', 1336598732),
+('cat', '', 'edit', '4', ':I', 'Shinmera', 1336598752),
+('lol', '', 'type', 'a', 'Removed unnecessary empty args', 'Shinmera', 1337872363),
+('lol', '', 'edit', '2', 'Removed unnecessary empty args', 'Shinmera', 1337872363),
+('lol', '', 'edit', '3', 'WHoops, I accidentally the type.', 'Shinmera', 1337872459),
+('xDD', '', 'edit', '1', 'Shit article to test template inclusions', 'Shinmera', 1337872801),
+('lol', '', 'type', 't', ':I', 'Shinmera', 1337874944),
+('lol', '', 'edit', '4', ':I', 'Shinmera', 1337874944),
+('xDD', '', 'edit', '2', 'More shit', 'Shinmera', 1337876131),
+('lol', '', 'edit', '5', 'Update', 'Shinmera', 1337876293),
+('xDD', '', 'edit', '3', 'Update', 'Shinmera', 1337876342),
+('xDD', '', 'edit', '4', 'Derp', 'Shinmera', 1337876361),
+('lol', '', 'edit', '6', 'Updated sidescroll', 'Shinmera', 1338040026),
+('xDD', '', 'edit', '5', 'Duuh', 'Shinmera', 1338040054),
+('lol', '', 'edit', '7', 'fixed sidescroll shit', 'Shinmera', 1338040632),
+('lol', '', 'edit', '8', 'fixed sidescroll shit', 'Shinmera', 1338040656),
+('xDD', '', 'edit', '6', 'Dicks', 'Shinmera', 1338041033),
+('xDD', '', 'edit', '7', 'And so I did.', 'Shinmera', 1338041240),
+('xDD', '', 'edit', '8', 'a', 'Shinmera', 1338041271),
+('xDD', '', 'edit', '9', 'da', 'Shinmera', 1338041375),
+('footnotes', '', 'edit', '1', 'Initial ', 'Shinmera', 1338045840),
+('footnotes', '', 'edit', '2', 'Update to new standards', 'Shinmera', 1338046177),
+('xDD', '', 'edit', '10', 'LOL', 'Shinmera', 1338047380),
+('lol', '', 'edit', '9', 'Fixed rainbow', 'Shinmera', 1338047596),
+('lol', '', 'edit', '10', 'Fixed rainbow', 'Shinmera', 1338049137),
+('xDD', '', 'edit', '11', 'Fixed.', 'Shinmera', 1338154081),
+('footnotes', '', 'edit', '3', 'TEST', 'Shinmera', 1338219605),
+('footnotes', '', 'edit', '3', 'TEST', 'Shinmera', 1338219691),
+('footnotes', '', 'edit', '3', 'TEST', 'Shinmera', 1338219731),
+('footnotes', '', 'edit', '3', 'TEST', 'Shinmera', 1338219753),
+('footnotes', '', 'edit', '4', 'TEST', 'Shinmera', 1338219835),
+('', '', 'type', 'a', 'Initial', 'Shinmera', 1338224117),
+('', '', 'edit', '1', 'Initial', 'Shinmera', 1338224117),
+('', 'f', 'edit', '1', 'Initial', 'Shinmera', 1338224265),
+('', 'f', 'edit', '1', 'Initial', 'Shinmera', 1338224405),
+('love', 'f', 'edit', '1', 'Initial', 'Shinmera', 1338225812),
+('love', 'f', 'edit', '2', 'Pix fix.', 'Shinmera', 1338226035),
+('love', 'f', 'edit', '3', 'l', 'Shinmera', 1338226991),
+('love', 'f', 'edit', '4', 'Pic update', 'Shinmera', 1338240744),
+('love', 'f', 'edit', '5', '..', 'Shinmera', 1338240933),
+('love', 'f', 'edit', '6', 'FINALLY GOD', 'Shinmera', 1338241399);
 
 -- --------------------------------------------------------
 
@@ -180,15 +245,29 @@ INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `femcode`, `tagcode`, `descr
 
 CREATE TABLE IF NOT EXISTS `lore_articles` (
   `title` varchar(128) NOT NULL,
-  `revision` int(11) NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
-  `time` int(11) NOT NULL,
-  `editor` varchar(32) NOT NULL,
   `type` varchar(1) NOT NULL DEFAULT 'o',
-  `portal` varchar(128) NOT NULL,
-  `categories` text NOT NULL,
-  PRIMARY KEY (`title`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `revision` int(11) NOT NULL,
+  `current` text NOT NULL,
+  `time` int(11) NOT NULL,
+  `status` varchar(1) NOT NULL DEFAULT 'o',
+  PRIMARY KEY (`title`,`type`),
+  FULLTEXT KEY `current` (`current`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `lore_articles`
+--
+
+INSERT INTO `lore_articles` (`title`, `type`, `revision`, `current`, `time`, `status`) VALUES
+('Index', 'a', 2, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.\r\n\r\n{category:cat}', 1336374874, 'l'),
+('test', 'a', 2, 'LOLWUT [Derp|THIS] IS A SHITTY TEST PAGE\r\n#!history\r\n{category:cat}', 1336596327, 'o'),
+('cat', 'c', 4, '#!noparse\r\nDERRRPYYYY &gt;cat|CATEGORYYYYY&lt; YAAAAAAAAAAAAAAAAAAAAAAAY\r\n[test this stuff!]', 1336597240, 'o'),
+('lol', 't', 10, 'deftag(rainbow){\r\n   set(c,0){&#039;#FF0000&#039;}\r\n   set(c,1){&#039;#FF7F00&#039;}\r\n   set(c,2){&#039;#FFFF00&#039;}\r\n   set(c,3){&#039;#00FF00&#039;}\r\n   set(c,4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    each(c){\r\n     tag(div,:style color: get{item};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll,scale INTE20 false 10,left BOOL false 0){\r\n   set(pos){&#039;right:0&#039;}\r\n   if(get{left},true){set(pos){&#039;left:0&#039;}}\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;get{pos};bottom:0;z-index:100;width:get{scale}%;){}\r\n}', 0, 'o'),
+('xDD', 'a', 11, '#!include:lol\r\n#!include:footnotes\r\nalertbox([You] should do something about it footnote{Or just kill yourself. That works too.}){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{████████████}\r\nsidescroll(15){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}\r\n\r\nhttp://lol.com\r\nwww.tymoon.eu\r\nhttp://youtube.com/?v=DiCKS\r\nLOL\r\nWut\r\nfootnotes{}', 1337872801, 'o'),
+('footnotes', 't', 4, 'deftag(footnote){\r\n  set(*footnotecount){math(get{*footnotecount},1){+}}\r\n  set(*footnotetext,get{*footnotecount}){get{content}}\r\n  tag(sup){\r\n    echo{[}\r\n    tag(a,:extra href=&quot;#foot-get{*footnotecount}&quot;){print{*footnotecount}}\r\n    echo{]}\r\n  }\r\n}\r\n\r\ndeftag(footnotetext,n INTE true){\r\n  set(*footnotetext,get{n}){get{content}}\r\n}\r\n\r\ndeftag(footnotes){\r\n  div(footnotes){\r\n    each(*footnotetext){\r\n      div(footnote){\r\n        tag(sup){\r\n          echo{[}\r\n            tag(a,:extra href=&quot;#foot-get{pos}&quot;){print{pos}}\r\n            echo{]}\r\n        }\r\n        print{item}\r\n      }\r\n    }\r\n  }\r\n}', 1338045840, 'o'),
+('', 'a', 1, 'Heee heee.', 1338224117, 'o'),
+('', 'f', 1, 'Hee heeee', 1338224265, 'o'),
+('love', 'f', 6, 'Hee heee :I', 1338225812, 'o');
 
 -- --------------------------------------------------------
 
@@ -198,60 +277,79 @@ CREATE TABLE IF NOT EXISTS `lore_articles` (
 
 CREATE TABLE IF NOT EXISTS `lore_categories` (
   `title` varchar(128) NOT NULL,
-  `revision` int(11) NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
-  `editor` varchar(32) NOT NULL,
-  `time` int(11) NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 'o',
-  PRIMARY KEY (`title`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+  `article` varchar(128) NOT NULL,
+  PRIMARY KEY (`title`,`article`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `lore_categories`
+--
+
+INSERT INTO `lore_categories` (`title`, `article`) VALUES
+('cat', 'Index'),
+('cat', 'test');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `lore_files`
+-- Table structure for table `lore_revisions`
 --
 
-CREATE TABLE IF NOT EXISTS `lore_files` (
+CREATE TABLE IF NOT EXISTS `lore_revisions` (
   `title` varchar(128) NOT NULL,
+  `type` varchar(1) NOT NULL,
   `revision` int(11) NOT NULL AUTO_INCREMENT,
   `text` text NOT NULL,
-  `filename` varchar(128) NOT NULL,
   `editor` varchar(32) NOT NULL,
   `time` int(11) NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 'o',
-  PRIMARY KEY (`title`,`revision`)
+  PRIMARY KEY (`title`,`type`,`revision`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `lore_portals`
+-- Dumping data for table `lore_revisions`
 --
 
-CREATE TABLE IF NOT EXISTS `lore_portals` (
-  `title` varchar(128) NOT NULL,
-  `revision` int(11) NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
-  `time` int(11) NOT NULL,
-  `editor` varchar(32) NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 'o',
-  PRIMARY KEY (`title`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `lore_users`
---
-
-CREATE TABLE IF NOT EXISTS `lore_users` (
-  `editor` varchar(32) NOT NULL,
-  `revision` int(11) NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
-  `time` int(11) NOT NULL,
-  PRIMARY KEY (`editor`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+INSERT INTO `lore_revisions` (`title`, `type`, `revision`, `text`, `editor`, `time`) VALUES
+('Index', '', 1, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.', 'Shinmera', 1336374874),
+('test', '', 1, 'LOLWUT THIS IS A SHITTY TEST PAGE\r\n#!history', 'Shinmera', 1336596327),
+('test', '', 2, 'LOLWUT [Derp|THIS] IS A SHITTY TEST PAGE\r\n#!history\r\n{category:cat}', 'Shinmera', 1336597146),
+('cat', '', 1, 'DERRRPYYYY CATEGORYYYYY YAAAAAAAAAAAAAAAAAAAAAAAY', 'Shinmera', 1336597240),
+('Index', '', 2, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.\r\n\r\n{category:cat}', 'Shinmera', 1336597470),
+('cat', '', 2, '#!noparse\r\nDERRRPYYYY &gt;CATEGORYYYYY|cat&lt; YAAAAAAAAAAAAAAAAAAAAAAAY\r\n[test this stuff!]', 'Shinmera', 1336598646),
+('cat', '', 3, '#!noparse\r\nDERRRPYYYY &gt;cat|CATEGORYYYYY&lt; YAAAAAAAAAAAAAAAAAAAAAAAY\r\n[test this stuff!]', 'Shinmera', 1336598732),
+('cat', '', 4, '#!noparse\r\nDERRRPYYYY &gt;cat|CATEGORYYYYY&lt; YAAAAAAAAAAAAAAAAAAAAAAAY\r\n[test this stuff!]', 'Shinmera', 1336598752),
+('lol', '', 2, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll){\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;right:0;bottom:20px;){}\r\n}', 'Shinmera', 1337872364),
+('lol', '', 3, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll){\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;right:0;bottom:20px;){}\r\n}', 'Shinmera', 1337872459),
+('xDD', '', 1, '{include:lol}\r\n\r\nsidescroll{http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}', 'Shinmera', 1337872801),
+('lol', '', 4, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll){\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;right:0;bottom:20px;){}\r\n}', 'Shinmera', 1337874945),
+('xDD', '', 2, '#!include:lol\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll{http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}', 'Shinmera', 1337876132),
+('lol', '', 5, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll){\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;right:0;bottom:20px;z-index:100){}\r\n}', 'Shinmera', 1337876293),
+('xDD', '', 3, '#!include:lol\r\nalert([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll{http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}', 'Shinmera', 1337876342),
+('xDD', '', 4, '#!include:lol\r\nalertbox([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll{http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}', 'Shinmera', 1337876361),
+('lol', '', 6, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll,scale INTE100 false 100,left BOOL false 0){\r\n   set(size){&#039;width:get{scale}%;height:get{scale}%;&#039;}\r\n   set(pos){&#039;right:0;&#039;}\r\n   if(get{left},true){set(pos){&#039;left:0;&#039;}}\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;get{pos}bottom:20px;z-index:100;get{size}){}\r\n}', 'Shinmera', 1338040026),
+('xDD', '', 5, '#!include:lol\r\nalertbox([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll(20){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}', 'Shinmera', 1338040054),
+('lol', '', 7, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll,scale INTE20 false 10,left BOOL false 0){\r\n   set(pos){&#039;right:0&#039;}\r\n   if(get{left},true){set(pos){&#039;left:0&#039;}}\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;get{pos};bottom:20px;z-index:100;width:get{scale}%;){}\r\n}', 'Shinmera', 1338040632),
+('lol', '', 8, 'deftag(rainbow){\r\n   set(0){&#039;#FF0000&#039;}\r\n   set(1){&#039;#FF7F00&#039;}\r\n   set(2){&#039;#FFFF00&#039;}\r\n   set(3){&#039;#00FF00&#039;}\r\n   set(4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     set(color){get{get{loop}}}\r\n     tag(div,:style color: get{color};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll,scale INTE20 false 10,left BOOL false 0){\r\n   set(pos){&#039;right:0&#039;}\r\n   if(get{left},true){set(pos){&#039;left:0&#039;}}\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;get{pos};bottom:0;z-index:100;width:get{scale}%;){}\r\n}', 'Shinmera', 1338040656),
+('xDD', '', 6, '#!include:lol\r\nalertbox([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll(10){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}', 'Shinmera', 1338041033),
+('xDD', '', 7, '#!include:lol\r\nalertbox([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll(15){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}\r\n\r\nhttp://lol.com\r\nwww.tymoon.eu\r\nhttp://youtube.com/?v=DiCKS', 'Shinmera', 1338041240),
+('xDD', '', 8, '#!include:lol\r\nalertbox([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{██████████████}\r\nsidescroll(15){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}\r\n\r\nhttp://lol.com\r\nwww.tymoon.eu\r\nhttp://youtube.com/?v=DiCKS\r\nLOL\r\nWut', 'Shinmera', 1338041271),
+('xDD', '', 9, '#!include:lol\r\nalertbox([you] should do something about it){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{█L█O█L█ █R█A█N█D█U█M█B█}\r\nsidescroll(15){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}\r\n\r\nhttp://lol.com\r\nwww.tymoon.eu\r\nhttp://youtube.com/?v=DiCKS\r\nLOL\r\nWut', 'Shinmera', 1338041375),
+('footnotes', '', 1, 'deftag(footnote){\r\n  set(*footnotecount){math(get{*footnotecount},1){+}}\r\n  set(*footnotetext,get{*footnotecount}){get{content}}\r\n  tag(sup){\r\n    echo{[}\r\n    tag(a,:extra href=&quot;#foot-get{*footnotecount}&quot;){print{*footnotecount}}\r\n    echo{]}\r\n  }\r\n}\r\n\r\ndeftag(footnotetext,n INTE true){\r\n  set(*footnotetext,get{n}){get{content}}\r\n}\r\n\r\ndeftag(footnotes){\r\n  set(i){0}\r\n  div(footnotes){\r\n    each(*footnotetext){\r\n      set(i){math(get{i},1){+}}\r\n      div(footnote){\r\n        tag(sup){\r\n          echo{[}\r\n            tag(a,:extra href=&quot;#foot-get{i}&quot;){print{i}}\r\n            echo{]}\r\n        }\r\n        print{item}\r\n      }\r\n    }\r\n  }\r\n}', 'Shinmera', 1338045840),
+('footnotes', '', 2, 'deftag(footnote){\r\n  set(*footnotecount){math(get{*footnotecount},1){+}}\r\n  set(*footnotetext,get{*footnotecount}){get{content}}\r\n  tag(sup){\r\n    echo{[}\r\n    tag(a,:extra href=&quot;#foot-get{*footnotecount}&quot;){print{*footnotecount}}\r\n    echo{]}\r\n  }\r\n}\r\n\r\ndeftag(footnotetext,n INTE true){\r\n  set(*footnotetext,get{n}){get{content}}\r\n}\r\n\r\ndeftag(footnotes){\r\n  div(footnotes){\r\n    each(*footnotetext){\r\n      div(footnote){\r\n        tag(sup){\r\n          echo{[}\r\n            tag(a,:extra href=&quot;#foot-get{pos}&quot;){print{pos}}\r\n            echo{]}\r\n        }\r\n        print{item}\r\n      }\r\n    }\r\n  }\r\n}', 'Shinmera', 1338046177),
+('xDD', '', 10, '#!include:lol\r\n#!include:footnotes\r\nalertbox([you] should do something about it footnote{Or just kill yourself. That works too.}){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{█L█O█L█ █R█A█N█D█U█M█B█}\r\nsidescroll(15){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}\r\n\r\nhttp://lol.com\r\nwww.tymoon.eu\r\nhttp://youtube.com/?v=DiCKS\r\nLOL\r\nWut\r\nfootnotes{}', 'Shinmera', 1338047380),
+('lol', '', 9, 'deftag(rainbow){\r\n   set(c,0){&#039;#FF0000&#039;}\r\n   set(c,1){&#039;#FF7F00&#039;}\r\n   set(c,2){&#039;#FFFF00&#039;}\r\n   set(c,3){&#039;#00FF00&#039;}\r\n   set(c,4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    loop(5){\r\n     tag(div,:style color: get(pos){c};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll,scale INTE20 false 10,left BOOL false 0){\r\n   set(pos){&#039;right:0&#039;}\r\n   if(get{left},true){set(pos){&#039;left:0&#039;}}\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;get{pos};bottom:0;z-index:100;width:get{scale}%;){}\r\n}', 'Shinmera', 1338047596),
+('lol', '', 10, 'deftag(rainbow){\r\n   set(c,0){&#039;#FF0000&#039;}\r\n   set(c,1){&#039;#FF7F00&#039;}\r\n   set(c,2){&#039;#FFFF00&#039;}\r\n   set(c,3){&#039;#00FF00&#039;}\r\n   set(c,4){&#039;#0000FF&#039;}\r\n   tag(div,:style padding-top:40px;){\r\n    each(c){\r\n     tag(div,:style color: get{item};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}\r\n\r\ndeftag(alertbox,subtext TEXT false){\r\n  div(box,:style margin:20px){\r\n    tag(img,:extra src=&quot;http://www.nativevillage.org/Archives/2011%20Archives/DEC%202011%20News/warning-animated.gif&quot;,:style float:left){}\r\n    div(:style text-align:center; font-size: 18pt; font-weight: bold;){echo{Alert: }print{content}}\r\n    div(:style margin-left: 20%;margin-right:20%;){print{subtext}}\r\n    tag(br,:class clear){}\r\n  }\r\n}\r\n\r\ndeftag(sidescroll,scale INTE20 false 10,left BOOL false 0){\r\n   set(pos){&#039;right:0&#039;}\r\n   if(get{left},true){set(pos){&#039;left:0&#039;}}\r\n   tag(img,:extra src=&quot;get{content}&quot;,:style position:fixed;get{pos};bottom:0;z-index:100;width:get{scale}%;){}\r\n}', 'Shinmera', 1338049137),
+('xDD', '', 11, '#!include:lol\r\n#!include:footnotes\r\nalertbox([You] should do something about it footnote{Or just kill yourself. That works too.}){This page is shit}\r\nrainbow{SIXTY NIGGERS!}\r\nrainbow{████████████}\r\nsidescroll(15){http://img.tymoon.eu/img/suiseiseki/Crossover/a34063f4b25b4aaaf21e5c8d3b01767e.jpg}\r\n\r\nhttp://lol.com\r\nwww.tymoon.eu\r\nhttp://youtube.com/?v=DiCKS\r\nLOL\r\nWut\r\nfootnotes{}', 'Shinmera', 1338154081),
+('footnotes', '', 3, 'deftag(footnote){\r\n  set(*footnotecount){math(get{*footnotecount},1){+}}\r\n  set(*footnotetext,get{*footnotecount}){get{content}}\r\n  tag(sup){\r\n    echo{[}\r\n    tag(a,:extra href=&quot;#foot-get{*footnotecount}&quot;){print{*footnotecount}}\r\n    echo{]}\r\n  }\r\n}\r\n\r\ndeftag(footnotetext,n INTE true){\r\n  set(*footnotetext,get{n}){get{content}}\r\n}\r\n\r\ndeftag(footnotes){\r\n  div(footnotes){\r\n    each(*footnotetext){\r\n      div(footnote){\r\n        tag(sup){\r\n          echo{[}\r\n            tag(a,:extra href=&quot;#foot-get{pos}&quot;){print{pos}}\r\n            echo{]}\r\n        }\r\n        print{item}\r\n      }\r\n    }\r\n  }\r\n}', 'Shinmera', 1338219605),
+('footnotes', 't', 4, 'deftag(footnote){\r\n  set(*footnotecount){math(get{*footnotecount},1){+}}\r\n  set(*footnotetext,get{*footnotecount}){get{content}}\r\n  tag(sup){\r\n    echo{[}\r\n    tag(a,:extra href=&quot;#foot-get{*footnotecount}&quot;){print{*footnotecount}}\r\n    echo{]}\r\n  }\r\n}\r\n\r\ndeftag(footnotetext,n INTE true){\r\n  set(*footnotetext,get{n}){get{content}}\r\n}\r\n\r\ndeftag(footnotes){\r\n  div(footnotes){\r\n    each(*footnotetext){\r\n      div(footnote){\r\n        tag(sup){\r\n          echo{[}\r\n            tag(a,:extra href=&quot;#foot-get{pos}&quot;){print{pos}}\r\n            echo{]}\r\n        }\r\n        print{item}\r\n      }\r\n    }\r\n  }\r\n}', 'Shinmera', 1338219835),
+('', 'a', 1, 'Heee heee.', 'Shinmera', 1338224117),
+('', 'f', 1, 'Hee heeee', 'Shinmera', 1338224265),
+('love', 'f', 1, '&lt;3', 'Shinmera', 1338225812),
+('love', 'f', 2, '&lt;3', 'Shinmera', 1338226035),
+('love', 'f', 3, 'Hee heee', 'Shinmera', 1338226991),
+('love', 'f', 4, 'Hee heee :3', 'Shinmera', 1338240744),
+('love', 'f', 5, 'Hee heee', 'Shinmera', 1338240933),
+('love', 'f', 6, 'Hee heee :I', 'Shinmera', 1338241399);
 
 -- --------------------------------------------------------
 
@@ -320,7 +418,12 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Fenfire', 'POST', 'Derpy', 'handlePostHook'),
 ('CORE', 'APINOTIFICATIONdelete', 'Derpy', 'handleAPINotificationDelete'),
 ('CORE', 'APIUSERsearch', 'User', 'apiUserSearch'),
-('CORE', 'HITtest', 'Test', 'runTests');
+('CORE', 'HITtest', 'Test', 'runTests'),
+('Admin', 'PANELdisplay', 'Admin', 'displayPanel'),
+('Admin', 'ADMINAdmin', 'Admin', 'displayAdminPage'),
+('CORE', 'HITwiki', 'Lore', 'displayPage'),
+('CORE', 'APIlightupCUSTOM', 'LightUp', 'displayApiCustomParse'),
+('CORE', 'APILoreParse', 'Lore', 'displayApiParse');
 
 -- --------------------------------------------------------
 
@@ -334,7 +437,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -364,7 +467,11 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (21, 'Added user @4', 1335432455, 1),
 (22, 'Hook CORE::APIUSERsearch =&gt; User::apiUserSearch added.', 1335434322, 1),
 (23, 'Module &#039;Test&#039; added.', 1335636138, 1),
-(24, 'Hook CORE::HITtest =&gt; Test::runTests added.', 1335636165, 1);
+(24, 'Hook CORE::HITtest =&gt; Test::runTests added.', 1335636165, 1),
+(25, 'Module &#039;Lore&#039; added.', 1336373676, 1),
+(26, 'Hook CORE::HITwiki =&gt; Lore::displayPage added.', 1336373734, 1),
+(27, 'Hook CORE::APIlightupCUSTOM =&gt; LightUp::displayApiCustomParse added.', 1337761216, 1),
+(28, 'Hook CORE::APILoreParse =&gt; Lore::displayApiParse added.', 1338148726, 1);
 
 -- --------------------------------------------------------
 
@@ -392,6 +499,7 @@ INSERT INTO `ms_modules` (`name`, `subject`) VALUES
 ('Fenfire', 'Provides a simple comment system.'),
 ('LightUp', 'BBCode and text formatting system '),
 ('Liroli', 'Public user groups'),
+('Lore', 'Wiki'),
 ('Neon', 'Provides user front-end.'),
 ('Test', 'To run test suites.'),
 ('Themes', 'A simple theming system, making page construction very simple.'),
