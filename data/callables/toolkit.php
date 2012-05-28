@@ -437,8 +437,8 @@ function downloadFile($url,$destination,$maxsizeKB=500,$allowedfiles=array(""),$
     return $path;
 }
 
-function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname=""){
-    if(!is_uploaded_file($_FILES[$fieldname]['tmp_name']))        throw new Exception("No uploaded file!");
+function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname="",$appendextension=true){
+    if(!is_uploaded_file($_FILES[$fieldname]['tmp_name']))        throw new Exception("No file uploaded!");
     if(!file_exists($_FILES[$fieldname]['tmp_name']))             throw new Exception("No uploaded file exists!");
     $filesize = $_FILES[$fieldname]['size']/1024;
     $filename = $_FILES[$fieldname]['name'];
@@ -446,7 +446,7 @@ function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array("
     $filetype = $_FILES[$fieldname]['type'];
     //new filename if any
     if($newname!=""){
-        if(strpos($newname,".")===FALSE)
+        if(strpos($newname,".")===FALSE&&$appendextension)
             $newname = $newname.substr($filename,strpos($filename,"."));
         $filename = $newname;
     }
