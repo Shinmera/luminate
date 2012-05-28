@@ -21,28 +21,29 @@ public static $hooks=array("foo");
         
         $text = preg_replace_callback('`\#\!category:([-A-Z0-9_-]*)`is',    array(&$this,'categoryCallback'),   $text);
         $text = preg_replace_callback('`\#\!portal:([-A-Z0-9_-]*)`is',      array(&$this,'portalCallback'),     $text);
-        $text = preg_replace_callback('`\#\!file:([-A-Z0-9_-]*)`is',        array(&$this,'fileCallback'),       $text);
+        $text = preg_replace_callback('`\#\!file:([-A-Z0-9_-]*)(\|(75|150|300)){0,1}`is',array(&$this,'fileCallback'),$text);
         
         $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
         $text = str_replace(          '#!noparse',                          '',                                 $text);
+        $text = str_replace(          '#!nocache',                          '',                                 $text);
         
         return $text;
     }
     
     function pageCallback($matches){
-        global $k;
-        $article = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ?',array($matches[1]));
+        global $k,$lore;
+        $article = DataModel::getData('lore_articles','SELECT title,type FROM lore_articles WHERE title LIKE ?',array($matches[1]));
         if(isset($matches[2]))$title=$matches[2];else $title=$matches[1];
         if($article==null){
             return '<a href="'.$k->url('wiki',$matches[1]).'" class="pagelink inexistent">'.$title.'</a>';
         }else{
-            return '<a href="'.$k->url('wiki',$article->title).'" class="pagelink">'.$title.'</a>';
+            return '<a href="'.$k->url('wiki',$lore->toTypeString($article->type).'/'.$article->title).'" class="pagelink">'.$title.'</a>';
         }
     }
     
     function categoryCallback($matches){
         global $c,$k,$page;
-        $category = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'c'));
+        $category = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type=?',array($matches[1],'c'));
         if($category==null){
             return '';
         }else{
@@ -53,7 +54,7 @@ public static $hooks=array("foo");
     
     function portalCallback($matches){
         global $k;
-        $portal = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'p'));
+        $portal = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type=?',array($matches[1],'p'));
         if($portal==null){
             return '';
         }else{
@@ -65,17 +66,20 @@ public static $hooks=array("foo");
     }
     
     function fileCallback($matches){
-        $file = DataModel::getData('lore_files','SELECT title,filename,revision FROM lore_files WHERE title LIKE ? ORDER BY revision DESC LIMIT 1',array($matches[1]));
+        $file = DataModel::getData('lore_articles','SELECT title,revision FROM lore_articles WHERE title LIKE ? AND type=?',array($matches[1],'f'));
         if($file==null){
             return '<a class="pagelink inexistent" href="'.PROOT.'file/'.$matches[1].'">File: '.$matches[1].'</a>';
         }else{
-            return '<img alt="'.$file->title.'" title="'.$file->title.'" src="'.DATAPATH.'cache/lore/files/'.$file->filename.'/'.$file->revision.'" />';
+            if($matches[3]=='')$matches[3]='75';
+            $path = DATAPATH.'uploads/lore/'.$file->title.'/'.$file->revision.'t'.$matches[3];
+            return '<a href="'.PROOT.'file/'.$matches[1].'">
+                        <img alt="'.$file->title.'" title="'.$file->title.'" src="'.$path.'" /></a>';
         }
     }
     
     function includeCallback($matches){
         global $lightup,$c;
-        $template = DataModel::getData('lore_articles','SELECT current FROM lore_articles WHERE title LIKE ? AND type LIKE ?',array($matches[1],'t'));
+        $template = DataModel::getData('lore_articles','SELECT current FROM lore_articles WHERE title LIKE ? AND type=?',array($matches[1],'t'));
         if($template!=null){
             $lightup->parseFuncEM($c->desecureHTML($template->current),array('deftag'));
         }
@@ -83,8 +87,8 @@ public static $hooks=array("foo");
     }
     
     function historyCallback($matches){
-        global $page,$k,$lore;
-        $actions = DataModel::getData('lore_actions','SELECT action,args,time,editor,reason FROM lore_actions WHERE title LIKE ? ORDER BY time DESC',array($page));
+        global $page,$type,$k,$lore;
+        $actions = DataModel::getData('lore_actions','SELECT action,args,time,editor,reason FROM lore_actions WHERE title LIKE ? AND type=? ORDER BY time DESC',array($page,substr($type,0,1)));
         if(!is_array($actions))$actions=array($actions);
 
         $return = '<div class="box history">';

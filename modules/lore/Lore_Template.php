@@ -7,19 +7,7 @@ class Template extends Article{
     function displayEdit(){
         global $a,$t,$lore;
         
-        $article = DataModel::getData('lore_articles','SELECT title,type,revision,status,current,time FROM lore_articles WHERE title LIKE ?',array($this->page));
-        if($article==null){
-            global $existing;$existing='inexistent';
-            $article = DataModel::getHull('lore_articles');
-            $article->title=$this->page;
-            $article->type=substr($this->type,0,1);
-            $article->current='';
-            $article->time=time();
-            $article->status='o';
-            $article->revision=0;
-            $article->editor=$a->user->username;
-        }
-        
+        $article = &$this->article;
         $t->openPage($article->title.' - Edit');
         echo('<h1>Edit '.ucfirst($this->type).'</h1>');
         
@@ -39,7 +27,7 @@ class Template extends Article{
                 if($a->check('lore.admin.status'))
                     $editor->addDropDown('status', array('o','p','l'), array('Open','Protected','Locked'), 'Status',$article->status);
                 if($a->check('lore.admin.rollback')){
-                    $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? ORDER BY revision DESC',array($article->title));
+                    $data = DataModel::getData('lore_revisions','SELECT revision FROM lore_revisions WHERE title LIKE ? AND type=? ORDER BY revision DESC',array($article->title,$article->type));
                     $revisions = array('CURRENT');
                     if($a->check('lore.admin.delete'))$revisions[]='DELETE';
                     if($data!=null){
@@ -54,6 +42,7 @@ class Template extends Article{
                     $editor->addTextField('move','Move to',$article->title,'text','placeholder="NewPage"');
             }
             $editor->addTextField('reason','Reason','','text','required placeholder="Article edit"');
+            $editor->setParseAPI('');
             $editor->show();
             
             ?>

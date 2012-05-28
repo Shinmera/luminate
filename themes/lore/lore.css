@@ -403,7 +403,7 @@ img.box{
     min-height:200px;
     padding:10px;
     position:relative;
-    padding-bottom:20px;
+    padding-bottom:35px;
 }
 
 #content #infobar{
@@ -411,6 +411,7 @@ img.box{
     left:0;bottom:0;right:0;
     background: #CCC;
     padding:2px;
+    height:30px;
 }
 
 #footer{
@@ -432,3 +433,11 @@ img.box{
 }
 #wikieditor #extrafields br{display:none;}
 #wikieditor #extrafields label{margin-left:20px;min-width:100px;}
+
+.filecompare{
+    display:inline-block;
+    position:relative;
+    border:1px solid #000;
+    max-width:45%;
+}
+.filecompare img{max-width:90%;}
