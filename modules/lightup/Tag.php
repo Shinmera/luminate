@@ -78,7 +78,7 @@ class Tag{
         $function.=$block."\n".' return $r;';
         
         //echo('<br />DEFT: '.$deftag); //DEBUG
-        echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
+        //echo('<br />FUNC: '.htmlspecialchars($function).'<br />'); //DEBUG
         $this->function = @create_function('$content,$args', $function);
         if($this->function===FALSE)throw new Exception(htmlspecialchars ($function));
         

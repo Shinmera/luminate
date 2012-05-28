@@ -190,4 +190,19 @@ class MATHTag extends Tag{
         }
     }
 }
+
+class BAILOUTTag extends Tag{
+    function parse($content,$args){
+        return 'return FALSE;';
+    }
+}
+
+class VALIDATETag extends Tag{
+    function parse($content,$args){
+        $this->args = array('0'=>array('name'=>'0','type'=>$content,'required'=>true,'default'=>''));
+        $args = $this->checkArguments($args);
+        if($args===FALSE)return 'FALSE';
+        else             return 'TRUE';
+    }
+}
 ?>

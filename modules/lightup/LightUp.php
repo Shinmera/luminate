@@ -23,6 +23,8 @@ public static $hooks=array("foo");
         $this->Stags['echo']=new ECHOTag('echo','','sys');
         $this->Stags['replace']=new REPLACETag('replace','','sys');
         $this->Stags['math']=new MATHTag('math','','sys');
+        $this->Stags['bailout']=new BAILOUTTag('bailout','','sys');
+        $this->Stags['valid']=new VALIDATETag('valid','','sys');
     }
     
     function displayApiPage(){
