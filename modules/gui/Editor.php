@@ -94,14 +94,15 @@ class SimpleEditor extends Editor{
     }
     
     function show($form=true){
-        if($form){?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor" style="<?=$this->style?>"><? } ?>
+        if($form){?><form id="<?=$this->formname?>" action="<?=$this->postPath?>" method="post" class="editor simpleeditor" style="<?=$this->style?>" enctype="multipart/form-data"><? } ?>
             <div id="extrafields"><?=implode("<br />",$this->extrafields)?></div>
             <? $this->getSimpleToolbar(); ?>
             <textarea name="text" id="<?=$this->formname?>txt" required><?=$_POST['text']?></textarea>
             <div id="preview" class="preview"></div><br />
             <input type="hidden" name="action" value="<?=$this->action?>" />
             <input type="hidden" name="suites" value="<?=implode(',',$this->suites)?>" />
-            <input type="submit" value="Submit" /><input type="submit" value="Preview" id="previewbutton" />
+            <input type="submit" value="Submit" />
+            <? if($this->apiUrl!=''){ ?><input type="submit" value="Preview" id="previewbutton" /><? } ?>
             <?=implode(' ',$this->extraactions)?>
         <? if($form){?></form><? } ?>
         <script type="text/javascript">
