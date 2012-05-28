@@ -5,7 +5,7 @@
 | |  | |_| | | | | (__| |____| |  | |
 |_|   \__,_|_| |_|\___|______|_|  |_|
 =--  Functional Extensive Markup  --=
-=--   Specification Version 1.3.2   --=
+=--  Specification Version 1.3.21 --=
 
  __   __  __          ___    __      
 |  \ |_  |_  | |\ | |  |  | /  \ |\ | 
@@ -41,19 +41,21 @@ It takes the tag name and a rest body of argument placeholders as arguments.
 
   deftag(name,argument1placeholder,argument2placeholder){ Tag instructions }
 
-Further language constructs available to build tags are only active inside deftag bodies.
+Further language constructs available to build tags are only active inside deftag bodies:
 
- tag(tag,class,style,extra){content}
- div(class,style,extra){content} 
- echo{string} 
- print(pos){var}                            (since 3.1,pos since 3.2)
- set(var,pos){value}                        (pos since 3.2)
- get(pos){var}                              (pos since 3.2)
- if(val1,val2,op){instructions} 
- loop(from,to,stepsize){instructions}       (since 3.1)
- each(var,item,pos){instructions}           (since 3.2)
- replace(search,replace){content}           (since 3.15)
- math(a,b){op}                              (since 3.18) 
+ tag(tag,class,style,extra){content}        Creates a html tag.
+ div(class,style,extra){content}            Creates a div block.
+ echo{string}                               Simply prints the string.
+ print(pos){var}                            Prints a variable.                              (since 3.1,pos since 3.2)
+ set(var,pos){value}                        Sets a variable value.                          (pos since 3.2)
+ get(pos){var}                              Returns a variable.                             (pos since 3.2)
+ if(val1,val2,op){instructions}             If block.
+ loop(from,to,stepsize){instructions}       Loop block.                                     (since 3.1)
+ each(var,item,pos){instructions}           Loops through each element of the array.        (since 3.2)
+ replace(search,replace){content}           Replaces all search occurrences.                (since 3.15)
+ math(a,b){op}                              Performs maths operations.                      (since 3.18)
+ valid(var){type}                           Checks if the variable validates against type.  (since 3.21)
+ bailout{}                                  Stops the tag parsing and makes it 'invalid'.   (since 3.21)
 
 Recursion of functions, but not macros is supported. The variable holding the loop counter is defaulting to pos.
 The variable holding the current loop item in the each loop is called item, the current position is pos.
@@ -61,7 +63,8 @@ Available OPs for IF are: ==, !=, <, >, <=, >=, like, !like. The latter two are 
 Global variables need to be prefixed by an asterisk (since 3.18). The pos argument in the set, get and print
 functions specifies the position in the array. Defaults to 0.
 
-Argument placeholders are structured by NAME TYPE DEFAULT. Name and type cannot contain spaces.
+Argument placeholders are structured by NAME TYPE OPTIONAL DEFAULT. 
+Name and type cannot contain spaces, optional has to be a boolean.
 The following types are available:
 
  TEXT  : Same as specifying no type at all. Any kind of character sequence is allowed.
@@ -70,21 +73,27 @@ The following types are available:
  MAIL  : Any kind of string that passes the PHP MAIL filter.
  DATE  : Any kind of string that passes the Toolkit DATE validity check.
  INTE  : Numerical value.
- INTEx : A number smaller or equal to x.
- BOOL  : A boolean (1,0,true,false) (since 1.35)
+ INTEx : A number smaller or equal to x, but greater or equal to 0.
+ BOOL  : A boolean (1,0,true,false) (since 3.15)
 
-The HTML end-result is called FuncEM Code.
-This code can contain argument placeholders, denoted by $$.
-The start and end tags are separated by a @ .
-F.e. a simple url:
+Tag examples
+For a simple url:
 
-  url(link URLS [,title TEXT [,target STRI _self]]){Text}
-  <a href="$link URLS$" title="$title TEXT $" target="$target STRI _self$" >@</a>
+  url([url [,title [,target ]]]){Text}
+  deftag(url,url URLS false,title TEXT, false,target STRI false blank_){
+    if(url,false){set(url){get{content}}}
+    tag(a,:extra href="get{url}" title="get{title}" target="get{target}"){
+        print{content}
+    }
+  }
 
 Another example, for an image tag:
 
-  img([alt STRI [,title TEXT [,class TEXT]]]){ImageUrl}
-  <img alt="$alt STRI image$" title="$title TEXT$" class="$class TEXT$" src="@" />
+  img([alt [,title [,class ]]]){ImageUrl}
+  deftag(alt TEXT false,title TEXT false,class STRI false){
+    if(alt,false){set(alt){get{content}}}
+    tag(img,:class get{class},:extra title="get{title}" alt="get{alt}" src="get{content}"){}
+  }
 
 This allows for a very advanced tagging system.
 
@@ -111,11 +120,9 @@ Once it hits a }!, it'll reset the flag and continue on parsing as usual.
 Any kind of balance issues with the tags have to be cleared in advance by simply filling up the required amount of tags.
 The user's original intent is lost in this, but we don't really have to care since it's impossible to correctly guess the closing position.
 To get the correct order of opening/closing tags, a simple stack will do.
-
-A separate function handles the parsing of the FuncEMCode itself. 
 If the arguments requirement isn't met, the FEM tag is filled back in without parsing.
 
---Since 1.3:
+--Since 3.1:
 Any kind of tag, be it functional or regular gets its own lambda function that the parser invokes.
 deftag blocks get read in as a pre-compile phase and the resulting tag function is saved in the tag array.
 Regular functions saved in the database get translated upon load.
