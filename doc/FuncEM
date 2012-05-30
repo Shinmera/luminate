@@ -63,8 +63,8 @@ Available OPs for IF are: ==, !=, <, >, <=, >=, like, !like. The latter two are 
 Global variables need to be prefixed by an asterisk (since 3.18). The pos argument in the set, get and print
 functions specifies the position in the array. Defaults to 0.
 
-Argument placeholders are structured by NAME TYPE OPTIONAL DEFAULT. 
-Name and type cannot contain spaces, optional has to be a boolean.
+Argument placeholders are structured by NAME TYPE REQUIRED DEFAULT. 
+Name and type cannot contain spaces, required has to be a boolean.
 The following types are available:
 
  TEXT  : Same as specifying no type at all. Any kind of character sequence is allowed.
