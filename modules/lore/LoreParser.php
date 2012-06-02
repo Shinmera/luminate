@@ -16,12 +16,12 @@ public static $hooks=array("foo");
         $args = $lightup->deparse($args);
         $text = $args['text'];
         
-        $text = preg_replace_callback('`\[([-A-Z0-9_-]*)\]`is',             array(&$this,'pageCallback'),       $text);
-        $text = preg_replace_callback('`\[([-A-Z0-9_-]*)\|([-A-Z0-9_-]*)\]`is',array(&$this,'pageCallback'),    $text);
+        $text = preg_replace_callback('`\[([\w_-]*)\]`is',             array(&$this,'pageCallback'),       $text);
+        $text = preg_replace_callback('`\[([\w_-\s]*)\|([\w_-]*)\]`is',array(&$this,'pageCallback'),    $text);
         
-        $text = preg_replace_callback('`\#\!category:([-A-Z0-9_-]*)`is',    array(&$this,'categoryCallback'),   $text);
-        $text = preg_replace_callback('`\#\!portal:([-A-Z0-9_-]*)`is',      array(&$this,'portalCallback'),     $text);
-        $text = preg_replace_callback('`\#\!file:([-A-Z0-9_-]*)(\|(75|150|300)){0,1}`is',array(&$this,'fileCallback'),$text);
+        $text = preg_replace_callback('`\#\!category:([\w_-]*)`is',    array(&$this,'categoryCallback'),   $text);
+        $text = preg_replace_callback('`\#\!portal:([\w_-]*)`is',      array(&$this,'portalCallback'),     $text);
+        $text = preg_replace_callback('`\#\!file:([\w_-]*)(\|(75|150|300)){0,1}`is',array(&$this,'fileCallback'),$text);
         
         $text = preg_replace_callback('`\#\!history`is',                    array(&$this,'historyCallback'),    $text);
         $text = str_replace(          '#!noparse',                          '',                                 $text);
