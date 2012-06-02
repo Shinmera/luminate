@@ -1,4 +1,4 @@
-<? 
+&<? 
 class LoreParser extends Module{
 public static $name="LoreParser";
 public static $author="Shinmera";
