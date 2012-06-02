@@ -8,7 +8,7 @@ function getTimeElapsed(){
     return round(($time-STARTTIME),4);
 }
     
-public static function url($sub,$url){
+public static function url($sub,$url=''){
     if(substr($url,0,1)!="/")$url=PROOT.$url;
     if($sub=="") return 'http://'.HOST.$url;
     else         return 'http://'.$sub.'.'.HOST.$url;
