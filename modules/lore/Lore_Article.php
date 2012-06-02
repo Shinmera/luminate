@@ -25,11 +25,12 @@ class Article{
             $article->revision=$this->rev;
         }
         
-        if(substr($article->current,0,11)=='#!redirect:')header('Location: '.PROOT.str_replace('#!redirect:','',$article->current));
+        if(substr($article->current,0,11)=='#!redirect:')
+            header('Location: '.PROOT.str_replace('#!redirect:','',$article->current));
         $t->openPage($article->title);
         
         if($article->type!='p'){
-            if($article->tpye!='a')echo('<h1>'.ucfirst($this->type).': '.str_replace('_',' ',$article->title).'</h1>');
+            if($article->type!='a')echo('<h1>'.ucfirst($this->type).': '.str_replace('_',' ',$article->title).'</h1>');
             else                   echo('<h1>'.str_replace('_',' ',$article->title).'</h1>');
         }
         $path=CACHEPATH.'articles/'.$article->title.'/'.$article->revision.'.html';
