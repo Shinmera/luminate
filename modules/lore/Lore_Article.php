@@ -148,7 +148,8 @@ class Article{
         $t->openPage($article->title.' - Edit');
         echo('<h1>Edit '.ucfirst($this->type).'</h1>');
         
-        if($a->check("lore.admin")||$article->status=='o'||($article->status=='l'&&$a->check('lore.access.'.$article->title))){
+        if(($a->check("lore.admin")||$article->status=='o'||($article->status=='l'&&$a->check('lore.access.'.$article->title)))&&
+            $a->user!=null){
             if($_POST['action']=='Save'&&$_POST['reason']!=''){
                 try{$suc=$this->updateArticle($article);}
                 catch(Exception $e){$err=$e->getMessage();}
@@ -183,7 +184,10 @@ class Article{
             $editor->setParseAPI('LoreParse');
             $editor->show();
         }else{
-            echo('This page is '.$lore->toStatusString($article->status).'. You do not have the permissions to edit it.');
+            if($a->user==null)
+                echo('Please <a href="'.Toolkit::url('login').'">log in</a> or <a href="'.Toolkit::url('login','register').'">register</a> to edit this page.');
+            else
+                echo('This page is '.$lore->toStatusString($article->status).'. You do not have the permissions to edit it.');
         }
         
         $t->closePage();
