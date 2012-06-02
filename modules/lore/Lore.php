@@ -43,6 +43,7 @@ function displayPage(){
         case 'file':
         case 'template':
         case 'user':
+        case 'article':
             $type=strtolower($params[0]);
             $page=$params[1];
             $params=array_slice($params, 1);
