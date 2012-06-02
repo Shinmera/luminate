@@ -188,6 +188,15 @@ public static $hooks=array("foo");
         if($tag!==FALSE)return $tag;
         else            return $matches[0];
     }
+    
+    function secureNoParse($text){
+        $text = preg_replace_callback('`\!\{(.*?)\}\!`is',array(&$this,'secureNoParseCallback'),$text);
+        return $text;
+    }
+    function secureNoParseCallback($matches){
+        echo('<br />'.htmlspecialchars($matches[1]));
+        return str_replace('}',' &rbrace;',str_replace('{',' &lbrace;',$matches[1]));
+    }
 
     function parseFuncEM($text,$suites=array('*')){
         $text = " ".str_replace('$','&dollar;',trim($text)); //To prevent the opening tag from failing to be recognized
@@ -196,10 +205,10 @@ public static $hooks=array("foo");
         
         $text = $this->fixBracketBalance($text);
         $text = $this->parseFuncEMShortTags($text);
+        $text = $this->secureNoParse($text);
         
         $tagCounter = array();
         $tags = &$this->tags;
-        $nextNoparse = true;
         $pointer = 0;
         
         while($pointer<strlen($text)){
@@ -207,17 +216,6 @@ public static $hooks=array("foo");
             $nextClose = strpos($text,"}",$pointer);
             $curLen = strlen($text);
             
-            //Check for noparse sections.
-            if($nextNoparse!==FALSE){
-                $nextNoparse = strpos($text,"!{",$pointer);
-                if($nextNoparse!==FALSE&&$nextNoparse==$nextOpen-1&&$nextNoparse<$nextClose){
-                    $nextNoparse+=2;
-                    $pointer = strpos($text,"}!",$nextNoparse)+2;
-                    $nextOpen = strpos($text,"{",$pointer);
-                    $nextClose = strpos($text,"}",$pointer);
-                }
-            }
-
             if($nextClose==FALSE||$nextOpen==FALSE)break;
             
             if($nextOpen<$nextClose&&$nextOpen!==FALSE){
