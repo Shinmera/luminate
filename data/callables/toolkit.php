@@ -1,8 +1,8 @@
 <? class Toolkit{
     
-function p($int){if($int<0)return $int*-1;else return $int;}
+public static function p($int){if($int<0)return $int*-1;else return $int;}
 
-function getTimeElapsed(){
+public static function getTimeElapsed(){
     $time = explode(' ',microtime());
     $time = $time[1]+$time[0];
     return round(($time-STARTTIME),4);
@@ -19,16 +19,16 @@ public static function log($message){
     $c->query("INSERT INTO ms_log VALUES(NULL,?,?,?)",array($message,time(),$a->user->userID));
 }
 
-function convertArrayDown($array,$field,$ret=array()){
+public static function convertArrayDown($array,$field,$ret=array()){
     for($i=0;$i<count($array);$i++)$ret[]=$array[$i][$field];
     return $ret;
 }
 
-function suggestedTextField($name,$apisource,$default="",$class="",$return=false){
+public static function suggestedTextField($name,$apisource,$default="",$class="",$return=false){
     $var='<input type="text" id="'.$name.'" name="'.$name.'" class="'.$class.'" value="'.$default.'" autocomplete="off" />
         <script type="text/javascript">
 	$(function() {
-            function split( val ) {
+            public static function split( val ) {
                 return val.split( /,\s*/ );
             }
             function extractLast( term ) {
@@ -69,7 +69,7 @@ function suggestedTextField($name,$apisource,$default="",$class="",$return=false
     if($return)return $var;else echo($var);
 }
 
-function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false){
+public static function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false){
     ?><div class='interactiveSelect' id='<?=$name?>'>
     <input autocomplete="off" type="text" id="sel_<?=$name?>_add" placeholder="New Value" ><ul><?
     for($i=0;$i<count($selData);$i++){
@@ -119,7 +119,7 @@ function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=fal
     </script><?
 }
 
-function printSelect($name,$viewData,$valData,$presel=-1,$search=null){
+public static function printSelect($name,$viewData,$valData,$presel=-1,$search=null){
     echo("<select name='".$name."'>");
     for($i=0;$i<count($valData);$i++){
         if($search!=null)$uID=array_search($valData[$i],$search);else $uID=$i;
@@ -129,7 +129,7 @@ function printSelect($name,$viewData,$valData,$presel=-1,$search=null){
     echo("</select>");
 }
 
-function printSelectObj($name,$objects,$viewField,$valField,$presel=-1){
+public static function printSelectObj($name,$objects,$viewField,$valField,$presel=-1){
     echo("<select name='".$name."'>");
     for($i=0;$i<count($objects);$i++){
         if($objects[$i]->$valField==$presel)$sel="selected";else $sel="";
@@ -138,7 +138,7 @@ function printSelectObj($name,$objects,$viewField,$valField,$presel=-1){
     echo("</select>");
 }
 
-function modCategorySelect($name,$module,$presel=-1,$none=false){
+public static function modCategorySelect($name,$module,$presel=-1,$none=false){
     global $c;
     echo("<select name='".$name."'>");
     if($none)echo("<option value='-1' >-</option>");
@@ -152,7 +152,7 @@ function modCategorySelect($name,$module,$presel=-1,$none=false){
 }
 
 
-static function err($message,$die=false,$return=false){
+public static function err($message,$die=false,$return=false){
     $message="<div style='padding:2px;margin:2px;
                           color:#000;font-weight:bold;font-family: Arial;font-size:10pt;
                           background-color: #DDD;box-shadow: 0px 0px 2px #FF0000;
@@ -163,18 +163,18 @@ static function err($message,$die=false,$return=false){
     if($die)die($message);else echo($message);
 }
 
-function pf($message){
+public static function pf($message){
     echo($message.'<br />');
     ob_flush();flush();
 }
 
-function swap(&$a,&$b){
+public static function swap(&$a,&$b){
     $temp=$a;
     $a=$b;
     $b=$temp;
 }
 
-function toKeyArray($array,$delim1=";",$delim2="="){
+public static function toKeyArray($array,$delim1=";",$delim2="="){
     $temp=explode($delim1,$array);
     $args=array();
     for($i=0;$i<count($temp);$i++){
@@ -187,7 +187,7 @@ function toKeyArray($array,$delim1=";",$delim2="="){
     return $args;
 }
 
-function toKeyString($array,$delim1=";",$delim2="="){
+public static function toKeyString($array,$delim1=";",$delim2="="){
     foreach($array as $key=>$val){
         $ret.=';'.$key.$delim2.$val;
     }
@@ -195,7 +195,7 @@ function toKeyString($array,$delim1=";",$delim2="="){
     return $ret;
 }
 
-function cleanArray($array){
+public static function cleanArray($array){
     if(!is_array($array))$array=explode(";",$array);
     $ret=array();
     for($i=0;$i<count($array);$i++){
@@ -204,11 +204,11 @@ function cleanArray($array){
     return $ret;
 }
 
-function isAssociative($array){
+public static function isAssociative($array){
     return (bool)count(array_filter(array_keys($array), 'is_string'));
 }
 
-function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=false){
+public static function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=false){
     if(!file_exists($in))return -1;
     if($out=="")return -1;
     if($w<=1)$w=150;if($h<=1)$h=150;
@@ -260,7 +260,7 @@ function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=
     }
 }
 
-function compileList($data,$epr=5,$limit=-1,$align="center",$box=""){
+public static function compileList($data,$epr=5,$limit=-1,$align="center",$box=""){
     ?><table align="<?=$align?>"><tr><?
     if($limit==-1)$limit=count($data);
     for($i=0;$i<$limit;$i++){
@@ -270,14 +270,14 @@ function compileList($data,$epr=5,$limit=-1,$align="center",$box=""){
     ?></tr></table><?
 }
 
-function compileTagList($data){
+public static function compileTagList($data){
     for($i=0;$i<count($data);$i++){
         if($data[$i]!="")
             echo("<div class='tag'><a href='".PROOT."search/tag/".$data[$i]."'>".$data[$i]."</a></div> ");
     }
 }
 
-function getGravatar($name,$size=100,$extra=""){
+public static function getGravatar($name,$size=100,$extra=""){
     require_once(TROOT."callables/gravatar.php");
     $gravatar = new Gravatar($name,AVATARPATH."noguy.jpg");
     $gravatar->size = $size;
@@ -285,7 +285,7 @@ function getGravatar($name,$size=100,$extra=""){
     return($gravatar);
 }
 
-function array_insert(&$array, $insert, $position = -1) { 
+public static function array_insert(&$array, $insert, $position = -1) { 
      $position = ($position == -1) ? (count($array)) : $position ; 
      if($position != (count($array))) { 
           $ta = $array; 
@@ -307,7 +307,7 @@ function array_insert(&$array, $insert, $position = -1) {
      return true; 
 }
 
-function in_arrayi($needle, $haystack) { 
+public static function in_arrayi($needle, $haystack) { 
     foreach ($haystack as $value) {
         if (strtolower($value) == strtolower($needle))
             return true;
@@ -315,13 +315,13 @@ function in_arrayi($needle, $haystack) {
     return false;
 }
 
-function removeFromList($needle,$haystack,$sep=";"){
+public static function removeFromList($needle,$haystack,$sep=";"){
     $haystack = explode($sep,$haystack);
     unset($haystack[array_search($needle, $haystack)]);
     return implode($sep,$haystack);
 }
 
-function breadcrumbs($array){
+public static function breadcrumbs($array){
     echo("<div class='breadcrumbs'>");
     foreach($array as $a=>$l){
         echo("&gt; <a href='".$l."'>".$a."</a> ");
@@ -329,7 +329,7 @@ function breadcrumbs($array){
     echo("</div>");
 }
 
-function pager($base,$max,$current=0,$step=25,$return=false){
+public static function pager($base,$max,$current=0,$step=25,$return=false){
     $ret="";
     $ret.="<div class='pager'>Pages: ";
     if($max==0)$max=1;
@@ -359,14 +359,14 @@ function pager($base,$max,$current=0,$step=25,$return=false){
     if($return)return $ret;else echo($ret);
 }
 
-function toDate($time,$format='H:i:s l d.m.Y'){
+public static function toDate($time,$format='H:i:s l d.m.Y'){
     if(is_numeric($time))
         return date($format,$time);
     else
         return $time;
 }
 
-function timeAgo($time){
+public static function timeAgo($time){
     $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
     $lengths = array("60","60","24","7","4.35","12","10");
 
@@ -386,13 +386,13 @@ function timeAgo($time){
     return $difference.' '.$periods[$j].' ago';
 }
 
-function convertHTML($html){
+public static function convertHTML($html){
     $html = str_replace("<","&lt;",$html);
     $html = str_replace(">","&gt;",$html);
     return $html;
 }
 
-function unzipFile($file,$destination){
+public static function unzipFile($file,$destination){
     $zip = new ZipArchive;
     $res = $zip->open($file);
     if ($res === TRUE) {
@@ -404,7 +404,7 @@ function unzipFile($file,$destination){
     }
 }
 
-function downloadFile($url,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname=""){
+public static function downloadFile($url,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname=""){
     $headers = get_headers($url,1);
     $filename = substr($url,strrpos($url,"/")+1);
     $filesize = $headers['Content-Length']/1024;
@@ -437,7 +437,7 @@ function downloadFile($url,$destination,$maxsizeKB=500,$allowedfiles=array(""),$
     return $path;
 }
 
-function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname="",$appendextension=true){
+public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname="",$appendextension=true){
     if(!is_uploaded_file($_FILES[$fieldname]['tmp_name']))        throw new Exception("No file uploaded!");
     if(!file_exists($_FILES[$fieldname]['tmp_name']))             throw new Exception("No uploaded file exists!");
     $filesize = $_FILES[$fieldname]['size']/1024;
@@ -451,10 +451,10 @@ function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array("
         $filename = $newname;
     }
     //get away those nasty characters.
-    $filename = $this->sanitizeFilename($filename);
+    $filename = Toolkit::sanitizeFilename($filename);
     if(substr($destination,strlen($destination)-1)!="/")$destination=$destination."/";
     //perform checks
-    if($filesize>$maxsizeKB)                                                throw new Exception("File is too big: ".$this->displayFilesize ($filesize));
+    if($filesize>$maxsizeKB)                                                throw new Exception("File is too big: ".Toolkit::displayFilesize ($filesize));
     if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))throw new Exception("Bad filetype: ".$filetype);
     if(file_exists($destination.$filename)&&!$overwrite)                    throw new Exception("File '".$destination.$filename."' already exists!");
     //move
@@ -462,7 +462,7 @@ function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array("
     return $destination.$filename;
 }
 
-function displayFilesize($filesize){
+public static function displayFilesize($filesize){
     if(is_numeric($filesize)){
         $decr = 1024; $step = 0;
         $prefix = array('Byte','KB','MB','GB','TB','PB');
@@ -477,7 +477,7 @@ function displayFilesize($filesize){
     }
 }
 
-function displayPager(){
+public static function displayPager(){
     ?><form class="pagerForm">
         <input class="bb" type="submit" name="dir" value="<<" />
         <input class="b"  type="submit" name="dir" value="<" />
@@ -491,7 +491,7 @@ function displayPager(){
     </form><?
 }
 
-function sanitizePager($max,$orders,$defaultOrder="",$step=50){
+public static function sanitizePager($max,$orders,$defaultOrder="",$step=50){
     switch($_GET['action']){
         case '<<':$_GET['f']=0;  $_GET['t']=$step; break;
         case '<' :$_GET['f']-=$step;$_GET['t']-=$step;break;
@@ -510,8 +510,8 @@ function sanitizePager($max,$orders,$defaultOrder="",$step=50){
     }
 }
 
-function sanitizeFilename($filename){
-    $filename = $this->sanitizeString($filename);
+public static function sanitizeFilename($filename){
+    $filename = Toolkit::sanitizeString($filename);
     $filename = str_replace(" ","_", $filename);
     if(strlen($filename)>48){
         $ending=substr($filename,strpos($filename, "."));
@@ -520,11 +520,11 @@ function sanitizeFilename($filename){
     return $filename;
 }
 
-function sanitizeString($s,$extra="\s\.\-_"){
+public static function sanitizeString($s,$extra="\s\.\-_"){
     return preg_replace("/[^a-zA-Z0-9".$extra."]/", "",$s);
 }
 
-function checkMailValidity($mail){
+public static function checkMailValidity($mail){
     /*$atpos= strpos($mail,'@');
     $dotpos=strpos($mail,'.');
     if($atpos==false  ||$dotpos==false ||$dotpos<$atpos)return false;
@@ -541,7 +541,7 @@ function checkMailValidity($mail){
     return true;
 }
 
-function checkDateValidity($date){
+public static function checkDateValidity($date){
     if(strpos($date,'.')!==FALSE)$date=explode('.',$date);
     else                         $date=explode('/',$date);
     if(count($date)!=3)return false;
@@ -554,22 +554,22 @@ function checkDateValidity($date){
     return true;
 }
 
-function checkURLValidity($url){
+public static function checkURLValidity($url){
     if(!filter_var($url, FILTER_VALIDATE_URL))return false;
     return true;
 }
 
-function displayImageSized($imgpath,$limit=800,$title="",$alt="image"){
+public static function displayImageSized($imgpath,$limit=800,$title="",$alt="image"){
     $d = getimagesize(ROOT.$imgpath);
     if($d[0]>$limit)$d=$limit;else $d=$d[0];
     echo("<img src='".$imgpath."' width='".$d."px' title='".$title."' alt='".$alt."' />");
 }
 
-function updateTimeout($action,$timeout){
-    return $this->updateTimestamp($action,$timeout);
+public static function updateTimeout($action,$timeout){
+    return Toolkit::updateTimestamp($action,$timeout);
 }
 
-function updateTimestamp($action,$timeout){
+public static function updateTimestamp($action,$timeout){
     global $c,$a;
     $result=$c->getData("SELECT `time` FROM ms_timer WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],$action));
     if(count($result)>0){
@@ -581,7 +581,7 @@ function updateTimestamp($action,$timeout){
     return true;
 }
 
-function stringToVarKey($s,$delim1=";",$delim2="="){
+public static function stringToVarKey($s,$delim1=";",$delim2="="){
     $s = explode($delim1,$s);
     $ar = array();
     for($i=0;$i<count($s);$i++){
@@ -591,7 +591,7 @@ function stringToVarKey($s,$delim1=";",$delim2="="){
     return $ar;
 }
 
-function wrapAndPrint($array,$front,$end){
+public static function wrapAndPrint($array,$front,$end){
     if(is_array($array)){
         foreach($array as $el){
             echo($front.$el.$end);
@@ -599,24 +599,24 @@ function wrapAndPrint($array,$front,$end){
     }else echo($front.$array.$end);
 }
 
-function checkShitBrowser(){
+public static function checkShitBrowser(){
     if(strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie') !== FALSE && strpos(strtolower($_SERVER['HTTP_USER_AGENT']), 'msie 9.') === FALSE){
         include(PAGEPATH.'shitbrowser.php');
         die();
     }
 }
 
-function getMicrotime(){
+public static function getMicrotime(){
     $time = explode(' ',microtime());
     $time = $time[1]+$time[0];
     return $time;
 }
 
-function strnposr($haystack, $needle, $occurrence, $pos = 0) {
-    return ($occurrence<2)?strpos($haystack, $needle, $pos):$this->strnposr($haystack,$needle,$occurrence-1,strpos($haystack, $needle, $pos) + 1);
+public static function strnposr($haystack, $needle, $occurrence, $pos = 0) {
+    return ($occurrence<2)?strpos($haystack, $needle, $pos):Toolkit::strnposr($haystack,$needle,$occurrence-1,strpos($haystack, $needle, $pos) + 1);
 }
 
-function generateModuleCache(){
+public static function generateModuleCache(){
     $modulelist=array();
     $dh = opendir(MODULEPATH);
     while(($file = readdir($dh)) !== false){
@@ -638,7 +638,7 @@ function generateModuleCache(){
     file_put_contents(CALLABLESPATH.'modulecache', serialize($modulelist));
 }  
 
-function generateRandomString($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
+public static function generateRandomString($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
     $numbers = "01234567890123456789";
     $alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     $specials = ",;.:-_/\\<>(){}[]+\"'*#@&%?!^~";
@@ -653,23 +653,48 @@ function generateRandomString($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
     return $short;
 }
 
-function unifyNumberString($string,$n){
+public static function unifyNumberString($string,$n){
     while(strlen($string)<$n){
         $string='0'.$string;
     }
     return $string;
 }
 
-function getUserPage($user,$return=false){
-    $t = '<a href="'.$this->url("user",$user).'" />'.$user.'</a>';
+public static function getUserPage($user,$return=false){
+    $t = '<a href="'.Toolkit::url("user",$user).'" />'.$user.'</a>';
     if(!$return)echo($t);else return $t;
 }
 
-function getUserAvatar($user,$file,$return=false,$size=150){
+public static function getUserAvatar($user,$file,$return=false,$size=150){
     if($file=="")$file="noguy.png";
-    $t = '<a href="'.$this->url("user",$user).'">
+    $t = '<a href="'.Toolkit::url("user",$user).'">
           <img src="'.AVATARPATH.$file.'" alt="" title="'.$user.'\'s avatar" style="width:'.$size.'px;height:'.$size.'px;" /></a>';
     if(!$return)echo($t);else return $t;
+}
+
+public static function getImageType($file){
+    $data = getimagesize($file);
+    $type="Unknown";
+    switch($data[2]){
+        case IMAGETYPE_GIF:$type="gif";break;
+        case IMAGETYPE_JPEG:$type='jpg';break;
+        case IMAGETYPE_PNG:$type='png';break;
+        case IMAGETYPE_SWF:$type='swf';break;
+        case IMAGETYPE_PSD:$type='psd';break;
+        case IMAGETYPE_BMP:$type='bmp';break;
+        case IMAGETYPE_TIFF_MM:
+        case IMAGETYPE_TIFF_II:$type='tiff';break;
+        case IMAGETYPE_JPC:$type='jpc';break;
+        case IMAGETYPE_JP2:$type='jp2';break;
+        case IMAGETYPE_JPX:$type='jpx';break;
+        case IMAGETYPE_JB2:$type='jb2';break;
+        case IMAGETYPE_SWC:$type='swc';break;
+        case IMAGETYPE_IFF:$type='iff';break;
+        case IMAGETYPE_WBMP:$type='wbmp';break;
+        case IMAGETYPE_XBM:$type='xbm';break;
+        case IMAGETYPE_ICO:$type='ico';break;
+    }
+    return $type;
 }
 
 }
