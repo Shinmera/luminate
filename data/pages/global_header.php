@@ -5,7 +5,11 @@
     <meta charset="utf-8" />
     <title><?=PAGETITLE?> - <?=$c->o['sitename']?></title>
     
-    <? for($i=0;$i<count($t->css);$i++){echo("<link rel='stylesheet' type='text/css' href='".THEMEPATH.$t->tname."/".$t->css[$i]."' />\n");}?>
+    <? for($i=0;$i<count($t->css);$i++){
+        if(substr($t->css[$i],0,1)=='/')echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css".$t->css[$i]."' />\n");
+        else                            echo("<link rel='stylesheet' type='text/css' href='".THEMEPATH.$t->tname."/".$t->css[$i]."' />\n");
+    
+    }?>
     <link rel='stylesheet' type='text/css' href='null.css' id='dynstyle' />
     <link rel="icon" type="image/png" href="<?=DATAPATH?>images/favicon.png" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all">
