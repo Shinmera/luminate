@@ -1,57 +1,3 @@
-function insert(formid,aTag, eTag) {
-  var input = $("#"+formid)[0];
-  input.focus();
-  /* f�r Internet Explorer */
-  if(typeof document.selection != 'undefined') {
-    /* Einf�gen des Formatierungscodes */
-    var range = document.selection.createRange();
-    var insText = range.text;
-    range.text = aTag + insText + eTag;
-    /* Anpassen der Cursorposition */
-    range = document.selection.createRange();
-    if (insText.length == 0) {
-      range.move('character', -eTag.length);
-    } else {
-      range.moveStart('character', aTag.length + insText.length + eTag.length);      
-    }
-    range.select();
-  }
-  /* f�r neuere auf Gecko basierende Browser */
-  else if(typeof input.selectionStart != 'undefined')
-  {
-    /* Einf�gen des Formatierungscodes */
-    var start = input.selectionStart;
-    var end = input.selectionEnd;
-    var insText = input.value.substring(start, end);
-    input.value = input.value.substr(0, start) + aTag + insText + eTag + input.value.substr(end);
-    /* Anpassen der Cursorposition */
-    var pos;
-    if (insText.length == 0) {
-      pos = start + aTag.length;
-    } else {
-      pos = start + aTag.length + insText.length + eTag.length;
-    }
-    input.selectionStart = pos;
-    input.selectionEnd = pos;
-  }
-  /* f�r die �brigen Browser */
-  else
-  {
-    /* Abfrage der Einf�geposition */
-    var pos;
-    var re = new RegExp('^[0-9]{0,3}$');
-    while(!re.test(pos)) {
-      pos = prompt("Inserting at position (0.." + input.val().length + "):", "0");
-    }
-    if(pos > input.val().length) {
-      pos = input.val().length;
-    }
-    /* Einf�gen des Formatierungscodes */
-    var insText = prompt("Please enter the text which is to be formatted:");
-    input.value = input.val().substr(0, pos) + aTag + insText + eTag + input.value.substr(pos);
-  }
-}
-
 function randomstring(length){
     var temp=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
               'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -223,4 +169,30 @@ function insertAdv(object,tagform){
             object.val(object.val().substring(0,start)+text+object.val().substring(end,len));
         }
     }
+}
+
+function addToolTip(el,text){
+    var tooltip = document.createElement('div');
+    
+    $(tooltip).addClass('tooltip').html(text);
+    $(tooltip).css({'position':'absolute'});
+    
+    var height = $(tooltip).css("height");
+    var elpos = el.offset();
+    var left = elpos.left-el.width()/2;
+    var top = elpos.top-el.height();
+    
+    if(top<5)top+=el.height();
+    if(top>$(document).height()-5)top-=el.height();
+    if(left<5)left+=$(tooltip).width();
+    if(left>$(document).width()-5)left-=$(tooltip).width();
+    $(tooltip).css({'top':top,'left':left,'display':'none'});
+    
+    el.hover(function(){
+        $(tooltip).stop(true,true).fadeIn(100);
+    },function(){
+        $(tooltip).stop(true,true).fadeOut(100);
+    });
+    
+    $("body").append(tooltip);
 }
