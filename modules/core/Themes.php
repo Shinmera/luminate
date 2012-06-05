@@ -25,10 +25,13 @@ function __construct(){}
 //TODO: Add template system.
 function loadTheme($themename,$override=true){
     if($override){
-        $this->img="";$this->css=array();
-        $this->js=array();$this->spaces=array();
-        $this->modules=array();$this->config="";
-        $this->headerf="";$this->footerf="";
+        $this->img="";
+        $this->css=array();
+        $this->js=array();
+        $this->modules=array();
+        $this->config="";
+        $this->headerf="";
+        $this->footerf="";
     }
     if($themename=="")return;
     $contents = explode("\n",file_get_contents(ROOT.THEMEPATH.$themename."/".$themename.".conf"));
@@ -70,7 +73,7 @@ function setMenu($data){
 
 function openPage($pagetitle){
     define("PAGETITLE",$pagetitle);
-    if($this->tname=="")$this->loadTheme("default");
+    if($this->tname=="")$this->loadTheme("default",false);
     include(PAGEPATH.'global_header.php');
     include(ROOT.THEMEPATH.$this->tname.'/'.$this->headerf);
 }
