@@ -28,7 +28,7 @@ class DataModel{
     
     public function saveData(){
         global $c;
-        if(count($this->fields)==0)$this->fields=$c->getTableColumns($this->table);
+        if(count($this->fields)==0) $this->fields=$c->getTableColumns($this->table);
         if(count($this->primary)==0)$this->primary=$c->getTablePrimaryKeys($this->table);
             
         $data = array();
