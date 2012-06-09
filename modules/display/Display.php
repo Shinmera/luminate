@@ -23,7 +23,6 @@ function displayPage(){
         $this->displayPicture($params[1]);
     }else
         $this->displayFolder($param);
-    $t->closePage();
 }
 
 function displayPicture($pictureID){
@@ -77,11 +76,71 @@ function displayPicture($pictureID){
             </article>
         </div><?
     }
+    $t->closePage();
 }
 
 function displayFolder($folderpath){
-    global $t;
-    $t->openPage(' - Gallery');
+    global $t,$l;
+    if(substr($folderpath,strlen($folderpath)-1)=='/')$folderpath=substr($folderpath,0,strlen($folderpath)-1);
+    $page = substr($folderpath,strrpos($folderpath,'/')+1);
+    if(is_numeric($page)){
+        $folderpath = substr($folderpath,0,strrpos($folderpath,'/'));
+    }else $page=0;
+    
+    $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder LIKE ?',array($folderpath));
+    if($folder==null){
+        $t->openPage('404 - Gallery');
+        echo('<br /><div class="failure">The folder you\'re looking for doesn\'t exist.</div>');
+    }else{
+        $t->openPage($folder->folder.' - Gallery');
+        $path = explode('/',$folder->folder);
+        $folder->title=$path[count($path)-1];
+        $subfolders = DataModel::getData('display_folders','SELECT display_folders.folder,pictures.filename 
+                                                            FROM display_folders LEFT JOIN ( 
+                                                                    SELECT s1.filename,s1.folder FROM display_pictures AS s1
+                                                                    LEFT JOIN display_pictures AS s2
+                                                                        ON s1.folder = s2.folder AND s1.time > s2.time
+                                                                ) AS pictures
+                                                                USING(folder)
+                                                            WHERE folder LIKE ?',array($folder->folder.'%'));
+        $pictures = DataModel::getData('display_folders','SELECT title,filename FROM display_pictures WHERE folder LIKE ?',array($folder->folder));
+        $order = explode(',',$folder->pictures);
+        ?><div id="foldercontent">
+            <div id="folderinfo" >
+                <h3><?=ucfirst($folder->title)?></h3>
+                <blockquote>
+                    <?=$l->triggerParse('CORE',$folder->text);?>
+                </blockquote>
+                <div id="foldercrumbs">
+                    <? for($i=0;$i<count($path)-1;$i++){
+                       $sofar.=$path[$i].'/';
+                       $crumbs[]='<a href="'.PROOT.$sofar.'">'.ucfirst($path[$i]).'</a>'; 
+                    }$crumbs = array_reverse($crumbs);echo(implode('',$crumbs)); ?>
+                </div>
+                <div id="foldernav">
+                    <a href="">1</a>
+                </div>
+            </div>
+            <div id="folderblock">
+                <? foreach($subfolders as $sfolder){ ?>
+                    <div class="folder">
+                        <img src="<?=DATAPATH.'uploads/display/'.$sfolder->folder.'/'.$folder->filename?>" />
+                        <h4 class="foldertitle">Mithent</h4>
+                    </div>
+                <? } ?> 
+                <div id="1" class="picture"><img src="<?=DATAPATH.'uploads/display/'.$folder->folder.'/'.$folder->filename?>" /></div>
+            </div>
+
+            <script type="text/javascript">
+                $(document).ready(function(){
+                    addToolTip($("#1"),'Suiseiseki 1');
+                    addToolTip($("#2"),'Suiseiseki 2');
+                    addToolTip($("#3"),'Suiseiseki 3');
+                });
+            </script>
+        </div><?
+    }
+    $t->closePage();
 }
 
 function displayAdmin(){
