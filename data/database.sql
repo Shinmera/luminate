@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 29, 2012 at 12:04 AM
+-- Generation Time: Jun 09, 2012 at 04:15 PM
 -- Server version: 5.5.24-log
 -- PHP Version: 5.4.3
 
@@ -53,6 +53,37 @@ INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title
 (8, 'Shinmera', 'Shinmera', 'm', 'Re: ', 'DDD', 1335432690, 1),
 (9, 'Shinmera', 'Faggot', 'm', 'Re: ', 'DDD', 1335432690, 0),
 (10, 'Shinmera', '', 'o', 'Re: ', 'DDD', 1335432690, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `display_folders`
+--
+
+CREATE TABLE IF NOT EXISTS `display_folders` (
+  `folder` varchar(128) NOT NULL,
+  `pictures` text NOT NULL,
+  `public` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`folder`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `display_pictures`
+--
+
+CREATE TABLE IF NOT EXISTS `display_pictures` (
+  `pictureID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `folder` varchar(128) NOT NULL,
+  `title` varchar(256) NOT NULL,
+  `text` text NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `tags` varchar(256) NOT NULL,
+  `filename` varchar(64) NOT NULL,
+  `user` varchar(32) NOT NULL,
+  PRIMARY KEY (`pictureID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -423,7 +454,8 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('Admin', 'ADMINAdmin', 'Admin', 'displayAdminPage'),
 ('CORE', 'HITwiki', 'Lore', 'displayPage'),
 ('CORE', 'APIlightupCUSTOM', 'LightUp', 'displayApiCustomParse'),
-('CORE', 'APILoreParse', 'Lore', 'displayApiParse');
+('CORE', 'APILoreParse', 'Lore', 'displayApiParse'),
+('CORE', 'HITgallery', 'Display', 'displayPage');
 
 -- --------------------------------------------------------
 
@@ -437,7 +469,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=29 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
 
 --
 -- Dumping data for table `ms_log`
@@ -471,7 +503,8 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (25, 'Module &#039;Lore&#039; added.', 1336373676, 1),
 (26, 'Hook CORE::HITwiki =&gt; Lore::displayPage added.', 1336373734, 1),
 (27, 'Hook CORE::APIlightupCUSTOM =&gt; LightUp::displayApiCustomParse added.', 1337761216, 1),
-(28, 'Hook CORE::APILoreParse =&gt; Lore::displayApiParse added.', 1338148726, 1);
+(28, 'Hook CORE::APILoreParse =&gt; Lore::displayApiParse added.', 1338148726, 1),
+(29, 'Hook CORE::HITgallery =&gt; Display::displayPage added.', 1338717230, 1);
 
 -- --------------------------------------------------------
 
