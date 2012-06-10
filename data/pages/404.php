@@ -19,8 +19,9 @@
               'It might have fallen down the well. You should better go and check.',
               'Not again!',
               'What if this actually isn\'t an error at all and you are looking at the right page?',
-              'How about you just go play some games instead?');?>
+              'How about you just go play some games instead?',
+              'Are you delusional? ... Just asking...');?>
 <div id="e404">
     <h1>Error 404: The item you were looking for does not exist.</h1>
-    <h2><?=$s[mt_rand(0,count($s))]?></h2>
+    <h2><?=$s[mt_rand(0,count($s)-1)]?></h2>
 </div>
