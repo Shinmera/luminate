@@ -63,7 +63,7 @@ function displayUserPage($username){
             </div>
             <div class="tabs"></div>
         </div>
-        <div class="large" style="text-align:center;">No such user found.</div><?
+        <? include(PAGEPATH.'404.php'); ?><?
     }else{
         $t->openPage($username." - Profile");
         if($params[1]=='')$params[1]='Profile';
