@@ -590,3 +590,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
     margin-left:200px;
     padding:15px;
 }
+
+#e404{
+    padding:10%;
+}
