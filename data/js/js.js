@@ -180,7 +180,7 @@ function addToolTip(el,text){
     var tipheight = $(tooltip).height();
     var tipwidth = $(tooltip).width();
     if(tipheight==0)tipheight=30;
-    if(tipwidth==0)tipwidth=100;
+    if(tipwidth==0)tipwidth=50;
     
     var height = $(tooltip).css("height");
     var elpos = el.offset();
@@ -189,8 +189,8 @@ function addToolTip(el,text){
     
     if(top<5)top+=el.height();
     if(top>$(document).height()-5)top-=el.height();
-    if(left<5)left+=$(tooltip).width();
-    if(left>$(document).width()-5)left-=$(tooltip).width();
+    if(left<5)left=5;
+    if(left>$(document).width()-5-tipwidth)left=$(document).width()-5-tipwidth;
     $(tooltip).css({'top':top,'left':left,'display':'none'});
     
     el.hover(function(){$(tooltip).stop(true,true).fadeIn(100);
