@@ -15,7 +15,7 @@ public static $hooks=array("foo");
 function buildMenu($menu){return $menu;}
 
 function displayPage(){
-    global $t,$params,$param;
+    global $t,$a,$params,$param;
     $t->js[]='/display.js';
     $t->css[]='/display.css';
     switch($params[0]){
@@ -24,13 +24,19 @@ function displayPage(){
             $this->displayPicture($params[1]);
             break;
         case 'manage':
-            
+            $this->displayManage($param);break;
             break;
         case 'upload':
-            
+            if(substr($param,strlen($param)-1)=='/')$param=substr($param,0,strlen($param)-1);
+            $picture = DataModel::getHull('display_picture');
+            $picture->folder(strtolower($param));
+            $picture->time=time();
+            $picture->user=$a->user->username;
+            $this->displayEdit($picture);break;
             break;
         case 'edit':
-            
+            $picture = DataModel::getData('display_picture','SELECT * FROM display_picture WHERE pictureID=?',array($params[1]));
+            $this->displayEdit($picture);break;
             break;
         default: $this->displayFolder($param);break;
     }
@@ -41,7 +47,7 @@ function displayPicture($pictureID){
     $picture = DataModel::getData('display_pictures','SELECT folder,title,text,time,tags,filename,user FROM display_pictures WHERE pictureID=?',array($pictureID));
     if($picture==null){
         $t->openPage('404 - Gallery');
-        echo('<br /><div class="failure">The picture you\'re looking for doesn\'t exist.</div>');
+        include(PAGEPATH.'404.php');
     }else{
         $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder=?',array($picture->folder));
         $order = explode(',',$folder->pictures);
@@ -64,6 +70,9 @@ function displayPicture($pictureID){
                 <div id="foldernav">
                     <? if($a->check('display.folder.'.str_replace('/','.',$folder->folder).'.upload')){ ?><a href='<?=PROOT.'upload/'.$folder->folder?>'>Upload</a><? } ?>
                     <? if($a->check('display.folder.'.str_replace('/','.',$folder->folder).'.manage')){ ?><a href='<?=PROOT.'manage/'.$folder->folder?>'>Manage</a><? } ?>
+                    <? if($a->check('display.folder.'.str_replace('/','.',$picture->folder).'.manage')||$a->user->username==$picture->user){?>
+                        <a href="<?=PROOT.'edit/'.$pictureID?>">Edit</a>
+                    <? } ?>
                 </div>
             </div>
             <div id="pictureblock" >
@@ -80,9 +89,6 @@ function displayPicture($pictureID){
                         <a href="<?=PROOT.'view/'.$order[count($order)-1]?>#picture" id="rf">&gg;</a>
                     <? } ?>
                     <a href="<?=PROOT.$picture->folder?>#folder" id="ff">&rarrhk;</a>
-                    <? if($a->check('display.folder.'.str_replace('/','.',$picture->folder).'.manage')||$a->user->username==$picture->user){?>
-                        <a href="<?=PROOT.'edit/'.$pictureID?>">Edit</a>
-                    <? } ?>
                 </div>
                 <div id="pictureinfoshort">
                     <h4>Info:</h4>
@@ -123,7 +129,7 @@ function displayFolder($folderpath){
     $folder = DataModel::getData('display_folders','SELECT folder,text FROM display_folders WHERE folder LIKE ?',array($folderpath));
     if($folder==null){
         $t->openPage('404 - Gallery');
-        echo('<br /><div class="failure">The folder you\'re looking for doesn\'t exist.</div>');
+        include(PAGEPATH.'404.php');
     }else{
         $t->openPage($folder->folder.' - Gallery');
         $path = explode('/',$folder->folder);
@@ -185,6 +191,14 @@ function displayFolder($folderpath){
         </div><?
     }
     $t->closePage();
+}
+
+function displayEdit($picture){
+    
+}
+
+function displayManage($folderpath){
+    
 }
 
 function displayAdmin(){
