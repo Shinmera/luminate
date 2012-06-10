@@ -5,7 +5,7 @@ class Article{
     var $type;
     var $article;
     
-    function __construct($page,$type='a',$revision=-1,$article){
+    function __construct($page,$type='a',$revision=-1,$article=null){
         $this->page=$page;
         $this->type=$type;
         $this->rev=$revision;
@@ -13,7 +13,7 @@ class Article{
     }
     
     function displayView(){
-        global $k,$t,$l,$lore,$c,$page;
+        global $k,$t,$lore,$c,$page;
         
         $article=&$this->article;
         $page=$article->title;
