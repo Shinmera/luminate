@@ -359,7 +359,7 @@ public static function pager($base,$max,$current=0,$step=25,$return=false){
     if($return)return $ret;else echo($ret);
 }
 
-public static function toDate($time,$format='H:i:s l d.m.Y'){
+public static function toDate($time,$format='l d.m.Y H:i:s'){
     if(is_numeric($time))
         return date($format,$time);
     else
@@ -491,7 +491,7 @@ public static function displayPager(){
     </form><?
 }
 
-public static function sanitizePager($max,$orders,$defaultOrder="",$step=50){
+public static function sanitizePager($max,$orders=array(),$defaultOrder="",$step=50){
     switch($_GET['action']){
         case '<<':$_GET['f']=0;  $_GET['t']=$step; break;
         case '<' :$_GET['f']-=$step;$_GET['t']-=$step;break;
