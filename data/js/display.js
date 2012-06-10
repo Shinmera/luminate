@@ -1,4 +1,12 @@
 $(document).ready(function(){
+
+    if($("#ll").length!=0)addToolTip($("#ll"),'Last');
+    if($("#lp").length!=0)addToolTip($("#lp"),'Previous');
+    if($("#rn").length!=0)addToolTip($("#rn"),'Next');
+    if($("#rf").length!=0)addToolTip($("#rf"),'First');
+    addToolTip($("#ff"),'Folder');
+    addToolTip($("#cc"),'Permalink');
+    
     if($("#image").length != 0){
         $("#image").load(function(){
             var img_width = $("#image").width();
@@ -37,13 +45,6 @@ $(document).ready(function(){
                 else
                     $("#pictureinfoshort").stop(true,true).animate({"max-height":infoheight},500);
             });
-
-            addToolTip($("#ll"),'Last');
-            addToolTip($("#lp"),'Previous');
-            addToolTip($("#rn"),'Next');
-            addToolTip($("#rf"),'First');
-            addToolTip($("#ff"),'Folder');
-            addToolTip($("#cc"),'Permalink');
         });
     }
 });

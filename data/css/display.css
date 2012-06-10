@@ -64,22 +64,24 @@
 }
 
 #folderinfo{
-    min-height:100px;
+    min-height:10px;
     border-bottom: 2px solid #AE61ED;
     background: #EEE;
     position:relative;
+    padding-top:30px;
 }
-#folderinfo h3{
+#folderinfo h2,#folderinfo h3{
     background-color: #EEE;
     width:50%;
     border-radius: 0 5px 0 0;
     display:block;
     position: absolute;
-    top:-5px;
+    top:-4px;
     border-top: 2px solid #000;
     padding-top:2px;
-    text-indent: 5px;
+    text-indent: 10px;
 }
+#folderinfo blockquote{margin:5px;}
 
 #foldercrumbs{
     position:absolute;
@@ -115,7 +117,7 @@
     text-decoration: none;
 }
 #foldercrumbs a:after{
-    top: 2px;
+    top: 5px;
     right:-10px;
     border-width: 8px 0 8px 10px;
     border-color: transparent #DDD;
@@ -133,8 +135,8 @@
 
 #foldernav{
     position:absolute;
-    height:20px;
-    bottom:-22px;
+    height:30px;
+    bottom:-32px;
     right:0px;
     border-bottom: 2px solid #AE61ED;
     border-left: 2px solid #AE61ED;
@@ -144,6 +146,9 @@
     z-index:10;
     text-indent: 5px;
 }
+#foldernav form{display:inline-block;}
+#foldernav a{border: 1px solid #8D49C4;background: #AE61ED;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;color:#FFF;}
+#foldernav a:hover{text-shadow:none;box-shadow: 0 0 10px #AE61ED;}
 
 #folderblock{
     min-height:300px;
