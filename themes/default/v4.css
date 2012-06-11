@@ -248,7 +248,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 }
 
 .interactiveSelect{
-    
+    display: inline-block;
 }
 
 .interactiveSelect ul{
