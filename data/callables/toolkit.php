@@ -69,54 +69,54 @@ public static function suggestedTextField($name,$apisource,$default="",$class=""
     if($return)return $var;else echo($var);
 }
 
-public static function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false){
-    ?><div class='interactiveSelect' id='<?=$name?>'>
-    <input autocomplete="off" type="text" id="sel_<?=$name?>_add" placeholder="New Value" ><ul><?
+public static function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false,$return=false){
+    $var='<div class="interactiveSelect" id="'.$name.'">
+        <input autocomplete="off" type="text" id="sel_'.$name.'_add" placeholder="New Value" onkeypress="return event.keyCode!=13" ><ul>';
     for($i=0;$i<count($selData);$i++){
         $pos=array_search($selData[$i],$valData);
-        ?><li><a href="#">x</a> <input type="hidden" name="<?=$name?>[]" value="<?=$valData[$pos]?>" /><?=$viewData[$pos]?></li> <?
+        $var.='<li><a href="#">x</a> <input type="hidden" name="'.$name.'[]" value="'.$valData[$pos].'" />'.$viewData[$pos].'</li>';
     }
-    ?></ul></div><script type="text/javascript">
-        <? echo("var ".$name."_viewData = ['".implode("','",$viewData)."'];"); ?>
-        <? echo("var ".$name."_valData = ['".implode("','",$valData)."'];"); ?>
+    $var.='</ul></div><script type="text/javascript">
+        var '.$name.'_viewData = ["'.implode("','",$viewData).'"];
+        var '.$name.'_valData  = ["'.implode("','",$valData).'"];
         $(function(){
-            $("#<?=$name?>>ul").sortable({
-                axis:'x',
-                containment: '#<?=$name?>>ul'
+            $("#'.$name.' ul").sortable({
+                axis:"x",
+                containment: "#'.$name.' ul"
             });
+            '.$name.'resetLinks();
         });
-        $("#sel_<?=$name?>_add").keypress(function(e) {
+        $("#sel_'.$name.'_add").keypress(function(e) {
             if(e.keyCode == 13) {
-                var pos=$.inArray($("#sel_<?=$name?>_add").val(),<?=$name?>_valData);
-                if(pos==-1)pos=$.inArray($("#sel_<?=$name?>_add").val(),<?=$name?>_viewData);
+                var pos=$.inArray($("#sel_'.$name.'_add").val(),'.$name.'_valData);
+                if(pos==-1)pos=$.inArray($("#sel_'.$name.'_add").val(),'.$name.'_viewData);
                 if(pos!=-1){
-                    $("#<?=$name?>>ul").append(
-                        '<li><a href="#">x</a> <input type="hidden" name="<?=$name?>[]" value="'+
-                        <?=$name?>_valData[pos]+'" />'+<?=$name?>_viewData[pos]+'</li> ');
-                    <?=$name?>resetLinks();
-                }else if("<?=$allowAll?>"=="1"){
-                    $("#<?=$name?>>ul").append(
-                        '<li><a href="#">x</a> <input type="hidden" name="<?=$name?>[]" value="'+
-                        $("#sel_<?=$name?>_add").val()+'" />'+$("#sel_<?=$name?>_add").val()+'</li> ');
-                    <?=$name?>resetLinks();
+                    $("#'.$name.' ul").append(
+                        "<li><a href=\'#\'>x</a> <input type=\'hidden\' name=\''.$name.'[]\' value=\'"+
+                        '.$name.'_valData[pos]+\'" />\'+'.$name.'_viewData[pos]+"</li>");
+                    '.$name.'resetLinks();
+                }else if("'.$allowAll.'"=="1"){
+                    $("#'.$name.' ul").append(
+                        \'<li><a href="#">x</a> <input type="hidden" name="'.$name.'[]" value="\'+
+                        $("#sel_'.$name.'_add").val()+\'" />\'+$("#sel_'.$name.'_add").val()+\'</li> \');
+                    '.$name.'resetLinks();
                 }
-                $("#<?=$name?>>ul").sortable('refresh');
-                $("#sel_<?=$name?>_add").val('');
-                $("#sel_<?=$name?>_add").focus();
+                $("#sel_'.$name.'_add").val("");
+                $("#sel_'.$name.'_add").focus();
+                $("#'.$name.' ul").sortable("refresh");
                 return false;
             }
         });
-        <?=$name?>resetLinks();
-        function <?=$name?>resetLinks(){
-            $("#<?=$name?> a").each(function(){
-                $(this).unbind('click');
+        function '.$name.'resetLinks(){
+            $("#'.$name.' ul li a").each(function(){
+                $(this).unbind("click");
                 $(this).click(function(){
                     $(this).parent().remove();
                     return false;
                 });
         });
-        }
-    </script><?
+        }</script>';
+    if($return)return $var;else echo($var);
 }
 
 public static function printSelect($name,$viewData,$valData,$presel=-1,$search=null){
