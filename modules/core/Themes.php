@@ -79,6 +79,7 @@ function openPage($pagetitle){
 }
 
 function closePage(){
+    if(!isset($this->tname))throw new Exception('Attempted to close the page without loading a theme.');
     include(ROOT.THEMEPATH.$this->tname.'/'.$this->footerf);
     include(PAGEPATH.'global_footer.php');
 }
