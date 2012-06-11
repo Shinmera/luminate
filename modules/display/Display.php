@@ -28,14 +28,14 @@ function displayPage(){
             break;
         case 'upload':
             if(substr($param,strlen($param)-1)=='/')$param=substr($param,0,strlen($param)-1);
-            $picture = DataModel::getHull('display_picture');
-            $picture->folder(strtolower($param));
+            $picture = DataModel::getHull('display_pictures');
+            $picture->folder=strtolower(str_replace('upload/','',$param));
             $picture->time=time();
             $picture->user=$a->user->username;
             $this->displayEdit($picture);break;
             break;
         case 'edit':
-            $picture = DataModel::getData('display_picture','SELECT * FROM display_picture WHERE pictureID=?',array($params[1]));
+            $picture = DataModel::getData('display_pictures','SELECT * FROM display_pictures WHERE pictureID=?',array($params[1]));
             $this->displayEdit($picture);break;
             break;
         default: $this->displayFolder($param);break;
@@ -52,14 +52,14 @@ function displayPicture($pictureID){
         $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder=?',array($picture->folder));
         $order = explode(',',$folder->pictures);
         $cpos = array_search($pictureID,$order);
-        $path = DATAPATH.'uploads/display/'.$picture->folder.'/'.$picture->filename;
+        $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/'.$picture->filename;
         $fpath = explode('/',$folder->folder);
         $folder->title=$fpath[count($fpath)-1];
         
         $t->openPage($picture->title.' - Gallery');
         ?><div id="foldercontent">
             <div id="folderinfo" >
-                <h3><?=ucfirst($folder->title)?></h3>
+                <h3><a href="<?=PROOT.$folder->folder?>"><?=ucfirst($folder->title)?></a></h3>
                 <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                 <div id="foldercrumbs">
                     <? for($i=0;$i<count($fpath)-1;$i++){
@@ -77,7 +77,7 @@ function displayPicture($pictureID){
             </div>
             <div id="pictureblock" >
                 <a name="picture"></a>
-                <img id="image" src="<?=Toolkit::url('dd',$path)?>" />
+                <img id="image" src="<?=$path?>" />
                 <div id="picturenav">
                     <? if($cpos>0){ ?>
                         <a href="<?=PROOT.'view/'.$order[0]?>#picture" id="ll">&ll;</a>
@@ -154,7 +154,7 @@ function displayFolder($folderpath){
         if($pictures  ==null)$pictures  =array();else if(!is_array($pictures  ))$pictures  =array($pictures  );
         ?><div id="foldercontent">
             <div id="folderinfo" >
-                <h2><?=ucfirst($folder->title)?></h2>
+                <h2><a href="<?=PROOT.$folder->folder?>"><?=ucfirst($folder->title)?></a></h2>
                 <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                 <div id="foldercrumbs">
                     <? for($i=0;$i<count($path)-1;$i++){
@@ -172,7 +172,7 @@ function displayFolder($folderpath){
                 <a name="folder"></a>
                 <? foreach($subfolders as $sfolder){ ?>
                     <div class="folder">
-                        <img src="<?=DATAPATH.'uploads/display/'.$sfolder->folder.'/'.$sfolder->filename?>" />
+                        <img src="<?=DATAPATH.'uploads/display/res/'.$sfolder->folder.'/'.$sfolder->filename?>" />
                         <h4 class="foldertitle"><?=$sfolder->folder?></h4>
                     </div>
                 <? } ?> 
@@ -180,7 +180,7 @@ function displayFolder($folderpath){
                    foreach($pictures as $picture){ 
                     $tooltips[] = 'addToolTip($("#p'.$picture->pictureID.'"),"'.$picture->title.'");';?>
                     <a id="p<?=$picture->pictureID?>" class="picture" href="<?=PROOT.'view/'.$picture->pictureID.'-'.str_replace(' ','-',$picture->title)?>">
-                        <img src="<?=DATAPATH.'uploads/display/'.$folder->folder.'/'.$picture->filename?>" />
+                        <img src="<?=DATAPATH.'uploads/display/res/'.$folder->folder.'/'.$picture->filename?>" />
                     </a>
                 <? } ?>
             </div>
@@ -194,7 +194,108 @@ function displayFolder($folderpath){
 }
 
 function displayEdit($picture){
-    
+    global $a,$t,$c,$l;
+    if((!$picture->pictureID!=''&& $a->check('display.folder.'.str_replace('/','.',$picture->folder).'.upload'))||
+       ( $picture->pictureID!=''&&($a->check('display.folder.'.str_replace('/','.',$picture->folder).'.manage')||$a->user->username==$picture->user))){
+        $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder=?',array($picture->folder));
+        
+        if($folder!=null){
+        
+            $fpath = explode('/',$folder->folder);
+            $folder->title=$fpath[count($fpath)-1];
+            $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/';
+
+            if(isset($_POST['action'])){
+                if($c->o['display_edit_timeout']=='')$c->o['display_edit_timeout']=60;
+                if($c->o['display_thumbnail_size']=='')$c->o['display_thumbnail_size']=100;
+                if(Toolkit::updateTimestamp("displayEdit",$c->o['display_edit_timeout'])){
+                    if(!file_exists(ROOT.$path)){
+                        $oldumask = umask(0);
+                        mkdir(ROOT.$path,0777,true);
+                        mkdir(ROOT.str_replace('/src/','/res/',$path),0777,true);
+                        umask($oldumask);
+                    }
+                    $err="";
+                    $picture->text = $_POST['text'];
+                    $picture->title= $_POST['title'];
+                    $picture->tags = implode(',',$_POST['tags']);
+                    if(strlen($_FILES['file']['name'])>50)$_FILES['file']['name']=substr($_FILES['file']['name'],0,50);
+
+                    if($picture->pictureID!=''){
+                        if(is_uploaded_file($_FILES['file']['tmp_name'])){
+                            try{
+                                if(@!unlink(ROOT.$path.$picture->filename)||
+                                @!unlink(ROOT.str_replace('/src/','/res/',$path).$picture->filename))
+                                        $err='Failed to delete previous files! ';
+                                $file = Toolkit::uploadFile('file',ROOT.$path,5500,array("image/png","image/jpg","image/jpeg","image/gif"),true,$picture->pictureID.'-'.$_FILES['file']['name'],true);
+                                Toolkit::createThumbnail($file,str_replace('/src/','/res/',$file), $c->o['display_thumbnail_size'], $c->o['display_thumbnail_size'], false,true,true);
+                                $picture->filename=str_replace(ROOT.$path,'',$file);
+                            }catch(Exception $e){$err.=$e->getMessage();}
+                        }
+                        $picture->saveData();
+                    }else{
+                        $picture->filename = 'NIL';
+                        $picture->insertData();
+                        try{
+                            $file = Toolkit::uploadFile('file',ROOT.$path,5500,array("image/png","image/jpg","image/jpeg","image/gif"),false,$c->insertID().'-'.$_FILES['file']['name'],true);
+                            Toolkit::createThumbnail($file,str_replace('/src/','/res/',$file), $c->o['display_thumbnail_size'], $c->o['display_thumbnail_size'], false,true,true);
+                            $picture->pictureID=$c->insertID();
+                            $picture->filename =str_replace(ROOT.$path,'',$file);
+                            $picture->saveData();
+                            $folder->pictures.=','.$picture->pictureID;
+                            $folder->saveData();
+                            header('Location: '.PROOT.'view/'.$picture->pictureID);
+                        }catch(Exception $e){
+                            $err.=$e->getMessage();
+                            $c->query('DELETE FROM display_pictures WHERE pictureID=?',array($c->insertID()));
+                        }
+                    }
+                }else{
+                    $err='Please wait '.$c->o['display_edit_timeout'].'seconds between uploads.';
+                }
+            }
+            
+            
+            $t->openPage('Picture Editor - Gallery');
+            
+            include(MODULEPATH.'gui/Editor.php');
+            $editor = new SimpleEditor("#","Save","galleryeditor",array("default","plus"));
+            if($err!='')$editor->addCustom('<div class="failure">'.$err.'</div>');
+            if($picture->pictureID!='')$editor->addCustom('<a href="'.PROOT.'view/'.$picture->pictureID.'"><img src="'.$path.$picture->filename.'" alt="" /></a>');
+            $editor->addTextField('title', 'Title', $picture->title, 'text', 'maxlength="256" required');
+            if($picture->pictureID!='')$editor->addTextField('file','Upload','','file');
+            else                          $editor->addTextField('file','Upload','','file','required');
+            $editor->addCustom('<br class="clear" />');
+            if($picture->tags!='')$editor->addCustom('<label>Tags</label>'.Toolkit::interactiveList('tags', explode(',',$picture->tags), explode(',',$picture->tags), explode(',',$picture->tags), true, true));
+            else                  $editor->addCustom('<label>Tags</label>'.Toolkit::interactiveList('tags', array(), array(), array(), true, true));
+            $_POST['text']=$picture->text;
+            
+            ?><div id="foldercontent">
+                <div id="folderinfo" >
+                    <h2>Submit to: <a href="<?=PROOT.$folder->folder?>"><?=ucfirst($folder->title)?></a></h2>
+                    <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
+                    <div id="foldercrumbs">
+                        <? for($i=0;$i<count($fpath)-1;$i++){
+                            $sofar.=$fpath[$i].'/';
+                            $crumbs[]='<a href="'.PROOT.$sofar.'">'.ucfirst($fpath[$i]).'</a>'; 
+                        }$crumbs = array_reverse($crumbs);echo(implode('',$crumbs)); ?>
+                    </div>
+                    <div id="foldernav">
+                        <? if($a->check('display.folder.'.str_replace('/','.',$folder->folder).'.upload')){ ?><a href='<?=PROOT.'upload/'.$folder->folder?>'>Upload</a><? } ?>
+                        <? if($a->check('display.folder.'.str_replace('/','.',$folder->folder).'.manage')){ ?><a href='<?=PROOT.'manage/'.$folder->folder?>'>Manage</a><? } ?>
+                    </div>
+                </div>
+                <?$editor->show();?>
+            </div><?
+        }else{
+            $t->openPage('404 - Gallery');
+            include(PAGEPATH.'404.php');
+        }
+    }else{
+        $t->openPage('403 - Gallery');
+        include(PAGEPATH.'403.php');
+    }
+    $t->closePage();
 }
 
 function displayManage($folderpath){
