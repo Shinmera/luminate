@@ -48,7 +48,7 @@ class Article{
                         $lastchar=strtoupper(substr($cat['article'],0,1));
                         echo('<h4>'.$lastchar.'</h4>');
                     }
-                    echo('<a href="'.Toolkit::url('wiki','category/'.$cat['article']).'">'.$cat['article'].'</a><br />');
+                    echo('<a href="'.PROOT.'category/'.$cat['article'].'">'.$cat['article'].'</a><br />');
                 }
                 echo('</div>');
             }else{
@@ -64,7 +64,7 @@ class Article{
                     case 'l':echo('<img width="16" height="16" src="'.$t->img.'locked.png" alt="Locked" title="This page is locked and can only be edited by moderators." />');break;
                 } ?>
             </div>
-            Current Revision: <em><a href='<?=$k->url('wiki',$article->title.'/history?to='.$article->revision)?>'><?=$article->revision?></a></em>
+            Current Revision: <em><a href='<?=PROOT.$article->title.'/history?to='.$article->revision?>'><?=$article->revision?></a></em>
             Type: <?=$lore->toTypeString($article->type);?><br />
             Created on: <em><?=$k->toDate($article->time);?></em>
         </div><?
