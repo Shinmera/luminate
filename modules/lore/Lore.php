@@ -11,7 +11,7 @@ function adminNavbar($menu){$menu[]='Lore';return $menu;}
 
 function displayApiParse(){
     global $l;
-    $text = $l->triggerPARSE('Lore',$text);
+    $text = $l->triggerPARSE('Lore',$_POST['text']);
     $parser = $l->loadModule('LoreParser');
     echo($parser->parse($text));
 }
