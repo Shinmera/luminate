@@ -90,7 +90,7 @@ class Template extends Article{
                     
                     $("#userpreview").html(alltags);
                     $("#parsepreview").html('Plase wait...');
-                    $.post('<?=Toolkit::url('wiki','api/lightupCUSTOM')?>',{'deftag':deftag,'text':alltags},function(text){
+                    $.post('<?=PROOT.'api/lightupCUSTOM'?>',{'deftag':deftag,'text':alltags},function(text){
                         $("#parsepreview").html(text);
                     });
                 }

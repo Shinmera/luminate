@@ -31,36 +31,35 @@ public static $hooks=array("foo");
     }
     
     function pageCallback($matches){
-        global $k,$lore;
+        global $lore;
         $article = DataModel::getData('lore_articles','SELECT title,type FROM lore_articles WHERE title LIKE ?',array($matches[1]));
         if(isset($matches[2]))$title=$matches[2];else $title=$matches[1];
         if($article==null){
-            return '<a href="'.$k->url('wiki',$matches[1]).'" class="pagelink inexistent">'.$title.'</a>';
+            return '<a href="'.PROOT.$matches[1].'" class="pagelink inexistent">'.$title.'</a>';
         }else{
-            return '<a href="'.$k->url('wiki',$lore->toTypeString($article->type).'/'.$article->title).'" class="pagelink">'.$title.'</a>';
+            return '<a href="'.PROOT.$lore->toTypeString($article->type).'/'.$article->title.'" class="pagelink">'.$title.'</a>';
         }
     }
     
     function categoryCallback($matches){
-        global $c,$k,$page;
+        global $c,$page;
         $category = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type=?',array($matches[1],'c'));
         if($category==null){
             return '';
         }else{
             $c->query('INSERT IGNORE INTO lore_categories SET title=?, article=?',array($category->title,$page));
-            return '<div class="box categorybox">This article is part of <a class="pagelink" href="'.$k->url('wiki',$category->title).'">'.$category->title.'</a>.</div>';
+            return '<div class="box categorybox">This article is part of <a class="pagelink" href="'.PROOT.$category->title.'">'.$category->title.'</a>.</div>';
         }
     }
     
     function portalCallback($matches){
-        global $k;
         $portal = DataModel::getData('lore_articles','SELECT title FROM lore_articles WHERE title LIKE ? AND type=?',array($matches[1],'p'));
         if($portal==null){
             return '';
         }else{
             return '<div class="box portalbox">
-                        This article is part of a series on <a class="pagelink" href="'.$k->url('wiki',$portal->title).'">'.$portal->title.'</a>.<br />
-                        Visit the <a class="pagelink" href="'.$k->url('wiki',$portal->title).'">'.$portal->title.' Portal</a> for more.
+                        This article is part of a series on <a class="pagelink" href="'.PROOT.$portal->title.'">'.$portal->title.'</a>.<br />
+                        Visit the <a class="pagelink" href="'.PROOT.$portal->title.'">'.$portal->title.' Portal</a> for more.
                     </div>';
         }
     }
