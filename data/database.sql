@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 09, 2012 at 04:15 PM
+-- Generation Time: Jun 13, 2012 at 11:47 PM
 -- Server version: 5.5.24-log
 -- PHP Version: 5.4.3
 
@@ -62,10 +62,17 @@ INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title
 
 CREATE TABLE IF NOT EXISTS `display_folders` (
   `folder` varchar(128) NOT NULL,
+  `text` text NOT NULL,
   `pictures` text NOT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`folder`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `display_folders`
+--
+
+INSERT INTO `display_folders` (`folder`, `text`, `pictures`) VALUES
+('a/bc/d', 'AABBCC b{bold}', '1,2,3,0,0,10');
 
 -- --------------------------------------------------------
 
@@ -83,7 +90,18 @@ CREATE TABLE IF NOT EXISTS `display_pictures` (
   `filename` varchar(64) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`pictureID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+
+--
+-- Dumping data for table `display_pictures`
+--
+
+INSERT INTO `display_pictures` (`pictureID`, `folder`, `title`, `text`, `time`, `tags`, `filename`, `user`) VALUES
+(1, 'a/bc/d', 'Test1', 'This has no picture data as it is a manual insert for testing purposes.\r\nAlso Mithent is awesome.\r\n', 1319273466, 'Oh,la,la', 'nope.avi', 'Shinmera'),
+(2, 'a/bc/d', 'Some random pic 2', 'And so our story continues as the lone programmer tirelessly works all day and night long, without ever realizing that all his attempts are futile and the future is inevitable.\r\n', 1335394165, 'Sigh,when,will,I,ever,learn', 'nope.wmv', 'Shinmera'),
+(8, 'a/bc/d', 'OH BOY OH BOY', 'OH BOY OH BOY????', 1339411768, 'Oh,Shiiit,Everything,Burns', '8-7a9880c247091c8f49d51d0b8d90188e.jpg', 'Shinmera'),
+(9, 'a/bc/d', 'I don&#039;t know.', 'WHO WOULD?', 1339413367, 'Me,Neither', '9-WHO_WOULD.jpg', 'Shinmera'),
+(10, 'a/bc/d', 'Beh', 'Bluuuh', 1339414766, 'I,Want,To,Finish,This,Already', '10-pout.jpg', 'Shinmera');
 
 -- --------------------------------------------------------
 
