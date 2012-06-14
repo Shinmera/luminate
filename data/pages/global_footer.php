@@ -8,6 +8,12 @@ var pageTracker = _gat._getTracker("UA-13229468-2");
 pageTracker._trackPageview();
 } catch(err) {}</script>
 
+<div class="jqmConfirm jqmWindow" id="confirm">
+    <p class="jqmConfirmMsg"></p>
+    <input type="submit" value="No" />
+    <input type="submit" value="Yes" />
+</div>
+
 <script type="text/javascript" src="<?=DATAPATH.'js/js.js'?>" ></script>
 <? global $t;
 for($i=0;$i<count($t->js);$i++){
