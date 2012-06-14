@@ -200,3 +200,22 @@ function addToolTip(el,text){
         $("body").append(tooltip);
     }
 }
+
+function confirm(msg,func) {
+  $('#confirm')
+    .jqmShow()
+    .find('p.jqmConfirmMsg').html(msg).end()
+    .find(':submit:visible').unbind('click').click(function(){
+        if(this.value == 'Yes'){func();}
+        $('#confirm').jqmHide();
+      });
+}
+
+$().ready(function() {
+  $('#confirm').jqm({overlay: 50, modal: true, trigger: false});
+  
+  $('a.confirm').click(function() { 
+    confirm('About to visit: '+this.href+' !',this.href); 
+    return false;
+  });
+});
