@@ -13,6 +13,7 @@ pageTracker._trackPageview();
     <input type="submit" value="No" />
     <input type="submit" value="Yes" />
 </div>
+<div id="apiurl" style="display:none;"><?=PROOT?>api/</div>
 
 <script type="text/javascript" src="<?=DATAPATH.'js/js.js'?>" ></script>
 <? global $t;
