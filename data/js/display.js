@@ -1,5 +1,4 @@
-$(document).ready(function(){
-
+function initPicture(){
     if($("#ll").length!=0)addToolTip($("#ll"),'Last');
     if($("#lp").length!=0)addToolTip($("#lp"),'Previous');
     if($("#rn").length!=0)addToolTip($("#rn"),'Next');
@@ -47,4 +46,98 @@ $(document).ready(function(){
             });
         });
     }
-});
+}
+
+function initManage(){
+    var $imagelist = $("#imagelist");
+    var $folderlist = $("#folderlist");
+
+    function resetDeleteHandlers(){
+        $( "li>ul>li>.delete",$folderlist).unbind("click").click(function(){
+            $(this).parent().slideUp(200,function(){
+                $(this).remove()});
+        });
+    }
+
+    function saveData(){
+        $("#saver").html('Saving Data...');
+        $("li",$folderlist).each(function(){
+            var name = $(this).attr("id");
+            $("ul li",$(this)).each(function(){
+                $("#managecontent").append('<input type="hidden" name="'+name+'[]" value="'+$(this).attr("id").substr(1)+'">');
+            });
+        });
+
+        $.ajax($('#apiurl').html()+'displayManageSave',{
+            data: $("#managecontent").serialize(),
+            type: "POST",
+            success:function(data){$("#saver").html(data);},
+            error: function(){$("#saver").html('Saving failed!');}
+        }).done(function(){$("#managecontent input").remove();});
+    }
+
+    $("#saver").click(function(){saveData();})
+
+    $( "li", $imagelist ).draggable({
+        cancel: "a",
+        revert: false,
+        scroll: true,
+        zIndex: 100,
+        opacity: 0.8,
+        containment: "body",
+        helper: "clone",
+        cursor: "move",
+        addClasses: false
+    })
+    $( ">li", $folderlist ).droppable({
+        accept: "#imagelist > li",
+        hoverClass: "hover",
+        activeClass: "active",
+        drop: function( event, ui ) {
+            $folderlist.find("#P"+ui.draggable.attr("id")).remove();
+            $( "ul", $(this)).append('<li id="P'+ui.draggable.attr("id")+'"><a class="delete">x</a>'+ui.draggable.attr("title")+'</li>');
+            $( "ul", $(this)).sortable('refresh');
+            resetDeleteHandlers();
+        }
+    })
+    $(">li ul",$folderlist).sortable({
+        containment: "#folderlist",
+        cursor: "move",
+        zIndex: 100,
+        connectWith: ".new"
+    }).disableSelection();
+
+    $( ">li>.delete",$folderlist).click(function(){
+        var id = $(this).parent().attr("id");
+        var $folderu = $("#"+id+" ul",$folderlist);
+        confirm("Do you really want to delete everything in '"+id+"'?",function(){$folderu.slideUp(500,
+                function(){
+                    $('li',$folderu).remove();
+                    $folderu.css('display','block');
+                });
+            });
+    });
+    $(">li>.collapse",$folderlist).click(function(){
+        $("ul",$(this).parent()).slideToggle();
+    });
+
+    $("a",$imagelist).click(function(){
+        var id = $(this).parent().attr("id");
+        confirm("Do you really want to delete '"+$(this).parent().attr("title")+"'?",function(){
+            $("#saver").html('Deleting picture...');
+            $.ajax($('#apiurl').html()+'displayManageDelete',{
+                data: {'id':id},
+                type: "POST",
+                success: function(data){
+                    $("#saver").html(data);
+                    $("#P"+id).remove();
+                    $("#"+id).remove();
+                    saveData();
+                },
+                error: function(){$("#saver").html('Deleting failed!');}
+            });
+        });
+    });
+
+    resetDeleteHandlers();
+}
