@@ -49,6 +49,20 @@ class DataModel{
         $c->query(substr($query,0,strlen($query)-3),$data);
     }
     
+    public function deleteData(){
+        global $c;
+        if(count($this->primary)==0)$this->primary=$c->getTablePrimaryKeys($this->table);
+        
+        $data = array();
+        $query = 'DELETE FROM '.$this->table.' WHERE ';
+        foreach($this->primary as $primary){
+            if(is_numeric($this->holder[$primary]))$query.= ' `'.$primary.'`=? AND';
+            else                                   $query.= ' `'.$primary.'` LIKE ? AND';
+            $data[]=$this->holder[$primary];
+        }
+        $c->query(substr($query,0,strlen($query)-3),$data);
+    }
+    
     //TODO: Add support for functions on values.
     public function insertData(){
         global $c;
