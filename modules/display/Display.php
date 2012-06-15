@@ -6,11 +6,9 @@ public static $short='display';
 public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
-//Access: display.folder.$folder
-//Default access is display.folder.username
-//Other access is managed through folders.
-//Subfolders are separated by dots to conform with the perms.
-//Pictures are saved in ./data/uploads/display/$folder/$filename
+//TODO: Add hooks
+//TODO: implement management
+//TODO: Add ability to delete pic on its edit page
 
 function buildMenu($menu){return $menu;}
 
@@ -22,9 +20,6 @@ function displayPage(){
         case 'view':
             if(strpos($params[1],'-')!==FALSE)$params[1]=substr($params[1],0,strpos($params[1],'-'));
             $this->displayPicture($params[1]);
-            break;
-        case 'manage':
-            $this->displayManage($param);break;
             break;
         case 'upload':
             if(substr($param,strlen($param)-1)=='/')$param=substr($param,0,strlen($param)-1);
@@ -38,6 +33,7 @@ function displayPage(){
             $picture = DataModel::getData('display_pictures','SELECT * FROM display_pictures WHERE pictureID=?',array($params[1]));
             $this->displayEdit($picture);break;
             break;
+        case 'manage':$this->displayManage();break;
         default: $this->displayFolder($param);break;
     }
 }
@@ -50,16 +46,17 @@ function displayPicture($pictureID){
         include(PAGEPATH.'404.php');
     }else{
         $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder=?',array($picture->folder));
+        if($folder==null)$folder = DataModel::getHull ('display_folders');
         $order = explode(',',$folder->pictures);
         $cpos = array_search($pictureID,$order);
         $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/'.$picture->filename;
-        $fpath = explode('/',$folder->folder);
+        $fpath = explode('/',$picture->folder);
         $folder->title=$fpath[count($fpath)-1];
         
         $t->openPage($picture->title.' - Gallery');
         ?><div id="foldercontent">
             <div id="folderinfo" >
-                <h3><a href="<?=PROOT.$folder->folder?>"><?=ucfirst($folder->title)?></a></h3>
+                <h3><a href="<?=PROOT.$picture->folder?>"><?=ucfirst($folder->title)?></a></h3>
                 <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                 <div id="foldercrumbs">
                     <? for($i=0;$i<count($fpath)-1;$i++){
@@ -88,7 +85,9 @@ function displayPicture($pictureID){
                         <a href="<?=PROOT.'view/'.$order[$cpos+1]?>#picture" id="rn">&gt;</a>
                         <a href="<?=PROOT.'view/'.$order[count($order)-1]?>#picture" id="rf">&gg;</a>
                     <? } ?>
-                    <a href="<?=PROOT.$picture->folder?>#folder" id="ff">&rarrhk;</a>
+                    <? if($folder->folder!=''){ ?>
+                        <a href="<?=PROOT.$picture->folder?>#folder" id="ff">&rarrhk;</a>
+                    <? } ?>
                 </div>
                 <div id="pictureinfoshort">
                     <h4>Info:</h4>
@@ -117,6 +116,7 @@ function displayPicture($pictureID){
                     <?=$l->triggerParse('CORE',$picture->text);?>
                 </article>
             </div>
+            <script type="text/javascript">$(document).ready(function(){initPicture()});</script>
         </div><?
     }
     $t->closePage();
@@ -298,8 +298,89 @@ function displayEdit($picture){
     $t->closePage();
 }
 
-function displayManage($folderpath){
+function displayAPIDeletePicture(){
+    global $a;
+    $picture = DataModel::getData('display_pictures','SELECT user,filename,folder FROM display_pictures WHERE pictureID=?',$_POST['id']);
+    if($picture==null)die('No such picture found');
+    if($picture->owner != $a->user->username && !$a->check('display.admin.*'))die('Insufficient privileges!');
+    unlink(ROOT.DATAPATH.'uploads/display/res/'.$picture->folder.'/'.$picture->filename);
+    unlink(ROOT.DATAPATH.'uploads/display/src/'.$picture->folder.'/'.$picture->filename);
+    $picture->deleteData();
+    die('Picture deleted!');
+}
+function displayAPISaveData(){
     
+}
+function displayManage(){
+    global $a,$t;
+    
+    if($a->user->username!=''){
+        $t->openPage('Manage - Gallery');
+        
+        $max = DataModel::getData('display_pictures','SELECT COUNT(pictureID) AS pictures FROM display_pictures WHERE user LIKE ?',array($a->user->username));
+        Toolkit::sanitizePager($max->pictures);
+        $pictures = DataModel::getData('display_pictures','SELECT pictureID,title,filename,folder FROM display_pictures 
+                                                           WHERE user LIKE ? ORDER BY time DESC
+                                                           LIMIT '.$_GET['f'].','.$_GET['t'],array($a->user->username));
+        if($folders==null)$folders=array();else if(!is_array($folders))$folders=array($folders);
+        
+        //Create permissions search.
+        if(array_key_exists('*', $a->udPTree)){
+            $q='folder LIKE ?';
+            $qd=array('%');
+        }else if($a->check('display.folder.*')){
+            foreach($a->udPTree['display'] as $branch){
+                if($branch[0]=='folder'){
+                    $q.='OR folder LIKE ? ';
+                    $qd[]=str_replace('*','%',implode('/',array_slice($branch,1)));
+                }
+            }
+            $q = substr($q,2);
+        }else{$q('1=-1');$qd=array();}
+        $folders = DataModel::getData('display_folders','SELECT folder,pictures FROM display_folders WHERE '.$q,$qd);
+        if($folders==null)$folders=array();else if(!is_array($folders))$folders=array($folders);
+        
+        ?><div id="folderinfo" >
+            <h2>Manage</h2>
+            <blockquote>Manage your pictures.</blockquote>
+            <div id="foldernav">
+                <?Toolkit::displayPager();?>
+                <a id="saver">Save</a>
+            </div>
+        </div>
+        <form id="managecontent">
+            <ul id="imagelist">
+                <? foreach($pictures as $picture){ ?>
+                    <li id="<?=$picture->pictureID?>" title="<?=$picture->title?>" class="picture">
+                        <a>X</a>
+                        <img src="<?=DATAPATH.'uploads/display/res/'.$picture->folder.'/'.$picture->filename?>" />
+                    </li>
+                <? } ?>
+            </ul>
+            <ul id="folderlist">
+                <? foreach($folders as $folder){
+                    $pics = explode(',',$folder->pictures);
+                    $path = explode('/',$folder->folder);
+                    $folder->title = $path[count($path)-1];?>
+                    
+                    <li id="<?=$folder->title?>"><a class="delete">x</a> <a class="collapse"><?=ucfirst($folder->title)?></a>
+                        <ul class="new">
+                            <? foreach($pics as $pic){
+                                $title='';foreach($pictures as $pict){if($pict->pictureID==$pic)$title=$pict->title;}?>
+                                
+                                <li id="P<?=$pic?>"><a class="delete">x</a><?=$title?></li>
+                            <? } ?>
+                        </ul>
+                    </li>
+                <? } ?>
+            </ul>
+        </form>
+        <script type="text/javascript">$(document).ready(function(){initManage();});</script><?
+    }else{
+        $t->openPage('403 - Gallery');
+        include(PAGEPATH.'403.php');
+    }
+    $t->closePage();
 }
 
 function displayAdmin(){
