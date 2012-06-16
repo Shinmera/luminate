@@ -697,5 +697,13 @@ public static function getImageType($file){
     return $type;
 }
 
+public static function mkdir($path){
+    if(!file_exists($path)){
+        $oldumask = umask(0);
+        mkdir($path,0777,true);
+        umask($oldumask);
+    }
+}
+
 }
 ?>
