@@ -93,9 +93,8 @@ function printMenu($menu=null,$nostyle=false){
      * V        [   A   ] [   B   ] [   C   ]
      * H                            [  CA   ]
      */
-    
     if(!is_array($menu)){
-        global $l,$k;
+        global $l;
         $menu=array();
         $menu[]=array('Index',NODOMAIN);
         $menu = $l->triggerHookSequentially("buildMenu",$this,$menu);
