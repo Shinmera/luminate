@@ -63,17 +63,21 @@ function initManage(){
         $("#saver").html('Saving Data...');
         $("li",$folderlist).each(function(){
             var name = $(this).attr("id");
-            $("ul li",$(this)).each(function(){
-                $("#managecontent").append('<input type="hidden" name="'+name+'[]" value="'+$(this).attr("id").substr(1)+'">');
-            });
+            if($("ul li",$(this)).length == 0){
+                $("#dataform").append('<input type="hidden" name="'+name+'[]" value=" ">');
+            }else{
+                $("ul li",$(this)).each(function(){
+                    $("#dataform").append('<input type="hidden" name="'+name+'[]" value="'+$(this).attr("id").substr(1)+'">');
+                });
+            }
         });
 
         $.ajax($('#apiurl').html()+'displayManageSave',{
-            data: $("#managecontent").serialize(),
+            data: $("#dataform").serialize(),
             type: "POST",
             success:function(data){$("#saver").html(data);},
             error: function(){$("#saver").html('Saving failed!');}
-        }).done(function(){$("#managecontent input").remove();});
+        }).done(function(){$("#dataform").html("");});
     }
 
     $("#saver").click(function(){saveData();})
