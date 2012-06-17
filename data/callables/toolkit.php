@@ -87,7 +87,7 @@ public static function interactiveList($name,$viewData,$valData,$selData=array()
             '.$name.'resetLinks();
         });
         $("#sel_'.$name.'_add").keypress(function(e) {
-            if(e.keyCode == 13) {
+            if(e.keyCode == 13 || e.keyCode == 188 || e.keyCode == 44) {
                 var pos=$.inArray($("#sel_'.$name.'_add").val(),'.$name.'_valData);
                 if(pos==-1)pos=$.inArray($("#sel_'.$name.'_add").val(),'.$name.'_viewData);
                 if(pos!=-1){
@@ -271,10 +271,13 @@ public static function compileList($data,$epr=5,$limit=-1,$align="center",$box="
 }
 
 public static function compileTagList($data){
+    if(!is_array($data))$data=explode(',',$data);
+    echo('<ul class="tags">');
     for($i=0;$i<count($data);$i++){
         if($data[$i]!="")
-            echo("<div class='tag'><a href='".PROOT."search/tag/".$data[$i]."'>".$data[$i]."</a></div> ");
+            echo('<li><a href="'.Toolkit::url('search','tag/'.$data[$i]).'">'.$data[$i].'</a></li>');
     }
+    echo('</ul>');
 }
 
 public static function getGravatar($name,$size=100,$extra=""){
