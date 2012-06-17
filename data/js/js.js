@@ -176,25 +176,26 @@ function addToolTip(el,text){
         var tooltip = document.createElement('div');
 
         $(tooltip).addClass('tooltip').html(text);
-        $(tooltip).css({'position':'absolute'});
+        $(tooltip).css({'display':'none','position':'absolute'});
 
-        var tipheight = $(tooltip).height();
-        var tipwidth = $(tooltip).width();
-        if(tipheight==0)tipheight=30;
-        if(tipwidth==0)tipwidth=50;
+        el.hover(function(){
+            var tipheight = $(tooltip).height();
+            var tipwidth = $(tooltip).width();
+            if(tipheight==0)tipheight=30;
+            if(tipwidth==0)tipwidth=50;
 
-        var height = $(tooltip).css("height");
-        var elpos = el.offset();
-        var left = elpos.left+el.width()/2-tipwidth/2;
-        var top = elpos.top-tipheight;
+            var height = $(tooltip).css("height");
+            var elpos = el.offset();
+            var left = elpos.left+el.width()/2-tipwidth/2;
+            var top = elpos.top-tipheight;
 
-        if(top<5)top+=el.height();
-        if(top>$(document).height()-5)top-=el.height();
-        if(left<5)left=5;
-        if(left>$(document).width()-5-tipwidth)left=$(document).width()-5-tipwidth;
-        $(tooltip).css({'top':top,'left':left,'display':'none'});
-
-        el.hover(function(){$(tooltip).stop(true,true).fadeIn(100);
+            if(top<5)top+=el.height();
+            if(top>$(document).height()-5)top-=el.height();
+            if(left<5)left=5;
+            if(left>$(document).width()-5-tipwidth)left=$(document).width()-5-tipwidth;
+            
+            $(tooltip).css({'top':top,'left':left,'display':'none'});
+            $(tooltip).stop(true,true).fadeIn(100);
         },function(){       $(tooltip).stop(true,true).fadeOut(100);});
 
         $("body").append(tooltip);
