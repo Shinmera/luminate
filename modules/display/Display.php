@@ -7,7 +7,6 @@ public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
 //TODO: Add ability to delete pic on its edit page
-//TODO: Add folder chooser if no folder specified on edit page.
 
 function buildMenu($menu){
     global $a;
@@ -31,12 +30,16 @@ function displayPage(){
             $this->displayPicture($params[1]);
             break;
         case 'upload':
-            if(substr($param,strlen($param)-1)=='/')$param=substr($param,0,strlen($param)-1);
-            $picture = DataModel::getHull('display_pictures');
-            $picture->folder=strtolower(str_replace('upload/','',$param));
-            $picture->time=time();
-            $picture->user=$a->user->username;
-            $this->displayEdit($picture);break;
+            if($param=='upload/'){
+                $this->displayFolderChooser();
+            }else{
+                if(substr($param,strlen($param)-1)=='/')$param=substr($param,0,strlen($param)-1);
+                $picture = DataModel::getHull('display_pictures');
+                $picture->folder=strtolower(str_replace('upload/','',$param));
+                $picture->time=time();
+                $picture->user=$a->user->username;
+                $this->displayEdit($picture);break;
+            }
             break;
         case 'edit':
             $picture = DataModel::getData('display_pictures','SELECT * FROM display_pictures WHERE pictureID=?',array($params[1]));
@@ -108,7 +111,7 @@ function displayPicture($pictureID){
                     Uploader: <?=Toolkit::getUserPage($picture->user)?><br />
                     Date: <?=Toolkit::toDate($picture->time);?><br />
                     Folder: <?=$picture->folder?><br />
-
+                    
                     <? if(file_exists(ROOT.$path)){
                         $size = filesize(ROOT.$path);
                         $type = Toolkit::getImageType(ROOT.$path);
@@ -126,8 +129,11 @@ function displayPicture($pictureID){
             </div>
             <div id="pictureinfo">
                 <h2><?=$picture->title?></h2>
+                Tags: <? Toolkit::compileTagList($picture->tags); ?><br />
                 <article>
-                    <?=$l->triggerParse('CORE',$picture->text);?>
+                    <blockquote>
+                        <?=$l->triggerParse('CORE',$picture->text);?>
+                    </blockquote>
                 </article>
                 <? $l->triggerHookSequentially('PictureInfo','Display',$picture); ?>
             </div>
@@ -138,8 +144,9 @@ function displayPicture($pictureID){
 }
 
 function displayFolder($folderpath){
-    global $t,$l,$a;
+    global $t,$l,$a,$c;
     if(substr($folderpath,strlen($folderpath)-1)=='/')$folderpath=substr($folderpath,0,strlen($folderpath)-1);
+    if($folderpath=='')$folderpath==$c->o['display_default_gallery'];
     
     $folder = DataModel::getData('display_folders','SELECT folder,text FROM display_folders WHERE folder LIKE ?',array($folderpath));
     if($folder==null){
@@ -218,7 +225,7 @@ function displayEdit($picture){
         $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder=?',array($picture->folder));
         
         if($folder!=null){
-        
+            
             $fpath = explode('/',$folder->folder);
             $folder->title=$fpath[count($fpath)-1];
             $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/';
@@ -372,22 +379,7 @@ function displayManage(){
                                                            WHERE user LIKE ? ORDER BY time DESC
                                                            LIMIT '.$_GET['f'].','.$_GET['t'],array($a->user->username));
         if($pictures==null)$pictures=array();else if(!is_array($pictures))$pictures=array($pictures);
-        
-        //Create permissions search.
-        if(array_key_exists('*', $a->udPTree)){
-            $q='folder LIKE ?';
-            $qd=array('%');
-        }else if($a->check('display.folder.*')){
-            foreach($a->udPTree['display'] as $branch){
-                if($branch[0]=='folder'){
-                    $q.='OR folder LIKE ? ';
-                    $qd[]=str_replace('*','%',implode('/',array_slice($branch,1)));
-                }
-            }
-            $q = substr($q,2);
-        }else{$q('1=-1');$qd=array();}
-        $folders = DataModel::getData('display_folders','SELECT folder,pictures FROM display_folders WHERE '.$q,$qd);
-        if($folders==null)$folders=array();else if(!is_array($folders))$folders=array($folders);
+        $folders = $this->getAccessibleFolders();
         
         ?><div id="folderinfo" >
             <h2>Manage</h2>
@@ -436,8 +428,45 @@ function displayManage(){
     $t->closePage();
 }
 
+function displayFolderChooser(){
+    global $t;
+    $folders = $this->getAccessibleFolders();
+    
+    $t->openPage('Upload - Gallery');
+    ?><div id="folderchooser">
+        <h1>Choose a folder to upload to:</h1>
+        <ul>
+            <? foreach($folders as $folder){ ?>
+                <li><a href="<?=PROOT.'upload/'.$folder->folder?>"><?=$folder->folder?></a></li>
+            <? } ?>
+        </ul>
+    </div>
+    <?
+    $t->closePage();
+}
+
 function displayAdmin(){
     
+}
+
+function getAccessibleFolders(){
+    //Create permissions search.
+    global $a;
+    if(array_key_exists('*', $a->udPTree)){
+        $q='folder LIKE ?';
+        $qd=array('%');
+    }else if($a->check('display.folder.*')){
+        foreach($a->udPTree['display'] as $branch){
+            if($branch[0]=='folder'){
+                $q.='OR folder LIKE ? ';
+                $qd[]=str_replace('*','%',implode('/',array_slice($branch,1)));
+            }
+        }
+        $q = substr($q,2);
+    }else{$q('1=-1');$qd=array();}
+    $folders = DataModel::getData('display_folders','SELECT folder,pictures FROM display_folders WHERE '.$q,$qd);
+    if($folders==null)$folders=array();else if(!is_array($folders))$folders=array($folders);
+    return $folders;
 }
 
 }
