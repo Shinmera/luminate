@@ -125,7 +125,7 @@ function initManage(){
         $("ul",$(this).parent()).slideToggle();
     });
 
-    $("a",$imagelist).click(function(){
+    $("a.delete",$imagelist).click(function(){
         var id = $(this).parent().attr("id");
         confirm("Do you really want to delete '"+$(this).parent().attr("title")+"'?",function(){
             $("#saver").html('Deleting picture...');
