@@ -58,16 +58,7 @@ function displayAdminPage(){
 function displayUserManagementPage(){
     global $c;
     $max = $c->getData("SELECT COUNT(userID) FROM ud_users");$max=$max[0]['COUNT(userID)'];
-    switch($_GET['action']){
-        case '<<':$_GET['f']=0;  $_GET['t']=50; break;
-        case '<' :$_GET['f']-=50;$_GET['t']-=50;break;
-        case '>' :$_GET['f']+=50;$_GET['t']+=50;break;
-        case '>>':$_GET['f']=$max-50;$_GET['t']=$max;break;
-    }
-    if($_GET['f']<0||!is_numeric($_GET['f']))         $_GET['f']=0;
-    if($_GET['t']<$_GET['f']||!is_numeric($_GET['t']))$_GET['t']=$_GET['f']+50;
-    if($_GET['t']>$max)$_GET['t']=$max;
-    if($_GET['f']>$_GET['t'])$_GET['f']=$_GET['t']-1;
+    Toolkit::sanitizePager($max);
     ?>
     <div class="box" style="display:block;">
         <form action="<?=PROOT?>User/edituser" method="post">
@@ -75,15 +66,7 @@ function displayUserManagementPage(){
             <input type="submit" name="action" value="Add" />
         </form>
         <br />
-        <form>
-            <input type="submit" name="dir" value="<<" />
-            <input type="submit" name="dir" value="<" />
-            <input autocomplete="off" type="text" name="f" value="<?=$_GET['f']?>" style="width:50px;"/>
-            <input autocomplete="off" type="text" name="t" value="<?=$_GET['t']?>" style="width:50px;"/>
-            <input type="submit" name="dir" value="Go" />
-            <input type="submit" name="dir" value=">" />
-            <input type="submit" name="dir" value=">>" />
-        </form>
+        <?=Toolkit::displayPager()?>
         <form action="<?=PROOT?>User/edituser" method="post"><table>
             <thead>
                 <tr><th>UID</th><th>Username</th><th>Displayname</th><th>Mail</th><th>Group</th><th>S</th><th>Time</th></tr>
@@ -91,7 +74,7 @@ function displayUserManagementPage(){
             <tbody>
                 <?
                 $users = DataModel::getData("ud_users", 'SELECT `userID`,`username`,`displayname`,`mail`,`group`,`status`,`time` '.
-                                                        'FROM ud_users ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['t']);
+                                                        'FROM ud_users ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s']);
                 if(!is_array($users))$users=array($users);
                 foreach($users as $u){
                     echo('<tr><td><input type="submit" name="userID" value="'.$u->userID.'" /></td><td>'.$u->username.'</td>');

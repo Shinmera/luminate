@@ -84,7 +84,7 @@ function displayAdminComments(){
                                         "fenfire_comments.username AS username,fenfire_comments.text AS `text`,fenfire_comments.time AS `time`,".
                                         "fenfire_comments.moderation AS `moderation`,fenfire_folders.module AS module,fenfire_folders.path AS path ".
                                         "FROM fenfire_comments INNER JOIN fenfire_folders ON fenfire_comments.FID = fenfire_folders.folderID ".
-                                        $where." ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t']);
+                                        $where." ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['s']);
                 if($comments!=null){
                     if(!is_array($comments))$comments=array($comments);
                     foreach($comments as $comment){
@@ -147,7 +147,7 @@ function displayAdminFolders(){
             <tbody>
                 <? if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
                 $folders = DataModel::getData("fenfire_folders","SELECT folderID,module,path,open FROM fenfire_folders ".
-                                              " ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t']);
+                                              " ORDER BY `".$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['s']);
                 if($folders!=null){
                     if(!is_array($folders))$folders=array($folders);
                     foreach($folders as $folder){
@@ -366,7 +366,7 @@ function commentList($FID="",$width=440){
         
         if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
         $comments = DataModel::getData("fenfire_comments",'SELECT commentID,username,mail,text,time,level FROM fenfire_comments '.
-                        'WHERE FID=? AND moderation=0 ORDER BY `'.$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t'],array($folder->folderID));
+                        'WHERE FID=? AND moderation=0 ORDER BY `'.$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['s'],array($folder->folderID));
         if($_GET['a']=="DESC")$_GET['a']=0;else $_GET['a']=1;
         
         if($comments==null){

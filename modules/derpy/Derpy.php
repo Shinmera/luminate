@@ -103,7 +103,7 @@ function displayInboxPage(){
             $inbox = DataModel::getData('derpy_messages','SELECT messageID,sender,type,title,time,`read` '.
                                                     'FROM derpy_messages WHERE recipient LIKE ? '.
                                                     'AND (type LIKE ? OR type LIKE ?) ORDER BY `'.$_GET['o'].'` '.$_GET['a'].
-                                                    ' LIMIT '.$_GET['f'].','.$_GET['t'],array($a->user->username,'m','a'));
+                                                    ' LIMIT '.$_GET['f'].','.$_GET['s'],array($a->user->username,'m','a'));
             if(!is_array($inbox))$inbox=array($inbox);
             foreach($inbox as $mail){
                 if($mail->read=='1')$sel='';else $sel='new';
@@ -198,7 +198,7 @@ function displayOutboxPage(){
             $inbox = DataModel::getData('derpy_messages','SELECT messageID,recipient,type,title,time,`read` '.
                                                     'FROM derpy_messages WHERE sender LIKE ? '.
                                                     'AND type LIKE ? ORDER BY `'.$_GET['o'].'` '.$_GET['a'].
-                                                    ' LIMIT '.$_GET['f'].','.$_GET['t'],array($a->user->username,'o'));
+                                                    ' LIMIT '.$_GET['f'].','.$_GET['s'],array($a->user->username,'o'));
             if(!is_array($inbox))$inbox=array($inbox);
             foreach($inbox as $mail){
                 if($mail->read=='1')$sel='';else $sel='new';
