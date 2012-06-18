@@ -32,7 +32,7 @@ function displayUserlistPage(){
                     <?
                     if($_GET['a']==0)$_GET['a']="DESC";else $_GET['a']="ASC";
                     $users = DataModel::getData("ud_users", 'SELECT `username`,`displayname`,`group`,`status`,`filename`,`time` '.
-                                                            'FROM ud_users ORDER BY `'.$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['t']);
+                                                            'FROM ud_users ORDER BY `'.$_GET['o'].'` '.$_GET['a'].' LIMIT '.$_GET['f'].','.$_GET['s']);
                     if(!is_array($users))$users=array($users);
                     foreach($users as $user){
                         echo('<tr><td>');
