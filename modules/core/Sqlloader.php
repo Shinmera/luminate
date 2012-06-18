@@ -175,16 +175,18 @@ var $lastQuery="";
     }
     
     function secureHTML($s){
-        $s = htmlspecialchars($s, ENT_QUOTES);
-        $s = str_ireplace("$","&#36;",$s);
-        $s = str_ireplace("'","&lsquo;",$s);
+        $s = str_ireplace('>','&gt;',$s);
+        $s = str_ireplace('<','&lt;',$s);
+        $s = str_ireplace('$','&#36;',$s);
+        $s = str_ireplace('\'','&lsquo;',$s);
         return $s;
     }
     
     function desecureHTML($s){
-        $s = htmlspecialchars_decode($s, ENT_QUOTES);
-        $s = str_ireplace("&#36;","$",$s);
-        $s = str_ireplace("&lsquo;","'",$s);
+        $s = str_ireplace('&gt;','>',$s);
+        $s = str_ireplace('&lt;','<',$s);
+        $s = str_ireplace('&#36;','$',$s);
+        $s = str_ireplace('&lsquo;','\'',$s);
         return $s;
     }
 
