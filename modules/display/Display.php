@@ -196,10 +196,10 @@ function displayFolder($folderpath){
             <div id="folderblock">
                 <a name="folder"></a>
                 <? foreach($subfolders as $sfolder){ ?>
-                    <div class="folder">
+                    <a class="folder" href="<?=PROOT.$sfolder->folder?>" >
                         <img src="<?=DATAPATH.'uploads/display/res/'.$sfolder->folder.'/'.$sfolder->filename?>" />
                         <h4 class="foldertitle"><?=$sfolder->folder?></h4>
-                    </div>
+                    </a>
                 <? } ?> 
                 <? $tooltips=array();
                    foreach($pictures as $picture){ 
@@ -240,13 +240,13 @@ function displayEdit($picture){
                     $picture->text = $_POST['text'];
                     $picture->title= $_POST['title'];
                     $picture->tags = implode(',',$_POST['tags']);
-                    if(strlen($_FILES['file']['name'])>50)$_FILES['file']['name']=substr($_FILES['file']['name'],0,50);
+                    if(strlen($_FILES['file']['name'])>20)$_FILES['file']['name']=substr($_FILES['file']['name'],0,20);
 
                     if($picture->pictureID!=''){
                         if(is_uploaded_file($_FILES['file']['tmp_name'])){
                             try{
                                 if(@!unlink(ROOT.$path.$picture->filename)||
-                                @!unlink(ROOT.str_replace('/src/','/res/',$path).$picture->filename))
+                                   @!unlink(ROOT.str_replace('/src/','/res/',$path).$picture->filename))
                                         $err='Failed to delete previous files! ';
                                 $file = Toolkit::uploadFile('file',ROOT.$path,5500,array("image/png","image/jpg","image/jpeg","image/gif"),true,$picture->pictureID.'-'.$_FILES['file']['name'],true);
                                 Toolkit::createThumbnail($file,str_replace('/src/','/res/',$file), $c->o['display_thumbnail_size'], $c->o['display_thumbnail_size'], false,true,true);
