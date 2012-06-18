@@ -450,7 +450,7 @@ public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowe
     //new filename if any
     if($newname!=""){
         if($appendextension)
-            $newname = $newname.substr($filename,strrpos($filename,'.'));
+            $newname = $newname.'.'.substr($_FILES[$fieldname]['type'],strrpos($_FILES[$fieldname]['type'],'/')+1);
         $filename = $newname;
     }
     //get away those nasty characters.

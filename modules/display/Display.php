@@ -256,7 +256,7 @@ function displayEdit($picture){
                         $picture->filename = 'NIL';
                         $picture->insertData();
                         try{
-                            $file = Toolkit::uploadFile('file',ROOT.$path,5500,array("image/png","image/jpg","image/jpeg","image/gif"),false,$c->insertID().'-'.$_FILES['file']['name'],true);
+                            $file = Toolkit::uploadFile('file',ROOT.$path,5500,array("image/png","image/jpg","image/jpeg","image/gif"),true,$c->insertID().'-'.$_FILES['file']['name'],true);
                             Toolkit::createThumbnail($file,str_replace('/src/','/res/',$file), $c->o['display_thumbnail_size'], $c->o['display_thumbnail_size'], false,true,true);
                             $picture->pictureID=$c->insertID();
                             $picture->filename =str_replace(ROOT.$path,'',$file);
