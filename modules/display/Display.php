@@ -46,7 +46,7 @@ function displayPage(){
             $this->displayEdit($picture);break;
             break;
         case 'manage':$this->displayManage();break;
-        default: $this->displayFolder($param);break;
+        default: $this->displayFolder(strtolower($param));break;
     }
 }
 
@@ -161,16 +161,13 @@ function displayFolder($folderpath){
         Toolkit::sanitizePager($max->pictures);
         $pictures = DataModel::getData('display_pictures','SELECT pictureID,title,filename FROM display_pictures 
                                                            WHERE folder LIKE ? ORDER BY time DESC
-                                                           LIMIT '.$_GET['f'].','.$_GET['t'],array($folder->folder));
+                                                           LIMIT '.$_GET['f'].','.$_GET['s'],array($folder->folder));
         
-        $subfolders = DataModel::getData('display_folders','SELECT display_folders.folder,pictures.filename 
-                                                            FROM display_folders LEFT JOIN ( 
-                                                                    SELECT s1.filename,s1.folder FROM display_pictures AS s1
-                                                                    LEFT JOIN display_pictures AS s2
-                                                                        ON s1.folder = s2.folder AND s1.time > s2.time
-                                                                ) AS pictures
-                                                                USING(folder)
-                                                            WHERE folder LIKE ? ORDER BY display_folders.folder ASC',array($folder->folder.'/%'));
+        $subfolders = DataModel::getData('display_folders','SELECT display_folders.folder,display_pictures.filename 
+                                                            FROM display_folders JOIN display_pictures USING(folder)
+                                                            WHERE folder LIKE ? 
+                                                            GROUP BY display_folders.folder
+                                                            ORDER BY display_folders.folder ASC',array($folder->folder.'/%'));
         
         if($subfolders==null)$subfolders=array();else if(!is_array($subfolders))$subfolders=array($subfolders);
         if($pictures  ==null)$pictures  =array();else if(!is_array($pictures  ))$pictures  =array($pictures  );
@@ -196,7 +193,7 @@ function displayFolder($folderpath){
             <div id="folderblock">
                 <a name="folder"></a>
                 <? foreach($subfolders as $sfolder){ ?>
-                    <a class="folder" href="<?=PROOT.$sfolder->folder?>" >
+                    <a class="folder" href="<?=PROOT.$sfolder->folder?>#folder" >
                         <img src="<?=DATAPATH.'uploads/display/res/'.$sfolder->folder.'/'.$sfolder->filename?>" />
                         <h4 class="foldertitle"><?=$sfolder->folder?></h4>
                     </a>
@@ -204,7 +201,7 @@ function displayFolder($folderpath){
                 <? $tooltips=array();
                    foreach($pictures as $picture){ 
                     $tooltips[] = 'addToolTip($("#p'.$picture->pictureID.'"),"'.$picture->title.'");';?>
-                    <a id="p<?=$picture->pictureID?>" class="picture" href="<?=PROOT.'view/'.$picture->pictureID.'-'.str_replace(' ','-',$picture->title)?>">
+                    <a id="p<?=$picture->pictureID?>" class="picture" href="<?=PROOT.'view/'.$picture->pictureID.'-'.str_replace(' ','-',$picture->title)?>#picture">
                         <img src="<?=DATAPATH.'uploads/display/res/'.$folder->folder.'/'.$picture->filename?>" />
                     </a>
                 <? } ?>
@@ -286,7 +283,7 @@ function displayEdit($picture){
             include(MODULEPATH.'gui/Editor.php');
             $editor = new SimpleEditor("#","Save","galleryeditor",array("default","plus"));
             if($err!='')$editor->addCustom('<div class="failure">'.$err.'</div>');
-            if($picture->pictureID!='')$editor->addCustom('<a href="'.PROOT.'view/'.$picture->pictureID.'"><img src="'.$path.$picture->filename.'" alt="" /></a>');
+            if($picture->pictureID!='')$editor->addCustom('<a href="'.PROOT.'view/'.$picture->pictureID.'#picture"><img src="'.$path.$picture->filename.'" alt="" /></a>');
             $editor->addTextField('title', 'Title', $picture->title, 'text', 'maxlength="256" required');
             if($picture->pictureID!='')$editor->addTextField('file','Upload','','file');
             else                          $editor->addTextField('file','Upload','','file','required');
@@ -298,7 +295,7 @@ function displayEdit($picture){
             
             ?><div id="foldercontent">
                 <div id="folderinfo" >
-                    <h2>Submit to: <a href="<?=PROOT.$folder->folder?>"><?=ucfirst($folder->title)?></a></h2>
+                    <h2>Submit to: <a href="<?=PROOT.$folder->folder?>#folder"><?=ucfirst($folder->title)?></a></h2>
                     <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                     <? $l->triggerHookSequentially('FolderHeader','Display',$folder); ?>
                     <div id="foldercrumbs">
@@ -377,7 +374,7 @@ function displayManage(){
         Toolkit::sanitizePager($max->pictures);
         $pictures = DataModel::getData('display_pictures','SELECT pictureID,title,filename,folder FROM display_pictures 
                                                            WHERE user LIKE ? ORDER BY time DESC
-                                                           LIMIT '.$_GET['f'].','.$_GET['t'],array($a->user->username));
+                                                           LIMIT '.$_GET['f'].','.$_GET['s'],array($a->user->username));
         if($pictures==null)$pictures=array();else if(!is_array($pictures))$pictures=array($pictures);
         $folders = $this->getAccessibleFolders();
         
@@ -395,8 +392,11 @@ function displayManage(){
             <ul id="imagelist">
                 <? foreach($pictures as $picture){ ?>
                     <li id="<?=$picture->pictureID?>" title="<?=$picture->title?>" class="picture">
-                        <a>X</a>
-                        <img src="<?=DATAPATH.'uploads/display/res/'.$picture->folder.'/'.$picture->filename?>" />
+                        <a class="delete">X</a>
+                        <a href="<?=PROOT.'view/'.$picture->pictureID?>#picture">
+                            <img src="<?=DATAPATH.'uploads/display/res/'.$picture->folder.'/'.$picture->filename?>" />
+                        </a>
+                        <h4><?=(strlen($picture->title)>15) ? substr($picture->title,0,12).'...' : $picture->title?></h4>
                     </li>
                 <? } ?>
             </ul>
@@ -412,7 +412,10 @@ function displayManage(){
                                 if($pic!=''&&is_numeric($pic)){
                                     $title='';foreach($pictures as $pict){if($pict->pictureID==$pic)$title=$pict->title;}?>
 
-                                    <li id="P<?=$pic?>"><a class="delete">x</a><?=$title?></li>
+                                    <li id="P<?=$pic?>">
+                                        <a class="delete">x</a>
+                                        <?=(strlen($title)>53) ? substr($title,0,50).'...' : $title?>
+                                    </li>
                             <? }} ?>
                         </ul>
                     </li>
