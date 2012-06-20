@@ -326,13 +326,23 @@ function updateUserFields($userID,$values,$prefix="val"){
 
 //FIXME: Seems to have broken. fix.
 function updateUserPermissions($userID,$tree){
-    global $c,$l;
+    global $l;
     $ftree = "";
     foreach($tree as $branch){
         if(trim($branch)!='')$ftree.=strtolower(trim($branch))."\n";
     }
     $ftree = trim($ftree);
-    $c->query("UPDATE ud_permissions SET tree=? WHERE UID=?",array($ftree,$userID));
+    $perms = DataModel::getData('ud_permissions','SELECT tree FROM ud_permissions WHERE UID=?',array($userID));
+    if($perms==null){
+        $perms = DataModel::getHull('ud_permissions');
+        $perms->tree = $ftree;
+        $perms->UID = $userID;
+        $perms->insertData();
+    }else{
+        $perms->tree = $ftree;
+        $perms->UID = $userID;
+        $perms->saveData();
+    }
     
     $l->triggerHook("USERupdatePermissions",$this,array($userID));
     Toolkit::log("Updated permissions for @".$userID);
