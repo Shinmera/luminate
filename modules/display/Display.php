@@ -64,12 +64,12 @@ function displayPicture($pictureID){
         $cpos = array_search($pictureID,$order);
         $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/'.$picture->filename;
         $fpath = explode('/',$picture->folder);
-        $folder->title=$fpath[count($fpath)-1];
+        $folder->title=ucfirst(str_replace('_',' ',$fpath[count($fpath)-1]));
         
         $t->openPage($picture->title.' - Gallery');
         ?><div id="foldercontent">
             <div id="folderinfo" >
-                <h3><a href="<?=PROOT.$picture->folder?>"><?=ucfirst($folder->title)?></a></h3>
+                <h3><a href="<?=PROOT.$picture->folder?>"><?=$folder->title?></a></h3>
                 <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                 <? $l->triggerHookSequentially('FolderHeader','Display',$folder); ?>
                 <div id="foldercrumbs">
@@ -156,7 +156,7 @@ function displayFolder($folderpath){
     }else{
         $t->openPage($folder->folder.' - Gallery');
         $path = explode('/',$folder->folder);
-        $folder->title=$path[count($path)-1];
+        $folder->title=ucfirst(str_replace($path[count($path)-1]));
         
         $max = DataModel::getData('display_pictures','SELECT COUNT(pictureID) AS pictures FROM display_pictures WHERE folder LIKE ?',array($folder->folder));
         Toolkit::sanitizePager($max->pictures);
@@ -174,7 +174,7 @@ function displayFolder($folderpath){
         if($pictures  ==null)$pictures  =array();else if(!is_array($pictures  ))$pictures  =array($pictures  );
         ?><div id="foldercontent">
             <div id="folderinfo" >
-                <h2><a href="<?=PROOT.$folder->folder?>"><?=ucfirst($folder->title)?></a></h2>
+                <h2><a href="<?=PROOT.$folder->folder?>"><?=$folder->title?></a></h2>
                 <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                 <? $l->triggerHookSequentially('FolderHeader','Display',$folder); ?>
                 <div id="foldercrumbs">
@@ -226,7 +226,7 @@ function displayEdit($picture){
         if($folder!=null){
             
             $fpath = explode('/',$folder->folder);
-            $folder->title=$fpath[count($fpath)-1];
+            $folder->title=ucfirst(str_replace($fpath[count($fpath)-1]));
             $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/';
 
             if(isset($_POST['action'])){
@@ -297,7 +297,7 @@ function displayEdit($picture){
             
             ?><div id="foldercontent">
                 <div id="folderinfo" >
-                    <h2>Submit to: <a href="<?=PROOT.$folder->folder?>#folder"><?=ucfirst($folder->title)?></a></h2>
+                    <h2>Submit to: <a href="<?=PROOT.$folder->folder?>#folder"><?=$folder->title?></a></h2>
                     <blockquote><?=$l->triggerParse('CORE',$folder->text);?></blockquote>
                     <? $l->triggerHookSequentially('FolderHeader','Display',$folder); ?>
                     <div id="foldercrumbs">
@@ -406,9 +406,9 @@ function displayManage(){
                 <? foreach($folders as $folder){
                     $pics = explode(',',$folder->pictures);
                     $path = explode('/',$folder->folder);
-                    $folder->title = $path[count($path)-1];?>
+                    $folder->title = ucfirst(str_replace($path[count($path)-1]));?>
                     
-                    <li id="<?=$folder->folder?>"><a class="delete">x</a> <a class="collapse"><?=ucfirst($folder->title)?></a>
+                    <li id="<?=$folder->folder?>"><a class="delete">x</a> <a class="collapse"><?=$folder->title?></a>
                         <ul class="new">
                             <? foreach($pics as $pic){
                                 if($pic!=''&&is_numeric($pic)){
