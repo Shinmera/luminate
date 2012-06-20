@@ -192,10 +192,11 @@ function displayFolder($folderpath){
             </div>
             <div id="folderblock">
                 <a name="folder"></a>
-                <? foreach($subfolders as $sfolder){ ?>
-                    <a class="folder" href="<?=PROOT.$sfolder->folder?>#folder" >
+                <? foreach($subfolders as $sfolder){
+                    $sfolder->title = explode('/',$sfolder->folder);$sfolder->title = end($sfolder->title); ?>
+                    <a class="folder" href="<?=PROOT.$sfolder->folder?>#folder" title="<?=$sfolder->folder?>" >
                         <img src="<?=DATAPATH.'uploads/display/res/'.$sfolder->folder.'/'.$sfolder->filename?>" />
-                        <h4 class="foldertitle"><?=$sfolder->folder?></h4>
+                        <h4 class="foldertitle"><?=(strlen($sfolder->title)>12) ? substr($sfolder->title,0,12) : $sfolder->title?></h4>
                     </a>
                 <? } ?> 
                 <? $tooltips=array();
