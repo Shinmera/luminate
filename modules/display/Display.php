@@ -24,6 +24,7 @@ function displayPage(){
     global $t,$a,$params,$param;
     $t->js[]='/display.js';
     $t->css[]='/display.css';
+    $param = str_replace(' ','_',$param);
     switch($params[0]){
         case 'view':
             if(strpos($params[1],'-')!==FALSE)$params[1]=substr($params[1],0,strpos($params[1],'-'));
@@ -196,7 +197,7 @@ function displayFolder($folderpath){
                     $sfolder->title = explode('/',$sfolder->folder);$sfolder->title = end($sfolder->title); ?>
                     <a class="folder" href="<?=PROOT.$sfolder->folder?>#folder" title="<?=$sfolder->folder?>" >
                         <img src="<?=DATAPATH.'uploads/display/res/'.$sfolder->folder.'/'.$sfolder->filename?>" />
-                        <h4 class="foldertitle"><?=(strlen($sfolder->title)>12) ? substr($sfolder->title,0,12) : $sfolder->title?></h4>
+                        <h4 class="foldertitle"><?=(strlen($sfolder->title)>12) ? substr($sfolder->title,0,12).'...' : $sfolder->title?></h4>
                     </a>
                 <? } ?> 
                 <? $tooltips=array();
