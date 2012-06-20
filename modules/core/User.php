@@ -217,6 +217,7 @@ function displayEditUserPage(){
         <? foreach($fields as $f){
             $u = null;
             foreach($ufields as $nu){if($nu->varname==$f->varname){$u=$nu;break;}}
+            if($u==null)$u = DataModel::getHull('ud_field_values');
             if($u->value=='')$u->value=$f->default;
             
             echo('<label>'.$f->title.'</label>');
