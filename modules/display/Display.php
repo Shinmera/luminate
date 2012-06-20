@@ -7,6 +7,7 @@ public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
 //TODO: Add ability to delete pic on its edit page
+//TODO: Add admin back-end for folder management.
 
 function buildMenu($menu){
     global $a;
@@ -156,7 +157,7 @@ function displayFolder($folderpath){
     }else{
         $t->openPage($folder->folder.' - Gallery');
         $path = explode('/',$folder->folder);
-        $folder->title=ucfirst(str_replace($path[count($path)-1]));
+        $folder->title=ucfirst(str_replace('_',' ',$path[count($path)-1]));
         
         $max = DataModel::getData('display_pictures','SELECT COUNT(pictureID) AS pictures FROM display_pictures WHERE folder LIKE ?',array($folder->folder));
         Toolkit::sanitizePager($max->pictures);
@@ -226,7 +227,7 @@ function displayEdit($picture){
         if($folder!=null){
             
             $fpath = explode('/',$folder->folder);
-            $folder->title=ucfirst(str_replace($fpath[count($fpath)-1]));
+            $folder->title=ucfirst(str_replace('_',' ',$fpath[count($fpath)-1]));
             $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/';
 
             if(isset($_POST['action'])){
@@ -406,7 +407,7 @@ function displayManage(){
                 <? foreach($folders as $folder){
                     $pics = explode(',',$folder->pictures);
                     $path = explode('/',$folder->folder);
-                    $folder->title = ucfirst(str_replace($path[count($path)-1]));?>
+                    $folder->title = ucfirst(str_replace('_',' ',$path[count($path)-1]));?>
                     
                     <li id="<?=$folder->folder?>"><a class="delete">x</a> <a class="collapse"><?=$folder->title?></a>
                         <ul class="new">
