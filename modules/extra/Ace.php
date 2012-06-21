@@ -6,7 +6,8 @@ public static $short='ace';
 public static $required=array();
 public static $hooks=array("foo");
 
-function displayAceForFile($file){
+function displayAceForFile(){
+    $file = $_GET['f'];
     if(substr($file,0,7)!='http://')die();
     
     $filetype=substr($file,strrpos($file, ".")+1);
