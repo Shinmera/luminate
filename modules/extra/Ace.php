@@ -25,6 +25,7 @@ function getAceEditor($formname,$mode,$content="",$style=""){
     <pre name="contents" id="editor" style="<?=$style?>"><?=htmlspecialchars($content)?></pre>
     <textarea name="<?=$formname?>" id="editorHolder"style="display:none;"></textarea>
     <div style="<?=$style?>">&nbsp;</div>
+    <br style="clear:both;" />
 
     <script src="<?=DATAPATH?>js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
     <script src="<?=DATAPATH?>js/ace/mode-<?=$mode?>.js" type="text/javascript" charset="utf-8"></script>
