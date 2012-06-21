@@ -22,7 +22,7 @@ function displayAceForFile(){
 
 function getAceEditor($formname,$mode,$content="",$style=""){
     ?>
-    <div name="contents" id="editor" style="<?=$style?>"><?=htmlspecialchars($content)?></div>
+    <pre name="contents" id="editor" style="<?=$style?>"><?=htmlspecialchars($content)?></pre>
     <textarea name="<?=$formname?>" id="editorHolder"style="display:none;"></textarea>
     <div style="<?=$style?>">&nbsp;</div>
 
