@@ -16,7 +16,7 @@ function displayAceForFile(){
     
     $t = $l->loadModule('Themes');
     $t->openPage($file);
-    $this->getAceEditor("source",$filetype,file_get_contents($file),"width:100%;min-height:100%;");
+    $this->getAceEditor("source",$filetype,file_get_contents($file),"width:100%;min-height:900px;");
     $t->closePage();
 }
 
