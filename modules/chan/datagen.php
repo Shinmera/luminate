@@ -1,7 +1,7 @@
 <?
 class DataGenerator{
 
-    function mergeThread($threadA,$threadABoard,$threadB,$threadBBoard,$mergeOP=true){
+    public static function mergeThread($threadA,$threadABoard,$threadB,$threadBBoard,$mergeOP=true){
         global $c,$a;
         if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
@@ -10,7 +10,7 @@ class DataGenerator{
         if(!$a->check("chan.mod.merge"))throw new Exception("No Access.");
         
         //JUMP THE HOLE ... if you know what I mean.
-        if($threadABoard!=$threadBBoard)$threadA=$this->moveThread($threadA,$threadABoard,$threadBBoard);
+        if($threadABoard!=$threadBBoard)$threadA=DataGenerator::moveThread($threadA,$threadABoard,$threadBBoard);
 
         $posta = ChanDataPost::loadFromDB("SELECT name,trip,title,subject FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1",array($threadA,$threadBBoard));
         $postb = ChanDataPost::loadFromDB("SELECT postID,BID,subject FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1",array($threadB,$threadBBoard));
@@ -23,7 +23,7 @@ class DataGenerator{
             PostGenerator::generatePost($threadB, $threadBBoard);
         }
 
-        $this->cleanThread($threadA);
+        DataGenerator::cleanThread($threadA);
         $c->query("DELETE FROM ch_posts WHERE postID=? AND BID=?"  ,array($threadA,$threadBBoard));
         $c->query("UPDATE ch_posts SET PID=? WHERE PID=? AND BID=?",array($threadB,$threadA,$threadBBoard));
 
@@ -32,7 +32,7 @@ class DataGenerator{
         if($threadABoard!=$threadBBoard)BoardGenerator::generateBoard($threadABoard);
     }
     
-    function moveThread($threadID,$oldboard,$newboard){
+    public static function moveThread($threadID,$oldboard,$newboard){
         global $c,$a,$k;
         if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
@@ -102,13 +102,13 @@ class DataGenerator{
         return $post[0]->postID;
     }
 
-    function fixBrokenQuote($matches){
+    public static function fixBrokenQuote($matches){
         global $threadOldBoard,$threadNewBoard,$idmap,$threadOldID,$threadNewID;
         if(array_key_exists($matches[1],$idmap))return '>>'.$idmap[$matches[1]];
         else                                    return $matches[0];
     }
 
-    function deleteByIP($ip){
+    public static function deleteByIP($ip){
         if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
@@ -125,11 +125,11 @@ class DataGenerator{
                 $query.=" OR PID=?";
                 $data[]=$post[$i]->postID;
                 if(!in_array($post[$i]->BID,$boardsgen))$boardsgen[]=$post[$i]->BID;
-                $this->cleanThread($post[$i]->postID);
+                DataGenerator::cleanThread($post[$i]->postID);
             }else{
                 ThreadGenerator::generateThread($post[$i]->PID,$post[$i]->BID);
             }
-            $this->deleteTraces($board[0]->folder,$post[$i]->postID,$post[$i]->file);
+            DataGenerator::deleteTraces($board[0]->folder,$post[$i]->postID,$post[$i]->file);
         }
         $c->query("UPDATE ch_posts SET `options`=CONCAT(`options`,'d') WHERE ".$query,$data);
         
@@ -139,7 +139,7 @@ class DataGenerator{
         }
     }
 
-    function deletePost($postID,$board,$generate=true,$imageonly=false){
+    public static function deletePost($postID,$board,$generate=true,$imageonly=false){
         global $k,$a,$c;
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
@@ -157,10 +157,10 @@ class DataGenerator{
         //FILE
         $boardo = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($board));
         if(!$imageonly){
-            $this->deleteTraces($boardo[0]->folder,$postID,$post[0]->file);
-            if($post[0]->PID==0)$this->cleanThread($postID);
+            DataGenerator::deleteTraces($boardo[0]->folder,$postID,$post[0]->file);
+            if($post[0]->PID==0)DataGenerator::cleanThread($postID);
         }else{
-            $this->deleteTraces($boardo[0]->folder,$postID,$post[0]->file,false,false);
+            DataGenerator::deleteTraces($boardo[0]->folder,$postID,$post[0]->file,false,false);
         }
 
         if($generate){
@@ -169,7 +169,7 @@ class DataGenerator{
         }
     }
 
-    function submitPost(){
+    public static function submitPost(){
         global $k,$p,$c,$a;
         if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
@@ -247,8 +247,8 @@ class DataGenerator{
                 }else if(in_array("r",$options)){//spoileR
                     copy(ROOT.IMAGEPATH.'previews/spoiler.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
                 }else{
-                    if($thread!=0)$this->createThumbnail($board[0]->folder, $filename,$c->o['chan_thumbsize']);
-                    else          $this->createThumbnail($board[0]->folder, $filename,$c->o['chan_opthumbsize']);
+                    if($thread!=0)DataGenerator::createThumbnail($board[0]->folder, $filename,$c->o['chan_thumbsize']);
+                    else          DataGenerator::createThumbnail($board[0]->folder, $filename,$c->o['chan_opthumbsize']);
                 }
                 $dim=getimagesize(ROOT.DATAPATH.'chan/'.$board[0]->folder.'/files/'.$filename);
                 $dim=$dim[0]."x".$dim[1];
@@ -262,7 +262,7 @@ class DataGenerator{
         //GATHER OTHER DATA
         $name=explode('#',$name);
         $mail=explode('#',$mail);
-        if(count($name)>1)$trip=$this->calculateTrip(implode("#",array_slice($name, 1)));else $trip='';
+        if(count($name)>1)$trip=DataGenerator::calculateTrip(implode("#",array_slice($name, 1)));else $trip='';
         if(count($name)==0||strpos($board[0]->options,"n")!==FALSE)$name[0]="Anonymous";
         if(!$a->check("chan.mod")||!is_array($options))$options=array();
         if($a->check("chan.mod.bbcodes"))$options[]="p";
@@ -307,7 +307,7 @@ class DataGenerator{
         }
     }
 
-    function calculateTrip($trip) {
+    public static function calculateTrip($trip) {
         global $c,$k,$p;
         $trip = $p->convertCharset($trip);
         $trip = mb_convert_encoding($trip,'SJIS','UTF-8');
@@ -357,7 +357,7 @@ class DataGenerator{
     }
 
 
-    function createThumbnail($board,$file,$thumbsize=-1){
+    public static function createThumbnail($board,$file,$thumbsize=-1){
         global $k,$c;
         if($thumbsize==-1)$thumbsize=$c->o['chan_thumbsize'];
         if($thumbsize<=1)$thumbsize=200;
@@ -366,7 +366,7 @@ class DataGenerator{
                                    $thumbsize,$thumbsize,false,true);
     }
 
-    function parseQuotes($s,$boardid,$boardname,$threadid){
+    public static function parseQuotes($s,$boardid,$boardname,$threadid){
         global $threadBoardID,$threadBoardName,$threadThreadID;
         $threadBoardID=$boardid;
         $threadBoardName=$boardname;
@@ -389,7 +389,7 @@ class DataGenerator{
         return $s;
     }
 
-    function parsePostQuote($matches){
+    public static function parsePostQuote($matches){
         global $k;
         if(!class_exists("ChanDataPost"))include(TROOT.'modules/chan/data.php');
         global $threadBoardID,$threadBoardName,$threadThreadID;
@@ -402,7 +402,7 @@ class DataGenerator{
         return '<a class="directQuote" id="'.$matches[1].'" board="'.$threadBoardName.'" href="'.$path.'">&gt;&gt;'.$matches[1].'</a>';
     }
 
-    function parseSiteQuote($matches){
+    public static function parseSiteQuote($matches){
         global $k;
         if(!class_exists("ChanDataPost"))include(TROOT.'modules/chan/data.php');
         global $threadBoardID,$threadThreadID;
@@ -416,19 +416,19 @@ class DataGenerator{
         return '<a class="directQuote" id="'.$matches[2].'" board="'.$matches[1].'" href="'.$path.'">&gt;&gt;'.$matches[1].'/'.$matches[2].'</a>';
     }
 
-    function parseBoardQuote($matches){
+    public static function parseBoardQuote($matches){
         global $k;
         $path=$k->url("chan",$matches[1]);
         return '<a class="directQuote" board="'.$matches[1].'" href="'.$path.'">&gt;&gt;&gt;/'.$matches[1].'/</a>';
     }
     
-    function parseArchiveQuote($matches){
+    public static function parseArchiveQuote($matches){
         global $k;
         $path=$k->url("stevenarch",$matches[1]."/res/".$matches[2].".html");
         return '<a class="directQuote" href="'.$path.'">&gt;&gt;/arch/'.$matches[1].'/'.$matches[2].'</a>';
     }
 
-    function cleanBoard($boardID){
+    public static function cleanBoard($boardID){
         global $c;
         if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         $board= ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($boardID));
@@ -457,7 +457,7 @@ class DataGenerator{
         flush();
     }
 
-    function deleteTraces($board,$postid,$file,$thread=false,$post=true){
+    public static function deleteTraces($board,$postid,$file,$thread=false,$post=true){
         if($post)
             @ rename(ROOT.DATAPATH.'chan/'.$board.'/posts/'.$postid.".php",
                    ROOT.DATAPATH.'chan/'.$board.'/posts/_'.$postid.".php");
@@ -473,16 +473,16 @@ class DataGenerator{
         }
     }
 
-    function cleanThread($threadID){
+    public static function cleanThread($threadID){
         if(!class_exists("ChanDataPost"))include(TROOT.'modules/chan/data.php');
         $posts = ChanDataPost::loadFromDB("SELECT postID,BID,file FROM ch_posts WHERE PID=? OR postID=? ORDER BY postID DESC",array($threadID,$threadID));
         if(count($posts)==0)return false;
         $board = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($posts[0]->BID));
         if(count($board)==0)return false;
         for($i=1;$i<count($posts);$i++){
-            $this->deleteTraces($board[0]->folder,$posts[$i]->postID,$posts[$i]->file);
+            DataGenerator::deleteTraces($board[0]->folder,$posts[$i]->postID,$posts[$i]->file);
         }
-        $this->deleteTraces($board[0]->folder,$posts[0]->postID,$posts[0]->file,true);
+        DataGenerator::deleteTraces($board[0]->folder,$posts[0]->postID,$posts[0]->file,true);
         return true;
     }
 }
