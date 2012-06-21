@@ -7,12 +7,17 @@ public static $required=array();
 public static $hooks=array("foo");
 
 function displayAceForFile(){
+    global $l;
     $file = $_GET['f'];
-    if(substr($file,0,7)!='http://')die();
+    if(substr($file,0,7)!='http://')die('No support for local files.');
     
     $filetype=substr($file,strrpos($file, ".")+1);
     if($filetype=="js")$filetype="javascript"; //All others match file ending and type already.
+    
+    $t = $l->loadModule('Themes');
+    $t->openPage($file);
     $this->getAceEditor("source",$filetype,file_get_contents($file),"width:100%;height:500px;");
+    $t->closePage();
 }
 
 function getAceEditor($formname,$mode,$content="",$style=""){
