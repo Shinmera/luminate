@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 13, 2012 at 11:47 PM
--- Server version: 5.5.24-log
--- PHP Version: 5.4.3
+-- Generation Time: Jun 21, 2012 at 10:14 PM
+-- Server version: 5.5.25-log
+-- PHP Version: 5.4.4
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -19,6 +19,75 @@ SET time_zone = "+00:00";
 --
 -- Database: `tymoonD`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_boards`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_boards` (
+  `boardID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `PID` bigint(20) NOT NULL,
+  `folder` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `subject` text CHARACTER SET latin1 NOT NULL,
+  `maxfilesize` int(11) NOT NULL,
+  `maxpages` int(11) NOT NULL,
+  `postlimit` int(11) NOT NULL,
+  `filetypes` varchar(256) CHARACTER SET latin1 NOT NULL,
+  `defaulttheme` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `merged` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `options` varchar(16) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`boardID`),
+  UNIQUE KEY `folder` (`folder`),
+  KEY `PID` (`PID`),
+  KEY `options` (`options`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_filetypes`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_filetypes` (
+  `typeID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `mime` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `preview` varchar(128) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`typeID`),
+  UNIQUE KEY `mime` (`mime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_posts`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_posts` (
+  `postID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `BID` bigint(20) NOT NULL,
+  `PID` bigint(20) NOT NULL,
+  `name` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `mail` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `trip` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(256) CHARACTER SET latin1 NOT NULL,
+  `subject` text CHARACTER SET latin1 NOT NULL,
+  `time` int(11) NOT NULL,
+  `bumptime` int(11) NOT NULL,
+  `password` varchar(256) CHARACTER SET latin1 NOT NULL,
+  `file` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `fileorig` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `filedim` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `filesize` int(11) NOT NULL,
+  `ip` varchar(16) CHARACTER SET latin1 NOT NULL,
+  `options` varchar(16) CHARACTER SET latin1 NOT NULL,
+  PRIMARY KEY (`BID`,`postID`),
+  KEY `PID` (`PID`),
+  KEY `options` (`options`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -42,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `derpy_messages` (
 -- Dumping data for table `derpy_messages`
 --
 
-INSERT INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
+INSERT IGNORE INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
 (1, 'Shinmera', 'Shinmera', 'm', 'No Subject', 'A', 2012, 1),
 (2, 'Shinmera', 'Shinmera', 'm', 'Re: No Subject', 'TESTER', 2012, 1),
 (3, 'Shinmera', 'Shinmera', 'm', 'Re: Re: No Subject', 'Whatever man, fuck your shit.', 1334569759, 1),
@@ -71,8 +140,10 @@ CREATE TABLE IF NOT EXISTS `display_folders` (
 -- Dumping data for table `display_folders`
 --
 
-INSERT INTO `display_folders` (`folder`, `text`, `pictures`) VALUES
-('a/bc/d', 'AABBCC b{bold}', '1,2,3,0,0,10');
+INSERT IGNORE INTO `display_folders` (`folder`, `text`, `pictures`) VALUES
+('suiseiseki', 'DESU.', '2'),
+('test', 'YATF', '3'),
+('test/subtest', 'ohoohohhoohoho\r\nWHAT A FUCKING TWIST.', '1');
 
 -- --------------------------------------------------------
 
@@ -90,18 +161,16 @@ CREATE TABLE IF NOT EXISTS `display_pictures` (
   `filename` varchar(64) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`pictureID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
 --
 -- Dumping data for table `display_pictures`
 --
 
-INSERT INTO `display_pictures` (`pictureID`, `folder`, `title`, `text`, `time`, `tags`, `filename`, `user`) VALUES
-(1, 'a/bc/d', 'Test1', 'This has no picture data as it is a manual insert for testing purposes.\r\nAlso Mithent is awesome.\r\n', 1319273466, 'Oh,la,la', 'nope.avi', 'Shinmera'),
-(2, 'a/bc/d', 'Some random pic 2', 'And so our story continues as the lone programmer tirelessly works all day and night long, without ever realizing that all his attempts are futile and the future is inevitable.\r\n', 1335394165, 'Sigh,when,will,I,ever,learn', 'nope.wmv', 'Shinmera'),
-(8, 'a/bc/d', 'OH BOY OH BOY', 'OH BOY OH BOY????', 1339411768, 'Oh,Shiiit,Everything,Burns', '8-7a9880c247091c8f49d51d0b8d90188e.jpg', 'Shinmera'),
-(9, 'a/bc/d', 'I don&#039;t know.', 'WHO WOULD?', 1339413367, 'Me,Neither', '9-WHO_WOULD.jpg', 'Shinmera'),
-(10, 'a/bc/d', 'Beh', 'Bluuuh', 1339414766, 'I,Want,To,Finish,This,Already', '10-pout.jpg', 'Shinmera');
+INSERT IGNORE INTO `display_pictures` (`pictureID`, `folder`, `title`, `text`, `time`, `tags`, `filename`, `user`) VALUES
+(1, 'test/subtest', 'CC', 'Just a test.\r\nGet back to work you fag.', 1339967202, 'Code,Geass,C.C.', '1-code-geass_00268635.png', 'Shinmera'),
+(2, 'suiseiseki', 'Sigh', 'Oh Suiseiseki...', 1339969148, 'Suiseiseki,I,Love,You', '2-0e427d1e9d29345dd2563fe0781d86cd.jpg', 'Shinmera'),
+(3, 'test', 'derp', 'Shut up.', 1339973027, 'DURR,HURR,HURRRRRR', '3-49689_-_SEE_artist_J49689_-_SEE_artist_J', 'Shinmera');
 
 -- --------------------------------------------------------
 
@@ -125,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `fenfire_comments` (
 -- Dumping data for table `fenfire_comments`
 --
 
-INSERT INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `text`, `time`, `level`, `moderation`) VALUES
+INSERT IGNORE INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `text`, `time`, `level`, `moderation`) VALUES
 (15, 90, 'Someone Else', 'nigger', 'LOL UR GHEY FOR MITHENT', 1333924316, 0, 0),
 (16, 90, 'Shinmera', 'nhafner@gmx.ch', 'IKNORITE', 1333924490, 1, 0),
 (17, 90, 'Shinmera', 'nhafner@gmx.ch', 'TEST', 1334818953, 0, 0),
@@ -155,7 +224,7 @@ CREATE TABLE IF NOT EXISTS `fenfire_folders` (
 -- Dumping data for table `fenfire_folders`
 --
 
-INSERT INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
+INSERT IGNORE INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
 (89, 'CORE', 'INDEX', ';0;9;1;0;7;10;8;2;3;4;5;6;11;12;13;14', 1),
 (90, 'Neon', 'Shinmera', ';15;16;17;18', 1),
 (91, 'User', 'Shinmera', ';19;20;21;22;23', 1),
@@ -178,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `lightup_suites` (
 -- Dumping data for table `lightup_suites`
 --
 
-INSERT INTO `lightup_suites` (`name`, `module`) VALUES
+INSERT IGNORE INTO `lightup_suites` (`name`, `module`) VALUES
 ('default', 'CORE'),
 ('extra', 'CORE'),
 ('plus', 'CORE'),
@@ -206,7 +275,7 @@ CREATE TABLE IF NOT EXISTS `lightup_tags` (
 -- Dumping data for table `lightup_tags`
 --
 
-INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `tagcode`, `deftag`, `description`, `limit`, `order`) VALUES
+INSERT IGNORE INTO `lightup_tags` (`name`, `suite`, `tag`, `tagcode`, `deftag`, `description`, `limit`, `order`) VALUES
 ('Bold', 'default', 'b', 'b{@}', 'deftag(b){\r\n    tag(strong){print{content}}\r\n}', 'Bold text', -1, 0),
 ('Color', 'plus', 'color', 'color(&#36;Choose a colour|color&#36;){@}', 'deftag(color,color STRI true){\r\n    tag(span,:style color: get{color}){ print{content}}\r\n}', 'Change the font colour', -1, 4),
 ('Image', 'plus', 'img', 'img{@}', 'deftag(img,alt TEXT false,title TEXT false){\r\n    tag(img,:extra alt="get{alt}" title="get{title}" src="get{content}"){}\r\n}', 'Insert an image', -1, 5),
@@ -235,7 +304,7 @@ CREATE TABLE IF NOT EXISTS `lore_actions` (
 -- Dumping data for table `lore_actions`
 --
 
-INSERT INTO `lore_actions` (`title`, `type`, `action`, `args`, `reason`, `editor`, `time`) VALUES
+INSERT IGNORE INTO `lore_actions` (`title`, `type`, `action`, `args`, `reason`, `editor`, `time`) VALUES
 ('Index', '', 'edit', '1', 'Need an index page.', 'Shinmera', 1336374874),
 ('Index', '', 'status', 'l', 'Locked it.', 'Shinmera', 1336374889),
 ('test', '', 'edit', '1', 'TESTING FOR TEST PURPOSES', 'Shinmera', 1336596327),
@@ -307,7 +376,7 @@ CREATE TABLE IF NOT EXISTS `lore_articles` (
 -- Dumping data for table `lore_articles`
 --
 
-INSERT INTO `lore_articles` (`title`, `type`, `revision`, `current`, `time`, `status`) VALUES
+INSERT IGNORE INTO `lore_articles` (`title`, `type`, `revision`, `current`, `time`, `status`) VALUES
 ('Index', 'a', 2, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.\r\n\r\n{category:cat}', 1336374874, 'l'),
 ('test', 'a', 2, 'LOLWUT [Derp|THIS] IS A SHITTY TEST PAGE\r\n#!history\r\n{category:cat}', 1336596327, 'o'),
 ('cat', 'c', 4, '#!noparse\r\nDERRRPYYYY &gt;cat|CATEGORYYYYY&lt; YAAAAAAAAAAAAAAAAAAAAAAAY\r\n[test this stuff!]', 1336597240, 'o'),
@@ -334,7 +403,7 @@ CREATE TABLE IF NOT EXISTS `lore_categories` (
 -- Dumping data for table `lore_categories`
 --
 
-INSERT INTO `lore_categories` (`title`, `article`) VALUES
+INSERT IGNORE INTO `lore_categories` (`title`, `article`) VALUES
 ('cat', 'Index'),
 ('cat', 'test');
 
@@ -358,7 +427,7 @@ CREATE TABLE IF NOT EXISTS `lore_revisions` (
 -- Dumping data for table `lore_revisions`
 --
 
-INSERT INTO `lore_revisions` (`title`, `type`, `revision`, `text`, `editor`, `time`) VALUES
+INSERT IGNORE INTO `lore_revisions` (`title`, `type`, `revision`, `text`, `editor`, `time`) VALUES
 ('Index', '', 1, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.', 'Shinmera', 1336374874),
 ('test', '', 1, 'LOLWUT THIS IS A SHITTY TEST PAGE\r\n#!history', 'Shinmera', 1336596327),
 ('test', '', 2, 'LOLWUT [Derp|THIS] IS A SHITTY TEST PAGE\r\n#!history\r\n{category:cat}', 'Shinmera', 1336597146),
@@ -410,11 +479,11 @@ CREATE TABLE IF NOT EXISTS `ms_categories` (
   `categoryID` bigint(20) NOT NULL AUTO_INCREMENT,
   `MID` int(11) NOT NULL,
   `PID` bigint(20) NOT NULL,
-  `title` varchar(35) NOT NULL,
-  `subject` text NOT NULL,
-  `options` text NOT NULL,
+  `title` varchar(35) CHARACTER SET latin1 NOT NULL,
+  `subject` text CHARACTER SET latin1 NOT NULL,
+  `options` text CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`categoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -434,7 +503,7 @@ CREATE TABLE IF NOT EXISTS `ms_hooks` (
 -- Dumping data for table `ms_hooks`
 --
 
-INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
+INSERT IGNORE INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
 ('CORE', 'HITadmin', 'Admin', 'displayPage'),
 ('CORE', 'HITlogin', 'Neon', 'displayLogin'),
@@ -473,7 +542,9 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITwiki', 'Lore', 'displayPage'),
 ('CORE', 'APIlightupCUSTOM', 'LightUp', 'displayApiCustomParse'),
 ('CORE', 'APILoreParse', 'Lore', 'displayApiParse'),
-('CORE', 'HITgallery', 'Display', 'displayPage');
+('CORE', 'HITgallery', 'Display', 'displayPage'),
+('CORE', 'APIdisplayManageSave', 'Display', 'displayAPISaveData'),
+('CORE', 'APIdisplayManageDelete', 'Display', 'displayAPIDeletePicture');
 
 -- --------------------------------------------------------
 
@@ -483,17 +554,17 @@ INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 
 CREATE TABLE IF NOT EXISTS `ms_log` (
   `logID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `subject` text NOT NULL,
+  `subject` text CHARACTER SET latin1 NOT NULL,
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=54 ;
 
 --
 -- Dumping data for table `ms_log`
 --
 
-INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
+INSERT IGNORE INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (1, 'Log cleared.', 2012, 1),
 (2, 'Updated user @1', 2012, 1),
 (3, 'Updated user @1', 2012, 1),
@@ -522,7 +593,31 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (26, 'Hook CORE::HITwiki =&gt; Lore::displayPage added.', 1336373734, 1),
 (27, 'Hook CORE::APIlightupCUSTOM =&gt; LightUp::displayApiCustomParse added.', 1337761216, 1),
 (28, 'Hook CORE::APILoreParse =&gt; Lore::displayApiParse added.', 1338148726, 1),
-(29, 'Hook CORE::HITgallery =&gt; Display::displayPage added.', 1338717230, 1);
+(29, 'Hook CORE::HITgallery =&gt; Display::displayPage added.', 1338717230, 1),
+(30, 'Hook CORE::APIdisplayManageSave =&gt; Display::displayAPISaveData added.', 1339849199, 1),
+(31, 'Hook CORE::APIdisplayManageDelete =&gt; Display::displayAPIDeletePicture added.', 1339849241, 1),
+(32, 'Updated user @1', 1340204720, 1),
+(33, 'Updated permissions for @1', 1340204724, 1),
+(34, 'Updated permissions for @1', 1340204729, 1),
+(35, 'Updated permissions for @1', 1340204733, 1),
+(36, 'Updated permissions for @1', 1340204738, 1),
+(37, 'Updated user @2', 1340204742, 1),
+(38, 'Updated permissions for @2', 1340204750, 1),
+(39, 'Updated user @1', 1340204754, 1),
+(40, 'Updated permissions for @1', 1340204759, 1),
+(41, 'Updated user @3', 1340204937, 1),
+(42, 'Updated permissions for @3', 1340204941, 1),
+(43, 'Updated user @2', 1340204952, 1),
+(44, 'Updated permissions for @2', 1340204955, 1),
+(45, 'Updated permissions for @2', 1340205004, 1),
+(46, 'Updated permissions for @2', 1340205185, 1),
+(47, 'Updated permissions for @2', 1340205191, 1),
+(48, 'Updated permissions for @2', 1340205200, 1),
+(49, 'Updated permissions for @2', 1340205229, 1),
+(50, 'Updated permissions for @2', 1340205231, 1),
+(51, 'Updated permissions for @2', 1340220510, 1),
+(52, 'Updated permissions for @2', 1340220523, 1),
+(53, 'Updated permissions for @2', 1340220534, 1);
 
 -- --------------------------------------------------------
 
@@ -531,16 +626,16 @@ INSERT INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ms_modules` (
-  `name` varchar(35) NOT NULL,
-  `subject` text NOT NULL,
+  `name` varchar(35) CHARACTER SET latin1 NOT NULL,
+  `subject` text CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ms_modules`
 --
 
-INSERT INTO `ms_modules` (`name`, `subject`) VALUES
+INSERT IGNORE INTO `ms_modules` (`name`, `subject`) VALUES
 ('Ace', 'Provides a simple interface for the Ace text editor component.'),
 ('Admin', 'Allows administration of CORE models and provides an interface for module specific configuration pages.'),
 ('Auth', 'Provides a secure session and authentication system, as well as permission management.'),
@@ -563,17 +658,17 @@ INSERT INTO `ms_modules` (`name`, `subject`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ms_options` (
-  `key` varchar(64) NOT NULL,
-  `value` text NOT NULL,
-  `type` varchar(1) NOT NULL,
+  `key` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `value` text CHARACTER SET latin1 NOT NULL,
+  `type` varchar(1) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ms_options`
 --
 
-INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
+INSERT IGNORE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('akismet_key', '9fce28faba37', 's'),
 ('avatar_maxdim', '150', 'i'),
 ('avatar_maxsize', '500', 'i'),
@@ -596,21 +691,22 @@ INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ms_timer` (
-  `IP` varchar(16) NOT NULL,
+  `IP` varchar(16) CHARACTER SET latin1 NOT NULL,
   `time` int(10) unsigned NOT NULL,
-  `action` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `action` varchar(32) CHARACTER SET latin1 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ms_timer`
 --
 
-INSERT INTO `ms_timer` (`IP`, `time`, `action`) VALUES
+INSERT IGNORE INTO `ms_timer` (`IP`, `time`, `action`) VALUES
 ('127.0.0.1', 0, 'visit:'),
 ('127.0.0.1', 0, 'visit'),
 ('127.0.0.1', 0, 'visit:1'),
 ('127.0.0.1', 0, 'comment'),
-('127.0.0.1', 1335395795, 'sendmessage');
+('127.0.0.1', 1335395795, 'sendmessage'),
+('127.0.0.1', 1339849427, 'displayEdit');
 
 -- --------------------------------------------------------
 
@@ -632,20 +728,20 @@ CREATE TABLE IF NOT EXISTS `neon_friends` (
 --
 
 CREATE TABLE IF NOT EXISTS `ud_fields` (
-  `varname` varchar(32) NOT NULL,
-  `title` varchar(32) NOT NULL,
-  `default` text NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 's',
+  `varname` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `default` text CHARACTER SET latin1 NOT NULL,
+  `type` varchar(1) CHARACTER SET latin1 NOT NULL DEFAULT 's',
   `editable` tinyint(1) NOT NULL DEFAULT '0',
   `displayed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`varname`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ud_fields`
 --
 
-INSERT INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable`, `displayed`) VALUES
+INSERT IGNORE INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable`, `displayed`) VALUES
 ('web', 'Website', ' ', 'u', 1, 1),
 ('aboutuser', 'About', ' ', 't', 1, 1),
 ('birthdate', 'Birthdate', ' ', 'd', 1, 1),
@@ -669,7 +765,7 @@ CREATE TABLE IF NOT EXISTS `ud_field_values` (
 -- Dumping data for table `ud_field_values`
 --
 
-INSERT INTO `ud_field_values` (`varname`, `userID`, `value`) VALUES
+INSERT IGNORE INTO `ud_field_values` (`varname`, `userID`, `value`) VALUES
 ('birthdate', 1, '18.11.1993'),
 ('web', 1, 'http://shinmera.com'),
 ('aboutuser', 1, 'I make stuff.\r\nSome of it is kinda cool.\r\n\r\nVery important trufax about me:\r\nMithent is my waifu.'),
@@ -683,16 +779,16 @@ INSERT INTO `ud_field_values` (`varname`, `userID`, `value`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `ud_groups` (
-  `title` varchar(35) NOT NULL,
-  `permissions` text NOT NULL,
+  `title` varchar(35) CHARACTER SET latin1 NOT NULL,
+  `permissions` text CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ud_groups`
 --
 
-INSERT INTO `ud_groups` (`title`, `permissions`) VALUES
+INSERT IGNORE INTO `ud_groups` (`title`, `permissions`) VALUES
 ('root', '*.*'),
 ('Unregistered', 'base.*\r\nuser.profile.*');
 
@@ -704,16 +800,17 @@ INSERT INTO `ud_groups` (`title`, `permissions`) VALUES
 
 CREATE TABLE IF NOT EXISTS `ud_permissions` (
   `UID` bigint(20) unsigned NOT NULL,
-  `tree` text NOT NULL,
+  `tree` text CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`UID`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `ud_permissions`
 --
 
-INSERT INTO `ud_permissions` (`UID`, `tree`) VALUES
-(1, '');
+INSERT IGNORE INTO `ud_permissions` (`UID`, `tree`) VALUES
+(1, ''),
+(2, '');
 
 -- --------------------------------------------------------
 
@@ -723,26 +820,26 @@ INSERT INTO `ud_permissions` (`UID`, `tree`) VALUES
 
 CREATE TABLE IF NOT EXISTS `ud_users` (
   `userID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) NOT NULL,
-  `mail` varchar(35) NOT NULL,
-  `password` varchar(128) NOT NULL,
-  `secret` varchar(32) NOT NULL,
-  `displayname` varchar(32) NOT NULL,
-  `filename` varchar(50) DEFAULT NULL,
-  `group` varchar(32) NOT NULL DEFAULT 'Registered',
-  `status` varchar(1) NOT NULL DEFAULT 'u',
+  `username` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `mail` varchar(35) CHARACTER SET latin1 NOT NULL,
+  `password` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `secret` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `displayname` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `filename` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
+  `group` varchar(32) CHARACTER SET latin1 NOT NULL DEFAULT 'Registered',
+  `status` varchar(1) CHARACTER SET latin1 NOT NULL DEFAULT 'u',
   `time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Dumping data for table `ud_users`
 --
 
-INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', '9c9b7260d5e4d1fa396a1255ea82f0a879559c28f64a93d397ccaf2fcef3f09322ac23ff72095f24a4c99bb55696cfdafc409f39fcdcfda9b11da460f9bd5ae5', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
-(2, 'McDick', 'lol@dongs.com', '0a24d5ec1aedfb705ed8f67a4cbccac8c0262640eae7b2a72052b4378dd576c665d413689f9538e06d6217d605ad80ece53142f44e209a6cbe66d60ff0a502f3', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0),
+INSERT IGNORE INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
+(1, 'Shinmera', 'nhafner@gmx.ch', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'wwhatever', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(2, 'McDick', 'lol@dongs.com', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0),
 (3, 'Faggot', 'shinmera@tymoon.eu', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'J73Xq6HrgF081Ql130e8v8l3349Jc06', 'Faggot', '', 'Registered', 'a', 1335212007),
 (4, '', '', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', '45KM04407K1i23J57U42fap5E1Tk823', '', '', '', 'i', 1335432455);
