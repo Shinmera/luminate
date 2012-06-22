@@ -17,6 +17,7 @@ public static $hooks=array("foo");
 
 function displayPage(){
     global $params,$param;
+    include(PAGEPATH.'chan/chan_banned.php');
     switch(trim($params[0])){
         case 'byID':
             $board = DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=? OR folder LIKE ?",array($params[1],$params[1]));
@@ -28,7 +29,7 @@ function displayPage(){
             header('Location: '.Toolkit::url("chan",$board[0]['folder'].'/threads/'.$thread->PID.'.php'));
             break;
         case '':
-            include('frontpage.php');
+            include(PAGEPATH.'chan/chan_frontpage.php');
             break;
         default:
             if(is_dir(ROOT.DATAPATH.'chan/'.$param))

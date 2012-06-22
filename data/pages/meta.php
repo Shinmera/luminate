@@ -1,4 +1,4 @@
-<? global $c,$t; ?>
+<? global $c; ?>
 <meta http-equiv="description" content="<?=$c->o['metadescription']?>" />
 <meta http-equiv="content-language" content="en-US,en-GB,en" />
 <meta http-equiv="author" content="Shinmera" />
