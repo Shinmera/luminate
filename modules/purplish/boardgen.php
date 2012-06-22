@@ -11,16 +11,8 @@ class BoardGenerator{
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/';
         $t->loadTheme("chan");
-        $addboardquery="";$fodboardquery="";
-        if($board->merged!=""){
-            $temp=explode(";",$board->merged);
-            for($i=0;$i<count($temp);$i++){
-                $addboardquery.=" OR BID=".$temp[$i];
-                $fodboardquery.=" OR boardID=".$temp[$i];
-            }
-        }
-        $boardfolders = $c->getData("SELECT boardID,folder FROM ch_boards WHERE ( boardID=? ".$fodboardquery." )",array($board->boardID));
-        $totalthreads = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE ( BID=? ".$addboardquery." ) AND PID=0 AND options NOT REGEXP ?",array($board->boardID,'d'));
+        
+        $totalthreads = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ?",array($board->boardID,'d'));
         $totalthreads = $totalthreads[0]['COUNT(postID)'];
         $threads=array(1);
         
@@ -29,14 +21,14 @@ class BoardGenerator{
         for($i=0;count($threads)>0;$i++){
             if($i>$board->maxPages){
                 if(!class_exists("DataGenerator"))include(TROOT.'modules/chan/datagen.php');
-                $threads = DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE ( BID=? ) AND PID=0 AND options NOT REGEXP ? ORDER BY bumptime DESC LIMIT ".
+                $threads = DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ? ORDER BY bumptime DESC LIMIT ".
                         ($i*$c->o['chan_tpp']).",".(($i+1)*$c->o['chan_tpp']),array($board->boardID,'d'));
                 $datagen = new DataGenerator();
                 for($j=0;$j<count($threads);$j++)$datagen->deletePost($threads[$j]->postID, $board->boardID, false, false);
             }else{
-                $threads = DataModel::getData('ch_posts',"SELECT postID,BID FROM ch_posts WHERE ( BID=? ".$addboardquery." ) AND PID=0 AND options NOT REGEXP ? AND options REGEXP ? ORDER BY bumptime DESC LIMIT ".
+                $threads = DataModel::getData('ch_posts',"SELECT postID,BID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ? AND options REGEXP ? ORDER BY bumptime DESC LIMIT ".
                         ($i*$c->o['chan_tpp']).",".(($i+1)*$c->o['chan_tpp']),array($board->boardID,'d','s'));
-                $Uthreads= DataModel::getData('ch_posts',"SELECT postID,BID FROM ch_posts WHERE ( BID=? ".$addboardquery." ) AND PID=0 AND options NOT REGEXP ? AND options NOT REGEXP ? ORDER BY bumptime DESC LIMIT ".
+                $Uthreads= DataModel::getData('ch_posts',"SELECT postID,BID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ? AND options NOT REGEXP ? ORDER BY bumptime DESC LIMIT ".
                         ($i*$c->o['chan_tpp']).",".(($i+1)*$c->o['chan_tpp']),array($board->boardID,'d','s'));
                 $threads=array_merge($threads,$Uthreads);
 
@@ -55,10 +47,7 @@ class BoardGenerator{
                         $posts = DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=? AND options NOT REGEXP ? ORDER BY postID DESC LIMIT 3",array($threads[$j]->BID,$threads[$j]->postID,'d'));
                         $postcount = $c->getData("SELECT COUNT(postID) from ch_posts WHERE BID=? AND PID=? AND options NOT REGEXP ?",array($threads[$j]->BID,$threads[$j]->postID,'d'));$postcount=$postcount[0]['COUNT(postID)'];
 
-                        $folder="";
-                        for($n=0;$n<count($boardfolders);$n++){
-                            if($boardfolders[$n]['boardID']==$threads[$j]->BID){$folder=$boardfolders[$n]['folder'];break;}
-                        }
+                        $folder=$board->folder;
                         ?><div class='threadToolbar'>
                             <a href='<?=$k->url("chan",$folder.'/threads/'.$threads[$j]->postID.'.php')?>'>Whole Thread(<?=$postcount?>)</a>
                             <a href='<?=$k->url("chan",$folder.'/threads/'.$threads[$j]->postID.'.php?b=-50')?>'>Last 50</a> 
