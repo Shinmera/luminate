@@ -1,0 +1,62 @@
+img{max-width:100%;max-height:100%;margin:5px;}
+label{min-width:150px;display:inline-block;}
+label.fixed{height:16px;white-space:nowrap;overflow:visible;}
+label.failure,label.success{padding:2px;margin:2px;min-height:15px;}
+input,.button,textarea,.preview{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;color:#000;}
+input:hover,.button:hover,textarea:hover{box-shadow: 0px 0px 10px #FFDD00;}
+input[disabled='disabled'],textarea[disabled='disabled']{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
+textarea{min-width:200px;min-height:100px;}
+.preview{overflow: scroll;display:none;}
+a{text-decoration: none;color:blue;}
+a:hover{text-shadow: 0px 0px 5px #FFDD00;}
+ul{list-style:none;padding-left:10px;}
+hr{border: none;border-bottom:1px solid #FFF;box-shadow: 0px 0px 3px #FFF;}
+h1,h2,h3,h4,h5,h6{margin-top:0;}
+table{width:100%;border-spacing:0;}
+table td,table th{border-left:1px solid #FFF;padding:3px;}
+table td:first-child,table th:first-child{border-left:none;}
+table th{background-color:#000;color:#FFF;font-weight:bold;}
+table th a{color:yellow;}
+table th:first-child{border-radius:5px 0px 0px 0px;}
+table th:last-child{border-radius:0px 5px 0px 0px;}
+table tbody tr{background-color:#CCC;}
+table tbody tr:nth-child(2n){background-color:#BBB;}
+.flLeft{float:left;}
+.flRight{float:right;}
+.clear{clear:both;}
+.center{text-align:center;}
+.right{text-align:right;}
+.left{text-align:left;}
+.justify{text-align:justify;}
+.title{font-size:18pt;font-weight:bold;margin-bottom:5px;margin-right:100px;}
+.menu li{border-bottom: 1px solid #000;}
+.small{font-size: 8pt;}
+.medium{font-size: 12pt;}
+.large{font-size:18pt;}
+.huge{font-size:36pt;}
+.toolbar{list-style:none;margin:0;padding:0;}
+.toolbar li{list-style:none;display:inline-block;margin:5px;padding:0;}
+.toolbar img{margin:0;padding:0;}
+.jqmWindow .in{width:100%;}
+.failure,.success{padding:10px;margin:5px;color:#FFF;font-weight:bold;}
+.failure{border: 1px solid #4D0606;background-color:#FF0000;}
+.success{border: 1px solid #0A4D06;background-color:#00FF00;}
+.error{background:#FF0000;color:#FFF;padding:2px;border-color:#DD0000;}
+.simpleeditor{
+    padding:5px;
+    display:inline-block;
+}
+
+.simpleeditor textarea{
+    min-width:500px;
+    min-height:200px;
+    border: 1px solid #000;
+}
+.simpleeditor .toolbar{
+    border-radius: 5px 5px 0px 0px;
+    background-color: #000;
+    margin-left:2px;
+    margin-right:6px;
+    margin-bottom:-3px;
+}
+.simpleeditor .toolbar li:hover{background-color:#FFDD00;}
