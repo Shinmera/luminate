@@ -23,8 +23,7 @@ function buildMenu($menu){
 }
 
 function displayPage($params){
-    global $a,$t,$l,$k,$site;
-    if($site=="index")$site="Panel";
+    global $a,$t,$l,$param,$site;
     $t->openPage("Administration");
     
     ?><div id='pageNav'>
@@ -42,14 +41,15 @@ function displayPage($params){
                     $(this).click(function() {
                         $(this).find("ul").stop(true, true).slideToggle();
                     });
+                    
+                    $('ul a',this).each(function(){
+                        if($(this).attr('href')=='<?=PROOT.$param?>' || $(this).attr('href')== '<?=Toolkit::url('admin',$param);?>'){
+                            $(this).parent().slideDown();
+                        }
+                    })
                 }
                 
-                copyOf = $(this).clone();
-                copysKids = copyOf.children();
-                copysKids.remove();
-                if( copyOf.text().trim() == "<?=$site?>"){
-                    $(this).find("ul").stop(true, true).slideDown();
-                }
+                
             });
         });
     </script>
@@ -234,7 +234,7 @@ function displayModulesPage(){
 }
 
 function displayHooksPage(){
-    global $k;
+    global $k,$c;
     if($_POST['action']=="Register"){
         $this->registerHook($_POST['source'],$_POST['hook'],$_POST['destination'],$_POST['function']);
         $err[0]="Hook registered.";
@@ -243,8 +243,13 @@ function displayHooksPage(){
         $this->removeHook($_POST['source'],$_POST['hook'],$_POST['destination'],$_POST['function']);
         $err[1]="Hook removed.";
     }
+    $max = $c->getData('SELECT COUNT(source) FROM ms_hooks');
+    Toolkit::sanitizePager($max[0]['COUNT(source)'],array('source','destination','hook','function'),'source');
+    if($_GET['a']==0)$order='DESC';else $order='ASC';
+    $hooks = DataModel::getData("ms_hooks", 'SELECT `source`,`hook`,`destination`,`function` 
+                                             FROM ms_hooks ORDER BY `'.$_GET['o'].'` '.$order.' 
+                                             LIMIT '.$_GET['f'].','.$_GET['s']);
     
-    $hooks = DataModel::getData("ms_hooks", "SELECT `source`,`hook`,`destination`,`function` FROM ms_hooks ORDER BY `source`,`destination`,`hook` DESC");
     $modules = DataModel::getData("ms_modules", "SELECT `name` FROM ms_modules");
     ?><form method="post" action="#" class="box">
         Source: <? $k->printSelectObj("source",$modules,"name","name"); ?>
@@ -254,18 +259,32 @@ function displayHooksPage(){
         <input type="submit" name="action" value="Register" /><span style="color:red;"><?=$err[0]?></span>
     </form>
     <div class="box" style="display:block;">
+    <?=$k->displayPager(); ?>
     <? if(is_array($hooks)){ ?>
     <span style="color:red;"><?=$err[1]?></span><table>
         <thead>
-            <tr><th style="width:150px">Source</th>
-                <th style="width:150px">Destination</th>
-                <th style="width:150px">Hook</th>
-                <th>Function</th></tr>
+            <tr><th style="width:150px"><a href='?o=source&a=<?=!$_GET['a']?>'>Source</a></th>
+                <th style="width:150px"><a href='?o=destination&a=<?=!$_GET['a']?>'>Destination</a></th>
+                <th style="width:150px"><a href='?o=hook&a=<?=!$_GET['a']?>'>Hook</a></th>
+                <th><a href='?o=function&a=<?=!$_GET['a']?>'>Function</a></th>
+                <th style="width:20px;"></th></tr>
         </thead>
         <tbody>
-            <? foreach($hooks as $h){
-                echo('<tr><td>'.$h->source.'</td><td>'.$h->destination.'</td><td>'.$h->hook.'</td><td>'.$h->function.'</td></tr>');
-            } ?>
+            <? foreach($hooks as $h){ ?>
+                <tr>
+                    <td><?=$h->source?></td>
+                    <td><?=$h->destination?></td>
+                    <td><?=$h->hook?></td>
+                    <td><?=$h->function?></td>
+                    <td><form action="" method="post">
+                            <input type="submit" name="action" value="Remove" />
+                            <input type="hidden" name="source" value="<?=$h->source?>" />
+                            <input type="hidden" name="hook" value="<?=$h->hook?>" />
+                            <input type="hidden" name="destination" value="<?=$h->destination?>" />
+                            <input type="hidden" name="function" value="<?=$h->function?>" />
+                    </form></td>
+                </tr>
+            <? } ?>
         </tbody>
     </table>
     <? }else echo('<center>No hooks registered?!</center>');
