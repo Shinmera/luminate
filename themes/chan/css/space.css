@@ -1,0 +1,484 @@
+@charset "utf-8";
+/* CSS Document */
+.clear{clear:both;}
+a:link{color:#AAA;}
+a:visited{color:#AAA;}
+a:active{color:#AAA;}
+a:hover{color:#EEE;text-shadow: 0px 0px 5px #EEE;}
+IMG.flLeft {float: left;padding:3px;}
+IMG.flRight {float: right;padding:3px;}
+
+html,body{
+    background: #0A0A0A url("http://www.projectosx.com/forum/style_images/soulshine/tiled_space.jpg") repeat bottom right fixed;
+    color:#AAA;
+    font-family: Arial, Monospace;
+    font-size:10pt;
+}
+
+.spoiler{
+    border: 1px dotted #EEE;
+}
+.sspoiler{
+    background: #000;
+    border: 1px dotted #555;
+    color: #000;
+}
+
+.content{
+    padding-top:50px;
+}
+
+.boardTitle{
+    text-align:center;
+    font-size:36pt;
+    font-weight:bold;
+    color: #444;
+    text-shadow: 0px 0px 5px #444;
+}
+.boardTitle:hover{
+    color: #33EEFF;
+    text-shadow: 0px 0px 5px #33EEFF;
+}
+
+.quote{
+    padding:5px;
+    border-top: 1px solid #EEE;
+    background-color:#000;
+    color:#EEE;
+    border-radius:5px;
+    box-shadow: 0px 0px 5px #000;
+}
+.quote hr{
+    border: 1px solid #333;
+}
+
+.quoteLine{
+    color: #33EEFF;
+    text-shadow: none;
+}
+
+a.directQuote{
+    color: #33EEFF;
+    text-shadow: 0px 0px 3px #33EEFF;
+    text-decoration: none;
+}
+
+.postBox{
+    box-shadow: 2px 2px 10px #000;
+    background-color:#111;
+    border-radius:5px;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 5px;
+    color: #AAA;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.5;
+}
+.postBox:hover{
+    opacity: 1;
+}
+.postBox input{
+    font-size:10pt;
+    height:15px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background: #080808;
+    color: #33EEFF;
+    text-shadow: 0px 0px 5px #33EEFF;
+}
+.postBox textarea{
+    background:#000 url("img/spacecore.png") no-repeat bottom right;
+    color: #EEE;
+    text-shadow: 0px 0px 5px #EEE;
+    border-radius: 0px 0px 2px 2px;
+    border: 1px solid #000;
+}
+.postBox .eldesc{width:100px;float:left;}
+.postBox #varname{width:125px;}
+.postBox #varmail{width:125px;}
+.postBox #varpass{width:260px;}
+.postBox #varfile{width:260px;height:18px;}
+.postBox #vartitle{width:300px;}
+.postBox #varsubmit{width:60px;height:20px;margin-top:5px;}
+.postBox #fulltext{width:350px;height:70px;}
+.postBox .tac{font-size:8pt;margin-top:10px;}
+.bbcodeBar{
+    height:20px;
+    width:100%;
+    background-color:#000;
+}
+
+.threadWatch{
+    box-shadow: 2px 2px 10px #000;
+    background-color:#111;
+    border-radius:5px;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 5px;
+    color: #AAA;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.5;
+    font-size: 8pt;
+}
+.threadWatch:hover{opacity: 1;}
+.threadWatch a{color:#DDD;text-decoration:none;}
+.threadWatch table{width:100%;margin:0px;border-spacing: 0px;}
+.threadWatch table thead tr{background-color:#000;color:#33EEFF;text-shadow: 0px 0px 5px #33EEFF;}
+.threadWatch table tbody tr:nth-child(2n){background-color:#181818;}
+.threadWatch table tbody tr:nth-child(2n+1){background-color:#080808;}
+.threadWatch table tbody td{border-right:1px solid #000;}
+.threadWatch table tbody td:nth-child(1){text-align:center;}
+.threadWatch table tbody td:nth-child(2){text-align:center;}
+.threadWatch table tbody td:nth-child(3){text-align:center;}
+.threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
+.watchButton{font-size:18pt;text-decoration: none;}
+.watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
+#watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
+#watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
+#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;font-weight:bold;}
+#watchRefreshButton:hover{color:#FFD900;text-shadow: 0px 0px 5px #FFD900;}
+#watchRemoveCol{width:20px;}
+#watchBoardCol{width:40px;}
+#watchIDCol{width:30px;}
+#watchPosterCol{width:100px;}
+#watchUnreadCol{width:10px;}
+.watchNewPosts{
+    color:#EEEEEE;
+    text-shadow: 0px 0px 5px #EEEEEE;
+    font-weight:bold;
+    box-shadow: 0px 0px 5px #FF0000;
+    background: #FF0000;
+}
+
+.post, .postOP{
+    display: inline-block;
+    padding: 5px;
+}
+
+.post{
+    background-color:#222;
+    border-radius:5px;
+    box-shadow: 0px 0px 5px #000;
+    margin-left: 20px;
+    margin-top:5px;
+    width: inherit;
+    opacity: 0.75;
+}
+
+.postOP{
+    background-color:#000;
+    border-radius: 5px 0px 0px 0px;
+    box-shadow: 0px 0px 5px #000;
+    width: 99%;
+
+    background: -webkit-gradient(linear, left top, left bottom, from(#000), to(#111));
+    background: -moz-linear-gradient(top,  #000,  #111);
+    opacity: 0.75;
+}
+
+.sticky{
+    background: -webkit-gradient(linear, left top, left bottom, from(#1166AA), to(#000));
+    background: -moz-linear-gradient(top,  #1166AA,  #000);
+}
+
+.locked{
+    background: -webkit-gradient(linear, left top, left bottom, from(#660000), to(#000000));
+    background: -moz-linear-gradient(top,  #660000,  #000000);
+    color: #EEE;
+}
+
+.stickylocked{
+    background: -webkit-gradient(linear, left top, left bottom, from(#112266), to(#000000));
+    background: -moz-linear-gradient(top,  #112266,  #000000);
+    color: #EEE;
+}
+
+.selected{
+    background: -webkit-gradient(linear, left top, right top, from(#555), to(#000));
+    background: -moz-linear-gradient(left,  #555,  #000);
+    color: #EEE;
+    box-shadow: 0px 0px 5px #33EEFF;
+}
+
+.postImage{
+    float:left;
+    margin:5px;
+    max-width:100%;
+    max-height:100%;
+    box-shadow: 0px 0px 5px #000000;
+}
+
+.postTitle{
+    color: #FFF;
+    font-size:14pt;
+    font-weight:bold;
+    text-shadow: 0px 0px 5px #FFF;
+}
+
+.postUsername, .postTrip{font-size:10pt;}
+
+.postUsername{
+    color: #33EEFF;
+    font-weight:bold;
+}
+
+.postTrip{
+    color: #000000;
+    text-shadow: 0px 0px 5px #FFFFFF;
+}
+
+.postMod{
+    color: #33EEFF;
+    text-shadow: 0px 0px 5px #33EEFF;
+    border-top: 2px dotted #33EEFF;
+    border-bottom: 2px dotted #33EEFF;
+}
+
+.postImage{
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px #33EEFF;
+}
+
+#postType{
+    background: none;    
+}
+
+.omittedText{
+    font-weight: bold;
+    font-size: 12pt;
+}
+a.omittedText{
+    color: #AAA;
+    text-decoration: none;
+}
+
+.threadToolbar{
+    margin-bottom:3px;
+    margin-left: 10px;
+}
+
+.threadToolbar a{
+    padding:3px;
+    text-align:center;
+    border-radius:5px 5px 0px 0px;
+    background: #000;
+    color:#EEE;
+    text-decoration: none;
+    font-size:12pt;
+    border: 1px solid #33EEFF;
+    box-shadow: 0px 0px 5px #33EEFF;
+    background: -webkit-gradient(linear, left top, left bottom, from(#444), to(#000));
+    background: -moz-linear-gradient(top,  #444,  #000);
+}
+
+.threadToolbar a:hover{
+    border: 1px solid #FFFFFF;
+    box-shadow: 0px 0px 5px #FFFFFF;
+}
+
+.buttons{
+}
+
+.buttons a{
+    position:relative;
+    top:-4px;
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
+    padding: 5px 5px 5px 5px;
+    background: -webkit-gradient(linear, left top, left bottom, from(#000), to(#333));
+    background: -moz-linear-gradient(top,  #000,  #333);
+    color:#EEE;
+    text-shadow: none;
+    text-decoration: none;
+}
+
+.deleteBox, .reportBox{
+    float:right;
+    clear:right;
+}
+.deleteBox input, .reportBox input{
+    background-color: #000;
+    border: 1px solid #EEE;
+    border-radius: 5px;
+    color:#33EEFF;
+    box-shadow: 0px 0px 5px #EEE;
+}
+
+.footer{
+    text-align:center;
+    font-size:8pt;
+    margin-top:10px;
+    color: #FF0000;
+}
+
+.popup {
+    display: none;
+
+    position: fixed;
+    top: 17%;
+    left: 50%;
+
+    margin-left: -300px;
+    width: 600px;
+
+    background-color: #EEE;
+    color: #333;
+    border: 1px solid black;
+    padding: 12px;
+}
+
+.jqmOverlay { background-color: #000; }
+
+.frontContent{
+    background-color: #EEE;
+    margin-left:5%;
+    margin-right:5%;
+    color: #000;
+}
+
+.frontNews{
+    padding:10px;
+    height:1024px;
+}
+
+.frontLatest{
+    padding:10px;
+    float:right;
+    width:300px;
+    margin-bottom:-10px;
+    background: #888;
+    background: -webkit-gradient(linear, left top, right top, from(#555), to(#999));
+    background: -moz-linear-gradient(left,  #555, #999);
+    overflow:auto;
+    height:1024px;
+}
+.frontLatestHead{
+    font-weight:bold;
+    font-size:18pt;
+    color:#EEE;
+}
+
+.frontHeader{
+    text-align:center;
+    font-weight:bold;
+    font-size:36pt;
+    text-shadow:0px 0px 5px #EEE;
+    color:#EEE;
+    margin-bottom:10px;
+}
+
+.frontMenu{
+    margin-left:5%;
+    margin-right:5%;
+    margin-bottom:0px;
+    list-style:none;
+    height: 20px;
+    background: #888;
+    background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+    background: -moz-linear-gradient(top,  #999,  #000);
+    text-align: center;
+    display:block;
+    padding:0px;
+}
+.frontMenu li{
+    display:inline-block;
+    background: #EEE;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#AAA));
+    background: -moz-linear-gradient(top,  #EEE,  #AAA);
+    height:20px;
+    text-align:center;
+}
+.frontMenu li a{
+    text-decoration:none;
+    padding:10px 5px 5px 5px;
+}
+
+.postFront{
+    border-top: 1px solid #EEE;
+    overflow:hidden;
+}
+
+.postImageFront{
+    float:left;
+    margin:5px;
+    max-width:75px;
+    max-height:75px;
+}
+
+.menu{
+    background-color:#000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#000), to(#111));
+    background: -moz-linear-gradient(top,  #000,  #111);
+    box-shadow: 0px 3px 10px #000;
+    list-style:none;
+    position:fixed;
+    width:100%;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;
+    left:0px;
+}
+.menu *{
+    margin:0;
+    padding:0;
+}
+.menu a{
+    color:#FFF;
+    text-decoration:none;
+}
+.menu li a{
+    display:block;
+    padding:10px;
+    height:20px;
+}
+.menu li a:hover{
+    background: -webkit-gradient(linear, left top, left bottom, from(#333), to(#000));
+    background: -moz-linear-gradient(top,  #333,  #000);
+}
+.menu li{
+    position:relative;
+    display:block;
+    float:left;
+}
+.menu li ul{
+    position:absolute;
+    list-style:none;
+    width:1000px;
+    margin:0px;
+    padding:0px;
+    display:none;
+    height:40px;
+}
+.menu li ul li{
+    background: #000;
+    float:left;
+    display:inline-block;
+}
+.menu .separator{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    background-color:#333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#002255), to(#000));
+    background: -moz-linear-gradient(top,  #002255,  #000);
+}
+.menu .separator2{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    width:2px;
+    background:#EEE;
+}
+.menu > li > a.menulink{
+    background-color:#333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#000), to(#222));
+    background: -moz-linear-gradient(top,  #000,  #222);
+    text-shadow: 0px 0px 5px #33EEFF;
+}
