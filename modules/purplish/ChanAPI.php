@@ -51,7 +51,36 @@ function displayEdit(){
 function displayBan(){
     global $a;
     if(!$a->check('chan.mod.ban'))die('Insufficient privileges.');
-    
+    if($_POST['IP']!=''){
+        $ban = DataModel::getHull('ch_bans');
+        $ban->ip=$_POST['IP'];
+        $ban->time=$_POST['time'];
+        $ban->reason=$_POST['reason'];
+        $ban->PID=$_GET['id'];
+        $ban->folder=$_GET['folder'];
+        $ban->insertData();
+        if($_POST['time']>0)die('Successfully banned '.$_POST['IP'].' until '.Toolkit::toDate($_POST['time']).'.');
+        else                die('Successfully permabanned '.$_POST['IP'].' until the end of this database entry\'s life cycle.');
+    }else{
+        $post = DataModel::getData('ch_posts','SELECT p.postID,p.ip,p.subject,p.file,ch_boards.folder 
+                                               FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
+                                               WHERE p.postID=? AND p.BID=?',array($_GET['id'],$_GET['bid']));
+        if($post==null)die('No such post found.');
+        
+        echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
+        include(MODULEPATH.'gui/Editor.php');
+        $editor = new SimpleEditor(PROOT.'api/chan/ban?id='.$_GET['id'].'&folder='.$post->folder, 'Ban', 'banform');
+        if($post->file!='')
+            $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
+        $editor->addTextField('IP', 'IP: ', $post->ip,'text','required placeholder="'.$post->ip.'"');
+        $editor->addTextField('reason','Reason: ','','text','required placeholder="Spam" maxlength="128"');
+        $editor->addDropDown('time',array(time()+1,  time()+60, time()+1800,  time()+3600,time()+6400,time()+604800,time()+241920,time()+31536000,-1),
+                                    array('1 second','1 minute','30 minutes','1 hour',    '1 day',    '1 week',     '1 month',    '1 year',       'Forever'), 'Ban Time:');
+        $editor->addCheckbox('mute', 'Mute Ban');
+        $editor->addCheckbox('appeal', 'Appeal Allowed',true);
+        $_POST['text']=$post->subject;
+        $editor->show();
+    }
 }
 
 function displayPost(){
