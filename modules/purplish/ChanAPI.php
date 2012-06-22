@@ -1,84 +1,60 @@
-<?
-//TODO: Sanitize for v4.
-//TODO: Reduce bloat.
-//TODO: Re-test everything.
-//TODO: Tune akismet for unknown IPs.
-
-class Chan{
-public static $name="Chan";
+<? class ChanAPI extends Module{
+public static $name="ChanAPI";
 public static $author="NexT";
-public static $version=2.01;
-public static $short='chan';
+public static $version=0.21;
+public static $short='capi';
 public static $required=array("Auth");
 public static $hooks=array("foo");
 
-function displayPage(){
-    global $params,$param;
-    switch(trim($params[0])){
-        case 'byID':
-            $board = DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=? OR folder LIKE ?",array($params[1],$params[1]));
-            $thread = DataModel::getData('',"SELECT PID FROM ch_posts WHERE postID=?",array($params[2]));
-
-            if($board==null||$thread==null)die();
-            if($thread->PID==0)$thread->PID=$params[2];
-
-            header('Location: '.Toolkit::url("chan",$board[0]['folder'].'/threads/'.$thread->PID.'.php'));
-            break;
-        case '':
-            include('frontpage.php');
-            break;
-        default:
-            if(is_dir(ROOT.DATAPATH.'chan/'.$param))
-                include(ROOT.DATAPATH.'chan/'.$param.'/index.php');
-            else if(file_exists(ROOT.DATAPATH.'chan/'.$param)&&!is_dir(ROOT.DATAPATH.'chan/'.$param))
-                include(ROOT.DATAPATH.'chan/'.$param);
-            else{
-                global $l;
-                header('HTTP/1.0 404 Not Found');
-                $t = $l->loadModule('Themes');
-                $t->loadTheme("chan");
-                $t->openPage("404 - Purplish");
-                include(PAGEPATH.'404.php');
-                $t->closePage();
-            }
-            break;
+function display(){
+    global $params,$chan;
+    switch($params[1]){
+        case 'purge':   $this->displayPurge();      break;
+        case 'search':  $this->displaySearch();     break;
+        case 'delete':  $this->displayDelete();     break;
+        case 'edit':    $this->displayEdit();       break;
+        case 'ban':     $this->displayBan();        break;
+        case 'post':    $this->displayPost();       break;
+        case 'options': $this->displayOptions();    break;
+        case 'watch':   $this->displayThreadWatch();break;
+        default:        echo('Purplish v'.$chan::$version.' / API'.$this::$version);break;
     }
 }
 
-function displayAdmin(){
-    global $l;
-    $admin = $l->loadModule('ChanAdmin');
-    $admin->display();
+function displayPurge(){
+    global $a;
+    if(!$a->check('chan.mod.purge'))die('Insufficient privileges.');
+    if($_POST['action']){
+        
+    }
 }
 
-function displayAPIRSS(){
-    global $l;
-    $rss = $l->loadModule('ChanRSS');
-    $rss->display();
-}
-
-function displayAPIPurge(){
+function displaySearch(){
+    global $a;
+    if(!$a->check('chan.mod.search'))die('Insufficient privileges.');
     
 }
 
-function displayAPISearch(){
+function displayDelete(){
+    global $a;
+    if(!$a->check('chan.mod.delete'))die('Insufficient privileges.');
     
 }
 
-function displayAPIDelete(){
-    
-}
-
-function displayAPIEdit(){
+function displayEdit(){
+    global $a;
+    if(!$a->check('chan.mod.edit'))die('Insufficient privileges.');
     //Post edit
     //Thread move,merge
 }
 
-function displayAPIBan(){
+function displayBan(){
+    global $a;
+    if(!$a->check('chan.mod.ban'))die('Insufficient privileges.');
     
 }
 
-function displayAPIPost(){
+function displayPost(){
     include('datagen.php');
     try{
         DataGenerator::submitPost();
@@ -89,7 +65,7 @@ function displayAPIPost(){
     }
 }
 
-function displayAPIOptions(){
+function displayOptions(){
     ?><form>
         <input type="checkbox" value="u" id="cbu" /><label style="width:200px;display:inline-block;vertical-align:middle">Auto update threads</label><br />
         <input type="checkbox" value="f" id="cbf" /><label style="width:200px;display:inline-block;vertical-align:middle">Fixed post box</label><br />
@@ -118,7 +94,7 @@ function displayAPIOptions(){
     </script><?
 }
 
-function displayAPIThreadWatch(){
+function displayThreadWatch(){
     $watched = array_filter(explode(";",$_COOKIE['chan_watched']));
     sort($watched);
     if(count($watched)==0)return "";
