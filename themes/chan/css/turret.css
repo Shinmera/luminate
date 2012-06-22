@@ -1,0 +1,474 @@
+@charset "utf-8";
+/* CSS Document */
+.clear{clear:both;}
+a:link{color:#000;}
+a:visited{color:#000;}
+a:active{color:#000;}
+a:hover{color:#666;}
+IMG.flLeft {float: left;padding:3px;}
+IMG.flRight {float: right;padding:3px;}
+
+html,body{
+    background: #abada8 url("/images/turret.png") no-repeat bottom right;
+    color:#000;
+    font-family: Arial, Monospace;
+    font-size:10pt;
+}
+
+.spoiler{
+    border: 1px dotted #EEE;
+}
+.sspoiler{
+    background: #000;
+    border: 1px dotted #555;
+    color: #000;
+}
+
+.content{
+    padding-top:50px;
+}
+
+.boardTitle{
+    text-align:center;
+    font-size:36pt;
+    font-weight:bold;
+    color: #444;
+    text-shadow: 0px 0px 5px #000000;
+}
+.boardTitle:hover{
+    color: #FF0000;
+    text-shadow: 0px 0px 5px #FF0000;
+}
+
+.quote{
+    padding:5px;
+    border: 1px solid #000;
+    background-color:#222;
+    color:#EEE;
+    border-radius:5px;
+    box-shadow: 0px 0px 5px #000;
+}
+
+.quoteLine{
+    color: #FF0000;
+    text-shadow: none;
+}
+
+a.directQuote{
+    color: #FF0000;
+    text-shadow: 0px 0px 3px #FF0000;
+    text-decoration: none;
+}
+
+.postBox{
+    box-shadow: 2px 2px 10px #000;
+    background-color:#FFF;
+    border-radius:5px;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 5px;
+    color: #000;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.5;
+}
+.postBox:hover{
+    opacity: 1;
+}
+.postBox input{
+    font-size:10pt;
+    height:15px;
+    border: 1px solid #000;
+    border-radius: 2px;
+    background: #333;
+    color: #FF0000;
+    text-shadow: 0px 0px 5px #FF0000;
+}
+.postBox textarea{
+    background:#abada8 url("/images/miniturret.png") no-repeat bottom right;
+    color: #000000;
+    border-radius: 0px 0px 2px 2px;
+    border: 1px solid #000;
+}
+.postBox .eldesc{width:100px;float:left;}
+.postBox #varname{width:125px;}
+.postBox #varmail{width:125px;}
+.postBox #varpass{width:260px;}
+.postBox #varfile{width:260px;height:18px;}
+.postBox #vartitle{width:300px;}
+.postBox #varsubmit{width:60px;height:20px;margin-top:5px;}
+.postBox #fulltext{width:350px;height:70px;}
+.postBox .tac{font-size:8pt;margin-top:10px;}
+.bbcodeBar{
+    height:20px;
+    width:100%;
+    background-color:#000;
+}
+
+.threadWatch{
+    font-size:8pt;
+    box-shadow: 2px 2px 10px #000;
+    background-color:#FFF;
+    border-radius:5px;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 5px;
+    color: #000;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.5;
+}
+.threadWatch:hover{opacity: 1;}
+.threadWatch a{color:#DDD;text-decoration:none;}
+.threadWatch table{width:100%;margin:0px;border-spacing: 0px;}
+.threadWatch table thead tr{background-color:#000;color:#FFD900;text-shadow: 0px 0px 5px #FFD900;}
+.threadWatch table tbody tr:nth-child(2n){background-color:#EEEEEE;}
+.threadWatch table tbody tr:nth-child(2n+1){background-color:#DDDDDD;}
+.threadWatch table tbody td{border-right:1px solid #000;}
+.threadWatch table tbody td:nth-child(1){text-align:center;}
+.threadWatch table tbody td:nth-child(2){text-align:center;}
+.threadWatch table tbody td:nth-child(3){text-align:center;}
+.threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
+.watchButton{font-size:18pt;text-decoration: none;}
+.watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
+#watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
+#watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
+#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;font-weight:bold;}
+#watchRefreshButton:hover{color:#FFD900;text-shadow: 0px 0px 5px #FFD900;}
+#watchRemoveCol{width:20px;}
+#watchBoardCol{width:40px;}
+#watchIDCol{width:30px;}
+#watchPosterCol{width:100px;}
+#watchUnreadCol{width:10px;}
+.watchNewPosts{
+    color:#EEEEEE;
+    text-shadow: 0px 0px 5px #EEEEEE;
+    font-weight:bold;
+    box-shadow: 0px 0px 5px #FF0000;
+    background: #FF0000;
+}
+
+.post, .postOP{
+    display: inline-block;
+    padding: 5px;
+}
+
+.post{
+    background-color:#FFFFFF;
+    border-radius:5px;
+    border: 2px solid #E8E8E8;
+    margin-left: 20px;
+    margin-top:5px;
+    width: inherit;
+    opacity: 0.9;
+}
+
+.postOP{
+    background-color:#FFFFFF;
+    border-left: 1px solid #EEE;
+    border-top: 1px solid #EEE;
+    border-radius: 5px 0px 0px 0px;
+    width: 99%;
+
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFFFFF), to(#D9D7D7));
+    background: -moz-linear-gradient(top,  #FFFFFF, #D9D7D7);
+    opacity: 0.9;
+}
+
+.sticky{
+    background: -webkit-gradient(linear, left top, left bottom, from(#D97575), to(#FFFFFF));
+    background: -moz-linear-gradient(top,  #D97575,  #FFFFFF);
+}
+
+.locked{
+    background: -webkit-gradient(linear, left top, left bottom, from(#333), to(#000000));
+    background: -moz-linear-gradient(top,  #333,  #000000);
+    color: #EEE;
+}
+
+.stickylocked{
+    background: -webkit-gradient(linear, left top, left bottom, from(#300000), to(#000000));
+    background: -moz-linear-gradient(top,  #300000,  #000000);
+    color: #EEE;
+}
+
+.selected{
+    background: -webkit-gradient(linear, left top, right top, from(#333), to(#000));
+    background: -moz-linear-gradient(left,  #333,  #000);
+    color: #EEE;
+    border: 2px solid #FF0000;
+    box-shadow: 0px 0px 5px #00000;
+}
+.selected a,     .selected .quoteLine,    .selected .postMod,
+ .locked  a,     .locked   .quoteLine,    .locked   .postMod,
+ .stickylocked a,.stickylocked .quoteLine,.stickylocked .postMod{
+    color: #FFFFFF;
+    text-shadow: 0px 0px 5px #FFFFFF;
+}
+
+.postImage{
+    float:left;
+    margin:5px;
+    max-width:100%;
+    max-height:100%;
+    box-shadow: 0px 0px 5px #000000;
+}
+
+.postTitle{
+    font-size:14pt;
+    font-weight:bold;
+    text-shadow: 0px 0px 5px #FF0000;
+}
+
+.postUsername, .postTrip{font-size:10pt;}
+
+.postUsername{
+    color: #FF0000;
+    font-weight:bold;
+}
+
+.postTrip{
+    color: #000000;
+    text-shadow: 0px 0px 5px #000000;
+}
+
+.postMod{
+    color: #000000;
+    text-shadow: 0px 0px 5px #000000;
+    border-top: 2px dotted #FF0000;
+    border-bottom: 2px dotted #FF0000;
+}
+
+.postImage{
+    border-radius: 5px 0px 5px 0px;
+}
+
+#postType{
+    background: none;    
+}
+
+.omittedText{
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+.threadToolbar{
+    margin-bottom:0px;
+    margin-left: 10px;
+}
+
+.threadToolbar a{
+    padding:3px;
+    text-align:center;
+    border: 2px solid #555;
+    border-radius:5px 5px 0px 0px;
+    background: #000;
+    color:#EEE;
+    text-decoration: none;
+    font-size:12pt;
+}
+
+.threadToolbar a:hover{
+    background: #000;
+    border: 2px solid #FF0000;
+    box-shadow: 0px 0px 5px #FF0000;
+}
+
+.buttons{
+}
+
+.buttons a{
+    position:relative;
+    top:-4px;
+    border-left: 1px solid #EEE;
+    border-right: 1px solid #EEE;
+    padding: 5px 5px 5px 5px;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#888));
+    background: -moz-linear-gradient(top,  #EEE,  #888);
+    color:#000;
+}
+.buttons a:hover{
+    background-color:#EEE;
+}
+
+.deleteBox, .reportBox{
+    float:right;
+    clear:right;
+}
+
+.footer{
+    text-align:center;
+    font-size:8pt;
+    margin-top:10px;
+    color: #FF0000;
+}
+
+.popup {
+    display: none;
+
+    position: fixed;
+    top: 17%;
+    left: 50%;
+
+    margin-left: -300px;
+    width: 600px;
+
+    background-color: #EEE;
+    color: #333;
+    border: 1px solid black;
+    padding: 12px;
+}
+
+.jqmOverlay { background-color: #000; }
+
+.frontContent{
+    background-color: #EEE;
+    margin-left:5%;
+    margin-right:5%;
+    color: #000;
+}
+
+.frontNews{
+    padding:10px;
+    height:1024px;
+}
+
+.frontLatest{
+    padding:10px;
+    float:right;
+    width:300px;
+    margin-bottom:-10px;
+    background: #888;
+    background: -webkit-gradient(linear, left top, right top, from(#555), to(#999));
+    background: -moz-linear-gradient(left,  #555,  #999);
+    overflow:auto;
+    height:1024px;
+}
+.frontLatestHead{
+    font-weight:bold;
+    font-size:18pt;
+    color:#EEE;
+}
+
+.frontHeader{
+    text-align:center;
+    font-weight:bold;
+    font-size:36pt;
+    text-shadow:0px 0px 5px #EEE;
+    color:#EEE;
+    margin-bottom:10px;
+}
+
+.frontMenu{
+    margin-left:5%;
+    margin-right:5%;
+    margin-bottom:0px;
+    list-style:none;
+    height: 20px;
+    background: #888;
+    background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+    background: -moz-linear-gradient(top,  #999,  #000);
+    text-align: center;
+    display:block;
+    padding:0px;
+}
+.frontMenu li{
+    display:inline-block;
+    background: #EEE;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#AAA));
+    background: -moz-linear-gradient(top,  #EEE,  #AAA);
+    height:20px;
+    text-align:center;
+}
+.frontMenu li a{
+    text-decoration:none;
+    padding:10px 5px 5px 5px;
+}
+
+.postFront{
+    border-top: 1px solid #EEE;
+    overflow:hidden;
+}
+
+.postImageFront{
+    float:left;
+    margin:5px;
+    max-width:75px;
+    max-height:75px;
+}
+
+.menu{
+    background-color:#000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#555));
+    background: -moz-linear-gradient(top,  #FFF,  #555);
+    box-shadow: 0px 3px 10px #000;
+    list-style:none;
+    position:fixed;
+    width:100%;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;
+    left:0px;
+}
+.menu *{
+    margin:0;
+    padding:0;
+}
+.menu a{
+    color:#FFF;
+    text-decoration:none;
+}
+.menu li a{
+    display:block;
+    padding:10px;
+    height:20px;
+}
+.menu li a:hover{
+    background: -webkit-gradient(linear, left top, left bottom, from(#FF0000), to(#000));
+    background: -moz-linear-gradient(top,  #FF0000,  #000);
+}
+.menu li{
+    position:relative;
+    display:block;
+    float:left;
+}
+.menu li ul{
+    position:absolute;
+    list-style:none;
+    width:1000px;
+    margin:0px;
+    padding:0px;
+    display:none;
+    height:40px;
+}
+.menu li ul li{
+    background: #000;
+    float:left;
+    display:inline-block;
+}
+.menu .separator{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    background-color:#333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#FF0000), to(#000));
+    background: -moz-linear-gradient(top,  #FF0000,  #000);
+}
+.menu .separator2{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    width:2px;
+    background:#000;
+}
+.menu > li > a.menulink{
+    background-color:#333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#BBB), to(#000));
+    background: -moz-linear-gradient(top,  #BBB,  #000);
+    text-shadow: 0px 0px 5px #FF0000;
+}

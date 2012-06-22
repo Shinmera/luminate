@@ -1,0 +1,362 @@
+@charset "utf-8";
+/* CSS Document */
+.clear{clear:both;}
+a:link{color:#001070;text-decoration:none}
+a:visited{color:#001070;}
+a:active{color:#001070;}
+a:hover{color:#0010e0;}
+IMG.flLeft {float: left;padding:3px;}
+IMG.flRight {float: right;padding:3px;}
+
+html,body{
+    background-color: #e8e8ff;
+    color:#000000;
+    font-family: serif;
+    font-size:12pt;
+}
+
+.spoiler{
+    border: 1px dotted #000000;
+}
+
+.content{
+    padding-top:50px;
+}
+
+.boardTitle{
+    text-align:center;
+    font-size:36pt;
+    font-weight:bold;
+    color:#000080;
+    font-family:sans-serif;
+    text-shadow: 0px 0px 0px #000000;
+}
+
+.quote{
+    padding:5px;
+    border: 0px solid #000;
+    background-color:#b4bacc;
+    color:#000000;
+    border-radius:0px;
+    box-shadow: 0px 0px 0px #000;
+}
+
+.quoteLine{
+    color: #4070c0;
+    text-shadow: 0px 0px 0px #5CD6FF;
+}
+
+.postBox{
+    background-color:#a8b8f0;
+    border-radius:0px;
+    border: 2px solid black;
+    display: inline-block;
+    padding: 10px;
+    color: #000000;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.25;
+}
+.postBox:hover{
+    opacity: 1;
+}
+
+.bbcodeBar{
+    height:20px;
+    width:100%;
+    background-color:#000;
+}
+
+.post, .postOP{
+    display: inline-block;
+    padding: 5px;
+}
+
+.post{
+    background-color:#d4dcf0;
+    border-radius:0px;
+    border: 0px solid #AAA;
+    margin-left: 20px;
+    margin-top:5px;
+}
+
+.postOP{
+    border-left: 0px solid #EEE;
+    border-top: 0px solid #EEE;
+    border-radius: 0px 0px 0px 0px;
+    width:99%;
+    background:#d4dcf0;
+
+}
+
+.sticky{
+    background:#d4dcf0;
+    background-image: url("img/sticky.png");
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+
+.locked{
+    background:#d4dcf0;
+    background-image: url("img/lock.png");
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+
+.stickylocked{
+    background:#d4dcf0;
+    background-image: url("img/sticky_lock.png");
+    background-position: right top;
+    background-repeat: no-repeat;
+}
+
+.selected{
+    background:#d4dcf0;
+    border-left: 8px double #4060b0;
+}
+
+.postImage{
+    float:left;
+    margin:5px;
+    max-width:100%;
+    max-height:100%;
+}
+
+.postTitle{
+    font-size:14pt;
+    color:#1010E0;
+    font-weight:bold;
+    text-shadow: 0px 0px 0px #000;
+}
+
+.postUsername, .postTripcode{font-size:12pt;}
+
+.postUsername{
+    color: #203090;
+    font-weight:bold;
+}
+
+.postTripcode{
+    color: #4060b0;
+    text-shadow: 0px 0px 0px #00C8FF;
+}
+
+.postMod{
+    color: #E02020;
+    text-shadow: 0px 0px 0px #FFF;
+    border-top: 2px dotted #E02020;
+    border-bottom: 2px dotted #E02020;
+}
+
+.threadToolbar{
+    margin-bottom:0px;
+    margin-left: 10px;
+}
+
+.threadToolbar a{
+    padding:3px;
+    text-align:center;
+    border-radius:0px 0px 0px 0px;
+    background-color:none;
+    background:#4455aa;
+    color:#ffffff;
+    text-decoration: none;
+    font-size:12pt;
+}
+
+.threadToolbar a:hover{
+    background:#88aaee;
+}
+
+.buttons{
+}
+
+.buttons a{
+    position:relative;
+    top:-4px;
+    border-left: 1px solid #EEE;
+    border-right: 1px solid #EEE;
+    padding: 5px 5px 5px 5px;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#888));
+    background: -moz-linear-gradient(top,  #EEE,  #888);
+    color:#000;
+}
+.buttons a:hover{
+    background-color:#EEE;
+}
+
+.deleteBox, .reportBox{
+    float:right;
+    clear:right;
+}
+
+.footer{
+    text-align:center;
+    font-size:8pt;
+    margin-top:10px;
+}
+
+.popup {
+    display: none;
+
+    position: fixed;
+    top: 17%;
+    left: 50%;
+
+    margin-left: -300px;
+    width: 600px;
+
+    background-color: #EEE;
+    color: #333;
+    border: 1px solid black;
+    padding: 12px;
+}
+
+.jqmOverlay { background-color: #000; }
+
+.frontContent{
+    background-color:#e8e8ff;
+    margin-left:5%;
+    margin-right:5%;
+    color: #000;
+    border:3px double #000000;
+}
+
+.frontNews{
+    padding:10px;
+    height:1024px;
+}
+
+.frontLatest{
+    padding:10px;
+    float:right;
+    width:300px;
+    margin-bottom:-10px;
+    background:#e8e8ff;
+    overflow:auto;
+    height:1024px;
+    border-left:1px solid #000000;
+}
+.frontLatestHead{
+    font-weight:bold;
+    font-size:18pt;
+    color:#000080;
+}
+
+.frontHeader{
+    font-family:sans-serif;
+    text-align:center;
+    font-weight:bold;
+    text-decoration:underline;
+    font-size:36pt;
+    text-shadow:0px 0px 0px #EEE;
+    color:#000080;
+    margin-bottom:10px;
+}
+
+.frontMenu{
+    margin-left:5%;
+    margin-right:5%;
+    margin-bottom:0px;
+    list-style:none;
+    height: 20px;
+    background: #001166;
+    text-align: center;
+    display:block;
+    padding:0px;
+}
+.frontMenu li{
+    display:inline-block;
+    background: #d4dcf0;
+    height:20px;
+    text-align:center;
+}
+.frontMenu li a{
+    text-decoration:none;
+    padding:10px 5px 5px 5px;
+}
+
+.postFront{
+    border-top: 1px solid #000000;
+    overflow:hidden;
+}
+
+.postImageFront{
+    float:left;
+    margin:5px;
+    max-width:75px;
+    max-height:75px;
+}
+/*menu*/
+.menu{
+    background-color:none;
+    background:#001166;
+    list-style:none;
+    position:fixed;
+    width:100%;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;
+    left:0px;
+}
+.menu *{
+    margin:0;
+    padding:0;
+}
+.menu a{
+    color:#fff;
+    text-decoration:none;
+}
+.menu a:hover{
+    color:#bdbdf2;
+    text-decoration:none;
+}
+.menu li a{
+    display:block;
+    padding:10px;
+    height:20px;
+}
+.menu li{
+    position:relative;
+    display:block;
+    float:left;
+}
+.menu li ul{
+    position:absolute;
+    list-style:none;
+    width:1000px;
+    margin:0px;
+    padding:0px;
+    display:none;
+    height:40px;
+}
+.menu li ul li{
+    background: #001166;
+    float:left;
+    display:inline-block;
+}
+.menu .separator{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    background-color:none;
+    background:#c0c0ff;
+}
+.menu .separator2{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    width:2px;
+    background-color:none;
+    background:#c0c0ff;
+
+}
+.menu > li > a.menulink{
+    background-color:none;
+    background:#001166;
+    text-shadow:none;
+}
+
+#previewPost .post{border:1px dotted #000;}

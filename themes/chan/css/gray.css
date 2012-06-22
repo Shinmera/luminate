@@ -1,0 +1,421 @@
+@charset "utf-8";
+/* CSS Document */
+.clear{clear:both;}
+a:link{color:#000;}
+a:visited{color:#000;}
+a:active{color:#000;}
+a:hover{color:#666;}
+IMG.flLeft {float: left;padding:3px;}
+IMG.flRight {float: right;padding:3px;}
+
+html,body{
+    background-color: #333;
+    color:#EEE;
+    font-family: Arial, Monospace;
+    font-size:10pt;
+}
+
+.spoiler{
+    border: 1px dotted #EEE;
+}
+.sspoiler{
+    background: #000;
+    border: 1px dotted #555;
+    color: #000;
+}
+
+.content{
+    padding-top:50px;
+}
+
+.boardTitle{
+    text-align:center;
+    font-size:36pt;
+    font-weight:bold;
+    text-shadow: 0px 0px 5px #0099FF;
+}
+
+.quote{
+    padding:5px;
+    border: 1px solid #000;
+    background-color:#555;
+    color:#EEE;
+    border-radius:5px;
+    box-shadow: 0px 0px 5px #000;
+}
+
+.quoteLine{
+    color: #5CD6FF;
+    text-shadow: 0px 0px 3px #5CD6FF;
+}
+
+.postBox{
+    background-color:#555;
+    border-radius:2px;
+    border: 1px solid black;
+    display: inline-block;
+    padding: 5px;
+    color: #EEE;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.25;
+}
+.postBox:hover{
+    opacity: 1;
+}
+.postBox input{
+    font-size:10pt;
+    height:15px;
+    border: 1px solid #000;
+    background: #333;
+    color: #3D8BA6;
+}
+.postBox .eldesc{width:100px;float:left;}
+.postBox #varname{width:125px;}
+.postBox #varmail{width:125px;}
+.postBox #varpass{width:260px;}
+.postBox #varfile{width:260px;height:18px;}
+.postBox #vartitle{width:300px;}
+.postBox #varsubmit{width:60px;height:20px;margin-top:5px;}
+.postBox #fulltext{width:350px;height:70px;}
+.postBox .tac{font-size:8pt;margin-top:10px;}
+.bbcodeBar{
+    height:20px;
+    width:100%;
+    background-color:#000;
+}
+
+.threadWatch{
+    background-color:#555;
+    border-radius:2px;
+    border: 1px solid black;
+    display: inline-block;
+    color: #EEE;
+    z-index: 10;
+    position: absolute;
+    top: 50px;
+    opacity: 0.25;
+    font-size:8pt;
+    text-shadow: 0px 0px 3px #CCC;
+}
+.threadWatch:hover{opacity: 1;}
+.threadWatch a{color:#EEE;text-decoration:none;}
+.threadWatch table{width:100%;margin:0px;border-spacing: 0px;}
+.threadWatch table thead tr{background-color:#000;color:#3D8BA6;text-shadow: 0px 0px 5px #3D8BA6;}
+.threadWatch table tbody tr:nth-child(2n){background-color:#333;}
+.threadWatch table tbody tr:nth-child(2n+1){background-color:#444;}
+.threadWatch table tbody td{border-right:1px solid #000;}
+.threadWatch table tbody td:nth-child(1){text-align:center;}
+.threadWatch table tbody td:nth-child(2){text-align:center;}
+.threadWatch table tbody td:nth-child(3){text-align:center;}
+.threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
+.watchButton{font-size:18pt;text-decoration: none;}
+.watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
+#watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
+#watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
+#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;}
+#watchRefreshButton:hover{color:#3D8BA6;text-shadow: 0px 0px 5px #3D8BA6;}
+#watchRemoveCol{width:20px;}
+#watchBoardCol{width:40px;}
+#watchIDCol{width:30px;}
+#watchPosterCol{width:100px;}
+#watchUnreadCol{width:10px;}
+.watchNewPosts{
+    color:#EEEEEE;
+    text-shadow: 0px 0px 5px #EEEEEE;
+    font-weight:bold;
+    box-shadow: 0px 0px 5px #FF0000;
+    background: #FF0000;
+}
+
+.post, .postOP{
+    display: inline-block;
+    padding: 5px;
+}
+
+.post{
+    background-color:#555;
+    border-radius:5px;
+    border: 1px solid #AAA;
+    margin-left: 20px;
+    margin-top:5px;
+    width:97%;
+}
+
+.postOP{
+    background-color:#777;
+    border-left: 1px solid #EEE;
+    border-top: 1px solid #EEE;
+    border-radius: 5px 0px 0px 0px;
+    width:99%;
+
+    background: -webkit-gradient(linear, left top, left bottom, from(#777), to(#333));
+    background: -moz-linear-gradient(top,  #777,  #333);
+}
+
+.sticky{
+    background: -webkit-gradient(linear, left top, left bottom, from(#3D8BA6), to(#333));
+    background: -moz-linear-gradient(top,  #3D8BA6,  #333);
+}
+
+.locked{
+    background: -webkit-gradient(linear, left top, left bottom, from(#111), to(#333));
+    background: -moz-linear-gradient(top,  #111,  #333);
+}
+
+.stickylocked{
+    background: -webkit-gradient(linear, left top, left bottom, from(#465E78), to(#333));
+    background: -moz-linear-gradient(top,  #465E78,  #333);
+}
+
+.selected{
+    background: -webkit-gradient(linear, left top, right top, from(#3D8BA6), to(#333));
+    background: -moz-linear-gradient(left,  #3D8BA6,  #333);
+}
+
+.postImage{
+    float:left;
+    margin:5px;
+    max-width:100%;
+    max-height:100%;
+}
+
+.postTitle{
+    font-size:14pt;
+    font-weight:bold;
+    text-shadow: 0px 0px 5px #000;
+}
+
+.postUsername, .postTrip{font-size:10pt;}
+
+.postUsername{
+    color: #00C8FF;
+    font-weight:bold;
+}
+
+.postTrip{
+    color: #00C8FF;
+    text-shadow: 0px 0px 5px #00C8FF;
+}
+
+.postMod{
+    color: #FFF;
+    text-shadow: 0px 0px 5px #FFF;
+    border-top: 2px dotted #FFF;
+    border-bottom: 2px dotted #FFF;
+}
+
+.threadToolbar{
+    margin-bottom:0px;
+    margin-left: 10px;
+}
+
+.threadToolbar a{
+    padding:3px;
+    text-align:center;
+    border-radius:10px 10px 0px 0px;
+    background-color:#000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#000));
+    background: -moz-linear-gradient(top,  #888,  #000);
+    color:#EEE;
+    text-decoration: none;
+    font-size:12pt;
+}
+
+.threadToolbar a:hover{
+    background:#888;
+}
+
+.buttons{
+}
+
+.buttons a{
+    position:relative;
+    top:-4px;
+    border-left: 1px solid #EEE;
+    border-right: 1px solid #EEE;
+    padding: 5px 5px 5px 5px;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#888));
+    background: -moz-linear-gradient(top,  #EEE,  #888);
+    color:#000;
+}
+.buttons a:hover{
+    background-color:#EEE;
+}
+
+.deleteBox, .reportBox{
+    float:right;
+    clear:right;
+}
+
+.footer{
+    text-align:center;
+    font-size:8pt;
+    margin-top:10px;
+}
+
+.popup {
+    display: none;
+
+    position: fixed;
+    top: 17%;
+    left: 50%;
+
+    margin-left: -300px;
+    width: 600px;
+
+    background-color: #EEE;
+    color: #333;
+    border: 1px solid black;
+    padding: 12px;
+}
+
+.jqmOverlay { background-color: #000; }
+
+.frontContent{
+    background-color: #EEE;
+    margin-left:5%;
+    margin-right:5%;
+    color: #000;
+}
+
+.frontNews{
+    padding:10px;
+    height:1024px;
+}
+
+.frontLatest{
+    padding:10px;
+    float:right;
+    width:300px;
+    margin-bottom:-10px;
+    background: #888;
+    background: -webkit-gradient(linear, left top, right top, from(#555), to(#999));
+    background: -moz-linear-gradient(left,  #555,  #999);
+    overflow:auto;
+    height:1024px;
+}
+.frontLatestHead{
+    font-weight:bold;
+    font-size:18pt;
+    color:#EEE;
+}
+
+.frontHeader{
+    text-align:center;
+    font-weight:bold;
+    font-size:36pt;
+    text-shadow:0px 0px 5px #EEE;
+    color:#EEE;
+    margin-bottom:10px;
+}
+
+.frontMenu{
+    margin-left:5%;
+    margin-right:5%;
+    margin-bottom:0px;
+    list-style:none;
+    height: 20px;
+    background: #888;
+    background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
+    background: -moz-linear-gradient(top,  #999,  #000);
+    text-align: center;
+    display:block;
+    padding:0px;
+}
+.frontMenu li{
+    display:inline-block;
+    background: #EEE;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#AAA));
+    background: -moz-linear-gradient(top,  #EEE,  #AAA);
+    height:20px;
+    text-align:center;
+}
+.frontMenu li a{
+    text-decoration:none;
+    padding:10px 5px 5px 5px;
+}
+
+.postFront{
+    border-top: 1px solid #EEE;
+    overflow:hidden;
+}
+
+.postImageFront{
+    float:left;
+    margin:5px;
+    max-width:75px;
+    max-height:75px;
+}
+
+.menu{
+    background-color:#000;
+    background: -webkit-gradient(linear, left top, left bottom, from(#777), to(#000));
+    background: -moz-linear-gradient(top,  #777,  #000);
+    list-style:none;
+    position:fixed;
+    width:100%;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;
+    left:0px;
+}
+.menu *{
+    margin:0;
+    padding:0;
+}
+.menu a{
+    color:#FFF;
+    text-decoration:none;
+}
+.menu li a{
+    display:block;
+    padding:10px;
+    height:20px;
+}
+.menu li{
+    position:relative;
+    display:block;
+    float:left;
+}
+.menu li ul{
+    position:absolute;
+    list-style:none;
+    width:1000px;
+    margin:0px;
+    padding:0px;
+    display:none;
+    height:40px;
+}
+.menu li ul li{
+    background: #000;
+    float:left;
+    display:inline-block;
+}
+.menu .separator{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    background-color:#333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#BBB), to(#000));
+    background: -moz-linear-gradient(top,  #BBB,  #000);
+}
+.menu .separator2{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    height: 20px;
+    width:2px;
+    background-color:#EEE;
+    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#555));
+    background: -moz-linear-gradient(top,  #EEE,  #555);
+}
+.menu > li > a.menulink{
+    background-color:#333;
+    background: -webkit-gradient(linear, left top, left bottom, from(#BBB), to(#000));
+    background: -moz-linear-gradient(top,  #BBB,  #000);
+    text-shadow: 0px 0px 5px #0099FF;
+}
