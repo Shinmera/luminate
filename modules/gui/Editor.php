@@ -19,9 +19,9 @@ class Editor{
         $this->extrafields[]=$label.'<input type="'.$type.'" name="'.$name.'" value="'.$value.'" style="'.$style.'" '.$arguments.' />';
     }
     
-    function addCheckbox($name,$label,$checked=false,$arguments="",$style=""){
+    function addCheckbox($name,$label,$value,$checked=false,$arguments="",$style=""){
         if($checked)$checked='checked="checked"';else $checked="";
-        $this->extrafields[]='<input type="checkbox" name="'.$name.'" stlye="'.$style.'" '.$checked.' '.$arguments.' />'.$label;
+        $this->extrafields[]='<input type="checkbox" name="'.$name.'" value="'.$value.'" stlye="'.$style.'" '.$checked.' '.$arguments.' />'.$label;
     }
     
     function addDropDown($name,$choices,$labels=null,$label="",$selected="",$arguments="",$style=""){
