@@ -19,9 +19,8 @@ class PostGenerator{
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
 
-        ob_flush;flush();
-        ob_clean();
-        ob_implicit_flush(false);
+        ob_end_flush;flush();
+        ob_start(create_function('$buffer', 'return "";'));
         ?>
         
         <?='<? global $a ?>'?>
