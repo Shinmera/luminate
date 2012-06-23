@@ -375,14 +375,13 @@ class DataGenerator{
         $s=str_ireplace("<br />","\n",$s);
         $s=str_ireplace("<br/>","\n",$s);
         $s=str_ireplace("<br>","\n",$s);
-        $s.="\n";
         //DIRECT QUOTES
-        $s = preg_replace_callback('`&gt;&gt;([0-9]+)`is',           array(&$this, 'parsePostQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;([a-z]+)\/([0-9]+)`is', array(&$this, 'parseSiteQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;\/([a-z]+)\/([0-9]+)`is', array(&$this, 'parseSiteQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;&gt;([a-z]+)\/`is', array(&$this, 'parseBoardQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;&gt;\/([a-z]+)\/`is', array(&$this, 'parseBoardQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;\/arch\/([a-z]+)\/([0-9]+)`is', array(&$this, 'parseArchiveQuote'),$s);
+        $s = preg_replace_callback('`&gt;&gt;([0-9]+)`is',                  array(&$this, 'parsePostQuote'),$s);
+        $s = preg_replace_callback('`&gt;&gt;([a-z]+)\/([0-9]+)`is',        array(&$this, 'parseSiteQuote'),$s);
+        $s = preg_replace_callback('`&gt;&gt;\/([a-z]+)\/([0-9]+)`is',      array(&$this, 'parseSiteQuote'),$s);
+        $s = preg_replace_callback('`&gt;&gt;&gt;([a-z]+)\/`is',            array(&$this, 'parseBoardQuote'),$s);
+        $s = preg_replace_callback('`&gt;&gt;&gt;\/([a-z]+)\/`is',          array(&$this, 'parseBoardQuote'),$s);
+        $s = preg_replace_callback('`&gt;&gt;\/arch\/([a-z]+)\/([0-9]+)`is',array(&$this, 'parseArchiveQuote'),$s);
         //LINE QUOTES
         $s = preg_replace('/^(&gt;[^>](.*))\n/m', '<span class="quoteLine">\\1</span>'."\n", $s);
         $s=str_ireplace("\n","<br />",$s);

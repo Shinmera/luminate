@@ -7,22 +7,21 @@ class PostGenerator{
     }
 
     public static function generatePostFromObject($post){
-        global $c,$k;
-        if(!class_exists("DataGenerator"))include(TROOT.'modules/chan/datagen.php');
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
+        global $c,$k,$l;
+        if(!class_exists("DataGenerator"))include('datagen.php');
         $pID=$post->postID;
         if($post->PID!=0)$tID=$post->PID;else $tID=$post->postID;
         $datagen = new DataGenerator();
         $folder = $c->getData("SELECT folder FROM ch_boards WHERE boardID=?",array($post->BID));$folder=$folder[0]['folder'];
+        Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$folder.'/posts/');
         $path = ROOT.DATAPATH.'chan/'.$folder.'/posts/'.$pID.'.php';
-        $tpath= $k->url("chan",$folder.'/thread/'.$tID.'.php');
         $type = '';
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
 
         ob_flush;flush();
         ob_clean();
-        ob_start();
+        ob_implicit_flush(false);
         ?>
         
         <?='<? global $a ?>'?>
@@ -70,18 +69,18 @@ class PostGenerator{
                         <span class="fileDimensions"><?=$post->fileDim?></span> 
                     <? } ?>
                 </div><div class="postContent">
-                    <?=if($post->file!=""){ ?>
+                    <? if($post->file!=""){ ?>
                         <a class="postImageLink" title="<?=$post->fileOrig?>" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>">
                             <img class="postImage" alt="<?=$post->fileOrig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
                         </a>
                     <? }
 
-                    if(strpos($post->options,"p")!==FALSE) $temp=$datagen->parseQuotes($p->deparseAll($p->automaticLines($post->subject),99),  $post->BID, $folder, $tID);
-                    else                                   $temp=$datagen->parseQuotes($p->deparseAll($p->automaticLines($post->subject),0 ),  $post->BID, $folder, $tID);
+                    if(strpos($post->options,"p")!==FALSE) $temp=$datagen->parseQuotes($l->triggerPARSE('Purplish',$post->subject),  $post->BID, $folder, $tID);
+                    else                                   $temp=$datagen->parseQuotes($l->triggerPARSE('Purplish',$post->subject),  $post->BID, $folder, $tID);
                     ?>
                     <article><blockquote>
                         <?='<? if(POST_SHORT===TRUE){ ?>'?>
-                            <?=$p->balanceTags($p->limitLines($temp,$c->o['chan_maxlines'],"<br />"));?>
+                            <?=substr($temp,0,$c->o['chan_maxlines']);?>
                         <?='<? }else{ ?>'?>
                             <?=$temp;?>
                         <?='<? } ?>'?>
@@ -91,8 +90,10 @@ class PostGenerator{
         <?='<? } ?>'?>
         
         <?
-        file_put_contents($path,ob_get_contents(),LOCK_EX);
-        ob_clean();
+        $ob=ob_get_clean();
+        file_put_contents($path,$ob,LOCK_EX);
+        echo('----<br /><br />'.$ob.'<br /><br />----');
+        ob_implicit_flush(true);
     }
 
 }
