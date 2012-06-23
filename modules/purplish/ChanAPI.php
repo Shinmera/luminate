@@ -44,8 +44,40 @@ function displayDelete(){
 function displayEdit(){
     global $a;
     if(!$a->check('chan.mod.edit'))die('Insufficient privileges.');
+    $post = DataModel::getData('ch_posts','SELECT p.*,ch_boards.folder 
+                                            FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
+                                            WHERE p.postID=? AND p.BID=?',array($_GET['id'],$_GET['bid']));
+    if($post==null)                die('No such post found.');
     //Post edit
     //Thread move,merge
+    if($_POST['action']=='edit'){
+        $post->name=$_POST['name'];
+        $post->trip=$_POST['trip'];
+        $post->mail=$_POST['mail'];
+        $post->title=$_POST['title'];
+        $post->subject=$_POST['text'];
+        $_POST['options'][]='p';
+        $post->options=implode(',',$_POST['options']);
+        $post->saveData();
+        include('postgen.php');
+        PostGenerator::generatePostFromObject($post);
+        die('Post edited!');
+    }else{
+        echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
+        include(MODULEPATH.'gui/Editor.php');
+        $editor = new SimpleEditor(PROOT.'api/chan/edit?id='.$_GET['id'].'&bid='.$_GET['bid'], 'edit', 'banform');
+        if($post->file!='')
+            $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
+        
+        $editor->addTextField('name', 'Name', $post->name, 'text', 'Anonymous');
+        $editor->addTextField('trip', 'Trip', $post->trip, 'text', '!!Anonymous');
+        $editor->addTextField('mail', 'Mail', $post->mail, 'text', 'sage');
+        $editor->addTextField('title', 'title', $post->title, 'text', '...');
+        $editor->addCheckbox('options[]', 'Hidden', 'h', strpos($post->options,'h')!==FALSE);
+        $editor->addCheckbox('options[]', 'Modpost', 'm',strpos($post->options,'m')!==FALSE);
+        $_POST['text']=$post->subject;
+        $editor->show();
+    }
 }
 
 function displayBan(){
@@ -58,6 +90,8 @@ function displayBan(){
         $ban->reason=$_POST['reason'];
         $ban->PID=$_GET['id'];
         $ban->folder=$_GET['folder'];
+        if($_POST['appeal']=='a')$ban->appeal='You cannot appeal to this ban.';
+        if($_POST['mute']=='m')$ban->mute=1;else $ban->mute=0;
         $ban->insertData();
         if($_POST['time']>0)die('Successfully banned '.$_POST['IP'].' until '.Toolkit::toDate($_POST['time']).'.');
         else                die('Successfully permabanned '.$_POST['IP'].' until the end of this database entry\'s life cycle.');
@@ -76,8 +110,8 @@ function displayBan(){
         $editor->addTextField('reason','Reason: ','','text','required placeholder="Spam" maxlength="128"');
         $editor->addDropDown('time',array(time()+1,  time()+60, time()+1800,  time()+3600,time()+6400,time()+604800,time()+241920,time()+31536000,-1),
                                     array('1 second','1 minute','30 minutes','1 hour',    '1 day',    '1 week',     '1 month',    '1 year',       'Forever'), 'Ban Time:');
-        $editor->addCheckbox('mute', 'Mute Ban');
-        $editor->addCheckbox('appeal', 'Appeal Allowed',true);
+        $editor->addCheckbox('mute', 'Mute Ban','m');
+        $editor->addCheckbox('appeal', 'Appeal Allowed','a',true);
         $_POST['text']=$post->subject;
         $editor->show();
     }
