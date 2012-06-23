@@ -1,5 +1,5 @@
 <? global $c;
-$bans = DataModel::getData('ch_bans','SELECT * FROM ch_bans WHERE ip LIKE ?',array($_SERVER['REMOTE_ADDR']));
+$bans = DataModel::getData('ch_bans','SELECT * FROM ch_bans WHERE ip LIKE ? AND mute=0',array($_SERVER['REMOTE_ADDR']));
 $c->query('DELETE FROM ch_bans WHERE ip=? AND time<?',array($_SERVER['REMOTE_ADDR'],time()));
 
 if($bans!=null){?>
@@ -14,36 +14,60 @@ if($bans!=null){?>
         html{
             font-family:Arial;
             font-size:10pt;
-            background: #000;
+            background: #555;
         }
         
         body{
-            background: #FFF;
-            margin: 5% 20% 0 20%;
-            padding:5px;
-            border-radius: 5px;
-            box-shadow: 0 0 50px #00EEFF;
+            margin: 5% 10% 0 10%;
             position:relative;
         }
         
-        h1,h2{margin:0;padding:0;}
-        h1{text-align:center;}
+        h2{
+            margin:0;padding:0;
+            color: #FFF;
+            text-shadow: 0 0 3px #000;
+        }
+        h1{
+            margin:0;padding:0;
+            text-align:center;
+            text-shadow: 0 0 3px #000;
+            font-size: 26pt;
+            color: #FFF;
+        }
         
         img{
-            position:absolute;
-            right:-100px;
-            top: 20px;
-            background: #000;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #FFF;
-            box-shadow: 0 0 10px #FFF;
+            margin: 0 auto -20px auto;
+            display:block;
+            border: 1px solid #000;
+            max-width:100%;
+            max-height:100%;
         }
+        
+        #content{
+            margin-top:10px;
+            background: #AAA;
+            padding:5px;
+            border-radius: 5px;
+            box-shadow: 0 0 50px #000;
+            position:relative;
+            border: 1px solid #888;
+        }
+        
+        #content textarea{box-sizing: border-box;width:100%;min-height:100px;}
     </style>
 </head>
-<? ob_flush();flush(); ?>
+<? ob_flush();flush();
+$dir = opendir(ROOT.IMAGEPATH.'chan/ban/');$images = array();
+while(($file=readdir($dir))!==FALSE){
+    if($file!='.'&&$file!='..')
+        $images[]=IMAGEPATH.'chan/ban/'.$file;
+}closedir($dir);
+?>
 <body>
-    <? 
+    <img src="<?=$images[mt_rand(0,count($images)-1)]?>" alt=" " />
+    <h1>You have been banned from <?=$c->o['chan_title']?>!</h1>
+    <div id="content">
+        <? 
         if(!is_array($bans))$bans=array($bans);
         $appeal='';
         foreach($bans as $ban){
@@ -57,9 +81,7 @@ if($bans!=null){?>
             }
         }
         ?>
-        <img src="http://data2.tymoon.eu/fab/thumbs/134040250592420.jpg" alt=" " />
-        <h1>You have been banned from <?=$c->o['chan_title']?>!</h1>
-        <h2>Reason(s):</h2>
+        <h2>Reason<?=(count($bans)>1)? 's' : ''?>:</h2>
         <article>
             <ul>
                 <? foreach($bans as $ban){ ?>
@@ -67,7 +89,7 @@ if($bans!=null){?>
                 <? } ?>
             </ul>
         </article>
-        <h2>The ban is associated with the following post(s):</h2>
+        <h2>The ban is associated with the following post<?=(count($bans)>1)? 's' : ''?>:</h2>
         <div class="posts">
             <? foreach($bans as $ban){
                 @include(ROOT.DATAPATH.'chan/'.$ban->folder.'/posts/'.$ban->PID.'.php');
@@ -84,7 +106,8 @@ if($bans!=null){?>
             <blockquote>
                 <?=$appeal?>
             </blockquote>
-    <? } ?>
+        <? } ?>
+    </div>
 </body>
     <? die();
 } ?>
