@@ -16,8 +16,8 @@ class BoardGenerator{
         $totalthreads = $totalthreads[0]['COUNT(postID)'];
         $threads=array(1);
         
-        ob_flush;flush();
-        ob_start();
+        ob_end_flush;flush();
+        ob_start(create_function('$buffer', 'return "";'));
         for($i=0;count($threads)>0;$i++){
             if($i>$board->maxPages){
                 if(!class_exists("DataGenerator"))include(TROOT.'modules/chan/datagen.php');
