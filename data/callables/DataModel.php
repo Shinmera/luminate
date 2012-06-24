@@ -17,6 +17,9 @@ class DataModel{
         return print_r($this->holder, true);
     }
     
+    public function getTable(){return $this->table;}
+    public function getHolder(){return $this->holder;}
+    
     private function __construct($table,$fields=array(),$data=null) {
         $this->table=$table;
         if($data==null){
