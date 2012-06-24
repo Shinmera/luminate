@@ -13,11 +13,11 @@ function display(){
         case 'boards':      if($a->check("chan.admin.boards"))      $this->displayBoards();     break;
         case 'edit':        if($a->check("chan.admin.boards"))      $this->displayEditBoard();  break;
         case 'filetypes':   if($a->check("chan.admin.filetypes"))   $this->displayFiletypes();  break;
-        case 'latestposts': if($a->check("chan.admin.latestposts")) $this->displayLatestPosts();break;
-        case 'latestimages':if($a->check("chan.admin.latestimages"))$this->displayLatestImages();break;
-        case 'tickets':     if($a->check("chan.admin.tickets"))     $this->displayReports();    break;
-        case 'bans':        if($a->check("chan.admin.bans"))        $this->displayBans();       break;
-        default:            if($a->check("chan.admin.*"))           $this->displayStatistics(); break;
+        case 'latestposts': if($a->check("chan.mod.latestposts"))   $this->displayLatestPosts();break;
+        case 'latestimages':if($a->check("chan.mod.latestimages"))  $this->displayLatestImages();break;
+        case 'tickets':     if($a->check("chan.mod.tickets"))       $this->displayReports();    break;
+        case 'bans':        if($a->check("chan.mod.bans"))          $this->displayBans();       break;
+        default:            if($a->check("chan.*"))                 $this->displayStatistics(); break;
     }
 }
 

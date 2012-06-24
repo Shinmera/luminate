@@ -10,7 +10,6 @@ var $udPTree=array();
 var $user;
 
     public function __construct() {
-        global $k;
         $this->auth($_COOKIE['v4username'],$_COOKIE['v4hash']);
     }
 
