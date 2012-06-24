@@ -178,7 +178,7 @@ var $lastQuery="";
         $s = str_ireplace('>','&gt;',$s);
         $s = str_ireplace('<','&lt;',$s);
         $s = str_ireplace('$','&#36;',$s);
-        $s = str_ireplace('\'','&lsquo;',$s);
+        $s = str_ireplace('\'','&apos;',$s);
         return $s;
     }
     
@@ -186,7 +186,7 @@ var $lastQuery="";
         $s = str_ireplace('&gt;','>',$s);
         $s = str_ireplace('&lt;','<',$s);
         $s = str_ireplace('&#36;','$',$s);
-        $s = str_ireplace('&lsquo;','\'',$s);
+        $s = str_ireplace('&apos;','\'',$s);
         return $s;
     }
 
