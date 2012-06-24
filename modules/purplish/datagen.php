@@ -1,47 +1,26 @@
 <?
 class DataGenerator{
 
-    public static function mergeThread($threadA,$threadABoard,$threadB,$threadBBoard,$mergeOP=true){
-        global $c,$a;
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
+    function mergeThread($threadID,$board,$newID){
+        global $c;
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
         if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
-        if(!$a->check("chan.mod.merge"))throw new Exception("No Access.");
+
+        $c->query('UPDATE ch_posts SET PID=? WHERE (postID=? OR PID=?) AND BID=?',array($threadID,$threadID,$board));
         
-        //JUMP THE HOLE ... if you know what I mean.
-        if($threadABoard!=$threadBBoard)$threadA=DataGenerator::moveThread($threadA,$threadABoard,$threadBBoard);
-
-        $posta = ChanDataPost::loadFromDB("SELECT name,trip,title,subject FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1",array($threadA,$threadBBoard));
-        $postb = ChanDataPost::loadFromDB("SELECT postID,BID,subject FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1",array($threadB,$threadBBoard));
-        if(count($posta)==0)throw new Exception("No such thread.");
-        if(count($postb)==0)throw new Exception("No such thread.");
-
-        if($mergeOP){
-            $postb[0]->subject.="\n\n[hr][b]Merged from #".$threadA.' '.$posta[0]->title.' by '.$posta[0]->name.$posta[0]->trip.":[/b]\n".$posta[0]->subject;
-            $postb[0]->saveToDB();
-            PostGenerator::generatePost($threadB, $threadBBoard);
-        }
-
-        DataGenerator::cleanThread($threadA);
-        $c->query("DELETE FROM ch_posts WHERE postID=? AND BID=?"  ,array($threadA,$threadBBoard));
-        $c->query("UPDATE ch_posts SET PID=? WHERE PID=? AND BID=?",array($threadB,$threadA,$threadBBoard));
-
-        ThreadGenerator::generateThread($threadB,$threadBBoard);
-        BoardGenerator::generateBoard($threadBBoard);
-        if($threadABoard!=$threadBBoard)BoardGenerator::generateBoard($threadABoard);
+        ThreadGenerator::generateThread($newID,$board,true);
+        BoardGenerator::generateBoard($board);
     }
     
-    public static function moveThread($threadID,$oldboard,$newboard){
+    function moveThread($threadID,$oldboard,$newboard){
         global $c,$a,$k;
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
         if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
-        if(!$a->check("chan.mod.move"))throw new Exception("No Access.");
         if($oldboard==$newboard)return $threadID;
         
-        $post = ChanDataPost::loadFromDB("SELECT postID,PID,BID,file,subject FROM ch_posts WHERE (PID=? OR postID=?) AND BID=? ORDER BY postID ASC",array($threadID,$threadID,$oldboard));
+        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file,subject FROM ch_posts WHERE (PID=? OR postID=?) AND BID=? ORDER BY postID ASC",array($threadID,$threadID,$oldboard));
         if(count($post)==0)throw new Exception("No such thread.");
         $oboard=ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($oldboard));
         $nboard=ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($newboard));
@@ -102,19 +81,17 @@ class DataGenerator{
         return $post[0]->postID;
     }
 
-    public static function fixBrokenQuote($matches){
+    function fixBrokenQuote($matches){
         global $threadOldBoard,$threadNewBoard,$idmap,$threadOldID,$threadNewID;
         if(array_key_exists($matches[1],$idmap))return '>>'.$idmap[$matches[1]];
         else                                    return $matches[0];
     }
 
-    public static function deleteByIP($ip){
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
+    function deleteByIP($ip){
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
-        if(!$a->check("chan.mod.delete"))throw new Exception("No Access.");
-        $post = ChanDataPost::loadFromDB("SELECT postID,PID,BID,file FROM ch_posts WHERE ip=?",array($ip));
-        $board= ChanDataPost::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($post[0]->BID));
+        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file FROM ch_posts WHERE ip=?",array($ip));
+        $board= DataModel::getData('ch_boards',"SELECT folder FROM ch_boards WHERE boardID=?",array($post[0]->BID));
 
         //FILE
         $data=array($ip);
@@ -139,15 +116,13 @@ class DataGenerator{
         }
     }
 
-    public static function deletePost($postID,$board,$generate=true,$imageonly=false){
+    function deletePost($postID,$board,$generate=true,$imageonly=false){
         global $k,$a,$c;
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         
-        $post = ChanDataPost::loadFromDB("SELECT postID,PID,BID,file,password FROM ch_posts WHERE postID=? AND BID=? AND options NOT REGEXP ? LIMIT 1",array($postID,$board,'d'));
+        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file FROM ch_posts WHERE postID=? AND BID=? AND options NOT REGEXP ? LIMIT 1",array($postID,$board,'d'));
         if(count($post)==0)throw new Exception("No such post.");
-        if(!$a->check("chan.mod.delete")&&$_POST['varpassword']!=$post[0]->password)throw new Exception("No Access.");
         if($post[0]->PID==0)$thread=$postID;
         else                $thread=$post[0]->PID;
 
@@ -169,9 +144,8 @@ class DataGenerator{
         }
     }
 
-    public static function submitPost(){
+    function submitPost(){
         global $k,$p,$c,$a;
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
         if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
         if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
@@ -212,7 +186,7 @@ class DataGenerator{
         //CHECK THREAD
         if(!is_numeric($thread)||$thread=="")$thread=0;
         if($thread!=0){
-            $threadp = ChanDataPost::loadFromDB("SELECT BID,options FROM ch_posts WHERE postID=? AND PID=0 AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board[0]->boardID));
+            $threadp = DataModel::getData('ch_posts',"SELECT BID,options FROM ch_posts WHERE postID=? AND PID=0 AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board[0]->boardID));
             if(count($threadp)==0)throw new Exception("No such thread.");
             if($threadp[0]->BID!=$board[0]->boardID)throw new Exception("Invalid board. (".$board[0]->boardID."/".$threadp[0]->BID.")");
             if(!$a->check("chan.mod")&&(strpos($threadp[0]->options,"l")!==FALSE||
@@ -265,7 +239,7 @@ class DataGenerator{
         if(count($name)>1)$trip=DataGenerator::calculateTrip(implode("#",array_slice($name, 1)));else $trip='';
         if(count($name)==0||strpos($board[0]->options,"n")!==FALSE)$name[0]="Anonymous";
         if(!$a->check("chan.mod")||!is_array($options))$options=array();
-        if($a->check("chan.mod.bbcodes"))$options[]="p";
+        if($a->check("chan.mod.*"))$options[]="p";
         $banned=$k->checkBanned($_SERVER['REMOTE_ADDR']);
         if($banned!==FALSE){
             $uID=array_search($banned[1],$c->msBIP);
@@ -281,7 +255,7 @@ class DataGenerator{
 
         //UPDATE THREAD
         if($thread!=0){
-            $tpost = ChanDataPost::loadFromDB("SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1;", array($thread,$board[0]->boardID));
+            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1;", array($thread,$board[0]->boardID));
             if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail))$tpost[0]->bumptime=time();
             $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board[0]->boardID,'d'));
             if($posts[0]['COUNT(postID)']>$board[0]->postlimit)$tpost[0]->options.="e";
@@ -307,7 +281,7 @@ class DataGenerator{
         }
     }
 
-    public static function calculateTrip($trip) {
+    function calculateTrip($trip) {
         global $c,$k,$p;
         $trip = $p->convertCharset($trip);
         $trip = mb_convert_encoding($trip,'SJIS','UTF-8');
@@ -357,7 +331,7 @@ class DataGenerator{
     }
 
 
-    public static function createThumbnail($board,$file,$thumbsize=-1){
+    function createThumbnail($board,$file,$thumbsize=-1){
         global $k,$c;
         if($thumbsize==-1)$thumbsize=$c->o['chan_thumbsize'];
         if($thumbsize<=1)$thumbsize=200;
@@ -366,7 +340,7 @@ class DataGenerator{
                                    $thumbsize,$thumbsize,false,true);
     }
 
-    public static function parseQuotes($s,$boardid,$boardname,$threadid){
+    function parseQuotes($s,$boardid,$boardname,$threadid){
         global $threadBoardID,$threadBoardName,$threadThreadID;
         $threadBoardID=$boardid;
         $threadBoardName=$boardname;
@@ -376,60 +350,55 @@ class DataGenerator{
         $s=str_ireplace("<br/>","\n",$s);
         $s=str_ireplace("<br>","\n",$s);
         //DIRECT QUOTES
-        $s = preg_replace_callback('`&gt;&gt;([0-9]+)`is',                  array(&$this, 'parsePostQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;([a-z]+)\/([0-9]+)`is',        array(&$this, 'parseSiteQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;\/([a-z]+)\/([0-9]+)`is',      array(&$this, 'parseSiteQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;&gt;([a-z]+)\/`is',            array(&$this, 'parseBoardQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;&gt;\/([a-z]+)\/`is',          array(&$this, 'parseBoardQuote'),$s);
-        $s = preg_replace_callback('`&gt;&gt;\/arch\/([a-z]+)\/([0-9]+)`is',array(&$this, 'parseArchiveQuote'),$s);
+        $s = preg_replace_callback('`>{2,4}/?((\w+/|[0-9])([0-9]+|([a-zA-Z]+)(/[0-9]*)?)?)`s', array(&$this,'parseReference'), $s);
         //LINE QUOTES
         $s = preg_replace('/^(&gt;[^>](.*))\n/m', '<span class="quoteLine">\\1</span>'."\n", $s);
         $s=str_ireplace("\n","<br />",$s);
         return $s;
     }
-
-    public static function parsePostQuote($matches){
-        global $k;
-        if(!class_exists("ChanDataPost"))include(TROOT.'modules/chan/data.php');
-        global $threadBoardID,$threadBoardName,$threadThreadID;
-
-        $post = ChanDataPost::loadFromDB("SELECT PID FROM ch_posts WHERE postID=? AND BID=?", array($matches[1],$threadBoardID));
-        if(count($post)==0)$threadid=$threadThreadID;
-        else{if($post[0]->PID==0)$threadid=$matches[1];else $threadid=$post[0]->PID;}
-        
-        $path=$k->url("chan",$threadBoardName.'/threads/'.$threadid.'.php#'.$matches[1]);
-        return '<a class="directQuote" id="'.$matches[1].'" board="'.$threadBoardName.'" href="'.$path.'">&gt;&gt;'.$matches[1].'</a>';
-    }
-
-    public static function parseSiteQuote($matches){
-        global $k;
-        if(!class_exists("ChanDataPost"))include(TROOT.'modules/chan/data.php');
-        global $threadBoardID,$threadThreadID;
-        $board=ChanDataBoard::loadFromDB("SELECT boardID FROM ch_boards WHERE folder=?", array($matches[1]));
-        if(count($board)==0)return $matches[0];
-        $post = ChanDataPost::loadFromDB("SELECT PID FROM ch_posts WHERE postID=? AND BID=?", array($matches[2],$board[0]->boardID));
-        if(count($post )==0)return $matches[0];
-
-        if($post[0]->PID==0)$threadid=$matches[2];else $threadid=$post[0]->PID;
-        $path=$k->url("chan",$matches[1].'/threads/'.$threadid.'.php#'.$matches[2]);
-        return '<a class="directQuote" id="'.$matches[2].'" board="'.$matches[1].'" href="'.$path.'">&gt;&gt;'.$matches[1].'/'.$matches[2].'</a>';
-    }
-
-    public static function parseBoardQuote($matches){
-        global $k;
-        $path=$k->url("chan",$matches[1]);
-        return '<a class="directQuote" board="'.$matches[1].'" href="'.$path.'">&gt;&gt;&gt;/'.$matches[1].'/</a>';
-    }
     
-    public static function parseArchiveQuote($matches){
-        global $k;
-        $path=$k->url("stevenarch",$matches[1]."/res/".$matches[2].".html");
-        return '<a class="directQuote" href="'.$path.'">&gt;&gt;/arch/'.$matches[1].'/'.$matches[2].'</a>';
+    function parseReference($matches){
+        global $threadBoardName,$threadThreadID;
+        $sites=array('arch'=>'http://stevenarch.tymoon.eu/',
+                     '4chan'=>'http://4chan.org/');
+        $matches[0]=str_replace('>','&gt;',$matches[0]);
+        $matches[2]=str_replace('/','',$matches[2]);
+        
+        if(is_numeric($matches[1])){
+            //Same board reference
+            $id=$matches[1];
+            $board=$threadBoardName;
+            $href=PROOT.$threadBoardName.'/threads/'.$threadThreadID.'.php#'.$id;
+        }else if($matches[3]==''){
+            //Board reference
+            $id='';
+            $board=$matches[2];
+            $href=PROOT.$matches[2];
+        }else if(is_numeric($matches[3])){
+            //Inter board reference
+            $post = DataModel::getData('','SELECT PID FROM ch_posts WHERE postID=? AND BID=(SELECT boardID FROM ch_boards WHERE folder LIKE ?)',array($matches[3],$matches[2]));
+            if($post==null)return $matches[0];
+            if($post->PID==0)$post->PID=$matches[3];
+            
+            $id=$matches[3];
+            $board=$matches[2];
+            $href=PROOT.$matches[2].'/threads/'.$post->PID.'.php#'.$matches[3];
+        }else if($matches[5]==''){
+            //Different site, board reference
+            if(!array_key_exists($matches[2],$sites))return $matches[0];
+            $id='';$board='';
+            $href=$sites[$matches[2]].$matches[4];
+        }else{
+            //Different site, inter board reference
+            if(!array_key_exists($matches[2],$sites))return $matches[0];
+            $id='';$board='';
+            $href=$sites[$matches[2]].$matches[4].'/'.$matches[5];
+        }
+        return '<a class="directQuote" id="'.$id.'" board="'.$board.'" href="'.$href.'">'.$matches[0].'</a>';
     }
 
-    public static function cleanBoard($boardID){
+    function cleanBoard($boardID){
         global $c;
-        if(!class_exists("ChanDataBoard"))include(TROOT.'modules/chan/data.php');
         $board= ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($boardID));
         echo("Database...<br />");
         $c->query("DELETE FROM ch_posts WHERE BID=? AND options REGEXP ?",array($boardID,'d'));
@@ -456,7 +425,7 @@ class DataGenerator{
         flush();
     }
 
-    public static function deleteTraces($board,$postid,$file,$thread=false,$post=true){
+    function deleteTraces($board,$postid,$file,$thread=false,$post=true){
         if($post)
             @ rename(ROOT.DATAPATH.'chan/'.$board.'/posts/'.$postid.".php",
                    ROOT.DATAPATH.'chan/'.$board.'/posts/_'.$postid.".php");
@@ -472,9 +441,8 @@ class DataGenerator{
         }
     }
 
-    public static function cleanThread($threadID){
-        if(!class_exists("ChanDataPost"))include(TROOT.'modules/chan/data.php');
-        $posts = ChanDataPost::loadFromDB("SELECT postID,BID,file FROM ch_posts WHERE PID=? OR postID=? ORDER BY postID DESC",array($threadID,$threadID));
+    function cleanThread($threadID){
+        $posts = DataModel::getData('ch_posts',"SELECT postID,BID,file FROM ch_posts WHERE PID=? OR postID=? ORDER BY postID DESC",array($threadID,$threadID));
         if(count($posts)==0)return false;
         $board = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($posts[0]->BID));
         if(count($board)==0)return false;
