@@ -39,26 +39,24 @@ class PostGenerator{
                         else               echo('$post->name'); ?>
                     </span>
                     <span class="postTripcode"><?=$post->trip?></span> 
-                    <? if(strpos($post->options,"m")!==FALSE) echo('<span class="postMod">### MOD (<?=$a->generateDelta();?>) ###</span>'); ?>
+                    <? if(strpos($post->options,"m")!==FALSE) echo('<span class="postMod">### MOD ###</span>'); ?>
                     <span class="postTime"><?=$k->toDate($post->time)?></span> 
                     <span id="postType" class="<?=$type?>">&nbsp;</span> 
                     <span class="buttons">
                         <? if($post->PID==0){ ?>
                             <?='<? if($a->check("chan.mod.move")){ ?>'?>
-                                <a class="moveThread" href="/api.php?m=Chan&c=moveForm&a=postID:<?=$post->postID?>;boardID:<?=$post->BID?>">Move</a>
-                            <?='<? }if($a->check("chan.mod.merge")){ ?>'?>
-                                <a class="mergeThread" href="/api.php?m=Chan&c=mergeForm&a=postID:<?=$post->postID?>;boardID:<?=$post->BID?>">Merge</a>
+                                <a class="moveThread" href="<?=PROOT?>api/chan/move?id=<?=$post->postID?>&bid=<?=$post->BID?>">Move / Merge</a>
                         <? } ?>
-                        <?='<? }if($a->check("admin.ban")){ ?>'?>
-                            <a class="banUser" href="/api.php?m=Chan&c=banForm&a=mask:<?=$post->ip?>;postID:<?=$post->postID?>;boardID:<?=$post->BID?>">Ban</a>
-                        <?='<? }if($a->check("admin.ban")){ ?>'?>
-                            <a class="purgeUser" href="/api.php?m=Chan&c=purgeForm&a=mask:<?=$post->ip?>">Purge</a>
+                        <?='<? }if($a->check("chan.mod.purge")){ ?>'?>
+                            <a class="banUser" href="<?=PROOT?>api/chan/ban?id=<?=$post->postID?>&bid=<?=$post->BID?>">Ban</a>
+                        <?='<? }if($a->check("chan.mod.ban")){ ?>'?>
+                            <a class="purgeUser" href="<?=PROOT?>api/chan/purge?id=<?=$post->postID?>&bid=<?=$post->BID?>">Purge</a>
                         <?='<? }if($a->check("chan.mod.search")){ ?>'?>
-                            <a class="searchUser" href="/api.php?m=Chan&c=searchForm&a=postID:<?=$post->postID?>;boardID:<?=$post->BID?>">Search</a>
+                            <a class="searchUser" href="<?=PROOT?>api/chan/search?id=<?=$post->postID?>&bid=<?=$post->BID?>">Search</a>
                         <?='<? }if($a->check("chan.mod.delete")){ ?>'?>
-                            <a class="deletePost" href="/api.php?m=Chan&c=deleteForm&a=postID:<?=$post->postID?>;boardID:<?=$post->BID?>">Delete</a>
+                            <a class="deletePost" href="<?=PROOT?>api/chan/delete?id=<?=$post->postID?>&bid=<?=$post->BID?>">Delete</a>
                         <?='<? }if($a->check("chan.mod.edit")){ ?>'?>
-                            <a class="editPost" href="/api.php?m=Chan&c=editForm&a=postID:<?=$post->postID?>;boardID:<?=$post->BID?>">Edit</a>
+                            <a class="editPost" href="<?=PROOT?>api/chan/edit?id=<?=$post->postID?>&bid=<?=$post->BID?>">Edit</a>
                         <?='<? } ?>'?>
                     </span> <br />
                     <? if($post->file!=""){ ?>
@@ -89,9 +87,7 @@ class PostGenerator{
         <?='<? } ?>'?>
         
         <?
-        $ob=ob_get_clean();
-        file_put_contents($path,$ob,LOCK_EX);
-        echo('----<br /><br />'.$ob.'<br /><br />----');
+        file_put_contents($path,ob_get_clean(),LOCK_EX);
         ob_implicit_flush(true);
     }
 
