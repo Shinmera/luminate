@@ -9,6 +9,7 @@ public static $hooks=array("foo");
 function display(){
     global $params,$chan;
     switch($params[1]){
+        case 'move':    $this->displayMove();       break;
         case 'purge':   $this->displayPurge();      break;
         case 'search':  $this->displaySearch();     break;
         case 'delete':  $this->displayDelete();     break;
@@ -21,24 +22,101 @@ function display(){
     }
 }
 
+function displayMove(){
+    global $a;
+    if(!$a->check('chan.mod.move'))die('Insufficient privileges.');
+    $post = DataModel::getData('ch_posts','SELECT BID,PID WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    if($post==null)                die('No such post found.');
+    if($post->PID!=0)              die('This isn\'t a thread.'); 
+    
+    if($_POST['action']=='Change'){
+        include('datagen.php');
+        $datagen = new DataGenerator();
+        if($post->BID!=$_POST['board']){
+            $datagen->moveThread($_GET['id'], $_GET['bid'], $_POST['board']);
+            $boardname = $c->getData('SELECT folder FROM ch_boards WHERE boardID=?',array($_POST['board']));
+            $ret = 'Thread moved to '.$boardname[0]['folder'];
+        }
+        if($_POST['parent']!=$post->PID){
+            $datagen->mergeThread($_GET['id'], $_GET['bid'], $_POST['parent']);
+            $ret = 'Thread merged with '.$_POST['parent'];
+        }
+        die($ret);
+    }else{
+        ?><form action="<?=PROOT?>api/chan/purge?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
+            Change this thread's options:<br />
+            <? $boards= DataModel::getData('ch_boards','SELECT boardID,folder FROM ch_boards'); ?>
+            Board: <?=Toolkit::printSelectObj("board",$boards,'folder','boardID',$_GET['bid']);?><br />
+            Parent: <input type="number" name="parent" value="<?=$post->PID?>" /><br />
+            <input type="submit" name='action' value="Change" />
+            <script type="text/javascript">
+                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
+                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
+            </script>
+        </form><?
+    }
+}
+
 function displayPurge(){
     global $a;
-    if(!$a->check('chan.mod.purge'))die('Insufficient privileges.');
-    if($_POST['action']){
-        
+    if(!$a->check('chan.mod.delete'))die('Insufficient privileges.');
+    $post = DataModel::getData('ch_posts','SELECT ip WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    if($post==null)                  die('No such post found.');
+    
+    if($_POST['action']=='Purge'){
+        include('datagen.php');
+        $datagen = new DataGenerator();
+        $datagen->deleteByIP($post->ip);
+        die('All posts by '.$post->ip.' have been deleted.');
+    }else{
+        ?><form action="<?=PROOT?>api/chan/purge?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
+            Are you sure?<br />
+            <input type="submit" name='action' value="Purge" />
+            <script type="text/javascript">
+                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
+                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
+            </script>
+        </form><?
     }
 }
 
 function displaySearch(){
     global $a;
     if(!$a->check('chan.mod.search'))die('Insufficient privileges.');
+    $post = DataModel::getData('ch_posts','SELECT ip WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    if($post==null)                  die('No such post found.');
+    $posts = DataModel::getData('ch_posts','SELECT postID,ch_boards.folder 
+                                            FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
+                                            WHERE ip=? ORDER BY time DESC LIMIT 10',array($post->ip));
     
+    echo('<div style="overflow:scroll;">');
+    foreach($posts as $post){
+        include(ROOT.DATAPATH.'chan/'.$post->folder.'/posts/'.$post->postID.'.php');
+    }
+    echo('</div>');
 }
 
 function displayDelete(){
     global $a;
     if(!$a->check('chan.mod.delete'))die('Insufficient privileges.');
+    $post = DataModel::getData('ch_posts','SELECT postID WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    if($post==null)                  die('No such post found.');
     
+    if($_POST['action']=='Delete'){
+        include('datagen.php');
+        $datagen = new DataGenerator();
+        $datagen->deletePost($_GET['id'], $_GET['bid'], true);
+        die('Post deleted.');
+    }else{
+        ?><form action="<?=PROOT?>api/chan/delete?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
+            Are you sure?<br />
+            <input type="submit" name='action' value="Delete" />
+            <script type="text/javascript">
+                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
+                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
+            </script>
+        </form><?
+    }
 }
 
 function displayEdit(){
@@ -65,7 +143,7 @@ function displayEdit(){
     }else{
         echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
         include(MODULEPATH.'gui/Editor.php');
-        $editor = new SimpleEditor(PROOT.'api/chan/edit?id='.$_GET['id'].'&bid='.$_GET['bid'], 'edit', 'banform');
+        $editor = new SimpleEditor(PROOT.'api/chan/edit?id='.$_GET['id'].'&bid='.$_GET['bid'], 'edit', 'form');
         if($post->file!='')
             $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
         
@@ -75,6 +153,10 @@ function displayEdit(){
         $editor->addTextField('title', 'title', $post->title, 'text', '...');
         $editor->addCheckbox('options[]', 'Hidden', 'h', strpos($post->options,'h')!==FALSE);
         $editor->addCheckbox('options[]', 'Modpost', 'm',strpos($post->options,'m')!==FALSE);
+        $editor->addCustom('<script type="text/javascript">
+                                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
+                                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
+                            </script>');
         $_POST['text']=$post->subject;
         $editor->show();
     }
@@ -103,7 +185,7 @@ function displayBan(){
         
         echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
         include(MODULEPATH.'gui/Editor.php');
-        $editor = new SimpleEditor(PROOT.'api/chan/ban?id='.$_GET['id'].'&folder='.$post->folder, 'Ban', 'banform');
+        $editor = new SimpleEditor(PROOT.'api/chan/ban?id='.$_GET['id'].'&folder='.$post->folder, 'Ban', 'form');
         if($post->file!='')
             $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
         $editor->addTextField('IP', 'IP: ', $post->ip,'text','required placeholder="'.$post->ip.'"');
@@ -112,6 +194,10 @@ function displayBan(){
                                     array('1 second','1 minute','30 minutes','1 hour',    '1 day',    '1 week',     '1 month',    '1 year',       'Forever'), 'Ban Time:');
         $editor->addCheckbox('mute', 'Mute Ban','m');
         $editor->addCheckbox('appeal', 'Appeal Allowed','a',true);
+        $editor->addCustom('<script type="text/javascript">
+                                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
+                                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
+                            </script>');
         $_POST['text']=$post->subject;
         $editor->show();
     }
@@ -120,7 +206,8 @@ function displayBan(){
 function displayPost(){
     include('datagen.php');
     try{
-        DataGenerator::submitPost();
+        $datagen = new DataGenerator();
+        $datagen->submitPost();
     }catch(Exception $e){
         global $a;
         if($a->check('chan.admin'))Toolkit::err($e->getMessage()."\n\n".$e->getTraceAsString());
