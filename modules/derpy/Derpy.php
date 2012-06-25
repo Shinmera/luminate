@@ -73,7 +73,7 @@ function displayMessagesPage(){
 function displayInboxPage(){
     global $c,$a,$k;
     
-    if($_POST['action']=="Delete"){
+    if($_POST['action']=="Delete"&&count($_POST['toDelete'])>0){
         $query="DELETE FROM derpy_messages WHERE ";$data=array();
         foreach($_POST['toDelete'] as $mID){
             $query.="messageID=? OR ";$data[]=$mID;
@@ -168,7 +168,7 @@ function displayNotificationsPage(){
 function displayOutboxPage(){
     global $c,$a,$k;
     
-    if($_POST['action']=="Delete"){
+    if($_POST['action']=="Delete"&&count($_POST['toDelete'])>0){
         $query="DELETE FROM derpy_messages WHERE ";$data=array();
         foreach($_POST['toDelete'] as $mID){
             $query.="messageID=? OR ";$data[]=$mID;
