@@ -25,7 +25,7 @@ function display(){
 function displayMove(){
     global $a;
     if(!$a->check('chan.mod.move'))die('Insufficient privileges.');
-    $post = DataModel::getData('ch_posts','SELECT BID,PID WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    $post = DataModel::getData('ch_posts','SELECT BID,PID FROM ch_posts WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
     if($post==null)                die('No such post found.');
     if($post->PID!=0)              die('This isn\'t a thread.'); 
     
@@ -60,7 +60,7 @@ function displayMove(){
 function displayPurge(){
     global $a;
     if(!$a->check('chan.mod.delete'))die('Insufficient privileges.');
-    $post = DataModel::getData('ch_posts','SELECT ip WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    $post = DataModel::getData('ch_posts','SELECT ip FROM ch_posts WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
     if($post==null)                  die('No such post found.');
     
     if($_POST['action']=='Purge'){
@@ -83,7 +83,7 @@ function displayPurge(){
 function displaySearch(){
     global $a;
     if(!$a->check('chan.mod.search'))die('Insufficient privileges.');
-    $post = DataModel::getData('ch_posts','SELECT ip WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    $post = DataModel::getData('ch_posts','SELECT ip FROM ch_posts WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
     if($post==null)                  die('No such post found.');
     $posts = DataModel::getData('ch_posts','SELECT postID,ch_boards.folder 
                                             FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
@@ -99,7 +99,7 @@ function displaySearch(){
 function displayDelete(){
     global $a;
     if(!$a->check('chan.mod.delete'))die('Insufficient privileges.');
-    $post = DataModel::getData('ch_posts','SELECT postID WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
+    $post = DataModel::getData('ch_posts','SELECT postID FROM ch_posts WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
     if($post==null)                  die('No such post found.');
     
     if($_POST['action']=='Delete'){
@@ -168,14 +168,15 @@ function displayBan(){
     if($_POST['IP']!=''){
         $ban = DataModel::getHull('ch_bans');
         $ban->ip=$_POST['IP'];
-        $ban->time=$_POST['time'];
+        $ban->time=time();
+        $ban->period=$_POST['time'];
         $ban->reason=$_POST['reason'];
         $ban->PID=$_GET['id'];
         $ban->folder=$_GET['folder'];
         if($_POST['appeal']=='a')$ban->appeal='You cannot appeal to this ban.';
         if($_POST['mute']=='m')$ban->mute=1;else $ban->mute=0;
         $ban->insertData();
-        if($_POST['time']>0)die('Successfully banned '.$_POST['IP'].' until '.Toolkit::toDate($_POST['time']).'.');
+        if($_POST['time']>0)die('Successfully banned '.$_POST['IP'].' until '.Toolkit::toDate(time()+$_POST['time']).'.');
         else                die('Successfully permabanned '.$_POST['IP'].' until the end of this database entry\'s life cycle.');
     }else{
         $post = DataModel::getData('ch_posts','SELECT p.postID,p.ip,p.subject,p.file,ch_boards.folder 
@@ -190,7 +191,7 @@ function displayBan(){
             $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
         $editor->addTextField('IP', 'IP: ', $post->ip,'text','required placeholder="'.$post->ip.'"');
         $editor->addTextField('reason','Reason: ','','text','required placeholder="Spam" maxlength="128"');
-        $editor->addDropDown('time',array(time()+1,  time()+60, time()+1800,  time()+3600,time()+6400,time()+604800,time()+241920,time()+31536000,-1),
+        $editor->addDropDown('time',array(1,  60, 1800,  3600,6400,604800,241920,31536000,-1),
                                     array('1 second','1 minute','30 minutes','1 hour',    '1 day',    '1 week',     '1 month',    '1 year',       'Forever'), 'Ban Time:');
         $editor->addCheckbox('mute', 'Mute Ban','m');
         $editor->addCheckbox('appeal', 'Appeal Allowed','a',true);
