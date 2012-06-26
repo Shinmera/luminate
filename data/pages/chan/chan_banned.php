@@ -118,11 +118,13 @@ while(($file=readdir($dir))!==FALSE){
                 <textarea name="appeal" required placeholder="..."></textarea><br />
                 <input type="submit" value="Submit Appeal" />
             </form>
-        <? }else{ ?>
+        <? }else if($appeal!='You cannot appeal to this ban.'){ ?>
             <h2>Your appeal message:</h2>
             <blockquote>
                 <?=$appeal?>
             </blockquote>
+        <? }else{ ?>
+            <h2><?=$appeal?></h2>
         <? } ?>
     </div>
 </body>
