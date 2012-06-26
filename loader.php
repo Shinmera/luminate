@@ -1,7 +1,7 @@
 <? class Loader{
     function loadModule($name){
         global $k,$MODULES,$MODULECACHE;
-        if(!class_exists($name))@ include(MODULEPATH.$MODULECACHE[$name]);
+        if(!class_exists($name))include(MODULEPATH.$MODULECACHE[$name]);
         if(!class_exists($name))throw new Exception("No such class '".$name."'! Is your module named correctly?");
         if(array_key_exists($name::$name,$MODULES)){
             $short = $name::$short;

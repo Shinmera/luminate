@@ -142,7 +142,6 @@ class Tag{
             }else{
                 $pointer++;
             }
-            ob_flush();flush();
         }$plevel--;
         if($final!='')return trim($final);
         else          return trim($text);
