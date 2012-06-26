@@ -370,23 +370,22 @@ public static function toDate($time,$format='l d.m.Y H:i:s'){
 }
 
 public static function timeAgo($time){
+    return Toolkit::toLiteralTime(time()-$time).' ago';
+}
+
+public static function toLiteralTime($time){
     $periods = array("second", "minute", "hour", "day", "week", "month", "year", "decade");
     $lengths = array("60","60","24","7","4.35","12","10");
-
-    $now = time();
-    $difference = $now - $time;
-
-    for($j = 0; $difference >= $lengths[$j] && $j < count($lengths)-1; $j++) {
-        $difference /= $lengths[$j];
+    
+    for($j = 0; $time >= $lengths[$j] && $j < count($lengths)-1; $j++) {
+        $time /= $lengths[$j];
     }
+    $time = round($time);
 
-    $difference = round($difference);
-
-    if($difference != 1) {
+    if($time != 1) {
         $periods[$j].= "s";
     }
-
-    return $difference.' '.$periods[$j].' ago';
+    return $time.' '.$periods[$j];
 }
 
 public static function convertHTML($html){
