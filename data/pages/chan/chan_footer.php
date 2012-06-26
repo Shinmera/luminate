@@ -1,15 +1,15 @@
 <? function write_footer($title,$board,$boardfolder,$thread=0,$options=""){
     
     ?>
+    <input type="hidden" name="board" value="<?=$board?>" />
+    <input type="hidden" name="folder" id="varfolder" value="<?=$boardfolder?>" />
     <div class="deleteBox">
-        <input type="hidden" name="varboard" value="<?=$board?>" />
-        <input type="hidden" name="varfolder" id="varfolder" value="<?=$boardfolder?>" />
-        <label>Delete:</label><input type="checkbox" name="varfileonly" value="1" /> File only<br />
-        <input type="password" name="varpassword" class="password" />
+        <label>Delete:</label><input type="checkbox" name="fileonly" value="1" /> File only<br />
+        <input type="password" name="password" class="password" />
         <input type="submit" name="submitter" value="Delete" />
     </div>
     <div class="reportBox">
-        <label>Report:</label><br /><input type="text" name="varreason" placeholder="reason" maxlength="512"/>
+        <label>Report:</label><br /><input type="text" name="reason" placeholder="reason" maxlength="512" autocomplete="off" />
         <input type="submit" name="submitter" value="Report" />
     </div></form>
 
