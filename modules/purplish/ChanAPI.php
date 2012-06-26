@@ -18,6 +18,7 @@ function display(){
         case 'post':    $this->displayPost();       break;
         case 'options': $this->displayOptions();    break;
         case 'watch':   $this->displayThreadWatch();break;
+        case 'report':  $this->displayReport();     break;
         default:        echo('Purplish v'.$chan::$version.' / API'.$this::$version);break;
     }
 }
@@ -214,6 +215,45 @@ function displayPost(){
         if($a->check('chan.admin'))Toolkit::err($e->getMessage()."\n\n".$e->getTraceAsString());
         else Toolkit::err($e->getMessage());
     }
+}
+
+function displayReport(){
+    if(!is_array($_POST['varposts'])||$_POST['varposts']=='')die('No posts selected.');
+    if(!Toolkit::updateTimeout('chan_report', 5))            die('Please wait 5 seconds between reports or deletions.');
+    if($_POST['submitter']=='Report'){
+        if(trim($_POST['reason'])=='')                       die('Please specify a report reason.');
+        $ret='';
+        $report = DataModel::getHull('ch_reports');
+        $report->ip = $_SERVER['REMOTE_ADDR'];
+        $report->time = time();
+        $report->reason = $_POST['reason'];
+        $report->folder = $_POST['folder'];
+        foreach($_POST['varposts'] AS $post){
+            $report->PID = $post;
+            $report->insertData();
+            $ret.='Report for post #'.$post.' on '.$_POST['folder'].' has been submitted.<br />';
+        }
+        $ret = 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
+        die($ret);
+    }else
+    if($_POST['submitter']=='Delete'){
+        $ret='';
+        foreach($_POST['varposts'] AS $post){
+            try{
+                if($_POST['fileonly']==="1")
+                    $datagen->deletePost($post, $_POST['board'], false, true);
+                else
+                    $datagen->deletePost($post, $_POST['board'], true, false);
+                $ret.='Post deleted.<br />';
+            }catch(Exception $e){
+                if($a->check('chan.admin'))$ret.=$e->getMessage().'<br />'.$e->getTraceAsString().'<br /><br />';
+                else $ret.=$e->getMessage().'<br />';
+            }
+        }
+        $ret = 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
+        die($ret);
+    }
+    die('Nothing to do.');
 }
 
 function displayOptions(){
