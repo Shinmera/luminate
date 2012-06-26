@@ -140,7 +140,7 @@ function displayUserProfile($username,$user=null){
             if($field->type=='t'){
                 if(trim($field->value)=='')$field->value=trim($field->default);
                 if($field->value!=''){
-                    $text = $l->triggerPARSE("CORE",$field->value);
+                    $text = $l->triggerPARSE("Neon",$field->value);
                     echo('<div class="box userTextBox"><h3>'.$field->title.'</h3>'.$text.'</div>');
                 }
             }

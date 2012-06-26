@@ -266,7 +266,7 @@ function displayReadPage(){
                 From <?=$k->getUserPage($mail->sender)?> to <?=$k->getUserPage($mail->recipient)?> on <?=$k->toDate($mail->time)?>
             </div>
             <p class="mailtext">
-                <?=$l->triggerPARSE("CORE",$mail->text);?>
+                <?=$l->triggerPARSE("Derpy",$mail->text);?>
             </p>
         </div>
         <div class="box" style="display:block;">
