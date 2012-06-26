@@ -123,6 +123,7 @@ class DataGenerator{
         
         $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file FROM ch_posts WHERE postID=? AND BID=? AND options NOT REGEXP ? LIMIT 1",array($postID,$board,'d'));
         if(count($post)==0)throw new Exception("No such post.");
+        if(!$a->check("chan.mod.delete")&&$_POST['password']!=$post->password)throw new Exception("No Access.");
         if($post[0]->PID==0)$thread=$postID;
         else                $thread=$post[0]->PID;
 
