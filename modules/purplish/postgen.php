@@ -19,8 +19,9 @@ class PostGenerator{
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
 
-        ob_end_flush;flush();
+        ob_end_clean();
         ob_start(create_function('$buffer', 'return "";'));
+        
         ?>
         
         <?='<? global $a ?>'?>
@@ -36,7 +37,7 @@ class PostGenerator{
                     <span class="postUsername">
                         <? if(trim($post->name)==""&&trim($post->trip)=="")$post->name="Anonymous"; 
                         if($post->mail!="")echo('<a href="mailto:'.$post->mail.'">'.$post->name.'</a>');
-                        else               echo('$post->name'); ?>
+                        else               echo($post->name); ?>
                     </span>
                     <span class="postTripcode"><?=$post->trip?></span> 
                     <? if(strpos($post->options,"m")!==FALSE) echo('<span class="postMod">### MOD ###</span>'); ?>
@@ -46,8 +47,9 @@ class PostGenerator{
                         <? if($post->PID==0){ ?>
                             <?='<? if($a->check("chan.mod.move")){ ?>'?>
                                 <a class="moveThread" href="<?=PROOT?>api/chan/move?id=<?=$post->postID?>&bid=<?=$post->BID?>">Move / Merge</a>
+                            <?='<? } ?>'?>
                         <? } ?>
-                        <?='<? }if($a->check("chan.mod.purge")){ ?>'?>
+                        <?='<? if($a->check("chan.mod.purge")){ ?>'?>
                             <a class="banUser" href="<?=PROOT?>api/chan/ban?id=<?=$post->postID?>&bid=<?=$post->BID?>">Ban</a>
                         <?='<? }if($a->check("chan.mod.ban")){ ?>'?>
                             <a class="purgeUser" href="<?=PROOT?>api/chan/purge?id=<?=$post->postID?>&bid=<?=$post->BID?>">Purge</a>
@@ -82,13 +84,16 @@ class PostGenerator{
                             <?=$temp;?>
                         <?='<? } ?>'?>
                     </blockquote></article>
+                    <br class="clear" />
                 </div>
             </div><br />
         <?='<? } ?>'?>
         
         <?
-        file_put_contents($path,ob_get_clean(),LOCK_EX);
-        ob_implicit_flush(true);
+        $data = ob_get_flush();
+        ob_end_clean();
+        echo('----------------------><br />'.$data.'<br /><-----------------------');
+        file_put_contents($path,$data,LOCK_EX);
     }
 
 }
