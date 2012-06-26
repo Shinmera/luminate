@@ -1,7 +1,20 @@
 <? function write_footer($title,$board,$boardfolder,$thread=0,$options=""){
-    global $c,$k,$a,$t;
     
     ?>
+    <div class="deleteBox">
+        <input type="hidden" name="varboard" value="<?=$board?>" />
+        <input type="hidden" name="varfolder" id="varfolder" value="<?=$boardfolder?>" />
+        <label>Delete:</label><input type="checkbox" name="varfileonly" value="1" /> File only<br />
+        <input type="password" name="varpassword" class="password" />
+        <input type="submit" name="submitter" value="Delete" />
+    </div>
+    <div class="reportBox">
+        <label>Report:</label><br /><input type="text" name="varreason" placeholder="reason" maxlength="512"/>
+        <input type="submit" name="submitter" value="Report" />
+    </div></form>
+
+    </div><br clear="all">
+    
     <div id="threadWatch" class="threadWatch" style="display:none;float:left;position:absolute;">
         <table><thead>
             <tr>
@@ -21,19 +34,6 @@
     <div id="popup" class="popup" style="display:none;">Please wait...</div>
     <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
     <img id="previewImage" style="display:none;max-width:400px;max-height:400px;float:left;position:absolute;" alt="preview"/>
-    
-    <div class="deleteBox">
-    <input type="hidden" name="varboard" value="<?=$board?>" />
-    <input type="hidden" name="varfolder" id="varfolder" value="<?=$boardfolder?>" />
-    <label>Delete:</label><input type="checkbox" name="varfileonly" value="1" /> File only<br />
-    <input type="password" name="varpassword" class="password" />
-    <input type="submit" name="submitter" value="Delete" />
-    </div><div class="reportBox">
-    <label>Report:</label><br /><input type="text" name="varreason" placeholder="reason"/>
-    <input type="submit" name="submitter" value="Report" />
-    </div></form>
-
-    </div><br clear="all">
 
     <link rel="alternate" type="application/rss+xml" title="<?=$boardfolder?> RSS feed" href="http://<?=HOST.PROOT?>api.php?m=Chan&c=getBoardRSS&a=board:<?=$board?>" />
     <script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
