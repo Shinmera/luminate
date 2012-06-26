@@ -101,9 +101,10 @@ public static $hooks=array("foo");
             if($tags!=null){
                 if(!is_array($tags))$tags=array($tags);
                 foreach($tags as $tag){
-                $tagc = new Tag($tag->tag,$tag->deftag,$tag->suite);
-                if($this->tags[$tag->tag]=='')$this->tags[$tag->tag]=$tagc;
-            }}
+                    $tagc = new Tag($tag->tag,$tag->deftag,$tag->suite);
+                    if($this->tags[$tag->tag]=='')$this->tags[$tag->tag]=$tagc;
+                }
+            }
         }
     }
     
