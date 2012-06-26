@@ -1,6 +1,6 @@
 <? global $c;
 $bans = DataModel::getData('ch_bans','SELECT * FROM ch_bans WHERE ip LIKE ? AND mute=0',array($_SERVER['REMOTE_ADDR']));
-$c->query('DELETE FROM ch_bans WHERE ip=? AND time<?',array($_SERVER['REMOTE_ADDR'],time()));
+$c->query('DELETE FROM ch_bans WHERE ip=? AND (time+period)<? AND period>0',array($_SERVER['REMOTE_ADDR'],time()));
 
 if($bans!=null){?>
 <!DOCTYPE html>
@@ -35,7 +35,7 @@ if($bans!=null){?>
             color: #FFF;
         }
         
-        img{
+        img.header{
             margin: 0 auto -20px auto;
             display:block;
             border: 1px solid #000;
@@ -54,6 +54,18 @@ if($bans!=null){?>
         }
         
         #content textarea{box-sizing: border-box;width:100%;min-height:100px;}
+        
+        .post{background: #CCC;}
+        .postInfo{background: #888;padding: 2px;}
+        .postInfo .buttons{display:none;}
+        .postContent{padding: 2px;}
+        .postTitle{font-size:12pt;font-weight:bold;}
+        .postUsername,.postUsername a{color: #00EEFF;}
+        .postTripcode{color: #FFDD00;}
+        .post a{color: #FFF;text-decoration: none;}
+        .post img{float:left;margin:3px;box-shadow: 0 0 3px #00EEFF;}
+        .post input{display:none;}
+        .clear{clear:both;}
     </style>
 </head>
 <? ob_flush();flush();
@@ -64,7 +76,7 @@ while(($file=readdir($dir))!==FALSE){
 }closedir($dir);
 ?>
 <body>
-    <img src="<?=$images[mt_rand(0,count($images)-1)]?>" alt=" " />
+    <img src="<?=$images[mt_rand(0,count($images)-1)]?>" alt=" " class="header" />
     <h1>You have been banned from <?=$c->o['chan_title']?>!</h1>
     <div id="content">
         <? 
@@ -81,18 +93,23 @@ while(($file=readdir($dir))!==FALSE){
             }
         }
         ?>
-        <h2>Reason<?=(count($bans)>1)? 's' : ''?>:</h2>
+        <h2>Issue<?=(count($bans)>1)? 's' : ''?>:</h2>
         <article>
             <ul>
                 <? foreach($bans as $ban){ ?>
-                    <li>Until <?=Toolkit::toDate($ban->time)?> : <?=$ban->reason?></li>
+                <li>
+                    On <?=Toolkit::toDate($ban->time)?>. 
+                    <? if(time()>$ban->time+$ban->period&&$ban->period>0)$ban->period=time()-$ban->time; ?>
+                    <?=($ban->period>0) ? 'Time remaining: '.Toolkit::toLiteralTime($ban->period-(time()-$ban->time)) : 'Until The end of time'?>. 
+                    Reason: <?=$ban->reason?>
+                </li>
                 <? } ?>
             </ul>
         </article>
         <h2>The ban is associated with the following post<?=(count($bans)>1)? 's' : ''?>:</h2>
         <div class="posts">
             <? foreach($bans as $ban){
-                @include(ROOT.DATAPATH.'chan/'.$ban->folder.'/posts/'.$ban->PID.'.php');
+                include(ROOT.DATAPATH.'chan/'.$ban->folder.'/posts/'.$ban->PID.'.php');
             } ?>
         </div>
         <? if($appeal==''){ ?>
