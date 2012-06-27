@@ -506,6 +506,7 @@ public static function sanitizePager($max,$orders=array(),$defaultOrder="",$step
     if($_GET['f']>$_GET['t'])                         $_GET['f']=$_GET['t']-1;
     if($_GET['t']-$_GET['f']>100)                     $_GET['t']=$_GET['f']+100;
     if($_GET['a']!=0&&$_GET['a']!=1)                  $_GET['a']="0";
+    if($_GET['a']==0)                                 $_GET['d']='DESC';else $_GET['d']='ASC';
     $_GET['s']=$_GET['t']-$_GET['f'];
     if(!in_array($_GET['o'],$orders)){
         if($defaultOrder=="")$_GET['o']=$orders[0];
