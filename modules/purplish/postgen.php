@@ -23,9 +23,9 @@ class PostGenerator{
         ob_start(create_function('$buffer', 'return "";'));
         
         ?>
-        
-        <?='<? global $a ?>'?>
-        <?='<? if("'.$post->ip.'"==$_SERVER["REMOTE_ADDR"]||strpos("'.$post->options.'",",h")===FALSE||$a->check("chan.mod.hidden")){ ?>'?>
+        <?='<? if(!defined("INIT"))include("'.TROOT.'config.php"); ?>'."\n"?>
+        <?='<? global $a,$l; if($a==null)$a = $l->loadModule("Auth"); ?>'."\n"?>
+        <?='<? if("'.$post->ip.'"==$_SERVER["REMOTE_ADDR"]||strpos("'.$post->options.'",",h")===FALSE||$a->check("chan.mod.hidden")){ ?>'."\n"?>
             <? if($post->PID==0){ ?><div class="postOP <?=$type?>" id="P<?=$pID?>">
             <? }else            { ?><div class="post   <?=$type?>" id="P<?=$pID?>"><? } ?>
                 <a name="<?=$pID?>"></a>
