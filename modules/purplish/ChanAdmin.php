@@ -76,7 +76,64 @@ function displayEditBoard(){
 }
 
 function displayFiletypes(){
+    if($_POST['action']=='Delete'){
+        $type = DataModel::getData('ch_filetypes','SELECT title,preview FROM ch_filetypes WHERE title=?',array($_POST['title']));
+        if($type!=null){
+            unlink(ROOT.IMAGEPATH.'chan/previews/'.$type->preview);
+            $type->deleteData();
+            echo('<div class="success">Filetype deleted!</div>');
+        }
+    }
+    if($_POST['action']=='Add'){
+        try{
+            $file = Toolkit::uploadFile('preview', ROOT.IMAGEPATH.'chan/previews/' , 2000, array('image/png','image/jpeg','image/gif'), false,$_POST['title']);
+            $type = DataModel::getHull('ch_filetypes');
+            $type->title = $_POST['title'];
+            $type->mime = $_POST['mime'];
+            $type->preview = substr($file,strrpos($file,'/')+1);
+            $type->insertData();
+            echo('<div class="success">Filetype added!</div>');
+        }catch(Exception $ex){
+            echo('<div class="failure">'.$ex->getMessage().'</div>');
+        }
+    }
     
+    $filetypes = DataModel::getData('','SELECT * FROM ch_filetypes');
+    if($filetypes==null)$filetypes=array();if(!is_array($filetypes))$filetypes=array($filetypes);
+    
+    ?>
+    <form class="box fullwidth" enctype="multipart/form-data" action="#" method="post">
+        <h4>Add a filetype:</h4>
+        Title:      <input type="text" maxlength="32" name="title" required />
+        Mime Type:  <input type="text" maxlength="64" name="mime" required />
+                    <input type="file" name="preview" required />
+        <input type="submit" name="action" value="Add" />
+    </form>
+    <div class="box fullwidth">
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Mime</th>
+                    <th>Preview</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <? foreach($filetypes as $type){ ?>
+                    <tr>
+                        <td><?=$type->title?></td>
+                        <td><?=$type->mime?></td>
+                        <td><img src="<?=IMAGEPATH.'chan/previews/'.$type->preview?>" alt="Preview" /></td>
+                        <td><form method="post" action="#">
+                            <input type="hidden" name="title" value="<?=$type->title?>" />
+                            <input type="submit" name="action" value="Delete" />
+                        </form></td>
+                    </tr>
+                <? } ?>
+            </tbody>
+        </table>
+    </div><?
 }
 
 function displayLatestPosts(){
