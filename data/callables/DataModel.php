@@ -44,12 +44,8 @@ class DataModel{
         }
         $query=substr($query,0,strlen($query)-1).' WHERE ';
         
-        foreach($this->primary as $primary){
-            if(is_numeric($this->holder[$primary]))$query.= ' `'.$primary.'`=? AND';
-            else                                   $query.= ' `'.$primary.'` LIKE ? AND';
-            $data[]=$this->holder[$primary];
-        }
-        $c->query(substr($query,0,strlen($query)-3),$data);
+        $this->composeWherePart($data, $query);
+        $c->query($query,$data);
     }
     
     public function deleteData(){
@@ -58,12 +54,26 @@ class DataModel{
         
         $data = array();
         $query = 'DELETE FROM '.$this->table.' WHERE ';
-        foreach($this->primary as $primary){
-            if(is_numeric($this->holder[$primary]))$query.= ' `'.$primary.'`=? AND';
-            else                                   $query.= ' `'.$primary.'` LIKE ? AND';
-            $data[]=$this->holder[$primary];
+        
+        $this->composeWherePart($data, $query);
+        $c->query($query,$data);
+    }
+    
+    private function composeWherePart(&$data,&$query){
+        if(count($this->primary)>0){
+            foreach($this->primary as $primary){
+                if(is_numeric($this->holder[$primary]))$query.= ' `'.$primary.'`=? AND';
+                else                                   $query.= ' `'.$primary.'` LIKE ? AND';
+                $data[]=$this->holder[$primary];
+            }
+        }else{
+            foreach($this->holder as $key=>$value){
+                if(is_numeric($value))$query.= ' `'.$key.'`=? AND';
+                else                  $query.= ' `'.$key.'` LIKE ? AND';
+                $data[]=$value;
+            }
         }
-        $c->query(substr($query,0,strlen($query)-3),$data);
+        $query = substr($query,0,strlen($query)-3);
     }
     
     //TODO: Add support for functions on values.
