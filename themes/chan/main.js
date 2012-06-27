@@ -24,7 +24,7 @@ function updateThread(){
                     for(i=0;i<newposts.length;i++){
                         if($("#P"+newposts[i]).length==0){
                             $.ajax({
-                                url: "/"+$("#varfolder").val()+"/posts/"+newposts[i]+".php",
+                                url: $("#proot").html()+"data/chan/"+$("#varfolder").val()+"/posts/"+newposts[i]+".php",
                                 success: function(post){
                                     $(".thread").html($(".thread").html()+post);
                                     if(options.indexOf('q')!=-1){registerQuotes();}
@@ -54,7 +54,7 @@ function addWatchedThread(board,id){
         }
     }
     $.ajax({
-        url: '/api.php?c=time',
+        url: $("#proot").html()+'api/time',
         success: function(html){
             $.cookie('chan_watched',pcook+";"+board+" "+id+" "+html,{ expires: 356, path: '/' });
             refreshWatched();
@@ -83,7 +83,7 @@ function setThreadRead(board,id){
     if(watched.length==0)return false;
 
     $.ajax({
-        url: '/api.php?c=time',
+        url: $("#proot").html()+'api/time',
         success: function(html){
             for(var i=0;i<watched.length;i++){
                 if(watched[i].indexOf(board+" "+id)!= -1){
@@ -103,7 +103,7 @@ function readWatched(){
     if(watched.length==0)return false;
 
     $.ajax({
-        url: '/api.php?c=time',
+        url: $("#proot").html()+'api/time',
         success: function(html){
             for(var i=0;i<watched.length;i++){
                 var temp = watched[i].split(" ");
@@ -122,7 +122,7 @@ function clearWatched(){
 }
 function refreshWatched(){
     $.ajax({
-        url: '/api.php?m=Chan&c=getThreadWatchTable',
+        url: $("#proot").html()+'api/chan/watch',
         success: function(xml){
             $("#threadWatch table tbody").html(xml);
             $(".watchDeleteButton").each(function(){
@@ -225,14 +225,14 @@ function registerQuotes(){
                 var board=$(this).attr("board");
                 var id=$(this).attr("id");
                 $.ajax({
-                    url: '/'+board+"/posts/"+id+".php",
+                    url: $("#proot").html()+'data/chan/'+board+"/posts/"+id+".php",
                     success: function(data) {
                         $("#previewPost").html(data);
                         $("#previewPost").stop(true, true).fadeIn();
                     },
                     error: function() {
                         $.ajax({
-                            url: '/'+board+"/posts/_"+id+".php",
+                            url: $("#proot").html()+'data/chan/'+board+"/posts/_"+id+".php",
                             success: function(data) {
                                 $("#previewPost").html(data);
                                 $("#previewPost").stop(true, true).fadeIn();
