@@ -15,6 +15,7 @@ class PostGenerator{
         $folder = $c->getData("SELECT folder FROM ch_boards WHERE boardID=?",array($post->BID));$folder=$folder[0]['folder'];
         Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$folder.'/posts/');
         $path = ROOT.DATAPATH.'chan/'.$folder.'/posts/'.$pID.'.php';
+        $tpath= PROOT.$folder.'/thread/'.$tID.'.php';
         $type = '';
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
@@ -31,8 +32,8 @@ class PostGenerator{
                 <a name="<?=$pID?>"></a>
                 <div class="postInfo">
                     <input type="checkbox" name="varposts[]" value="<?=$pID?>" /> 
-                    <a href="'.$tpath.'#<?=$pID?>">No.</a> 
-                    <a class="postReply" href="'.$tpath.'#q<?=$pID?>" id="<?=$tID?>"><?=$pID?></a> 
+                    <a href="<?=$tpath?>#<?=$pID?>">No.</a> 
+                    <a class="postReply" href="<?=$tpath?>#q<?=$pID?>" id="<?=$tID?>"><?=$pID?></a> 
                     <span class="postTitle"><?=$post->title?></span> 
                     <span class="postUsername">
                         <? if(trim($post->name)==""&&trim($post->trip)=="")$post->name="Anonymous"; 
