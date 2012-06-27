@@ -5,6 +5,7 @@ var origtitle = document.title;
 //update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f
 //abcdgijklmnoqrtvxyz
 var options = 'upeshq';
+//TODO: Fix updated post spasms
 
 function isScrollBottom() { 
     var documentHeight = $(document).height(); 
@@ -27,9 +28,7 @@ function updateThread(){
                                 url: $("#proot").html()+"data/chan/"+$("#varfolder").val()+"/posts/"+newposts[i]+".php",
                                 success: function(post){
                                     $(".thread").html($(".thread").html()+post);
-                                    if(options.indexOf('q')!=-1){registerQuotes();}
-                                    if(options.indexOf('s')!=-1){registerSelectScroll();}
-                                    registerPostReply();
+                                    
                                 }
                             });
                         }
