@@ -58,6 +58,7 @@ table tbody tr:nth-child(2n){background-color:#BBB;}
 .failure{border: 1px solid #4D0606;background-color:#FF0000;}
 .success{border: 1px solid #0A4D06;background-color:#00FF00;}
 .error{background:#FF0000;color:#FFF;padding:2px;border-color:#DD0000;}
+.fullwidth{width:100%;box-sizing: border-box;}
 
 #header{
     font-size:12pt;
