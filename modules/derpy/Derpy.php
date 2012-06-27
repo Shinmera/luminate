@@ -99,10 +99,10 @@ function displayInboxPage(){
             </tr>
         </thead>
         <tbody><?
-            if($_GET['a']==0)$_GET['a']='DESC';else $_GET['a']='ASC';
+            
             $inbox = DataModel::getData('derpy_messages','SELECT messageID,sender,type,title,time,`read` '.
                                                     'FROM derpy_messages WHERE recipient LIKE ? '.
-                                                    'AND (type LIKE ? OR type LIKE ?) ORDER BY `'.$_GET['o'].'` '.$_GET['a'].
+                                                    'AND (type LIKE ? OR type LIKE ?) ORDER BY `'.$_GET['o'].'` '.$_GET['d'].
                                                     ' LIMIT '.$_GET['f'].','.$_GET['s'],array($a->user->username,'m','a'));
             if(!is_array($inbox))$inbox=array($inbox);
             foreach($inbox as $mail){
