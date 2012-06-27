@@ -72,9 +72,8 @@
         <? if($a->check("chan.mod")){ ?>
             <li class="separator">&nbsp;</li><li><a href="<?=$k->url("","admin/")?>">Admin</a><ul>
                 <li><a href="<?=$k->url("admin","Chan/latestposts")?>">Latest Posts</a></li>
-                <li><a href="<?=$k->url("admin","Chan/latestpics")?>">Latest Pictures</a></li>
-                <li><a href="<?=$k->url("admin","ACP/tickets")?>">Tickets (;
-                <? $temp=$c->getData("SELECT COUNT(ticketID) FROM ms_tickets ORDER BY time DESC");echo($temp[0]["COUNT(ticketID)"]); ?>)</a>
+                <li><a href="<?=$k->url("admin","Chan/reports")?>">Reports (;
+                <? $temp=$c->getData("SELECT COUNT(ip) FROM chan_reports");echo($temp[0]["COUNT(ip)"]); ?>)</a>
             </ul></li>
         <? } ?>
     </ul>
