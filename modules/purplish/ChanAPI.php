@@ -93,9 +93,10 @@ function displaySearch(){
                                             FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
                                             WHERE ip=? ORDER BY time DESC LIMIT 10',array($post->ip));
     
-    echo('<div style="overflow:scroll;">');
+    echo('<div style="overflow:auto;max-height:600px">');
     foreach($posts as $post){
-        include(ROOT.DATAPATH.'chan/'.$post->folder.'/posts/'.$post->postID.'.php');
+        @include(ROOT.DATAPATH.'chan/'.$post->folder.'/posts/'.$post->postID.'.php');
+        @include(ROOT.DATAPATH.'chan/'.$post->folder.'/posts/_'.$post->postID.'.php');
     }
     echo('</div>');
 }
