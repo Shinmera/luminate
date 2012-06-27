@@ -8,6 +8,8 @@ public static $hooks=array("foo");
 
 function display(){
     global $params,$chan;
+    if($_POST['id']!='')$_GET['id']=$_POST['id'];
+    if($_POST['bid']!='')$_GET['bid']=$_POST['bid'];
     switch($params[1]){
         case 'move':    $this->displayMove();       break;
         case 'purge':   $this->displayPurge();      break;
@@ -50,6 +52,8 @@ function displayMove(){
             Board: <?=Toolkit::printSelectObj("board",$boards,'folder','boardID',$_GET['bid']);?><br />
             Parent: <input type="number" name="parent" value="<?=$post->PID?>" /><br />
             <input type="submit" name='action' value="Change" />
+            <input type="hidden" name="id" value="<?=$_GET['id']?>" />
+            <input type="hidden" name="bid" value="<?=$_GET['bid']?>" />
             <script type="text/javascript">
                 $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
                 function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
@@ -70,13 +74,12 @@ function displayPurge(){
         $datagen->deleteByIP($post->ip);
         die('All posts by '.$post->ip.' have been deleted.');
     }else{
-        ?><form action="<?=PROOT?>api/chan/purge?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
+        ?><form action="<?=PROOT?>api/chan/purge?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="apiForm">
             Are you sure?<br />
             <input type="submit" name='action' value="Purge" />
-            <script type="text/javascript">
-                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
-                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
-            </script>
+            <input type="hidden" name="id" value="<?=$_GET['id']?>" />
+            <input type="hidden" name="bid" value="<?=$_GET['bid']?>" />
+            <script type="text/javascript" src="<?=DATAPATH?>js/chan_api_postsend.js"></script>
         </form><?
     }
 }
@@ -109,13 +112,12 @@ function displayDelete(){
         $datagen->deletePost($_GET['id'], $_GET['bid'], true);
         die('Post deleted.');
     }else{
-        ?><form action="<?=PROOT?>api/chan/delete?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
+        ?><form action="<?=PROOT?>api/chan/delete?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="apiForm">
             Are you sure?<br />
             <input type="submit" name='action' value="Delete" />
-            <script type="text/javascript">
-                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
-                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
-            </script>
+            <input type="hidden" name="id" value="<?=$_GET['id']?>" />
+            <input type="hidden" name="bid" value="<?=$_GET['bid']?>" />
+            <script type="text/javascript" src="<?=DATAPATH?>js/chan_api_postsend.js"></script>
         </form><?
     }
 }
@@ -144,7 +146,7 @@ function displayEdit(){
     }else{
         echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
         include(MODULEPATH.'gui/Editor.php');
-        $editor = new SimpleEditor(PROOT.'api/chan/edit?id='.$_GET['id'].'&bid='.$_GET['bid'], 'edit', 'form');
+        $editor = new SimpleEditor(PROOT.'api/chan/edit?id='.$_GET['id'].'&bid='.$_GET['bid'], 'edit', 'apiForm');
         if($post->file!='')
             $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
         
@@ -154,10 +156,10 @@ function displayEdit(){
         $editor->addTextField('title', 'title', $post->title, 'text', '...');
         $editor->addCheckbox('options[]', 'Hidden', 'h', strpos($post->options,'h')!==FALSE);
         $editor->addCheckbox('options[]', 'Modpost', 'm',strpos($post->options,'m')!==FALSE);
-        $editor->addCustom('<script type="text/javascript">
-                                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
-                                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
-                            </script>');
+        $editor->addCustom('
+            <input type="hidden" name="id" value="'.$_GET['id'].'" />
+            <input type="hidden" name="bid" value="'.$_GET['bid'].'" />');
+        $editor->addCustom('<script type="text/javascript" src="'.DATAPATH.'js/chan_api_postsend.js"></script>');
         $_POST['text']=$post->subject;
         $editor->show();
     }
@@ -166,6 +168,11 @@ function displayEdit(){
 function displayBan(){
     global $a;
     if(!$a->check('chan.mod.ban'))die('Insufficient privileges.');
+    $post = DataModel::getData('ch_posts','SELECT p.*,ch_boards.folder 
+                                            FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
+                                            WHERE p.postID=? AND p.BID=?',array($_GET['id'],$_GET['bid']));
+    if($post==null)die('No such post found.');
+    
     if($_POST['IP']!=''){
         $ban = DataModel::getHull('ch_bans');
         $ban->ip=$_POST['IP'];
@@ -177,17 +184,19 @@ function displayBan(){
         if($_POST['appeal']=='a')$ban->appeal='You cannot appeal to this ban.';
         if($_POST['mute']=='m')$ban->mute=1;else $ban->mute=0;
         $ban->insertData();
+        
+        $post->subject = $_POST['text'];
+        $post->saveData();
+        include('postgen.php');
+        PostGenerator::generatePostFromObject($post);
+        
         if($_POST['time']>0)die('Successfully banned '.$_POST['IP'].' until '.Toolkit::toDate(time()+$_POST['time']).'.');
         else                die('Successfully permabanned '.$_POST['IP'].' until the end of this database entry\'s life cycle.');
     }else{
-        $post = DataModel::getData('ch_posts','SELECT p.postID,p.ip,p.subject,p.file,ch_boards.folder 
-                                               FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
-                                               WHERE p.postID=? AND p.BID=?',array($_GET['id'],$_GET['bid']));
-        if($post==null)die('No such post found.');
         
         echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
         include(MODULEPATH.'gui/Editor.php');
-        $editor = new SimpleEditor(PROOT.'api/chan/ban?id='.$_GET['id'].'&folder='.$post->folder, 'Ban', 'form');
+        $editor = new SimpleEditor(PROOT.'api/chan/ban?id='.$_GET['id'].'&folder='.$post->folder, 'Ban', 'apiForm');
         if($post->file!='')
             $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
         $editor->addTextField('IP', 'IP: ', $post->ip,'text','required placeholder="'.$post->ip.'"');
@@ -196,10 +205,10 @@ function displayBan(){
                                     array('1 second','1 minute','30 minutes','1 hour',    '1 day',    '1 week',     '1 month',    '1 year',       'Forever'), 'Ban Time:');
         $editor->addCheckbox('mute', 'Mute Ban','m');
         $editor->addCheckbox('appeal', 'Appeal Allowed','a',true);
-        $editor->addCustom('<script type="text/javascript">
-                                $(document).ready(function() { $("#form").ajaxForm( {success: showResponse}); });
-                                function showResponse(responseText, statusText, xhr, $form){ $("#form").parent().html("Response: "+responseText); }
-                            </script>');
+        $editor->addCustom('
+            <input type="hidden" name="id" value="'.$_GET['id'].'" />
+            <input type="hidden" name="bid" value="'.$_GET['bid'].'" />');
+        $editor->addCustom('<script type="text/javascript" src="'.DATAPATH.'js/chan_api_postsend.js"></script>');
         $_POST['text']=$post->subject;
         $editor->show();
     }
