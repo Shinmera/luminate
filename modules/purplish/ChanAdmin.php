@@ -14,8 +14,7 @@ function display(){
         case 'edit':        if($a->check("chan.admin.boards"))      $this->displayEditBoard();  break;
         case 'filetypes':   if($a->check("chan.admin.filetypes"))   $this->displayFiletypes();  break;
         case 'latestposts': if($a->check("chan.mod.latestposts"))   $this->displayLatestPosts();break;
-        case 'latestimages':if($a->check("chan.mod.latestimages"))  $this->displayLatestImages();break;
-        case 'tickets':     if($a->check("chan.mod.tickets"))       $this->displayReports();    break;
+        case 'reports':     if($a->check("chan.mod.reports"))       $this->displayReports();    break;
         case 'bans':        if($a->check("chan.mod.bans"))          $this->displayBans();       break;
         default:            if($a->check("chan.*"))                 $this->displayStatistics(); break;
     }
@@ -35,10 +34,8 @@ function displayPanel(){
                 <a href="<?=$k->url("admin","Chan/filetypes")?>"><li>Filetypes</li></a><? } ?>
                 <? if($a->check("chan.mod.latestposts")){ ?>
                 <a href="<?=$k->url("admin","Chan/latestposts")?>"><li>Latest Posts</li></a><? } ?>
-                <? if($a->check("chan.mod.latestimages")){ ?>
-                <a href="<?=$k->url("admin","Chan/latestimages")?>"><li>Latest Images</li></a><? } ?>
-                <? if($a->check("chan.mod.tickets")){ ?>
-                <a href="<?=$k->url("admin","Chan/tickets")?>"><li>Report Tickets</li></a><? } ?>
+                <? if($a->check("chan.mod.reports")){ ?>
+                <a href="<?=$k->url("admin","Chan/reports")?>"><li>Report Tickets</li></a><? } ?>
                 <? if($a->check("chan.mod.ban")){ ?>
                 <a href="<?=$k->url("admin","Chan/bans")?>"><li>Ban Entries</li></a><? } ?>
             </ul>
@@ -83,11 +80,33 @@ function displayFiletypes(){
 }
 
 function displayLatestPosts(){
+    $max = DataModel::getData('','SELECT COUNT(ip) AS max FROM ch_posts');
+    Toolkit::sanitizePager($max->max);
+    $posts = DataModel::getData('','SELECT postID,folder
+                                    FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
+                                    ORDER BY time DESC
+                                    LIMIT '.$_GET['f'].','.$_GET['s'],array());
+    if($posts==null)$posts=array();if(!is_array($posts))$posts=array($posts);
     
-}
-
-function displayLatestImages(){
-    
+    ?><div class="box fullwidth">
+        <?=Toolkit::displayPager();?>
+        <? foreach($posts as $post){
+            @include(ROOT.DATAPATH.'chan/'.$post->folder.'/posts/'.$post->postID.'.php');
+            @include(ROOT.DATAPATH.'chan/'.$post->folder.'/posts/_'.$post->postID.'.php');
+        } ?>
+    </div>
+    <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanpost.css' />
+    <style>.postInfo .buttons{display:inline-block;}</style>
+    <script type="text/javascript">
+        $(function(){
+            $("body").append('<div id="popup" class="jqmWindow"></div>');
+            $('#popup').jqm({ajax: '@href', 
+                    trigger: '.moveThread, .mergeThread, .banUser, .purgeUser, .searchUser, .deletePost, .editPost, #options',
+                    onLoad: function(){
+                        eval($('#popup script').html());
+                    }});
+        });
+        </script><?
 }
 
 function displayReports(){
