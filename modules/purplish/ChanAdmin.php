@@ -39,7 +39,7 @@ function displayPanel(){
                 <a href="<?=$k->url("admin","Chan/latestimages")?>"><li>Latest Images</li></a><? } ?>
                 <? if($a->check("chan.mod.tickets")){ ?>
                 <a href="<?=$k->url("admin","Chan/tickets")?>"><li>Report Tickets</li></a><? } ?>
-                <? if($a->check("chan.mod.bans")){ ?>
+                <? if($a->check("chan.mod.ban")){ ?>
                 <a href="<?=$k->url("admin","Chan/bans")?>"><li>Ban Entries</li></a><? } ?>
             </ul>
         </li><?
@@ -91,7 +91,72 @@ function displayLatestImages(){
 }
 
 function displayReports(){
+    global $a;
+    if($_POST['action']=='Remove'){
+        $report = DataModel::getData('ch_reports','SELECT ip,time FROM ch_reports WHERE ip=? AND time=?',array($_POST['ip'],$_POST['time']));
+        if($report!=null){
+            $report->deleteData();
+            echo('<div class="success">Report removed.</div>');
+        }
+    }
     
+    $max = DataModel::getData('','SELECT COUNT(ip) AS max FROM ch_reports');
+    Toolkit::sanitizePager($max->max,array('ip','time'),'time');
+    $reports = DataModel::getData('ch_reports','SELECT *,boardID
+                                          FROM ch_reports LEFT JOIN ch_boards USING(folder)
+                                          ORDER BY `'.$_GET['o'].'` '.$_GET['d'].' 
+                                          LIMIT '.$_GET['f'].','.$_GET['s'],array());
+    if($reports==null)$reports=array();if(!is_array($reports))$reports=array($reports);
+    
+    ?><div class="box fullwidth">
+        <?=Toolkit::displayPager();?>
+        <table>
+            <thead>
+                <tr>
+                    <th width="90px"><a href="?o=ip&a=<?=!$_GET['a']?>">Reporter IP</a></th>
+                    <th width="120px"><a href="?o=time&a=<?=!$_GET['a']?>">Time</a></th>
+                    <th width="">Reason</th>
+                    <th width="10px">Post</th>
+                    <th width="200px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <? foreach($reports as $report){ ?>
+                    <tr>
+                        <td><?=$report->ip?></td>
+                        <td><?=Toolkit::toDate($report->time,'d.m.Y H:i:s')?></td>
+                        <td><?=$report->reason?></td>
+                        <td><a class="postReference" folder="<?=$report->folder?>" id="<?=$report->PID?>">View</a></td>
+                        <td>
+                            <form method="post" action="#" style="display:inline-block;">
+                                <input type="hidden" name="time" value="<?=$report->time?>" />
+                                <input type="hidden" name="ip" value="<?=$report->ip?>" />
+                                <input type="submit" name="action" value="Remove" />
+                            </form>
+                            <? if($a->check('chan.mod.delete')){ ?>
+                                <a href="<?=PROOT?>api/chan/delete?id=<?=$report->PID?>&bid=<?=$report->boardID?>" class="button deletePost">Delete Post</a>
+                            <? } ?>
+                            <? if($a->check('chan.mod.ban')){ ?>
+                                <a href="<?=PROOT?>api/chan/ban?id=<?=$report->PID?>&bid=<?=$report->boardID?>" class="button banUser">Ban</a>
+                            <? } ?>
+                        </td>
+                    </tr>
+                <? } ?>
+            </tbody>
+        </table>
+        <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanpost.css' />
+        <script type="text/javascript" src="<?=DATAPATH?>js/chan_admin_postpreview.js"></script>
+        <script type="text/javascript">
+            $(function(){
+                $("body").append('<div id="popup" class="jqmWindow"></div>');
+                $('#popup').jqm({ajax: '@href', 
+                     trigger: '.moveThread, .mergeThread, .banUser, .purgeUser, .searchUser, .deletePost, .editPost, #options',
+                     onLoad: function(){
+                         eval($('#popup script').html());
+                     }});
+            });
+         </script>
+    </div><?
 }
 
 function displayBans(){
@@ -148,33 +213,7 @@ function displayBans(){
             </tbody>
         </table>
         <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanpost.css' />
-        <script type="text/javascript">
-            $(function(){
-                $("body").append('<div style="position:absolute;display:none;box-shadow: 0 0 5px #000;" id="previewPost"></div>');
-                $("a.postReference").hover(function(e){
-                    $("#previewPost").html("");
-                    $("#previewPost").css({"right":(-e.pageX+10+$(window).width())+"px","top":(e.pageY)+"px"});
-                    $.ajax({
-                        url: '<?=DATAPATH?>chan/'+$(this).attr("folder")+'/posts/'+$(this).attr("id")+'.php',
-                        success: function(data){
-                            $('#previewPost').html(data);
-                            $('#previewPost').css('display','inline-block');
-                        },
-                        error: function() {
-                            $.ajax({
-                                url: '<?=DATAPATH?>chan/'+$(this).attr("folder")+'/posts/_'+$(this).attr("id")+'.php',
-                                success: function(data) {
-                                    $("#previewPost").html(data);
-                                    $('#previewPost').css('display','inline-block');
-                                }
-                            });
-                        }
-                    });
-                },function(){
-                    $('#previewPost').css('display','none');
-                });
-            });
-        </script>
+        <script type="text/javascript" src="<?=DATAPATH?>js/chan_admin_postpreview.js"></script>
     </div><?
     
 }
