@@ -54,19 +54,8 @@ if($bans!=null){?>
         }
         
         #content textarea{box-sizing: border-box;width:100%;min-height:100px;}
-        
-        .post{background: #CCC;}
-        .postInfo{background: #888;padding: 2px;}
-        .postInfo .buttons{display:none;}
-        .postContent{padding: 2px;}
-        .postTitle{font-size:12pt;font-weight:bold;}
-        .postUsername,.postUsername a{color: #00EEFF;}
-        .postTripcode{color: #FFDD00;}
-        .post a{color: #FFF;text-decoration: none;}
-        .post img{float:left;margin:3px;box-shadow: 0 0 3px #00EEFF;}
-        .post input{display:none;}
-        .clear{clear:both;}
     </style>
+    <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanpost.css' />
 </head>
 <? ob_flush();flush();
 $dir = opendir(ROOT.IMAGEPATH.'chan/ban/');$images = array();
