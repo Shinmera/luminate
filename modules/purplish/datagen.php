@@ -218,9 +218,9 @@ class DataGenerator{
             //GENERATE THUMB
             if(in_array($file['type'],array("image/png","image/jpeg","image/gif","image/tiff","image/bmp","image/bitmap"))){
                 if(in_array("w",$options)){//nsfW
-                    copy(ROOT.IMAGEPATH.'previews/nsfw.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
+                    copy(ROOT.IMAGEPATH.'chan/previews/nsfw.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
                 }else if(in_array("r",$options)){//spoileR
-                    copy(ROOT.IMAGEPATH.'previews/spoiler.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
+                    copy(ROOT.IMAGEPATH.'chan/previews/spoiler.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
                 }else{
                     if($thread!=0)DataGenerator::createThumbnail($board[0]->folder, $filename,$c->o['chan_thumbsize']);
                     else          DataGenerator::createThumbnail($board[0]->folder, $filename,$c->o['chan_opthumbsize']);
@@ -229,7 +229,7 @@ class DataGenerator{
                 $dim=$dim[0]."x".$dim[1];
             }else{
                 $filetype = ChanDataFileType::loadFromDB("SELECT preview FROM ch_filetypes WHERE mime LIKE ?",array($file['type']));
-                copy(ROOT.IMAGEPATH.'previews/'.$filetype[0]->preview,ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
+                copy(ROOT.IMAGEPATH.'chan/previews/'.$filetype[0]->preview,ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
                 $dim="NaP";
             }
         }
