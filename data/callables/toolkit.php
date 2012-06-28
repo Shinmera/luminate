@@ -19,6 +19,12 @@ public static function log($message){
     $c->query("INSERT INTO ms_log VALUES(NULL,?,?,?)",array($message,time(),$a->user->userID));
 }
 
+public static function set($key,$var,$type='s'){
+    global $c;
+    $c->query('INSERT INTO ms_options VALUES(?,?,?) ON DUPLICATE KEY UPDATE `value`=?',array($key,$var,$type,$var));
+    $c->o[$key]=$var;
+}
+
 public static function convertArrayDown($array,$field,$ret=array()){
     for($i=0;$i<count($array);$i++)$ret[]=$array[$i][$field];
     return $ret;
@@ -704,9 +710,24 @@ public static function getImageType($file){
 public static function mkdir($path){
     if(!file_exists($path)){
         $oldumask = umask(0);
-        mkdir($path,0777,true);
+        if(!mkdir($path,0777,true))throw new Exception('Failed to create folder '.$path);
         umask($oldumask);
     }
+}
+
+//FROM http://stackoverflow.com/questions/3349753/php-delete-directory-with-files-in-it
+public static function rmdir($dirPath) {
+    if(!is_dir($dirPath)) throw new InvalidArgumentException('Not a directory!');
+    if(substr($dirPath, strlen($dirPath) - 1, 1) != '/')$dirPath .= '/';
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            self::rmdir($file);
+        } else {
+            if(!unlink($file))throw new Exception('Failed to delete '.$dirPath.$file);
+        }
+    }
+    if(!rmdir($dirPath))throw new Exception('Failed to delete '.$dirPath);
 }
 
 }
