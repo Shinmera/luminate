@@ -128,6 +128,7 @@ function displayOptionsPage(){
         <select name="type">
             <option value="s" >String</option>
             <option value="i" >Number</option>
+            <option value="b" >Boolean</option>
             <option value="l" >List</option>
             <option value="t" >Text</option>
         </select>
@@ -141,6 +142,8 @@ function displayOptionsPage(){
             case 's':echo('<input autocomplete="off" type="text" class="string" name="val'.$o->key.'" value="'.$o->value.'" />');break;
             case 't':echo('<textarea type="text" class="text" name="val'.$o->key.'">'.$o->value.'</textarea>');break;
             case 'l':$vals=explode(";",$o->value);$k->interactiveList("val".$o->key,$vals,$vals,$vals,true);break;
+            case 'b':if($o->value=='1')echo('<input autocomplete="off" type="checkbox" class="boolean" name="val'.$o->key.'" value="1" checked />');
+                     else              echo('<input autocomplete="off" type="checkbox" class="boolean" name="val'.$o->key.'" value="1" />');break;
         }
         echo('<select name="act'.$o->key.'"><option value="edit">Edit</option><option value="delete">Delete</otpion></select>');
         echo('</div></div><br class="clear" />');
