@@ -15,7 +15,7 @@ label.fixed{height:16px;white-space:nowrap;overflow:visible;}
 label.failure,label.success{padding:2px;margin:2px;min-height:15px;}
 input,.button,textarea,.preview{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;color:#000;}
 input:hover,.button:hover,textarea:hover{box-shadow: 0px 0px 10px #FFDD00;}
-input[disabled='disabled'],textarea[disabled='disabled']{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
+input[disabled],textarea[disabled]{border: 1px solid #AAA;background: #CCC;box-shadow: none;}
 input.roundbutton,a.roundbutton{
     width:20px;height:20px;border-radius:10px;border: 2px solid #000;padding:0px;color:#FFF;margin:0;
     background: rgb(69,72,77);
