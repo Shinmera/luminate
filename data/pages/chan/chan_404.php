@@ -18,7 +18,7 @@ while(($file=readdir($dir))!==FALSE){
 ?>
 <body>
     <img src="<?=$images[mt_rand(0,count($images)-1)]?>" alt=" " class="header" />
-    <h1><?=$c->o['chan_title']?> 404 - Item not found.</h1>
+    <h1><?=$c->o['chan_title']?> E404 - Item not found.</h1>
     <div id="content">
         <a id="return" href="<?=PROOT?>" title="Return to the front page">Return</a>
         <article>
