@@ -6,6 +6,10 @@
 //TODO: Reduce bloat.
 //TODO: Re-test everything.
 //TODO: Tune akismet for unknown IPs.
+//TODO: Add offline thing.
+//TODO: Implement mute bans properly.
+//TODO: Fix problems with board editing.
+//TODO: Create frontpage.
 
 class Purplish{
 public static $name="Chan";
