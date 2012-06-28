@@ -18,14 +18,14 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?=$title?></title>
         <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
-        <script type="text/javascript" src="/callables/jquery.cookie.js"></script>
+        <script type="text/javascript" src="<?=DATAPATH?>js/jquery.cookie.js"></script>
         <? for($i=0;$i<count($t->js );$i++){echo("<script type='text/javascript' src='".PROOT."themes/".$t->name."/".$t->js[$i]."' ></script>"."\n");} ?>
         <? for($i=0;$i<count($t->css);$i++){echo("<link rel='stylesheet' type='text/css' id='dynstyle' href='".PROOT."themes/".$t->name."/".$t->css[$i]."' />"."\n");} ?>
         <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.1/themes/base/jquery-ui.css"/>
         <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme="steven.css"; ?>
         <script type="text/javascript">
             if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href",$.cookie("chan_style"));
-            else                                $("#dynstyle").attr("href","/themes/<?=$t->name?>/css/<?=$board->defaultTheme?>");
+            else                                $("#dynstyle").attr("href","<?=PROOT.'themes/'.$t->name.'/css/'.$board->defaultTheme?>");
         </script>
         <?=file_get_contents(TROOT.'callables/meta.php')?>
     </head>
