@@ -57,7 +57,7 @@ if($bans!=null){?>
     </style>
     <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanpost.css' />
 </head>
-<? ob_flush();flush();
+<? if(BUFFER)ob_flush();flush();
 $dir = opendir(ROOT.IMAGEPATH.'chan/ban/');$images = array();
 while(($file=readdir($dir))!==FALSE){
     if($file!='.'&&$file!='..')
@@ -117,5 +117,5 @@ while(($file=readdir($dir))!==FALSE){
         <? } ?>
     </div>
 </body>
-    <? die();
+    <? if(BUFFER)ob_end_flush;flush();die();
 } ?>
