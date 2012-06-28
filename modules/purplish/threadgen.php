@@ -31,7 +31,7 @@ class ThreadGenerator{
         if($_GET["a"]=="postlist")die(implode(";",$postlist));
         if(is_numeric($_GET["a"]))header("Location: '.$k->url("chan",$board->folder).'/posts/".$_GET["a"].".php"); ?>'?>
         
-        <? require_once(TEMPLATEPATH.'chan_header.php'); ?>
+        <? require_once(PAGEPATH.'chan/chan_header.php'); ?>
         <?=write_header($post->title.' - '.$c->o['chan_title'],$board,$pID,$post->options.$board->options,$post->ip);?>
 
         <input type="hidden" id="view" value="thread" />';
@@ -58,12 +58,13 @@ class ThreadGenerator{
             } ?>'?>
         </div><br class="clear" />
         
-        <? require_once(TEMPLATEPATH.'chan_footer.php'); ?>
+        <? require_once(PAGEPATH.'chan/chan_footer.php'); ?>
         <?=write_footer($post->title.' - '.$c->o['chan_title'],$post->BID,$board->folder,$pID,$post->options.$board->options);?>
         
         <?
         file_put_contents($path,ob_get_contents(),LOCK_EX);
-        ob_clean();
+        ob_end_clean();
+        if(BUFFER)ob_start();
     }
 }
 ?>

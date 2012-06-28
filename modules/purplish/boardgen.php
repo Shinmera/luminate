@@ -37,7 +37,7 @@ class BoardGenerator{
 
                 <?='<? define("POST_SHORT",TRUE); ?>'?>
                 
-                <? require_once(TEMPLATEPATH.'chan_header.php'); ?>
+                <? require_once(PAGEPATH.'chan/chan_header.php'); ?>
                 <?=write_header($board->title.' - '.$c->o['chan_title'],$board,0,$board->options)?>
 
                 <input type="hidden" id="view" value="board" />
@@ -72,7 +72,7 @@ class BoardGenerator{
                 <br class="clear" />
                 <?=$k->pager(PROOT.$board->folder.'/',$totalthreads,$i,$c->o['chan_tpp'],true)."\n"?>
                  
-                <? require_once(TEMPLATEPATH.'chan_footer.php'); ?>
+                <? require_once(PAGEPATH.'chan/chan_footer.php'); ?>
                 <?=write_footer($board->title.' - '.$c->o['chan_title'],$board->boardID,$board->folder,0,$board->options)?>
 
                 <?
@@ -81,6 +81,8 @@ class BoardGenerator{
             }
         }
         file_put_contents($path.'index.php','<?php include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/0.php"); ?>',LOCK_EX);
+        ob_end_clean();
+        if(BUFFER)ob_start();
     }
 }
 ?>
