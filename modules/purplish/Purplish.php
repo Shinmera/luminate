@@ -39,13 +39,7 @@ function displayPage(){
                 else if(file_exists(ROOT.DATAPATH.'chan/'.$param)&&!is_dir(ROOT.DATAPATH.'chan/'.$param))
                     include(ROOT.DATAPATH.'chan/'.$param);
                 else{
-                    global $l;
-                    header('HTTP/1.0 404 Not Found');
-                    $t = $l->loadModule('Themes');
-                    $t->loadTheme("chan");
-                    $t->openPage("404 - Purplish");
-                    include(PAGEPATH.'404.php');
-                    $t->closePage();
+                    include(PAGEPATH.'chan/chan_404.php');
                 }
                 break;
         }
