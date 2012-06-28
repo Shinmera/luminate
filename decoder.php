@@ -1,7 +1,7 @@
 <?
 try{
     include('config.php');
-    if(COMPRESS){if(!ob_start('ob_gzhandler')) ob_start();}
+    if(BUFFER){if(COMPRESS){if(!ob_start('ob_gzhandler')) ob_start();}}
     Toolkit::checkShitBrowser();
 
     //PARSE URL
@@ -28,7 +28,7 @@ try{
     if($DOMINATINGMODULE=='')
         $l->triggerHook('HITDOMAIN','CORE',array($params),array(),true);
 
-    ob_end_flush();
+    if(BUFFER)ob_end_flush();
     flush();
     $c->close();
 

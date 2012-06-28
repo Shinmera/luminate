@@ -19,5 +19,5 @@
     <script type="text/javascript" src="<?=DATAPATH?>js/jquery.cookie.js"></script>
     <? include(PAGEPATH.'/meta.php'); ?>
 </head>
-<? ob_flush();flush(); ?>
+<? if(BUFFER)ob_flush();flush(); ?>
 <body>
