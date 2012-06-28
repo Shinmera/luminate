@@ -10,51 +10,7 @@ if($bans!=null){?>
     <title>Crime Scene</title>
     <link rel="icon" type="image/png" href="<?=DATAPATH?>images/banned.png" />
     <? include(PAGEPATH.'/meta.php'); ?>
-    <style>
-        html{
-            font-family:Arial;
-            font-size:10pt;
-            background: #555;
-        }
-        
-        body{
-            margin: 5% 10% 0 10%;
-            position:relative;
-        }
-        
-        h2{
-            margin:0;padding:0;
-            color: #FFF;
-            text-shadow: 0 0 3px #000;
-        }
-        h1{
-            margin:0;padding:0;
-            text-align:center;
-            text-shadow: 0 0 3px #000;
-            font-size: 26pt;
-            color: #FFF;
-        }
-        
-        img.header{
-            margin: 0 auto -20px auto;
-            display:block;
-            border: 1px solid #000;
-            max-width:100%;
-            max-height:100%;
-        }
-        
-        #content{
-            margin-top:10px;
-            background: #AAA;
-            padding:5px;
-            border-radius: 5px;
-            box-shadow: 0 0 50px #000;
-            position:relative;
-            border: 1px solid #888;
-        }
-        
-        #content textarea{box-sizing: border-box;width:100%;min-height:100px;}
-    </style>
+    <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanspecial.css' />
     <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanpost.css' />
 </head>
 <? if(BUFFER)ob_flush();flush();
@@ -115,6 +71,12 @@ while(($file=readdir($dir))!==FALSE){
         <? }else{ ?>
             <h2><?=$appeal?></h2>
         <? } ?>
+    </div>
+    <div id="footer">
+        <? global $CORE,$c; ?>
+        &copy;2010-<?=date("Y")?> TymoonNexT, all rights reserved.<br />
+        Running TyNET-<?=$CORE::$version?><br />
+        Page generated in <?=Toolkit::getTimeElapsed();?>s using <?=$c->queries?> queries.
     </div>
 </body>
     <? if(BUFFER)ob_end_flush;flush();die();
