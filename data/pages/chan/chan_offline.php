@@ -19,6 +19,7 @@ while(($file=readdir($dir))!==FALSE){
     <img src="<?=$images[mt_rand(0,count($images)-1)]?>" alt=" " class="header" />
     <h1><?=$c->o['chan_title']?> is currently offline.</h1>
     <div id="content">
+        <a id="return" href="<?=PROOT?>" title="Return to the front page">Return</a>
         <article>
             <blockquote>
                 <h2>Don't worry though, this is done on purpose!</h2>

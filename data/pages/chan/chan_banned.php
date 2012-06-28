@@ -79,5 +79,6 @@ while(($file=readdir($dir))!==FALSE){
         Page generated in <?=Toolkit::getTimeElapsed();?>s using <?=$c->queries?> queries.
     </div>
 </body>
+</html>
     <? if(BUFFER)ob_end_flush;flush();die();
 } ?>
