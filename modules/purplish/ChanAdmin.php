@@ -16,6 +16,7 @@ function display(){
         case 'latestposts': if($a->check("chan.mod.latestposts"))   $this->displayLatestPosts();break;
         case 'reports':     if($a->check("chan.mod.reports"))       $this->displayReports();    break;
         case 'bans':        if($a->check("chan.mod.bans"))          $this->displayBans();       break;
+        case 'settings':    if($a->check("chan.admin.settings"))    $this->displayGeneralOptions();break;
         default:            if($a->check("chan.*"))                 $this->displayStatistics(); break;
     }
 }
@@ -26,6 +27,8 @@ function displayPanel(){
         ?><li>Purplish
             <ul class="menu">
                 <a href="<?=$k->url("admin","Chan/")?>"><li>Overview</li></a>
+                <? if($a->check("chan.admin.settings")){ ?>
+                <a href="<?=$k->url("admin","Chan/settings")?>"><li>Settings</li></a><? } ?>
                 <? if($a->check("chan.admin.categories")){ ?>
                 <a href="<?=$k->url("admin","Chan/categories")?>"><li>Categories</li></a><? } ?>
                 <? if($a->check("chan.admin.boards")){ ?>
@@ -41,6 +44,37 @@ function displayPanel(){
             </ul>
         </li><?
     }
+}
+
+function displayGeneralOptions(){
+    global $c;
+    if($_POST['action']=='Save'){
+        Toolkit::set('chan_title',$_POST['title']);
+        Toolkit::set('chan_opthumbsize',$_POST['opts'],'i');
+        Toolkit::set('chan_thumbsize',$_POST['ts'],'i');
+        Toolkit::set('chan_maxlines',$_POST['mlines'],'i');
+        Toolkit::set('chan_tpp',$_POST['tpp'],'i');
+        Toolkit::set('chan_posttimeout',$_POST['timeout'],'i');
+        Toolkit::set('chan_trips',$_POST['trips']);
+        Toolkit::set('chan_fileloc_extern',$_POST['cdn'],'u');
+        Toolkit::set('chan_online',$_POST['online'],'b');
+        echo('<div class="success">Options saved!</div>');
+    }
+    
+    
+    ?><form action="#" method="post" class="box">
+        <h3>Settings</h3>
+              <label>Chan Title:</label>       <input type="text" name="title" value="<?=$c->o['chan_title']?>" />
+        <br /><label>OP Thumb Size:</label>    <input type="number" name="opts" value="<?=$c->o['chan_opthumbsize']?>" />
+        <br /><label>Thumb Size:</label>       <input type="number" name="ts" value="<?=$c->o['chan_thumbsize']?>" />
+        <br /><label>Short Post Lines:</label> <input type="number" name="mlines" value="<?=$c->o['chan_maxlines']?>" />
+        <br /><label>Threads Per Page:</label> <input type="number" name="tpp" value="<?=$c->o['chan_tpp']?>" />
+        <br /><label>Post Timeout:</label>     <input type="number" name="timeout" value="<?=$c->o['chan_posttimeout']?>" />
+        <br /><label>Tripcodes:</label>        <textarea name="trips" style="vertical-align:text-top;"><?=$c->o['chan_trips']?></textarea>
+        <br /><label>CDN Location:</label>     <input type="url" name="cdn" value="<?=$c->o['chan_fileloc_extern']?>" />
+        <br /><label>Online:</label>           <input type="checkbox" name="online" value="1" <?=($c->o['chan_online']=='1')?'checked':''?> />
+        <br /><input type="submit" name="action" value="Save" />
+    </form><?
 }
 
 function displayStatistics(){
@@ -138,7 +172,7 @@ function displayBoards(){
     ?><form class="box fullwidth" action="<?=PROOT?>Chan/edit" method="post">
         <h4>Add a board:</h4>
         Title:  <input type="text" maxlength="128" name="title" required />
-        Folder:  <input type="text" maxlength="32" name="title" required />
+        Folder:  <input type="text" maxlength="32" name="folder" required />
         <input type="submit" name="action" value="Add" />
     </form>
     <div class="box fullwidth">
@@ -197,42 +231,57 @@ function displayEditBoard(){
     }
     
     if($_POST['action']=='Save'){
-        
-        echo('A');
-        $ret='';
-        if($existing){
-            $board->saveData();
-            $ret.='Board edited.';
-        }else{
-            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/posts');
-            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/threads');
-            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/files');
-            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs');
-            $_POST['rebuild'][]='b';
-            $board->insertData();
-            $ret.='Board added.';
+        try{
+            $ret='';
+            foreach($_POST as $key=>$val){$board->$key=$val;}
+            $board->options=implode(',',$_POST['options']);
+            $board->filetypes=implode(';',$_POST['filetypes']);
+            
+            if($existing){
+                $board->saveData();
+                $ret.='Board edited.';
+            }else{
+                Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/posts');
+                Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/threads');
+                Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/files');
+                Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs');
+                $board->insertData();
+                $_POST['rebuild'][]='b';
+                $ret.='Board added.';
+            }
+
+            include('boardgen.php');
+            include('threadgen.php');
+            include('postgen.php');
+            if(in_array('b',$_POST['rebuild'])){
+                BoardGenerator::generateBoardFromObject($board);
+                $ret.='<br />Board regenerated.';
+            }
+            if(in_array('t',$_POST['rebuild'])){
+                $threads = DataModel::getData('SELECT * FROM ch_posts WHERE PID=0 AND BID=?',array($board->boardID));
+                foreach($threads as $thread){ThreadGenerator::generateThreadFromObject($thread);}
+                $ret.='<br />Threads regenerated.';
+            }
+            if(in_array('p',$_POST['rebuild'])){
+                $posts = DataModel::getData('SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
+                foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
+                $ret.='<br />Posts regenerated.';
+            }
+            echo('<div class="success">'.$ret.'</div>');
+        }catch(Exception $ex){
+            echo('<div class="failure">'.$ex->getMessage().'</div>');
         }
-        echo('A');
-        
-        include('boardgen.php');
-        include('threadgen.php');
-        include('postgen.php');
-        echo('A');
-        if(in_array('b',$_POST['rebuild'])){
-            BoardGenerator::generateBoardFromObject($board);
-            $ret.='<br />Board regenerated.';
+    }
+    
+    if($_POST['action']=='Delete'&&$_POST['sure']=='sure'&&$existing){
+        try{
+            Toolkit::rmdir(ROOT.DATAPATH.'chan/'.$board->folder);
+            $c->query('DELETE FROM ch_posts WHERE BID=?',array($board->boardID));
+            $c->query('DELETE FROM ch_boards WHERE boardID=?',array($board->boardID));
+            echo('<div class="success">Board deleted.</div>');
+        }catch(Exception $ex){
+            echo('<div class="failure">Failed to delete: '.$ex->getMessage().'</div>');
         }
-        if(in_array('t',$_POST['rebuild'])){
-            $threads = DataModel::getData('SELECT * FROM ch_posts WHERE PID=0 AND BID=?',array($board->boardID));
-            foreach($threads as $thread){ThreadGenerator::generateThreadFromObject($thread);}
-            $ret.='<br />Threads regenerated.';
-        }
-        if(in_array('p',$_POST['rebuild'])){
-            $posts = DataModel::getData('SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
-            foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
-            $ret.='<br />Posts regenerated.';
-        }
-        echo('<div class="success">'.$ret.'</div>');
     }
     
     $filetypes = DataModel::getData('','SELECT title,mime FROM ch_filetypes');
@@ -266,6 +315,9 @@ function displayEditBoard(){
             <input type="checkbox" name="rebuild[]" value="b" checked /> board
             <input type="checkbox" name="rebuild[]" value="t" checked /> threads
             <input type="checkbox" name="rebuild[]" value="p" /> posts
+        <div style="<?=($existing)?'float:right':'display:none'?>">
+             <input type="checkbox" name="sure" value="sure" /> I am sure I want to
+             <input type="submit" name="action" value="Delete" /></div>
     </form><?
 }
 
