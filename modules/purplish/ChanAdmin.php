@@ -78,6 +78,7 @@ function displayGeneralOptions(){
 }
 
 function displayStatistics(){
+    //TODO: Finish
     include(MODULEPATH.'gui/Statistics.php');
     $weekago = time()-604800;
     
@@ -245,6 +246,11 @@ function displayEditBoard(){
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/threads');
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/files');
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs');
+                $deniedpage = '<? include("'.TROOT.'config.php");include("'.PAGEPATH.'chan/chan_500.php"); ?>';
+                file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/threads/index.php',$deniedpage);
+                file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/posts/index.php',$deniedpage);
+                file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/files/index.php',$deniedpage);
+                file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/index.php',$deniedpage);
                 $board->insertData();
                 $_POST['rebuild'][]='b';
                 $ret.='Board added.';
