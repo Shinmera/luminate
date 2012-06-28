@@ -11,7 +11,7 @@ class ThreadGenerator{
         $pID=$post->postID;
         $postlist = $c->getData("SELECT postID FROM ch_posts WHERE PID=? AND BID=? AND `options` NOT LIKE ? ORDER BY postID ASC",array($pID,$post->BID,'%d%'));
         if($posts){
-            if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
+            if(!class_exists("PostGenerator"))include('postgen.php');
             PostGenerator::generatePost($pID, $post->BID);
         }
         $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));$board=$board[0];

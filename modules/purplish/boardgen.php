@@ -8,7 +8,7 @@ class BoardGenerator{
 
     public static function generateBoardFromObject($board,$genposts=false,$genthreads=false){
         global $c,$k,$t;
-        if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
+        if(!class_exists("ThreadGenerator"))include('threadgen.php');
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/';
         $t->loadTheme("chan");
         
