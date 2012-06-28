@@ -50,3 +50,14 @@ img.header{
 }
 
 #content textarea{box-sizing: border-box;width:100%;min-height:100px;}
+
+#return{
+    position:absolute;
+    top:-1px;right:-1px;
+    padding: 3px;
+    background-color: #000;
+    border-radius: 0 5px 0 5px;
+    border-bottom: 1px solid #555;
+    color: #FFF;
+    font-weight:bold;
+}
