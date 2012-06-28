@@ -18,7 +18,7 @@ while(($file=readdir($dir))!==FALSE){
 ?>
 <body>
     <img src="<?=$images[mt_rand(0,count($images)-1)]?>" alt=" " class="header" />
-    <h1><?=$c->o['chan_title']?> 500 - Permission denied.</h1>
+    <h1><?=$c->o['chan_title']?> E500 - Permission denied.</h1>
     <div id="content">
         <a id="return" href="<?=PROOT?>" title="Return to the front page">Return</a>
         <article>
