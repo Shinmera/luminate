@@ -1,4 +1,4 @@
-DirectoryIndex decoder.php
+DirectoryIndex decoder.php index.html index.php
 
 RewriteEngine On
 RewriteBase /
