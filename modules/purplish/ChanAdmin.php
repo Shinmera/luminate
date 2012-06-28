@@ -64,15 +64,209 @@ function displayStatistics(){
 }
 
 function displayCategories(){
+    if($_POST['action']=='Delete'){
+        $cat = DataModel::getData('ch_categories','SELECT title FROM ch_categories WHERE title=?',array($_POST['title']));
+        if($cat!=null){
+            $cat->deleteData();
+            echo('<div class="success">Category deleted!</div>');
+        }
+    }
+    if($_POST['action']=='Add'){
+        $cat = DataModel::getHull('ch_categories');
+        $cat->title = $_POST['title'];
+        $cat->order = implode(',',$_POST['order']);
+        $cat->insertData();
+        echo('<div class="success">Category added!</div>');
+    }
     
+    $cats = DataModel::getData('','SELECT * FROM ch_categories');
+    $boards = DataModel::getData('', 'SELECT boardID,title FROM ch_boards');
+    if($cats==null)$cats=array();if(!is_array($cats))$cats=array($cats);
+    if($boards==null)$boards=array();if(!is_array($boards))$boards=array($boards);
+    
+    $bids = array(); $btitles = array();
+    foreach($boards as $board){
+        $bids[]=$board->boardID;
+        $btitles[]=$board->title;
+    }
+    
+    ?><form class="box fullwidth" action="#" method="post">
+        <h4>Add a category:</h4>
+        Title:  <input type="text" maxlength="16" name="title" required />
+        Boards: <?=Toolkit::interactiveList('order', $btitles,$bids)?>
+        <input type="submit" name="action" value="Add" />
+    </form>
+    <div class="box fullwidth">
+        <table>
+            <thead>
+                <tr>
+                    <th width="100px">Title</th>
+                    <th>Boards</th>
+                    <th width="20px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <? foreach($cats as $cat){ ?>
+                    <tr>
+                        <td><?=$cat->title?></td>
+                        <td>
+                            <? $boards = explode(',',$cat->order);
+                            foreach($boards as $board){
+                                $title=$btitles[array_search($board,$bids)];?>
+                                <a href='<?=Toolkit::url('chan',$title)?>'><?=$title?></a>
+                            <? } ?>
+                        </td>
+                        <td><form action="#" method="post">
+                            <input type="hidden" name="title" value="<?=$cat->title?>" />
+                            <input type="submit" name="action" value="Delete" />
+                        </form></td>
+                    </tr>
+                <? } ?>
+            </tbody>
+        </table>
+    </div><?
 }
 
 function displayBoards(){
+    $max = DataModel::getData('','SELECT COUNT(boardID) AS max FROM ch_boards');
+    Toolkit::sanitizePager($max->max,array('title','folder','maxfilesize','maxpages','postlimit'),'title');
+    $boards = DataModel::getData('', 'SELECT * FROM ch_boards 
+                                      ORDER BY `'.$_GET['o'].'` '.$_GET['d'].' 
+                                      LIMIT '.$_GET['f'].','.$_GET['s'],array());
+    if($boards==null)$boards=array();if(!is_array($boards))$boards=array($boards);
     
+    ?><form class="box fullwidth" action="<?=PROOT?>Chan/edit" method="post">
+        <h4>Add a board:</h4>
+        Title:  <input type="text" maxlength="128" name="title" required />
+        Folder:  <input type="text" maxlength="32" name="title" required />
+        <input type="submit" name="action" value="Add" />
+    </form>
+    <div class="box fullwidth">
+        <?=Toolkit::displayPager();?>
+        <table>
+            <thead>
+                <tr>
+                    <th width="150px"><a href="?o=title&a=<?=!$_GET['a']?>">Title</a></th>
+                    <th width="90px"><a href="?o=folder&a=<?=!$_GET['a']?>">Folder</a></th>
+                    <th width="">Filetypes</th>
+                    <th width="80px"><a href="?o=maxfilesize&a=<?=!$_GET['a']?>">Max Filesize</a></th>
+                    <th width="80px"><a href="?o=maxpages&a=<?=!$_GET['a']?>">Max Pages</a></th>
+                    <th width="80px"><a href="?o=postlimit&a=<?=!$_GET['a']?>">Sage Limit</a></th>
+                    <th width="">Options</th>
+                    <th width="30px"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <? foreach($boards as $board){ ?>
+                    <tr>
+                        <td><?=$board->title?></td>
+                        <td><?=$board->folder?></td>
+                        <td><?=$board->filetypes?></td>
+                        <td><?=$board->maxfilesize?></td>
+                        <td><?=$board->maxpages?></td>
+                        <td><?=$board->postlimit?></td>
+                        <td><?=$board->options?></td>
+                        <td><form action="<?=PROOT?>Chan/edit" method="post">
+                            <input type="hidden" name="title" value="<?=$board->title?>" />
+                            <input type="submit" name="action" value="Edit" />
+                        </form></td>
+                    </tr>
+                <? } ?>
+            </tbody>
+        </table>
+    </div><?
 }
 
 function displayEditBoard(){
+    global $c;include(MODULEPATH.'gui/Editor.php');
+    $board = DataModel::getData('ch_boards','SELECT * FROM ch_boards WHERE title=?',array($_POST['title']));
     
+    if($board==null){
+        $board = DataModel::getHull('ch_boards');
+        $board->title=$_POST['title'];
+        $board->folder=$_POST['folder'];
+        $board->maxfilesize=15000;
+        $board->maxpages=10;
+        $board->postlimit=150;
+        $board->defaulttheme=$c->o['chan_defaulttheme'];
+        $board->filetypes='image/png;image/jpeg;image/gif';
+        $board->options='t';
+        $existing=false;
+    }else{
+        $existing=true;
+    }
+    
+    if($_POST['action']=='Save'){
+        
+        echo('A');
+        $ret='';
+        if($existing){
+            $board->saveData();
+            $ret.='Board edited.';
+        }else{
+            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/posts');
+            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/threads');
+            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/files');
+            Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs');
+            $_POST['rebuild'][]='b';
+            $board->insertData();
+            $ret.='Board added.';
+        }
+        echo('A');
+        
+        include('boardgen.php');
+        include('threadgen.php');
+        include('postgen.php');
+        echo('A');
+        if(in_array('b',$_POST['rebuild'])){
+            BoardGenerator::generateBoardFromObject($board);
+            $ret.='<br />Board regenerated.';
+        }
+        if(in_array('t',$_POST['rebuild'])){
+            $threads = DataModel::getData('SELECT * FROM ch_posts WHERE PID=0 AND BID=?',array($board->boardID));
+            foreach($threads as $thread){ThreadGenerator::generateThreadFromObject($thread);}
+            $ret.='<br />Threads regenerated.';
+        }
+        if(in_array('p',$_POST['rebuild'])){
+            $posts = DataModel::getData('SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
+            foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
+            $ret.='<br />Posts regenerated.';
+        }
+        echo('<div class="success">'.$ret.'</div>');
+    }
+    
+    $filetypes = DataModel::getData('','SELECT title,mime FROM ch_filetypes');
+    if($filetypes==null)$filetypes=array();if(!is_array($filetypes))$filetypes=array($filetypes);
+    $fnames=array('png','jpeg','gif');
+    $fmimes=array('image/png','image/jpeg','image/gif');
+    foreach($filetypes as $type){
+        $fnames[]=$type->title;
+        $fmimes[]=$type->mime;
+    }
+    
+    ?><form class="box fullwidth" method="post" action="#">
+        <h3>Edit Board Settings</h3>
+              <label>Title: </label>          <input type="text" name="title" value="<?=$board->title?>" required maxlength="128"/>
+              <label>Folder: </label>         <input type="text" name="folder" value="<?=$board->folder?>" required maxlength="32" <?=($existing)? 'disabled':''?>/>
+        <br /><label>Max Filesize: </label>   <input type="number" name="maxfilesize" value="<?=$board->maxfilesize?>" required/>
+              <label>Max Pages: </label>      <input type="number" name="maxpages" value="<?=$board->maxpages?>" required/>
+        <br /><label>Sage Limit: </label>     <input type="number" name="postlimit" value="<?=$board->postlimit?>" required/>
+              <label>Default Theme: </label>  <input type="text" name="defaulttheme" value="<?=$board->defaulttheme?>" maxlength="32"/>
+        <br /><label>Filetypes: </label>      <?=Toolkit::interactiveList('filetypes', $fnames, $fmimes, explode(';',$board->filetypes))?>
+        <br /><label>Options: </label>
+            <input type="checkbox" name="options[]" value="t" <?=(strpos($board->options,'t')!==FALSE)? 'checked': ''?> /> New Threads
+            <input type="checkbox" name="options[]" value="l" <?=(strpos($board->options,'l')!==FALSE)? 'checked': ''?> /> Locked
+            <input type="checkbox" name="options[]" value="h" <?=(strpos($board->options,'h')!==FALSE)? 'checked': ''?> /> Hidden
+            <input type="checkbox" name="options[]" value="n" <?=(strpos($board->options,'n')!==FALSE)? 'checked': ''?> /> Anon Only
+            <input type="checkbox" name="options[]" value="a" <?=(strpos($board->options,'a')!==FALSE)? 'checked': ''?> /> Archive
+            <input type="checkbox" name="options[]" value="f" <?=(strpos($board->options,'f')!==FALSE)? 'checked': ''?> /> File Required
+        <br /><label>Custom board header:</label>
+            <textarea style="display:inline-block;vertical-align:text-top;" name="subject"><?=$board->subject?></textarea>
+        <hr /><input type="submit" name="action" value="Save" /> And rebuild the
+            <input type="checkbox" name="rebuild[]" value="b" checked /> board
+            <input type="checkbox" name="rebuild[]" value="t" checked /> threads
+            <input type="checkbox" name="rebuild[]" value="p" /> posts
+    </form><?
 }
 
 function displayFiletypes(){
