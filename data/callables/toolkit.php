@@ -214,7 +214,7 @@ public static function isAssociative($array){
     return (bool)count(array_filter(array_keys($array), 'is_string'));
 }
 
-public static function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=false){
+public static function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magic=false,$crop=false,$quality='100'){
     if(!file_exists($in))return -1;
     if($out=="")return -1;
     if($w<=1)$w=150;if($h<=1)$h=150;
@@ -227,37 +227,38 @@ public static function createThumbnail($in,$out,$w=150,$h=150,$force=false,$magi
         //resize
         if ($magic){
             //convert in two steps.
-            if($crop==false){exec("convert -size ".$temp[0]."x".$temp[1]." '".$img."' -coalesce -thumbnail ".$w."x".$h." '".$out."'",$res);
+            if($crop==false){
+                exec("convert -size ".$temp[0]."x".$temp[1]." '".$img."' -quality 100% -coalesce -thumbnail ".$w."x".$h." '".$out."'",$res);
             }else{
                 if($crop=="w"){
-                                    exec("convert '".$img."' -coalesce -thumbnail ".$h." '".$out."'",$res);
-                                    exec("convert '".$out."' -coalesce -gravity center -crop ".$w."x".$h."+0+0 '".$out."'",$res);
-                                }else
+                    exec("convert '".$img."' -quality ".$quality."% -coalesce -thumbnail ".$h." '".$out."'",$res);
+                    exec("convert '".$out."' -quality ".$quality."% -coalesce -gravity center -crop ".$w."x".$h."+0+0 '".$out."'",$res);
+                }else
                 if($crop=="h"){
-                                    exec("convert '".$img."' -coalesce -thumbnail ".$w." '".$out."'",$res);
-                                    exec("convert '".$out."' -coalesce -gravity center -crop ".$w."x".$h."+0+0 '".$out."'",$res);
-                                }else{
-                                    exec("convert '".$img."' -coalesce -gravity center -crop ".$w."x".$h."+0+0 '".$out."'",$res);
-                                }
+                    exec("convert '".$img."' -quality ".$quality."% -coalesce -thumbnail ".$w." '".$out."'",$res);
+                    exec("convert '".$out."' -quality ".$quality."% -coalesce -gravity center -crop ".$w."x".$h."+0+0 '".$out."'",$res);
+                }else{
+                    exec("convert '".$img."' -quality ".$quality."% -coalesce -gravity center -crop ".$w."x".$h."+0+0 '".$out."'",$res);
+                }
             }
            }else{
-               if ( strtolower($info['extension']) == 'jpg' )$imgs = imagecreatefromjpeg($img);
-               if ( strtolower($info['extension']) == 'jpeg')$imgs = imagecreatefromjpeg($img);
-               if ( strtolower($info['extension']) == 'png' )$imgs = imagecreatefrompng($img);
-               if ( strtolower($info['extension']) == 'gif' )$imgs = imagecreatefromgif($img);
+                if ( strtolower($info['extension']) == 'jpg' )$imgs = imagecreatefromjpeg($img);
+                if ( strtolower($info['extension']) == 'jpeg')$imgs = imagecreatefromjpeg($img);
+                if ( strtolower($info['extension']) == 'png' )$imgs = imagecreatefrompng($img);
+                if ( strtolower($info['extension']) == 'gif' )$imgs = imagecreatefromgif($img);
 
-            $width = imagesx( $imgs );
-               $height = imagesy( $imgs );
-               $tmp_img = imagecreatetruecolor( $w, $h);
-               if($crop==false)    imagecopyresized( $tmp_img, $imgs, 0,0, 0,0,                             $w,$h, $width,$height );
-            else if($crop=="w")    imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,0,                 $w,$h, $w,$height );
-            else if($crop=="h")    imagecopyresized( $tmp_img, $imgs, 0,0, 0,$height/2-$h/2,                 $w,$h, $width,$h );
-            else                   imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,$height/2-$h/2,     $w,$h, $w,$h );
+                $width = imagesx( $imgs );
+                $height = imagesy( $imgs );
+                $tmp_img = imagecreatetruecolor( $w, $h);
+                if($crop==false)    imagecopyresized( $tmp_img, $imgs, 0,0, 0,0,                             $w,$h, $width,$height );
+                else if($crop=="w")    imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,0,                 $w,$h, $w,$height );
+                else if($crop=="h")    imagecopyresized( $tmp_img, $imgs, 0,0, 0,$height/2-$h/2,                 $w,$h, $width,$h );
+                else                   imagecopyresized( $tmp_img, $imgs, 0,0, $width/2-$w/2,$height/2-$h/2,     $w,$h, $w,$h );
 
-               if ( strtolower($info['extension']) == 'jpg' )imagejpeg( $tmp_img,$out);
-               if ( strtolower($info['extension']) == 'jpeg')imagejpeg( $tmp_img,$out);
-               if ( strtolower($info['extension']) == 'png' )imagepng( $tmp_img,$out);
-               if ( strtolower($info['extension']) == 'gif' )imagegif( $tmp_img,$out);
+                if ( strtolower($info['extension']) == 'jpg' )imagejpeg( $tmp_img,$out);
+                if ( strtolower($info['extension']) == 'jpeg')imagejpeg( $tmp_img,$out);
+                if ( strtolower($info['extension']) == 'png' )imagepng( $tmp_img,$out);
+                if ( strtolower($info['extension']) == 'gif' )imagegif( $tmp_img,$out);
            }
         return 1;
     }else{
@@ -451,11 +452,15 @@ public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowe
     $filesize = $_FILES[$fieldname]['size']/1024;
     $filename = $_FILES[$fieldname]['name'];
     $fileorig = $_FILES[$fieldname]['tmp_name'];
-    $filetype = $_FILES[$fieldname]['type'];
+    $filetype = self::getMimeType($_FILES[$fieldname]['tmp_name']);
     //new filename if any
     if($newname!=""){
-        if($appendextension)
-            $newname = $newname.'.'.substr($_FILES[$fieldname]['type'],strrpos($_FILES[$fieldname]['type'],'/')+1);
+        if($appendextension){
+            if(strpos($filename,'.')!==FALSE){
+                $extension=substr($filename,strrpos($filename,'.')+1);
+            }else $extension='dat';
+            $newname = $newname.'.'.$extension;
+        }
         $filename = $newname;
     }
     //get away those nasty characters.
@@ -463,11 +468,41 @@ public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowe
     if(substr($destination,strlen($destination)-1)!="/")$destination=$destination."/";
     //perform checks
     if($filesize>$maxsizeKB)                                                throw new Exception("File is too big: ".Toolkit::displayFilesize ($filesize));
-    if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))throw new Exception("Bad filetype: ".$filetype);
     if(file_exists($destination.$filename)&&!$overwrite)                    throw new Exception("File '".$destination.$filename."' already exists!");
+    if($allowedfiles[0]!=""&&!in_array(strtolower($filetype),$allowedfiles))throw new Exception("Bad filetype: ".$filetype);
     //move
     if(!move_uploaded_file($fileorig,$destination.$filename))               throw new Exception("File upload failed!");
     return $destination.$filename;
+}
+
+//FROM: http://stackoverflow.com/questions/1232769/how-to-get-the-content-type-of-a-file-in-php
+public static function getMimeType($file){
+    if(!is_file($file))throw new Exception('File '.$file.' does not exist.');
+    if (function_exists('finfo_file')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $type = finfo_file($finfo, $file);
+        finfo_close($finfo);
+    } else {
+        $type = mime_content_type($file);
+    }
+
+    if (!$type || in_array($type, array('application/octet-stream', 'text/plain'))) {
+        $returnCode = '';
+        $secondOpinion = exec('file -b --mime-type ' . escapeshellarg($file), $foo, $returnCode);
+        if ($returnCode === 0 && $secondOpinion) {
+            $type = $secondOpinion;
+        }
+    }
+    
+    if (!$type || in_array($type, array('application/octet-stream', 'text/plain'))) {
+        $exifImageType = exif_imagetype($file);
+        if ($exifImageType !== false) {
+            $type = image_type_to_mime_type($exifImageType);
+        }
+    }
+    
+    if(!$type) throw new Exception('Failed to determine filetype!');
+    return $type;
 }
 
 public static function displayFilesize($filesize){
