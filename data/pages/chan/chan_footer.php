@@ -35,17 +35,7 @@
     <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
     <img id="previewImage" style="display:none;max-width:400px;max-height:400px;float:left;position:absolute;" alt="preview"/>
 
-    <link rel="alternate" type="application/rss+xml" title="<?=$boardfolder?> RSS feed" href="http://<?=HOST.PROOT?>api.php?m=Chan&c=getBoardRSS&a=board:<?=$board?>" />
-    <script type="text/javascript">var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src=\'" + gaJsHost + "google-analytics.com/ga.js\' type=\'text/javascript\'%3E%3C/script%3E"));
-    </script><script type="text/javascript">
-    try {var pageTracker = _gat._getTracker("UA-13229468-2");pageTracker._trackPageview();} catch(err) {}</script>
-    <script type="text/javascript">var boardID="<?=$board?>";var boardName="<?=$boardfolder?>";</script>
-
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" ></script>
-    <script type="text/javascript" src="<?=PROOT?>callables/plugins.js" ></script>
-    <script type="text/javascript" src="<?=PROOT?>callables/js.js" ></script>
-
+    
     <? global $GEN_STARTTIME;
     $time = explode(' ',microtime());$time = $time[1]+$time[0];$total_time = round(($time-$GEN_STARTTIME),4); ?>
     <?='<? $time = explode(" ",microtime());$time = $time[1]+$time[0];$total_time = round(($time-STARTTIME),4); ?>'?>
@@ -54,9 +44,9 @@
         Static/Dynamic page generated in <?=$total_time?>/<?='<?=$total_time?>'?> seconds.<br />
         Running TyNET v<?=VERSION?>
     </div>
-    </body>
-    </html>
-    <?='<? ob_end_flush(); ?>'?>
+    
+    <? include(PAGEPATH.'global_footer.php'); ?>
+    <?=(BUFFER)?'<? ob_end_flush(); ?>':''?>
     
     <?
     
