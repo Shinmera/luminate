@@ -30,6 +30,11 @@ public static function convertArrayDown($array,$field,$ret=array()){
     return $ret;
 }
 
+public static function assureArray(&$obj){
+    if($obj==null)$obj=array();
+    if(!is_array($obj))$obj=array($obj);
+}
+
 public static function suggestedTextField($name,$apisource,$default="",$class="",$return=false){
     $var='<input type="text" id="'.$name.'" name="'.$name.'" class="'.$class.'" value="'.$default.'" autocomplete="off" />
         <script type="text/javascript">
@@ -76,52 +81,20 @@ public static function suggestedTextField($name,$apisource,$default="",$class=""
 }
 
 public static function interactiveList($name,$viewData,$valData,$selData=array(),$allowAll=false,$return=false){
-    $var='<div class="interactiveSelect" id="'.$name.'">
-        <input autocomplete="off" type="text" id="sel_'.$name.'_add" placeholder="New Value" onkeypress="return event.keyCode!=13" ><ul>';
-    for($i=0;$i<count($selData);$i++){
-        $pos=array_search($selData[$i],$valData);
-        $var.='<li><a href="#">x</a> <input type="hidden" name="'.$name.'[]" value="'.$valData[$pos].'" />'.$viewData[$pos].'</li>';
+    for($i=0;$i<count($viewData);$i++){
+        $data[]='"'.$viewData[$i].'":"'.$valData[$i].'"';
     }
-    $var.='</ul></div><script type="text/javascript">
-        var '.$name.'_viewData = ["'.implode("','",$viewData).'"];
-        var '.$name.'_valData  = ["'.implode("','",$valData).'"];
-        $(function(){
-            $("#'.$name.' ul").sortable({
-                axis:"x",
-                containment: "#'.$name.' ul"
-            });
-            '.$name.'resetLinks();
-        });
-        $("#sel_'.$name.'_add").keypress(function(e) {
-            if(e.keyCode == 13 || e.keyCode == 188 || e.keyCode == 44) {
-                var pos=$.inArray($("#sel_'.$name.'_add").val(),'.$name.'_valData);
-                if(pos==-1)pos=$.inArray($("#sel_'.$name.'_add").val(),'.$name.'_viewData);
-                if(pos!=-1){
-                    $("#'.$name.' ul").append(
-                        "<li><a href=\'#\'>x</a> <input type=\'hidden\' name=\''.$name.'[]\' value=\'"+
-                        '.$name.'_valData[pos]+\'" />\'+'.$name.'_viewData[pos]+"</li>");
-                    '.$name.'resetLinks();
-                }else if("'.$allowAll.'"=="1"){
-                    $("#'.$name.' ul").append(
-                        \'<li><a href="#">x</a> <input type="hidden" name="'.$name.'[]" value="\'+
-                        $("#sel_'.$name.'_add").val()+\'" />\'+$("#sel_'.$name.'_add").val()+\'</li> \');
-                    '.$name.'resetLinks();
-                }
-                $("#sel_'.$name.'_add").val("");
-                $("#sel_'.$name.'_add").focus();
-                $("#'.$name.' ul").sortable("refresh");
-                return false;
-            }
-        });
-        function '.$name.'resetLinks(){
-            $("#'.$name.' ul li a").each(function(){
-                $(this).unbind("click");
-                $(this).click(function(){
-                    $(this).parent().remove();
-                    return false;
-                });
-        });
-        }</script>';
+    if(!is_array($data))$data=array();
+    $data = '{'.implode(',',$data).'}';
+    $selData = '["'.implode('","',$selData).'"]';
+    if($allowAll)$allowAll='true';else $allowAll='false';
+    $var='<div id="'.$name.'" class="interactiveSelect">
+            <input autocomplete="off" placeholder="..." type="text" onkeypress="return event.keyCode!=13" />
+            <ul></ul>
+          </div>
+          <script type="text/javascript">
+            $(function(){createInteractiveList("'.$name.'",'.$data.','.$selData.','.$allowAll.');});
+          </script>';
     if($return)return $var;else echo($var);
 }
 
@@ -634,6 +607,39 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
         $ar[substr($s[$i],0,$tmp)]=substr($s[$i],$tmp+1);
     }
     return $ar;
+}
+
+public static function autoBreakLines($text,$length=100){
+    $pointer = $length;
+    while($pointer<strlen($text)){
+        if(substr($text,$pointer,1)==' '){
+            $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
+            $pointer+=1;
+        }else{
+            $npointer=strrpos($text,' ',-strlen($text)+$pointer);
+            if($npointer!==FALSE){
+                $text=substr($text,0,$npointer)."\n".substr($text,$npointer);
+                $pointer=$npointer+1;
+            }else{
+                $text=substr($text,0,$pointer)."-\n".substr($text,$pointer);
+                $pointer+=2;
+            }
+        }
+        $pointer+=$length;
+    }
+    return $text;
+}
+
+public static function limitLines($text,$maxlines=10){
+    $pointer=0;
+    while($pointer<strlen($text)&&$maxlines>0){
+        $pointer=strpos($text,"\n",$pointer+1);
+        if($pointer===FALSE)$pointer=strlen($text);
+        $maxlines--;
+    }
+    
+    if($pointer<strlen($text))return substr($text,0,$pointer).'...';
+    else                      return $text;
 }
 
 public static function wrapAndPrint($array,$front,$end){
