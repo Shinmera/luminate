@@ -10,14 +10,15 @@ class BoardGenerator{
         global $c,$k,$t;
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/';
+        $previousTheme = $t->tname;
         $t->loadTheme("chan");
         
         $totalthreads = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ?",array($board->boardID,'d'));
         $totalthreads = $totalthreads[0]['COUNT(postID)'];
         $threads=array(1);
         
-        ob_end_flush;flush();
-        ob_start(create_function('$buffer', 'return "";'));
+        if(BUFFER)ob_end_flush;flush();
+        ob_start();
         for($i=0;count($threads)>0;$i++){
             if($i>$board->maxPages){
                 if(!class_exists("DataGenerator"))include(TROOT.'modules/chan/datagen.php');
@@ -83,6 +84,7 @@ class BoardGenerator{
         file_put_contents($path.'index.php','<?php include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/0.php"); ?>',LOCK_EX);
         ob_end_clean();
         if(BUFFER)ob_start();
+        $t->loadTheme($previousTheme);
     }
 }
 ?>
