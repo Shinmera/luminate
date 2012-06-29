@@ -247,32 +247,35 @@ function createInteractiveList(){
     var $i = $(">input",$m);
     var $u = $(">ul",$m);
     
+    function addVal(val){
+        if(dat[val] == undefined){
+            var name = null;
+            for(var prop in dat){
+                if(dat[prop]==val)name=prop;
+            }
+            if(name != null)
+                addInteractiveElement($u,name,val);
+            else if(all)
+                addInteractiveElement($u,val,val);
+        }
+        if(dat[val] !== undefined)
+            addInteractiveElement($u,val,dat[val]);
+    }
+    
     $u.sortable({axis:"x",containment: "#"+arguments[0]+">ul"});
     $i.keypress(function(e) {
         if(e.keyCode == 13 || e.keyCode == 188 || e.keyCode == 44) {
             var val = $i.val();
-            if(dat[val] == undefined){
-                var name = null;
-                for(var prop in dat){
-                    if(dat[prop]==val)name=prop;
-                }
-                if(name != null)
-                    addInteractiveElement($u,name,val);
-                else if(all)
-                    addInteractiveElement($u,val,val);
-            }
-            if(dat[val] !== undefined)
-                addInteractiveElement($u,val,dat[val]);
+            addVal(val);
             $i.val("");
             $i.focus();
             return false;
         }
     });
 
-    var e = jQuery.Event("keydown");
-    e.which = 13;
+    var e = jQuery.Event("keypress");
+    e.keyCode = 13;e.which = 13;
     for(var item in pre ){
-        $i.val(item);
-        $i.trigger(e);
+        addVal(pre[item]);
     }
 }
