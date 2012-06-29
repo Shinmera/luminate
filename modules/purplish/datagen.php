@@ -102,11 +102,11 @@ class DataGenerator{
                 $query.=" OR PID=?";
                 $data[]=$post[$i]->postID;
                 if(!in_array($post[$i]->BID,$boardsgen))$boardsgen[]=$post[$i]->BID;
-                DataGenerator::cleanThread($post[$i]->postID);
+                $this->cleanThread($post[$i]->postID);
             }else{
                 ThreadGenerator::generateThread($post[$i]->PID,$post[$i]->BID);
             }
-            DataGenerator::deleteTraces($board[0]->folder,$post[$i]->postID,$post[$i]->file);
+            $this->deleteTraces($board->folder,$post[$i]->postID,$post[$i]->file);
         }
         $c->query("UPDATE ch_posts SET `options`=CONCAT(`options`,'d') WHERE ".$query,$data);
         
@@ -133,10 +133,10 @@ class DataGenerator{
         //FILE
         $boardo = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($board));
         if(!$imageonly){
-            DataGenerator::deleteTraces($boardo[0]->folder,$postID,$post[0]->file);
-            if($post[0]->PID==0)DataGenerator::cleanThread($postID);
+            $this->deleteTraces($boardo[0]->folder,$postID,$post[0]->file);
+            if($post[0]->PID==0)$this->cleanThread($postID);
         }else{
-            DataGenerator::deleteTraces($boardo[0]->folder,$postID,$post[0]->file,false,false);
+            $this->deleteTraces($boardo[0]->folder,$postID,$post[0]->file,false,false);
         }
 
         if($generate){
@@ -147,9 +147,9 @@ class DataGenerator{
 
     function submitPost(){
         global $k,$p,$c,$a;
-        if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
-        if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
-        if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
+        if(!class_exists("BoardGenerator"))include('boardgen.php');
+        if(!class_exists("ThreadGenerator"))include('threadgen.php');
+        if(!class_exists("PostGenerator"))include('postgen.php');
         if(!$k->updateTimestamp('chan_post',$c->o['chan_posttimeout']))
             throw new Exception("Please wait ".$c->o['chan_posttimeout']." seconds between posts.");
 
@@ -170,66 +170,68 @@ class DataGenerator{
         if($file['error'] !== UPLOAD_ERR_OK && $file['error'] !== UPLOAD_ERR_NO_FILE && $file['error'] != "")throw new Exception("File upload failed. (ERR".$file['error'].")");
 
         //CHECK BOARD
-        $board = ChanDataBoard::loadFromDB("SELECT boardID,folder,maxfilesize,filetypes,options,postlimit FROM ch_boards WHERE boardID=?", array($board));
-        if(count($board)==0)throw new Exception("No such board. (".board.")");
-        if(!$a->check("chan.mod")&&(strpos($board[0]->options,"l")!==FALSE||
-                                    strpos($board[0]->options,"m")!==FALSE||
-                                    strpos($board[0]->options,"h")!==FALSE))throw new Exception("You are not authorized to post.");
-        if($file['tmp_name']=="" && strpos($board[0]->options,"f")!==FALSE) throw new Exception("You need to post a file.");
+        $board = DataModel::getData('ch_boards',"SELECT boardID,folder,maxfilesize,filetypes,options,postlimit FROM ch_boards WHERE boardID=?", array($board));
+        if($board==null)throw new Exception("No such board. (".board.")");
+        if(!$a->check("chan.mod")&&(strpos($board->options,"l")!==FALSE||
+                                    strpos($board->options,"m")!==FALSE||
+                                    strpos($board->options,"h")!==FALSE))throw new Exception("You are not authorized to post.");
+        if($file['tmp_name']=="" && strpos($board->options,"f")!==FALSE) throw new Exception("You need to post a file.");
         
         //SAVE FIELDS
-        setcookie("chan_post_pw",$p->fixslashes($password),time()+60*60*$c->o['cookie_life_h'],'/');
-        if(strpos($board[0]->options,"n")===FALSE){;
-            setcookie("chan_post_name",$p->fixslashes($name),time()+60*60*$c->o['cookie_life_h'],'/');
-            setcookie("chan_post_mail",$p->fixslashes($mail),time()+60*60*$c->o['cookie_life_h'],'/');
+        setcookie("chan_post_pw",$c->enparse($password),time()+60*60*$c->o['cookie_life_h'],'/');
+        if(strpos($board->options,"n")===FALSE){;
+            setcookie("chan_post_name",$c->enparse($name),time()+60*60*$c->o['cookie_life_h'],'/');
+            setcookie("chan_post_mail",$c->enparse($mail),time()+60*60*$c->o['cookie_life_h'],'/');
         }
 
         //CHECK THREAD
         if(!is_numeric($thread)||$thread=="")$thread=0;
         if($thread!=0){
-            $threadp = DataModel::getData('ch_posts',"SELECT BID,options FROM ch_posts WHERE postID=? AND PID=0 AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board[0]->boardID));
-            if(count($threadp)==0)throw new Exception("No such thread.");
-            if($threadp[0]->BID!=$board[0]->boardID)throw new Exception("Invalid board. (".$board[0]->boardID."/".$threadp[0]->BID.")");
-            if(!$a->check("chan.mod")&&(strpos($threadp[0]->options,"l")!==FALSE||
-                                        strpos($threadp[0]->options,"h")!==FALSE||
-                                        strpos($threadp[0]->options,"d")!==FALSE))throw new Exception("No Access.");
-        }else if(strpos($board[0]->options,"t")===FALSE&&!$a->check("chan.mod")){throw new Exception("No Access.");
+            $threadp = DataModel::getData('ch_posts',"SELECT BID,options FROM ch_posts WHERE postID=? AND PID=0 AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board->boardID));
+            if($threadp==null)throw new Exception("No such thread.");
+            if($threadp->BID!=$board->boardID)throw new Exception("Invalid board. (".$board->boardID."/".$threadp->BID.")");
+            if(!$a->check("chan.mod")&&(strpos($threadp->options,"l")!==FALSE||
+                                        strpos($threadp->options,"h")!==FALSE||
+                                        strpos($threadp->options,"d")!==FALSE))throw new Exception("No Access.");
+        }else if(strpos($board->options,"t")===FALSE&&!$a->check("chan.mod")){throw new Exception("No Access.");
         }else if($file['tmp_name']=="")throw new Exception("File required.");
         
         //CHECK AKISMET
-        require_once(TROOT.'callables/akismet.php');
-        $akismet = new Akismet(HOST ,$c->o['akismet_key']);
-        $akismet->setCommentAuthor($name);
-        $akismet->setCommentAuthorEmail($mail);
-        $akismet->setCommentContent($text);
-        $akismet->setPermalink(HOST);
-        if($akismet->isCommentSpam())throw new Exception("Akismet spam detection triggered.");
+        if(DataModel::getData('','SELECT COUNT(ip) FROM ch_posts WHERE IP LIKE ?',array($_SERVER['REMOTE_ADDR']))==null){
+            require_once(TROOT.'callables/akismet.php');
+            $akismet = new Akismet(HOST ,$c->o['akismet_key']);
+            $akismet->setCommentAuthor($name);
+            $akismet->setCommentAuthorEmail($mail);
+            $akismet->setCommentContent($text);
+            $akismet->setPermalink(HOST);
+            if($akismet->isCommentSpam())throw new Exception("Akismet spam detection triggered.");
+        }
 
         //CHECK FILE
         if($file['tmp_name']!=""){
-            if($file['size']>($board[0]->maxFileSize*1024))throw new Exception("File too big. (Max: ".$k->displayFilesize(($board[0]->maxFileSize*1024))." )");
-            if(!in_array($file['type'],explode(";",$board[0]->filetypes)))throw new Exception("Invalid filetype: ".$file['type']);
+            if($file['size']>($board->maxfilesize*1024))throw new Exception("File too big. (Max: ".$k->displayFilesize(($board->maxfilesize*1024))." )");
+            if(!in_array($file['type'],explode(";",$board->filetypes)))throw new Exception("Invalid filetype: ".$file['type']);
 
             //UPLOAD FILE
             $fileext=substr($file['name'],  strrpos($file['name'],'.')+1);
             $filename=time().mt_rand(10000,99999).'.'.$fileext;
-            if(!move_uploaded_file($file['tmp_name'], ROOT.DATAPATH.'chan/'.$board[0]->folder.'/files/'.$filename))throw new Exception("File upload failed.");
+            if(!move_uploaded_file($file['tmp_name'], ROOT.DATAPATH.'chan/'.$board->folder.'/files/'.$filename))throw new Exception("File upload failed.");
 
             //GENERATE THUMB
             if(in_array($file['type'],array("image/png","image/jpeg","image/gif","image/tiff","image/bmp","image/bitmap"))){
                 if(in_array("w",$options)){//nsfW
-                    copy(ROOT.IMAGEPATH.'chan/previews/nsfw.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
+                    copy(ROOT.IMAGEPATH.'chan/previews/nsfw.png',ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/'.$filename);
                 }else if(in_array("r",$options)){//spoileR
-                    copy(ROOT.IMAGEPATH.'chan/previews/spoiler.png',ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
+                    copy(ROOT.IMAGEPATH.'chan/previews/spoiler.png',ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/'.$filename);
                 }else{
-                    if($thread!=0)DataGenerator::createThumbnail($board[0]->folder, $filename,$c->o['chan_thumbsize']);
-                    else          DataGenerator::createThumbnail($board[0]->folder, $filename,$c->o['chan_opthumbsize']);
+                    if($thread!=0)$this->createThumbnail($board->folder, $filename,$c->o['chan_thumbsize']);
+                    else          $this->createThumbnail($board->folder, $filename,$c->o['chan_opthumbsize']);
                 }
-                $dim=getimagesize(ROOT.DATAPATH.'chan/'.$board[0]->folder.'/files/'.$filename);
+                $dim=getimagesize(ROOT.DATAPATH.'chan/'.$board->folder.'/files/'.$filename);
                 $dim=$dim[0]."x".$dim[1];
             }else{
                 $filetype = ChanDataFileType::loadFromDB("SELECT preview FROM ch_filetypes WHERE mime LIKE ?",array($file['type']));
-                copy(ROOT.IMAGEPATH.'chan/previews/'.$filetype[0]->preview,ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/'.$filename);
+                copy(ROOT.IMAGEPATH.'chan/previews/'.$filetype[0]->preview,ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/'.$filename);
                 $dim="NaP";
             }
         }
@@ -237,8 +239,8 @@ class DataGenerator{
         //GATHER OTHER DATA
         $name=explode('#',$name);
         $mail=explode('#',$mail);
-        if(count($name)>1)$trip=DataGenerator::calculateTrip(implode("#",array_slice($name, 1)));else $trip='';
-        if(count($name)==0||strpos($board[0]->options,"n")!==FALSE)$name[0]="Anonymous";
+        if(count($name)>1)$trip=$this->calculateTrip(implode("#",array_slice($name, 1)));else $trip='';
+        if(count($name)==0||strpos($board->options,"n")!==FALSE)$name[0]="Anonymous";
         if(!$a->check("chan.mod")||!is_array($options))$options=array();
         if($a->check("chan.mod.*"))$options[]="p";
         $banned=$k->checkBanned($_SERVER['REMOTE_ADDR']);
@@ -249,17 +251,17 @@ class DataGenerator{
         }
 
         //CREATE POST INSTANCE
-        $post = new ChanDataPost(NULL,$board[0]->boardID,$thread,$name[0],$mail[0],$trip,$_POST['vartitle'],
+        $post = new ChanDataPost(NULL,$board->boardID,$thread,$name[0],$mail[0],$trip,$_POST['vartitle'],
                                  $text,time(),time(),$password,$filename,$file['name'],
                                  $file['size'],$dim,$_SERVER['REMOTE_ADDR'],','.implode(",",$options));
         $post->saveToDB();
 
         //UPDATE THREAD
         if($thread!=0){
-            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1;", array($thread,$board[0]->boardID));
+            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1;", array($thread,$board->boardID));
             if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail))$tpost[0]->bumptime=time();
-            $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board[0]->boardID,'d'));
-            if($posts[0]['COUNT(postID)']>$board[0]->postlimit)$tpost[0]->options.="e";
+            $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board->boardID,'d'));
+            if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost[0]->options.="e";
             $tpost[0]->saveToDB();
         }else{
             $thread=$post->postID;
@@ -271,14 +273,14 @@ class DataGenerator{
         $post->mail = $p->enparse($post->mail);
         $post->fileOrig = $p->enparse($post->fileOrig);
         PostGenerator::generatePostFromObject($post);
-        ThreadGenerator::generateThread($thread,$board[0]->boardID);
-        BoardGenerator::generateBoard($board[0]->boardID);
+        ThreadGenerator::generateThread($thread,$board->boardID);
+        BoardGenerator::generateBoard($board->boardID);
 
         if(in_array("noko",$mail)){
-            if($thread!=0)header('Location: '.$k->url("chan",$board[0]->folder.'/threads/'.$thread.'.php#'.$post->postID));
-            else          header('Location: '.$k->url("chan",$board[0]->folder.'/threads/'.$post->postID.'.php'));
+            if($thread!=0)header('Location: '.$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
+            else          header('Location: '.$k->url("chan",$board->folder.'/threads/'.$post->postID.'.php'));
         }else{
-                          header('Location: '.$k->url("chan",$board[0]->folder.'/'));
+                          header('Location: '.$k->url("chan",$board->folder.'/'));
         }
     }
 
@@ -286,7 +288,7 @@ class DataGenerator{
         global $c,$k,$p;
         $trip = $p->convertCharset($trip);
         $trip = mb_convert_encoding($trip,'SJIS','UTF-8');
-        $trip = $p->fixslashes($trip);
+        $trip = $c->enparse($trip);
         $predefined=$k->stringToVarKey($c->o['chan_trips'],"\n");
         if(array_key_exists('#'.$trip, $predefined))return '!'.$predefined['#'.$trip];
         $trip=explode("#",$trip);
@@ -404,22 +406,22 @@ class DataGenerator{
         echo("Database...<br />");
         $c->query("DELETE FROM ch_posts WHERE BID=? AND options REGEXP ?",array($boardID,'d'));
         
-        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board[0]->folder.'/files/_*.php');
+        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/files/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn)  {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board[0]->folder.'/thumbs/_*.php');
+        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn) {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Posts: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board[0]->folder.'/posts/_*.php');
+        echo("Posts: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/posts/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn)  {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Threads: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board[0]->folder.'/threads/_*.php');
+        echo("Threads: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/threads/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn){echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
@@ -448,9 +450,9 @@ class DataGenerator{
         $board = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($posts[0]->BID));
         if(count($board)==0)return false;
         for($i=1;$i<count($posts);$i++){
-            DataGenerator::deleteTraces($board[0]->folder,$posts[$i]->postID,$posts[$i]->file);
+            $this->deleteTraces($board->folder,$posts[$i]->postID,$posts[$i]->file);
         }
-        DataGenerator::deleteTraces($board[0]->folder,$posts[0]->postID,$posts[0]->file,true);
+        $this->deleteTraces($board->folder,$posts[0]->postID,$posts[0]->file,true);
         return true;
     }
 }

@@ -347,7 +347,7 @@ function displayEditBoard(){
                 $ret.='<br />Threads regenerated.';
             }
             if(in_array('p',$_POST['rebuild'])){
-                $posts = DataModel::getData('SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
+                $posts = DataModel::getData('','SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
                 Toolkit::assureArray($posts);
                 foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
                 $ret.='<br />Posts regenerated.';
