@@ -8,6 +8,9 @@ class ThreadGenerator{
 
     public static function generateThreadFromObject($post,$posts=false){
         global $c,$k,$t;
+        $previousTheme = $t->tname;
+        $t->loadTheme("chan");
+        
         $pID=$post->postID;
         $postlist = $c->getData("SELECT postID FROM ch_posts WHERE PID=? AND BID=? AND `options` NOT LIKE ? ORDER BY postID ASC",array($pID,$post->BID,'%d%'));
         if($posts){
@@ -17,7 +20,7 @@ class ThreadGenerator{
         $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));$board=$board[0];
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/threads/'.$pID.'.php';
         
-        ob_end_flush;flush();
+        if(BUFFER)ob_end_flush;flush();
         ob_start(create_function('$buffer', 'return "";'));
         $t->loadTheme("chan");
         ?>
@@ -65,6 +68,7 @@ class ThreadGenerator{
         file_put_contents($path,ob_get_contents(),LOCK_EX);
         ob_end_clean();
         if(BUFFER)ob_start();
+        $t->loadTheme($previousTheme);
     }
 }
 ?>
