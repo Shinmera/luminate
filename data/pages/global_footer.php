@@ -8,7 +8,7 @@ var pageTracker = _gat._getTracker("UA-13229468-2");
 pageTracker._trackPageview();
 } catch(err) {}</script>
 
-<div class="jqmConfirm jqmWindow" id="confirm">
+<div class="jqmConfirm jqmWindow" id="confirm" style="display:none">
     <p class="jqmConfirmMsg"></p>
     <input type="submit" value="No" />
     <input type="submit" value="Yes" />
