@@ -170,7 +170,7 @@
     
         <? $time = explode(" ",microtime());$time = $time[1]+$time[0];$total_time = round(($time-STARTTIME),4); ?>    <div class="footer">
         &copy;2010-2012 TymoonNET/NexT <br />
-        Static/Dynamic page generated in 0.0055/<?=$total_time?> seconds.<br />
+        Static/Dynamic page generated in 0.0058/<?=$total_time?> seconds.<br />
         Running TyNET vVERSION    </div>
     
     <script type="text/javascript">

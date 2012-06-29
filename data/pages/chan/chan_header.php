@@ -10,7 +10,7 @@
     <?='<? global $a,$l,$t; if($a==null)$a = $l->loadModule("Auth"); ?>'."\n"?>
     <?=(BUFFER)?'<? if(COMPRESS)ob_start("ob_gzhandler");else ob_start(); ?>':''?>
     <? if(strpos($options,"h")!==FALSE){ ?>
-        <?='<? if(!$a->check("chan.mod"))include("'.PAGEPATH.'chan/chan_500.php"); ?>'?>
+        <?='<? if(!$a->check("chan.mod"))include("'.PAGEPATH.'chan/chan_403.php"); ?>'?>
     <? } ?>
     <? include(PAGEPATH.'global_header.php'); ?>
     <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme="steven.css"; ?>

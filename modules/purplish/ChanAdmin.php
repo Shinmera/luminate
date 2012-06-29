@@ -323,7 +323,7 @@ function displayEditBoard(){
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/threads');
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/files');
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs');
-                $deniedpage = '<? include("'.TROOT.'config.php");include("'.PAGEPATH.'chan/chan_500.php"); ?>';
+                $deniedpage = '<? include("'.TROOT.'config.php");include("'.PAGEPATH.'chan/chan_403.php"); ?>';
                 file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/threads/index.php',$deniedpage);
                 file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/posts/index.php',$deniedpage);
                 file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/files/index.php',$deniedpage);
