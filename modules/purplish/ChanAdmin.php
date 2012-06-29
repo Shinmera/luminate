@@ -17,6 +17,7 @@ function display(){
         case 'reports':     if($a->check("chan.mod.reports"))       $this->displayReports();    break;
         case 'bans':        if($a->check("chan.mod.bans"))          $this->displayBans();       break;
         case 'settings':    if($a->check("chan.admin.settings"))    $this->displayGeneralOptions();break;
+        case 'frontpage':   if($a->check("chan.admin.frontpage"))   $this->displayFrontpage();  break;
         default:            if($a->check("chan.*"))                 $this->displayStatistics(); break;
     }
 }
@@ -29,6 +30,8 @@ function displayPanel(){
                 <a href="<?=$k->url("admin","Chan/")?>"><li>Overview</li></a>
                 <? if($a->check("chan.admin.settings")){ ?>
                 <a href="<?=$k->url("admin","Chan/settings")?>"><li>Settings</li></a><? } ?>
+                <? if($a->check("chan.admin.frontpage")){ ?>
+                <a href="<?=$k->url("admin","Chan/frontpage")?>"><li>Frontpage</li></a><? } ?>
                 <? if($a->check("chan.admin.categories")){ ?>
                 <a href="<?=$k->url("admin","Chan/categories")?>"><li>Categories</li></a><? } ?>
                 <? if($a->check("chan.admin.boards")){ ?>
@@ -44,37 +47,6 @@ function displayPanel(){
             </ul>
         </li><?
     }
-}
-
-function displayGeneralOptions(){
-    global $c;
-    if($_POST['action']=='Save'){
-        Toolkit::set('chan_title',$_POST['title']);
-        Toolkit::set('chan_opthumbsize',$_POST['opts'],'i');
-        Toolkit::set('chan_thumbsize',$_POST['ts'],'i');
-        Toolkit::set('chan_maxlines',$_POST['mlines'],'i');
-        Toolkit::set('chan_tpp',$_POST['tpp'],'i');
-        Toolkit::set('chan_posttimeout',$_POST['timeout'],'i');
-        Toolkit::set('chan_trips',$_POST['trips']);
-        Toolkit::set('chan_fileloc_extern',$_POST['cdn'],'u');
-        Toolkit::set('chan_online',$_POST['online'],'b');
-        echo('<div class="success">Options saved!</div>');
-    }
-    
-    
-    ?><form action="#" method="post" class="box">
-        <h3>Settings</h3>
-              <label>Chan Title:</label>       <input type="text" name="title" value="<?=$c->o['chan_title']?>" />
-        <br /><label>OP Thumb Size:</label>    <input type="number" name="opts" value="<?=$c->o['chan_opthumbsize']?>" />
-        <br /><label>Thumb Size:</label>       <input type="number" name="ts" value="<?=$c->o['chan_thumbsize']?>" />
-        <br /><label>Short Post Lines:</label> <input type="number" name="mlines" value="<?=$c->o['chan_maxlines']?>" />
-        <br /><label>Threads Per Page:</label> <input type="number" name="tpp" value="<?=$c->o['chan_tpp']?>" />
-        <br /><label>Post Timeout:</label>     <input type="number" name="timeout" value="<?=$c->o['chan_posttimeout']?>" />
-        <br /><label>Tripcodes:</label>        <textarea name="trips" style="vertical-align:text-top;"><?=$c->o['chan_trips']?></textarea>
-        <br /><label>CDN Location:</label>     <input type="url" name="cdn" value="<?=$c->o['chan_fileloc_extern']?>" />
-        <br /><label>Online:</label>           <input type="checkbox" name="online" value="1" <?=($c->o['chan_online']=='1')?'checked':''?> />
-        <br /><input type="submit" name="action" value="Save" />
-    </form><?
 }
 
 function displayStatistics(){
@@ -96,6 +68,107 @@ function displayStatistics(){
         $chartByBoards->setCaption('Posts in the last week - By board');
         $chartByBoards->display();
     }
+}
+
+function displayGeneralOptions(){
+    global $c;
+    if($_POST['action']=='Save'){
+        Toolkit::set('chan_title',$_POST['title']);
+        Toolkit::set('chan_opthumbsize',$_POST['opts'],'i');
+        Toolkit::set('chan_thumbsize',$_POST['ts'],'i');
+        Toolkit::set('chan_maxlines',$_POST['mlines'],'i');
+        Toolkit::set('chan_tpp',$_POST['tpp'],'i');
+        Toolkit::set('chan_posttimeout',$_POST['timeout'],'i');
+        Toolkit::set('chan_frontposts',$_POST['frontposts'],'i');
+        Toolkit::set('chan_trips',$_POST['trips']);
+        Toolkit::set('chan_fileloc_extern',$_POST['cdn'],'u');
+        Toolkit::set('chan_online',$_POST['online'],'b');
+        echo('<div class="success">Options saved!</div>');
+    }
+    
+    
+    ?><form action="#" method="post" class="box">
+        <h3>Settings</h3>
+              <label>Chan Title:</label>       <input type="text" name="title" value="<?=$c->o['chan_title']?>" />
+        <br /><label>OP Thumb Size:</label>    <input type="number" name="opts" value="<?=$c->o['chan_opthumbsize']?>" />
+        <br /><label>Thumb Size:</label>       <input type="number" name="ts" value="<?=$c->o['chan_thumbsize']?>" />
+        <br /><label>Short Post Lines:</label> <input type="number" name="mlines" value="<?=$c->o['chan_maxlines']?>" />
+        <br /><label>Threads Per Page:</label> <input type="number" name="tpp" value="<?=$c->o['chan_tpp']?>" />
+        <br /><label>Post Timeout:</label>     <input type="number" name="timeout" value="<?=$c->o['chan_posttimeout']?>" />
+        <br /><label>Frontpage posts:</label>  <input type="number" name="frontposts" value="<?=$c->o['chan_frontposts']?>" />
+        <br /><label>Tripcodes:</label>        <textarea name="trips" style="vertical-align:text-top;"><?=$c->o['chan_trips']?></textarea>
+        <br /><label>CDN Location:</label>     <input type="url" name="cdn" value="<?=$c->o['chan_fileloc_extern']?>" />
+        <br /><label>Online:</label>           <input type="checkbox" name="online" value="1" <?=($c->o['chan_online']=='1')?'checked':''?> />
+        <br /><input type="submit" name="action" value="Save" />
+    </form><?
+}
+
+function displayFrontpage(){
+    if($_POST['action']=='submit'){
+        $box = DataModel::getData('ch_frontpage','SELECT * FROM ch_frontpage WHERE title=?',array($_POST['title']));
+        if($box==null){
+            $box = DataModel::getHull('ch_frontpage');
+            $box->title=$_POST['title'];
+            $box->text=$_POST['text'];
+            @$box->classes=implode(' ',$_POST['classes']);
+            $box->insertData();
+            echo('<div class="success">Box added.</div>');
+        }else{
+            $box->text=$_POST['text'];
+            $box->classes=implode(' ',$_POST['classes']);
+            $box->saveData();
+            echo('<div class="success">Box edited.</div>');
+        }
+    }
+    if($_POST['action']=='Edit'){
+        $box = DataModel::getData('ch_frontpage','SELECT * FROM ch_frontpage WHERE title=?',array($_POST['title']));
+    }
+    if($_POST['action']=='Delete'){
+        $box = DataModel::getData('ch_frontpage','SELECT * FROM ch_frontpage WHERE title=?',array($_POST['title']));
+        if($box!=null){
+            $box->deleteData();$box=null;
+            echo('<div class="success">Box deleted.</div>');
+        }
+    }
+    if($box==null)$box = DataModel::getHull('ch_frontpage');
+    
+    include(MODULEPATH.'gui/Editor.php');
+    $editor = new SimpleEditor();
+    $editor->addTextField('title', 'Title:',$box->title,'text','maxlength="32"');
+    $editor->addCustom('<label>Classes:</label>'.Toolkit::interactiveList('classes', array(), array(), explode(' ',$box->classes), true, true));
+    $_POST['text']=$box->text;
+    
+    $editor->show();
+    
+    Toolkit::sanitizePager(0,array('title','text','classes'),'title');
+    $boxes = DataModel::getData('','SELECT * FROM ch_frontpage ORDER BY '.$_GET['o'].' '.$_GET['d']);
+    Toolkit::assureArray($boxes);
+    ?><div class="box fullwidth">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:100px;"><a href="?o=title&a=<?=!$_GET['a']?>">Title</a></th>
+                    <th><a href="?o=text&a=<?=!$_GET['a']?>">Text</a></th>
+                    <th style="width:100px;"><a href="?o=classes&a=<?=!$_GET['a']?>">Classes</a></th>
+                    <th style="width:100px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <? foreach($boxes as $box){ ?>
+                    <tr>
+                        <td><?=$box->title?></td>
+                        <td><?=$box->text?></td>
+                        <td><?=$box->classes?></td>
+                        <td><form method="post">
+                            <input type="hidden" name="title" value="<?=$box->title?>" />
+                            <input type="submit" name="action" value="Edit" />
+                            <input type="submit" name="action" value="Delete" />
+                        </form></td>
+                    </tr>
+                <? } ?>
+            </tbody>
+        </table>
+     </div><?
 }
 
 function displayCategories(){
@@ -145,11 +218,13 @@ function displayCategories(){
                     <tr>
                         <td><?=$cat->title?></td>
                         <td>
-                            <? $boards = explode(',',$cat->order);
-                            foreach($boards as $board){
-                                $title=$btitles[array_search($board,$bids)];?>
-                                <a href='<?=Toolkit::url('chan',$title)?>'><?=$title?></a>
-                            <? } ?>
+                            <? 
+                            if($cat->order!=''){
+                                $boards = explode(',',$cat->order);
+                                foreach($boards as $board){
+                                    $title=$btitles[array_search($board,$bids)];?>
+                                    <a href='<?=Toolkit::url('chan',$title)?>'><?=$title?></a>
+                            <? }} ?>
                         </td>
                         <td><form action="#" method="post">
                             <input type="hidden" name="title" value="<?=$cat->title?>" />
@@ -235,6 +310,8 @@ function displayEditBoard(){
         try{
             $ret='';
             foreach($_POST as $key=>$val){$board->$key=$val;}
+            Toolkit::assureArray($_POST['options']);
+            Toolkit::assureArray($_POST['filetypes']);
             $board->options=implode(',',$_POST['options']);
             $board->filetypes=implode(';',$_POST['filetypes']);
             
@@ -264,12 +341,14 @@ function displayEditBoard(){
                 $ret.='<br />Board regenerated.';
             }
             if(in_array('t',$_POST['rebuild'])){
-                $threads = DataModel::getData('SELECT * FROM ch_posts WHERE PID=0 AND BID=?',array($board->boardID));
+                $threads = DataModel::getData('','SELECT * FROM ch_posts WHERE PID=0 AND BID=?',array($board->boardID));
+                Toolkit::assureArray($threads);
                 foreach($threads as $thread){ThreadGenerator::generateThreadFromObject($thread);}
                 $ret.='<br />Threads regenerated.';
             }
             if(in_array('p',$_POST['rebuild'])){
                 $posts = DataModel::getData('SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
+                Toolkit::assureArray($posts);
                 foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
                 $ret.='<br />Posts regenerated.';
             }
