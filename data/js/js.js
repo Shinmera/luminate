@@ -221,3 +221,58 @@ $().ready(function() {
     return false;
   });
 });
+
+function addInteractiveElement($ul,name,val){
+    if($("li:last-child",$ul).length>0)
+        id=$("li:last-child",$ul).attr("id")+1;
+    else id=0;
+    $ul.append('<li id="ILE'+id+'"><a>x</a><input type="hidden" name="'+$ul.parent().attr("id")+'[]" value="'+val+'" />'+name+'</li>');
+    $ul.sortable("refresh");
+    var $obj= $("#ILE"+id+" a",$ul);
+    $obj.click(function(){$(this).parent().remove();return false;});
+    return $obj;
+}
+
+function createInteractiveList(){
+    switch(arguments.length){
+        case 0:return;break;
+        case 1:arguments[1]=[];
+        case 2:arguments[2]=[];
+        case 3:arguments[3]=false;
+    }
+    var dat = arguments[1];
+    var pre  = arguments[2];
+    var all  = arguments[3];
+    var $m = $("#"+arguments[0]);
+    var $i = $(">input",$m);
+    var $u = $(">ul",$m);
+    
+    $u.sortable({axis:"x",containment: "#"+arguments[0]+">ul"});
+    $i.keypress(function(e) {
+        if(e.keyCode == 13 || e.keyCode == 188 || e.keyCode == 44) {
+            var val = $i.val();
+            if(dat[val] == undefined){
+                var name = null;
+                for(var prop in dat){
+                    if(dat[prop]==val)name=prop;
+                }
+                if(name != null)
+                    addInteractiveElement($u,name,val);
+                else if(all)
+                    addInteractiveElement($u,val,val);
+            }
+            if(dat[val] !== undefined)
+                addInteractiveElement($u,val,dat[val]);
+            $i.val("");
+            $i.focus();
+            return false;
+        }
+    });
+
+    var e = jQuery.Event("keydown");
+    e.which = 13;
+    for(var item in pre ){
+        $i.val(item);
+        $i.trigger(e);
+    }
+}
