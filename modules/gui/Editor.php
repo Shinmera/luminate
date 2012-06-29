@@ -101,7 +101,7 @@ class SimpleEditor extends Editor{
             <div id="preview" class="preview"></div><br />
             <input type="hidden" name="action" value="<?=$this->action?>" />
             <input type="hidden" name="suites" value="<?=implode(',',$this->suites)?>" />
-            <input type="submit" value="Submit" />
+            <? if($form){ ?><input type="submit" value="Submit" /><? } ?>
             <? if($this->apiUrl!=''){ ?><input type="submit" value="Preview" id="previewbutton" /><? } ?>
             <?=implode(' ',$this->extraactions)?>
         <? if($form){?></form><? } ?>

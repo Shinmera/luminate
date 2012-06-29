@@ -100,11 +100,14 @@ a.directQuote{
 .postBox #varsubmit{width:60px;height:20px;margin-top:5px;}
 .postBox #fulltext{width:350px;height:70px;}
 .postBox .tac{font-size:8pt;margin-top:10px;}
-.bbcodeBar{
-    height:20px;
+.toolbar{
     width:100%;
-    background-color:#000;
+    box-sizing:border-box;
+    background: #000;
+    list-style:none;
+    padding:0;margin:0;
 }
+.toolbar li{display:inline-block;}
 
 .threadWatch{
     font-size:8pt;
@@ -278,8 +281,7 @@ a.directQuote{
     box-shadow: 0px 0px 5px #FF0000;
 }
 
-.buttons{
-}
+.buttons{}
 
 .buttons a{
     position:relative;
@@ -324,82 +326,6 @@ a.directQuote{
 }
 
 .jqmOverlay { background-color: #000; }
-
-.frontContent{
-    background-color: #EEE;
-    margin-left:5%;
-    margin-right:5%;
-    color: #000;
-}
-
-.frontNews{
-    padding:10px;
-    height:1024px;
-}
-
-.frontLatest{
-    padding:10px;
-    float:right;
-    width:300px;
-    margin-bottom:-10px;
-    background: #888;
-    background: -webkit-gradient(linear, left top, right top, from(#555), to(#999));
-    background: -moz-linear-gradient(left,  #555,  #999);
-    overflow:auto;
-    height:1024px;
-}
-.frontLatestHead{
-    font-weight:bold;
-    font-size:18pt;
-    color:#EEE;
-}
-
-.frontHeader{
-    text-align:center;
-    font-weight:bold;
-    font-size:36pt;
-    text-shadow:0px 0px 5px #EEE;
-    color:#EEE;
-    margin-bottom:10px;
-}
-
-.frontMenu{
-    margin-left:5%;
-    margin-right:5%;
-    margin-bottom:0px;
-    list-style:none;
-    height: 20px;
-    background: #888;
-    background: -webkit-gradient(linear, left top, left bottom, from(#999), to(#000));
-    background: -moz-linear-gradient(top,  #999,  #000);
-    text-align: center;
-    display:block;
-    padding:0px;
-}
-.frontMenu li{
-    display:inline-block;
-    background: #EEE;
-    background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#AAA));
-    background: -moz-linear-gradient(top,  #EEE,  #AAA);
-    height:20px;
-    text-align:center;
-}
-.frontMenu li a{
-    text-decoration:none;
-    padding:10px 5px 5px 5px;
-}
-
-.postFront{
-    border-top: 1px solid #EEE;
-    overflow:hidden;
-}
-
-.postImageFront{
-    float:left;
-    margin:5px;
-    max-width:75px;
-    max-height:75px;
-}
 
 .menu{
     background-color:#000;
@@ -472,3 +398,73 @@ a.directQuote{
     background: -moz-linear-gradient(top,  #BBB,  #000);
     text-shadow: 0px 0px 5px #FF0000;
 }
+
+h1,h2,h3,h4,h5,h6{margin:0;}
+.fullwidth{width:100%;box-sizing: border-box;}
+
+#content{
+    border-top: 2px solid #FF0000;
+    border-radius: 5px 5px 0 0;
+    position:relative;
+    margin-top:50px;
+    background: #FFF;
+}
+
+#chanTitle{
+    background: #FF0000;
+    color: #FFF;
+    border-radius: 5px 0 5px 0;
+    padding: 2px 10px 2px 10px;
+    text-align:center;
+    margin-top:0;
+    display:inline-block;
+    box-shadow: 0 0 5px #FF0000;
+}
+
+#news{
+    margin-right: 300px;
+    min-height: 600px;
+    padding:5px;
+    border-radius: 5px 0 0 0;
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+}
+#news img{max-width:100%;}
+
+#news .box{
+    display:inline-block;
+    position:relative;
+    min-width:32%;
+    min-height:200px;
+    vertical-align:text-top;
+    background: #EEE;
+    margin: 2px;
+    padding: 3px;
+    box-sizing:border-box;
+    zoom: 1;
+    text-align:justify;
+}
+#news .stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}
+
+#postSidebar{
+    position:absolute;
+    right:0;top:0;bottom:0;
+    width: 300px;
+    background: #CCC;
+    overflow:auto;
+    overflow-x: hidden;
+    border-radius: 0 5px 0 0;
+}
+#postSidebar h3{text-indent:5px;background: #FFF;border-radius: 0 5px 0 0;}
+#postSidebar .simplePost{margin-top:5px;}
+#postSidebar .simplePost .postInfo{
+    background: #EEE;
+    text-indent: 5px;
+}
+#postSidebar .simplePost article{padding:2px;}
