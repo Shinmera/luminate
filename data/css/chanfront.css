@@ -1,0 +1,21 @@
+#news{
+    text-align: justify;
+    -ms-text-justify: distribute-all-lines;
+    text-justify: distribute-all-lines;
+}
+#news .box{
+    display:inline-block;
+    min-width:20%;
+    min-height:200px;
+    vertical-align:text-top;
+    margin: 2px;
+    padding: 3px;
+    box-sizing:border-box;
+    zoom: 1;
+}
+#news .stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}
