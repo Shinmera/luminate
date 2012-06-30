@@ -2,9 +2,8 @@
 //TODO: Add hooks.
 //TODO: Sanitize for v4.
 //TODO: Re-test everything.
-//TODO: Tune akismet for unknown IPs.
-//TODO: Implement mute bans properly.
-//TODO: Fix problems with board editing.
+//TODO: Implement board cleaning.
+//TODO: Implement video hiding.
 
 class Purplish{
 public static $name="Chan";

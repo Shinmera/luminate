@@ -352,6 +352,9 @@ function displayEditBoard(){
                 foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
                 $ret.='<br />Posts regenerated.';
             }
+            if(in_array('c',$_POST['rebuild'])){
+                //TODO:CLEAN
+            }
             echo('<div class="success">'.$ret.'</div>');
         }catch(Exception $ex){
             echo('<div class="failure">'.$ex->getMessage().'</div>');
@@ -400,6 +403,7 @@ function displayEditBoard(){
             <input type="checkbox" name="rebuild[]" value="b" checked /> board
             <input type="checkbox" name="rebuild[]" value="t" checked /> threads
             <input type="checkbox" name="rebuild[]" value="p" /> posts
+            <input type="checkbox" name="rebuild[]" value="c" /> clean it as well.
         <div style="<?=($existing)?'float:right':'display:none'?>">
              <input type="checkbox" name="sure" value="sure" /> I am sure I want to
              <input type="submit" name="action" value="Delete" /></div>
