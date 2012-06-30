@@ -1,1 +1,0 @@
-<? include("/var/www/Luminate/config.php");include("/var/www/Luminate/data/pages/chan/chan_500.php"); ?>
