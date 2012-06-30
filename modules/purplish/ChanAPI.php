@@ -124,7 +124,7 @@ function displayDelete(){
 }
 
 function displayEdit(){
-    global $a;
+    global $a,$c;
     if(!$a->check('chan.mod.edit'))die('Insufficient privileges.');
     $post = DataModel::getData('ch_posts','SELECT p.*,ch_boards.folder 
                                             FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
@@ -141,7 +141,14 @@ function displayEdit(){
         $_POST['options'][]='p';
         $post->options=implode(',',$_POST['options']);
         $post->saveData();
+        
         include('postgen.php');
+        $post->subject = $c->enparse($post->subject,true);
+        $post->title = $c->enparse($post->title,true);
+        $post->name = $c->enparse($post->name,true);
+        $post->trip = $c->enparse($post->trip,true);
+        $post->mail = $c->enparse($post->mail,true);
+        $post->fileOrig = $c->enparse($post->fileOrig,true);
         PostGenerator::generatePostFromObject($post);
         die('Post edited!');
     }else{
