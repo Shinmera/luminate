@@ -7,13 +7,13 @@ class BoardGenerator{
     }
 
     public static function generateBoardFromObject($board,$genposts=false,$genthreads=false){
-        global $c,$k,$t,$l;
+        global $c,$k,$t,$l,$PAGETITLE;
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/';
         $previousTheme = $t->tname;
         $t = $l->loadModule('Themes');
         $t->loadTheme("chan");
-        define("PAGETITLE",$board->title);
+        $PAGETITLE=$board->title.' - '.$c->o['chan_title'];
         
         $totalthreads = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ?",array($board->boardID,'d'));
         $totalthreads = $totalthreads[0]['COUNT(postID)'];
