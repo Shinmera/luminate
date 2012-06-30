@@ -4,9 +4,9 @@
     else                                $("#dynstyle").attr("href","<?=PROOT?>themes/chan/css/turret.css");
 </script>
 <ul class="menu" id="menu">
-        <li><a href="<?=Toolkit::url("chan","/")?>" class="menulink">TyNET</a><ul>
+        <li><a href="<?=Toolkit::url("chan","/")?>" class="menulink">TyNET</a>
             <?=$t->printMenu();?>
-        </ul></li>
+        </li>
         
         <? $boards = DataModel::getData('','SELECT boardID,title,folder FROM ch_boards');
         $cats = DataModel::getData('','SELECT `order` FROM ch_categories');
