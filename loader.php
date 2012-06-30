@@ -55,8 +55,9 @@
         }
     }
     
-    function triggerPARSE($source,$text,$formatted=true,$allowRaw=false,$blockedTags=array()){
+    function triggerPARSE($source,$text,$formatted=true,$allowRaw=false,$blockedTags=array(),$options=array()){
         $args=array("text"=>$text,"source"=>$source,"formatted"=>$formatted,"allowRaw"=>$allowRaw,"blockedTags"=>$blockedTags);
+        $args=$args+$options;
         $ret = $this->triggerHookSequentially("PARSE","CORE",$args);
         return $ret['text'];
     }
