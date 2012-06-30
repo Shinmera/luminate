@@ -2,8 +2,8 @@
 class PostGenerator{
     public static function generatePost($id,$board){
         $post = DataModel::getData('ch_posts',"SELECT * FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1", array($id,$board));
-        if(count($post)==0)throw new Exception("No such post.");
-        PostGenerator::generatePostFromObject($post[0]);
+        if($post==null)throw new Exception("No such post.");
+        PostGenerator::generatePostFromObject($post);
     }
 
     public static function generatePostFromObject($post){
@@ -20,8 +20,8 @@ class PostGenerator{
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
 
-        ob_end_clean();
-        ob_start(create_function('$buffer', 'return "";'));
+        if(BUFFER)ob_end_flush();flush();
+        ob_start();
         
         ?>
         <?='<? if(!defined("INIT"))include("'.TROOT.'config.php"); ?>'."\n"?>
@@ -75,12 +75,12 @@ class PostGenerator{
                         </a>
                     <? }
 
-                    if(strpos($post->options,"p")!==FALSE) $temp=$datagen->parseQuotes($l->triggerPARSE('Purplish',$post->subject),  $post->BID, $folder, $tID);
-                    else                                   $temp=$datagen->parseQuotes($l->triggerPARSE('Purplish',$post->subject),  $post->BID, $folder, $tID);
+                    if(strpos($post->options,"p")!==FALSE) $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($l->triggerPARSE('Purplish',$post->subject)),  $post->BID, $folder, $tID);
+                    else                                   $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($l->triggerPARSE('Purplish',$post->subject)),  $post->BID, $folder, $tID);
                     ?>
                     <article><blockquote>
                         <?='<? if(POST_SHORT===TRUE){ ?>'?>
-                            <?=substr($temp,0,$c->o['chan_maxlines']);?>
+                            <?=Toolkit::limitLines($temp,$c->o['chan_maxlines']);?>
                         <?='<? }else{ ?>'?>
                             <?=$temp;?>
                         <?='<? } ?>'?>
@@ -91,10 +91,10 @@ class PostGenerator{
         <?='<? } ?>'?>
         
         <?
-        $data = ob_get_flush();
+        $data = ob_get_contents();
         ob_end_clean();
-        echo('----------------------><br />'.$data.'<br /><-----------------------');
         file_put_contents($path,$data,LOCK_EX);
+        if(BUFFER)ob_start();
     }
 
 }

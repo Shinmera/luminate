@@ -2,34 +2,36 @@
 class ThreadGenerator{
     public static function generateThread($id,$board,$posts=false){
         $post = DataModel::getData('ch_posts',"SELECT * FROM ch_posts WHERE postID=? AND BID=? AND PID=0 ORDER BY postID DESC LIMIT 1", array($id,$board));
-        if(count($post)==0)throw new Exception("No such post.");
-        ThreadGenerator::generateThreadFromObject($post[0],$posts);
+        if($post==null)throw new Exception("No such post.");
+        ThreadGenerator::generateThreadFromObject($post,$posts);
     }
 
     public static function generateThreadFromObject($post,$posts=false){
-        global $c,$k,$t;
+        global $c,$k,$t,$l;
         $previousTheme = $t->tname;
+        $t = $l->loadModule('Themes');
         $t->loadTheme("chan");
         
         $pID=$post->postID;
         $postlist = $c->getData("SELECT postID FROM ch_posts WHERE PID=? AND BID=? AND `options` NOT LIKE ? ORDER BY postID ASC",array($pID,$post->BID,'%d%'));
+        Toolkit::assureArray($postlist);
         if($posts){
             if(!class_exists("PostGenerator"))include('postgen.php');
             PostGenerator::generatePost($pID, $post->BID);
         }
-        $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));$board=$board[0];
+        $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/threads/'.$pID.'.php';
         
         if(BUFFER)ob_end_flush;flush();
         ob_start(create_function('$buffer', 'return "";'));
         $t->loadTheme("chan");
+        define("PAGETITLE",$board->title);
         ?>
         
         <?='<? $postlist=array('.$pID?>
         <? for($i=0;$i<count($postlist);$i++){
-            if($posts)PostGenerator::generatePost($postlist[$i]['postID'], $post->BID); ?>
-            <?=','.$postlist[$i]['postID']?>
-        <? } ?>
+            echo(','.$postlist[$i]['postID']);
+         } ?>
         <?=');
         if($_GET["a"]=="postlist")die(implode(";",$postlist));
         if(is_numeric($_GET["a"]))header("Location: '.$k->url("chan",$board->folder).'/posts/".$_GET["a"].".php"); ?>'?>
