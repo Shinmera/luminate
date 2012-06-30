@@ -2,8 +2,8 @@
 //TODO: Add hooks.
 //TODO: Sanitize for v4.
 //TODO: Re-test everything.
-//TODO: Implement board cleaning.
 //TODO: Implement video hiding.
+//TODO: Investigate header issue.
 
 class Purplish{
 public static $name="Chan";

@@ -36,7 +36,7 @@ define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
 define("NO_ACCESS",'<div class="large" style="text-align:center;">You are not authorized to view this page.</div>');
 if(extension_loaded('gzip'))define("COMPRESS",TRUE);
 else                        define("COMPRESS",FALSE);
-define("BUFFER",FALSE);
+define("BUFFER",TRUE);
 if (isset($_SERVER['HTTP_CF_CONNECTING_IP'])) {
     $_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_CF_CONNECTING_IP'];
 }

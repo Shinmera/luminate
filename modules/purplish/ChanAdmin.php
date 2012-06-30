@@ -356,7 +356,7 @@ function displayEditBoard(){
                 $ret.='<br />Posts regenerated.';
             }
             if(in_array('c',$_POST['rebuild'])){
-                include('datagen.php');
+                if(!class_exists('DataGenerator'))include('datagen.php');
                 $datagen = new DataGenerator();
                 $datagen->cleanBoard($board->boardID, $board->folder);
             }
