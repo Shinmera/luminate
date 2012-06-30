@@ -71,8 +71,9 @@ function setMenu($data){
     $this->menudata=$data;
 }
 
-function openPage($pagetitle){
-    define("PAGETITLE",$pagetitle);
+function openPage($pgtitle){
+    global $PAGETITLE;
+    $PAGETITLE=$pgtitle;
     if($this->tname=="")$this->loadTheme("default",false);
     include(PAGEPATH.'global_header.php');
     include(ROOT.THEMEPATH.$this->tname.'/'.$this->headerf);

@@ -1,9 +1,9 @@
-<? global $c,$t ?>
+<? global $c,$t,$PAGETITLE; ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <title><?=PAGETITLE?> - <?=$c->o['sitename']?></title>
+    <title><?=$PAGETITLE?> - <?=$c->o['sitename']?></title>
     
     <? for($i=0;$i<count($t->css);$i++){
         if(substr($t->css[$i],0,1)=='/')echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css".$t->css[$i]."' />\n");

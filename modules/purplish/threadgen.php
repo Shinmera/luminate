@@ -7,10 +7,11 @@ class ThreadGenerator{
     }
 
     public static function generateThreadFromObject($post,$posts=false){
-        global $c,$k,$t,$l;
+        global $c,$k,$t,$l,$PAGETITLE;
         $previousTheme = $t->tname;
         $t = $l->loadModule('Themes');
         $t->loadTheme("chan");
+        $PAGETITLE=$board->title.' - '.$c->o['chan_title'];
         
         $pID=$post->postID;
         $postlist = $c->getData("SELECT postID FROM ch_posts WHERE PID=? AND BID=? AND `options` NOT LIKE ? ORDER BY postID ASC",array($pID,$post->BID,'%d%'));
@@ -24,8 +25,6 @@ class ThreadGenerator{
         
         if(BUFFER)ob_end_flush;flush();
         ob_start(create_function('$buffer', 'return "";'));
-        $t->loadTheme("chan");
-        define("PAGETITLE",$board->title);
         ?>
         
         <?='<? $postlist=array('.$pID?>
@@ -39,7 +38,7 @@ class ThreadGenerator{
         <? require_once(PAGEPATH.'chan/chan_header.php'); ?>
         <?=write_header($post->title.' - '.$c->o['chan_title'],$board,$pID,$post->options.$board->options,$post->ip);?>
 
-        <input type="hidden" id="view" value="thread" />';
+        <input type="hidden" id="view" value="thread" />
         <div class="threadToolbar">
             <a href="<?=$k->url("chan",$board->folder)?>">Return</a> 
             <a href="?b=-50">Last 50</a> 
