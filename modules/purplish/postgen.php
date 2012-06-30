@@ -15,7 +15,7 @@ class PostGenerator{
         $folder = $c->getData("SELECT folder FROM ch_boards WHERE boardID=?",array($post->BID));$folder=$folder[0]['folder'];
         Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$folder.'/posts/');
         $path = ROOT.DATAPATH.'chan/'.$folder.'/posts/'.$pID.'.php';
-        $tpath= PROOT.$folder.'/thread/'.$tID.'.php';
+        $tpath= PROOT.$folder.'/threads/'.$tID.'.php';
         $type = '';
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
@@ -63,24 +63,26 @@ class PostGenerator{
                         <?='<? } ?>'?>
                     </span> <br />
                     <? if($post->file!=""){ ?>
-                        <span class="fileName">File <?=$post->fileOrig?></span> 
+                        <span class="fileName">File <?=$post->fileorig?></span> 
                         (<a class="fileLink" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>"><?=$post->file?></a>) 
-                        <span class="fileSize"><?=$k->displayFilesize($post->fileSize)?></span> 
-                        <span class="fileDimensions"><?=$post->fileDim?></span> 
+                        <span class="fileSize"><?=$k->displayFilesize($post->filesize)?></span> 
+                        <span class="fileDimensions"><?=$post->filedim?></span> 
                     <? } ?>
                 </div><div class="postContent">
                     <? if($post->file!=""){ ?>
-                        <a class="postImageLink" title="<?=$post->fileOrig?>" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>">
-                            <img class="postImage" alt="<?=$post->fileOrig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
+                        <a class="postImageLink" title="<?=$post->fileorig?>" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>">
+                            <img class="postImage" alt="<?=$post->fileorig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
                         </a>
                     <? }
-
-                    if(strpos($post->options,"p")!==FALSE) $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($l->triggerPARSE('Purplish',$post->subject)),  $post->BID, $folder, $tID);
-                    else                                   $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($l->triggerPARSE('Purplish',$post->subject)),  $post->BID, $folder, $tID);
+                    $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($post->subject),  $post->BID, $folder, $tID);
+                    if(strpos($post->options,"p")!==FALSE)$temp=$l->triggerPARSE('Purplish',$temp,true,true,array(),array('suites'=>array('*','deftag')));
+                    else                                  $temp=$l->triggerPARSE('Purplish',$temp);
+                    $shorttemp=str_replace("\n",'<br />',Toolkit::limitLines(str_replace('<br />',"\n",$temp),$c->o['chan_maxlines']));
+                    
                     ?>
                     <article><blockquote>
                         <?='<? if(POST_SHORT===TRUE){ ?>'?>
-                            <?=Toolkit::limitLines($temp,$c->o['chan_maxlines']);?>
+                            <?=($shorttemp==$temp)?$temp:$shorttemp.'<hr /><a href="'.$tpath.'#'.$pID.'" class="direct">Post abbreviated.</a>'?>
                         <?='<? }else{ ?>'?>
                             <?=$temp;?>
                         <?='<? } ?>'?>
