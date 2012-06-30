@@ -3,9 +3,9 @@ class DataGenerator{
 
     function mergeThread($threadID,$board,$newID){
         global $c;
-        if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
-        if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
-        if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
+        if(!class_exists("BoardGenerator"))include('boardgen.php');
+        if(!class_exists("ThreadGenerator"))include('threadgen.php');
+        if(!class_exists("PostGenerator"))include('postgen.php');
 
         $c->query('UPDATE ch_posts SET PID=? WHERE (postID=? OR PID=?) AND BID=?',array($threadID,$threadID,$board));
         
@@ -15,9 +15,9 @@ class DataGenerator{
     
     function moveThread($threadID,$oldboard,$newboard){
         global $c,$a,$k;
-        if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
-        if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
-        if(!class_exists("PostGenerator"))include(TROOT.'modules/chan/postgen.php');
+        if(!class_exists("BoardGenerator"))include('boardgen.php');
+        if(!class_exists("ThreadGenerator"))include('threadgen.php');
+        if(!class_exists("PostGenerator"))include('postgen.php');
         if($oldboard==$newboard)return $threadID;
         
         $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file,subject FROM ch_posts WHERE (PID=? OR postID=?) AND BID=? ORDER BY postID ASC",array($threadID,$threadID,$oldboard));
@@ -88,8 +88,8 @@ class DataGenerator{
     }
 
     function deleteByIP($ip){
-        if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
-        if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
+        if(!class_exists("BoardGenerator"))include('boardgen.php');
+        if(!class_exists("ThreadGenerator"))include('threadgen.php');
         $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file FROM ch_posts WHERE ip=?",array($ip));
         $board= DataModel::getData('ch_boards',"SELECT folder FROM ch_boards WHERE boardID=?",array($post[0]->BID));
 
@@ -118,25 +118,25 @@ class DataGenerator{
 
     function deletePost($postID,$board,$generate=true,$imageonly=false){
         global $k,$a,$c;
-        if(!class_exists("ThreadGenerator"))include(TROOT.'modules/chan/threadgen.php');
-        if(!class_exists("BoardGenerator"))include(TROOT.'modules/chan/boardgen.php');
+        if(!class_exists("ThreadGenerator"))include('threadgen.php');
+        if(!class_exists("BoardGenerator"))include('boardgen.php');
         
         $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file FROM ch_posts WHERE postID=? AND BID=? AND options NOT REGEXP ? LIMIT 1",array($postID,$board,'d'));
         if(count($post)==0)throw new Exception("No such post.");
         if(!$a->check("chan.mod.delete")&&$_POST['password']!=$post->password)throw new Exception("No Access.");
-        if($post[0]->PID==0)$thread=$postID;
-        else                $thread=$post[0]->PID;
+        if($post->PID==0)$thread=$postID;
+        else             $thread=$post->PID;
 
         //DATABASE
         if(!$imageonly)$c->query("UPDATE ch_posts SET `options`=CONCAT(`options`,'d') WHERE (postID=? OR PID=?) AND BID=?",array($postID,$postID,$board));
         
         //FILE
-        $boardo = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($board));
+        $boardo = DataModel::getData('ch_boards',"SELECT folder FROM ch_boards WHERE boardID=?",array($board));
         if(!$imageonly){
-            $this->deleteTraces($boardo[0]->folder,$postID,$post[0]->file);
-            if($post[0]->PID==0)$this->cleanThread($postID);
+            $this->deleteTraces($boardo->folder,$postID,$post->file);
+            if($post->PID==0)$this->cleanThread($postID);
         }else{
-            $this->deleteTraces($boardo[0]->folder,$postID,$post[0]->file,false,false);
+            $this->deleteTraces($boardo->folder,$postID,$post->file,false,false);
         }
 
         if($generate){
@@ -243,52 +243,64 @@ class DataGenerator{
         if(count($name)==0||strpos($board->options,"n")!==FALSE)$name[0]="Anonymous";
         if(!$a->check("chan.mod")||!is_array($options))$options=array();
         if($a->check("chan.mod.*"))$options[]="p";
-        $banned=$k->checkBanned($_SERVER['REMOTE_ADDR']);
-        if($banned!==FALSE){
-            $uID=array_search($banned[1],$c->msBIP);
-            if($c->msBReason[$uID]=="/mute")$options[]="h";
+        $banned=DataModel::getData('','SELECT mute FROM ch_bans WHERE ip LIKE ? ORDER BY mute DESC LIMIT 1',array($_SERVER['REMOTE_ADDR']));
+        if($banned!=null){
+            if($banned->mute=='1')$options[]="h";
             else throw new Exception("You are B&.");
         }
 
         //CREATE POST INSTANCE
-        $post = new ChanDataPost(NULL,$board->boardID,$thread,$name[0],$mail[0],$trip,$_POST['vartitle'],
-                                 $text,time(),time(),$password,$filename,$file['name'],
-                                 $file['size'],$dim,$_SERVER['REMOTE_ADDR'],','.implode(",",$options));
-        $post->saveToDB();
+        $post = DataModel::getHull('ch_posts');
+        $post->BID=$board->boardID;
+        $post->PID=$thread;
+        $post->name=$name[0];
+        $post->mail=$mail[0];
+        $post->trip=$trip;
+        $post->title=$_POST['vartitle'];
+        $post->subject=$text;
+        $post->time=time();
+        $post->bumptime=time();
+        $post->password=$password;
+        $post->file=$filename;
+        $post->fileorig=$file['name'];
+        $post->filesize=$file['size'];
+        $post->filedim =$dim;
+        $post->ip=$_SERVER['REMOTE_ADDR'];
+        $post->options=implode(',',$options);
+        $post->insertData();
+        $post->postID=$c->insertID();
 
         //UPDATE THREAD
         if($thread!=0){
-            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1;", array($thread,$board->boardID));
-            if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail))$tpost[0]->bumptime=time();
+            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board->boardID));
+            if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail))$tpost->bumptime=time();
             $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board->boardID,'d'));
-            if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost[0]->options.="e";
-            $tpost[0]->saveToDB();
+            if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.="e";
+            $tpost->saveData();
         }else{
             $thread=$post->postID;
         }
-        $post->subject = $p->enparse($post->subject);
-        $post->title = $p->enparse($post->title);
-        $post->name = $p->enparse($post->name);
-        $post->trip = $p->enparse($post->trip);
-        $post->mail = $p->enparse($post->mail);
-        $post->fileOrig = $p->enparse($post->fileOrig);
+        $post->subject = $c->enparse($post->subject);
+        $post->title = $c->enparse($post->title);
+        $post->name = $c->enparse($post->name);
+        $post->trip = $c->enparse($post->trip);
+        $post->mail = $c->enparse($post->mail);
+        $post->fileOrig = $c->enparse($post->fileOrig);
         PostGenerator::generatePostFromObject($post);
         ThreadGenerator::generateThread($thread,$board->boardID);
         BoardGenerator::generateBoard($board->boardID);
 
         if(in_array("noko",$mail)){
-            if($thread!=0)header('Location: '.$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
-            else          header('Location: '.$k->url("chan",$board->folder.'/threads/'.$post->postID.'.php'));
+            header('Location: '.$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
         }else{
-                          header('Location: '.$k->url("chan",$board->folder.'/'));
+            header('Location: '.$k->url("chan",$board->folder.'/'));
         }
     }
 
     function calculateTrip($trip) {
         global $c,$k,$p;
-        $trip = $p->convertCharset($trip);
-        $trip = mb_convert_encoding($trip,'SJIS','UTF-8');
         $trip = $c->enparse($trip);
+        $trip = mb_convert_encoding($trip,'SJIS','UTF-8');
         $predefined=$k->stringToVarKey($c->o['chan_trips'],"\n");
         if(array_key_exists('#'.$trip, $predefined))return '!'.$predefined['#'.$trip];
         $trip=explode("#",$trip);
