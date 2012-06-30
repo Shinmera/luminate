@@ -178,10 +178,10 @@ class DataGenerator{
         if($file['tmp_name']=="" && strpos($board->options,"f")!==FALSE) throw new Exception("You need to post a file.");
         
         //SAVE FIELDS
-        setcookie("chan_post_pw",$c->enparse($password),time()+60*60*$c->o['cookie_life_h'],'/');
+        setcookie("chan_post_pw",$c->enparse($password),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         if(strpos($board->options,"n")===FALSE){;
-            setcookie("chan_post_name",$c->enparse($name),time()+60*60*$c->o['cookie_life_h'],'/');
-            setcookie("chan_post_mail",$c->enparse($mail),time()+60*60*$c->o['cookie_life_h'],'/');
+            setcookie("chan_post_name",$c->enparse($name),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+            setcookie("chan_post_mail",$c->enparse($mail),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         }
 
         //CHECK THREAD
@@ -280,12 +280,12 @@ class DataGenerator{
         }else{
             $thread=$post->postID;
         }
-        $post->subject = $c->enparse($post->subject);
-        $post->title = $c->enparse($post->title);
-        $post->name = $c->enparse($post->name);
-        $post->trip = $c->enparse($post->trip);
-        $post->mail = $c->enparse($post->mail);
-        $post->fileOrig = $c->enparse($post->fileOrig);
+        $post->subject = $c->enparse($post->subject,true);
+        $post->title = $c->enparse($post->title,true);
+        $post->name = $c->enparse($post->name,true);
+        $post->trip = $c->enparse($post->trip,true);
+        $post->mail = $c->enparse($post->mail,true);
+        $post->fileOrig = $c->enparse($post->fileOrig,true);
         PostGenerator::generatePostFromObject($post);
         ThreadGenerator::generateThread($thread,$board->boardID);
         BoardGenerator::generateBoard($board->boardID);
@@ -361,13 +361,11 @@ class DataGenerator{
         $threadBoardName=$boardname;
         $threadThreadID=$threadid;
 
-        $s=str_ireplace("<br />","\n",$s);
-        $s=str_ireplace("<br/>","\n",$s);
-        $s=str_ireplace("<br>","\n",$s);
-        //DIRECT QUOTES
-        $s = preg_replace_callback('`>{2,4}/?((\w+/|[0-9])([0-9]+|([a-zA-Z]+)(/[0-9]*)?)?)`s', array(&$this,'parseReference'), $s);
-        //LINE QUOTES
+        $s=str_ireplace(array('<br />','<br/>','<br>'),"\n",$s);
+        
+        $s = preg_replace_callback('`(&gt;){2,4}/?((\w+/|[0-9])([0-9]+|([a-zA-Z]+)(/[0-9]*)?)?)`s', array(&$this,'parseReference'), $s);
         $s = preg_replace('/^(&gt;[^>](.*))\n/m', '<span class="quoteLine">\\1</span>'."\n", $s);
+        
         $s=str_ireplace("\n","<br />",$s);
         return $s;
     }
@@ -376,67 +374,70 @@ class DataGenerator{
         global $threadBoardName,$threadThreadID;
         $sites=array('arch'=>'http://stevenarch.tymoon.eu/',
                      '4chan'=>'http://4chan.org/');
-        $matches[0]=str_replace('>','&gt;',$matches[0]);
-        $matches[2]=str_replace('/','',$matches[2]);
+        $matches[3]=str_replace('/','',$matches[3]);
         
-        if(is_numeric($matches[1])){
+        if(is_numeric($matches[2])){
             //Same board reference
-            $id=$matches[1];
+            $id=$matches[2];
             $board=$threadBoardName;
             $href=PROOT.$threadBoardName.'/threads/'.$threadThreadID.'.php#'.$id;
-        }else if($matches[3]==''){
+        }else if($matches[4]==''){
             //Board reference
             $id='';
-            $board=$matches[2];
-            $href=PROOT.$matches[2];
-        }else if(is_numeric($matches[3])){
+            $board=$matches[3];
+            $href=PROOT.$matches[3];
+        }else if(is_numeric($matches[4])){
             //Inter board reference
-            $post = DataModel::getData('','SELECT PID FROM ch_posts WHERE postID=? AND BID=(SELECT boardID FROM ch_boards WHERE folder LIKE ?)',array($matches[3],$matches[2]));
+            $post = DataModel::getData('','SELECT PID FROM ch_posts WHERE postID=? AND BID=(SELECT boardID FROM ch_boards WHERE folder LIKE ?)',array($matches[4],$matches[3]));
             if($post==null)return $matches[0];
-            if($post->PID==0)$post->PID=$matches[3];
+            if($post->PID==0)$post->PID=$matches[4];
             
-            $id=$matches[3];
-            $board=$matches[2];
-            $href=PROOT.$matches[2].'/threads/'.$post->PID.'.php#'.$matches[3];
+            $id=$matches[4];
+            $board=$matches[3];
+            $href=PROOT.$matches[3].'/threads/'.$post->PID.'.php#'.$matches[4];
         }else if($matches[5]==''){
             //Different site, board reference
-            if(!array_key_exists($matches[2],$sites))return $matches[0];
+            if(!array_key_exists($matches[3],$sites))return $matches[0];
             $id='';$board='';
-            $href=$sites[$matches[2]].$matches[4];
+            $href=$sites[$matches[3]].$matches[5];
         }else{
             //Different site, inter board reference
-            if(!array_key_exists($matches[2],$sites))return $matches[0];
+            if(!array_key_exists($matches[3],$sites))return $matches[0];
             $id='';$board='';
-            $href=$sites[$matches[2]].$matches[4].'/'.$matches[5];
+            $href=$sites[$matches[3]].$matches[5].'/'.$matches[6];
         }
         return '<a class="directQuote" id="'.$id.'" board="'.$board.'" href="'.$href.'">'.$matches[0].'</a>';
     }
 
-    function cleanBoard($boardID){
+    function cleanBoard($boardID,$folder=null){
         global $c;
-        $board= ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($boardID));
-        echo("Database...<br />");
+        if($folder==null){
+            $folder= DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=?",array($boardID));
+            $folder=$folder->folder;
+        }
+        echo("<div class='success'>Cleaning:<br />Database...<br />");
         $c->query("DELETE FROM ch_posts WHERE BID=? AND options REGEXP ?",array($boardID,'d'));
         
-        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/files/_*.php');
+        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/files/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn)  {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/_*.php');
+        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/thumbs/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn) {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Posts: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/posts/_*.php');
+        echo("Posts: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/posts/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn)  {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Threads: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$board->folder.'/threads/_*.php');
+        echo("Threads: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/threads/_*.php');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn){echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
+        echo('</div>');
         flush();
     }
 
@@ -458,9 +459,10 @@ class DataGenerator{
 
     function cleanThread($threadID){
         $posts = DataModel::getData('ch_posts',"SELECT postID,BID,file FROM ch_posts WHERE PID=? OR postID=? ORDER BY postID DESC",array($threadID,$threadID));
-        if(count($posts)==0)return false;
-        $board = ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($posts[0]->BID));
-        if(count($board)==0)return false;
+        if($posts==null)return false;
+        if(!is_array($posts))$posts=array($posts);
+        $board = DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=?",array($posts[0]->BID));
+        if($board==null)return false;
         for($i=1;$i<count($posts);$i++){
             $this->deleteTraces($board->folder,$posts[$i]->postID,$posts[$i]->file);
         }
