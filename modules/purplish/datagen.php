@@ -404,7 +404,7 @@ class DataGenerator{
             //Different site, inter board reference
             if(!array_key_exists($matches[3],$sites))return $matches[0];
             $id='';$board='';
-            $href=$sites[$matches[3]].$matches[5].'/'.$matches[6];
+            $href=$sites[$matches[3]].$matches[5].$matches[6];
         }
         return '<a class="directQuote" id="'.$id.'" board="'.$board.'" href="'.$href.'">'.$matches[0].'</a>';
     }

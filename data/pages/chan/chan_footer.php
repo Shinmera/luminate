@@ -40,8 +40,8 @@
     $time = explode(' ',microtime());$time = $time[1]+$time[0];$total_time = round(($time-$GEN_STARTTIME),4); ?>
     <?='<? $time = explode(" ",microtime());$time = $time[1]+$time[0];$total_time = round(($time-STARTTIME),4); ?>'?>
     <div class="footer">
-        &copy;2010-<?=date("Y")?> TymoonNET/NexT, all rights reserved.<br />
         Running TyNET-<?=$CORE::$version?><br />
+        &copy;2010-<?=date("Y")?> TymoonNET/NexT, all rights reserved.<br />
         Static/Dynamic page generated in <?=$total_time?>/<?='<?=$total_time?>'?> seconds.<br />
     </div>
     
