@@ -36,6 +36,8 @@ function displayPanel(){
                 <a href="<?=$k->url("admin","Chan/categories")?>"><li>Categories</li></a><? } ?>
                 <? if($a->check("chan.admin.boards")){ ?>
                 <a href="<?=$k->url("admin","Chan/boards")?>"><li>Boards</li></a><? } ?>
+                <? if($a->check("chan.admin.boards")){ ?>
+                <a href="<?=$k->url("admin","Chan/edit")?>" style="display:none;"><li>Edit Boards</li></a><? } ?>
                 <? if($a->check("chan.admin.filetypes")){ ?>
                 <a href="<?=$k->url("admin","Chan/filetypes")?>"><li>Filetypes</li></a><? } ?>
                 <? if($a->check("chan.mod.latestposts")){ ?>
@@ -329,6 +331,7 @@ function displayEditBoard(){
                 file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/files/index.php',$deniedpage);
                 file_put_contents(ROOT.DATAPATH.'chan/'.$board->folder.'/thumbs/index.php',$deniedpage);
                 $board->insertData();
+                $board->boardID=$c->insertID();
                 $_POST['rebuild'][]='b';
                 $ret.='Board added.';
             }
@@ -353,7 +356,9 @@ function displayEditBoard(){
                 $ret.='<br />Posts regenerated.';
             }
             if(in_array('c',$_POST['rebuild'])){
-                //TODO:CLEAN
+                include('datagen.php');
+                $datagen = new DataGenerator();
+                $datagen->cleanBoard($board->boardID, $board->folder);
             }
             echo('<div class="success">'.$ret.'</div>');
         }catch(Exception $ex){
