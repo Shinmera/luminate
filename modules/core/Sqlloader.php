@@ -122,8 +122,7 @@ var $lastQuery="";
                 if(is_int($param)) {            $types .= 'i';
                 } elseif (is_float($param)) {   $types .= 'd';
                 } elseif (is_string($param)) {  $types .= 's';
-                                                $param=$this->enparse($param);
-                                                if($secureHTML)$param=$this->secureHTML($param);
+                                                $param=$this->enparse($param,$secureHTML);
                 } else {                        $types .= 'b';
                 }
             }
@@ -162,7 +161,7 @@ var $lastQuery="";
         
     }
     
-    function enparse($s){
+    function enparse($s,$secure=false){
         if(!mb_check_encoding($s, 'UTF-8')){
             mb_substitute_character('none');
             $s = mb_convert_encoding($s, 'UTF-8');
@@ -171,6 +170,7 @@ var $lastQuery="";
         $s = str_replace("\\'","'",$s);
         $s = str_replace('\\"','"',$s);
         $s = str_replace('\\\\','\\',$s);
+        if($secure)$s=$this->secureHTML ($s);
         return $s;
     }
     
