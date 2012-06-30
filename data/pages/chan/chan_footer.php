@@ -34,7 +34,7 @@
     <div id="popup" class="popup" style="display:none;">Please wait...</div>
     <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
     <img id="previewImage" style="display:none;max-width:400px;max-height:400px;float:left;position:absolute;" alt="preview"/>
-
+    <script type="text/javascript">var boardName = "<?=$boardfolder?>";</script>
     
     <? global $GEN_STARTTIME;
     $time = explode(' ',microtime());$time = $time[1]+$time[0];$total_time = round(($time-$GEN_STARTTIME),4); ?>
