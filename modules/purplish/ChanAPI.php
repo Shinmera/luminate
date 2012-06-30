@@ -151,10 +151,10 @@ function displayEdit(){
         if($post->file!='')
             $editor->addCustom('<img src="'.DATAPATH.'chan/'.$post->folder.'/thumbs/'.$post->file.'" style="float:left;" alt="Picture" />');
         
-        $editor->addTextField('name', 'Name', $post->name, 'text', 'Anonymous');
-        $editor->addTextField('trip', 'Trip', $post->trip, 'text', '!!Anonymous');
-        $editor->addTextField('mail', 'Mail', $post->mail, 'text', 'sage');
-        $editor->addTextField('title', 'title', $post->title, 'text', '...');
+        $editor->addTextField('name', 'Name', $post->name, 'text', 'placeholder="Anonymous"');
+        $editor->addTextField('trip', 'Trip', $post->trip, 'text', 'placeholder="!!Anonymous"');
+        $editor->addTextField('mail', 'Mail', $post->mail, 'text', 'placeholder="sage"');
+        $editor->addTextField('title', 'Title', $post->title, 'text', 'placeholder="..."');
         $editor->addCheckbox('options[]', 'Hidden', 'h', strpos($post->options,'h')!==FALSE);
         $editor->addCheckbox('options[]', 'Modpost', 'm',strpos($post->options,'m')!==FALSE);
         $editor->addCustom('
@@ -228,6 +228,7 @@ function displayPost(){
 }
 
 function displayReport(){
+    global $a;
     if(!is_array($_POST['varposts'])||$_POST['varposts']=='')die('No posts selected.');
     if(!Toolkit::updateTimeout('chan_report', 5))            die('Please wait 5 seconds between reports or deletions.');
     if($_POST['submitter']=='Report'){
@@ -248,6 +249,8 @@ function displayReport(){
     }else
     if($_POST['submitter']=='Delete'){
         $ret='';
+        include('datagen.php');
+        $datagen = new DataGenerator();
         foreach($_POST['varposts'] AS $post){
             try{
                 if($_POST['fileonly']==="1")
