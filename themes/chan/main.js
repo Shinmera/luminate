@@ -254,17 +254,17 @@ function registerSelectScroll(){
             if($(this).parent().attr("id")!="previewPost"){
                 $(".post,.postOP").removeClass('selected');
                 $('#P'+id).addClass('selected');
-                $('html,body').animate({scrollTop: $('#P'+id).offset().top-40},'slow');
+                $('html,body').animate({scrollTop: $('#P'+id).offset().top-40},200);
                 real=true;
             }
         });
-        if(real)return false;
+        if(real&&!$(this).hasClass('direct'))return false;
         else return true;
     });
 
     if($('#P'+anchor).length>0){
         $('#P'+anchor).addClass('selected');
-        $('html,body').animate({scrollTop: $('#P'+anchor).offset().top-40},'slow');
+        $('html,body').animate({scrollTop: $('#P'+anchor).offset().top-40},200);
     }
 }
 
