@@ -38,9 +38,9 @@
         foreach($cats as $cat){
             $order = explode(',',$cat->order);
             foreach($order AS $bID){
-                foreach($boards as $board){
-                    if($board->boardID==$bID){
-                        ?><li><a href="<?=PROOT?><?=$board->folder?>"><?=$board->title?></a></li><? 
+                foreach($boards as $bboard){
+                    if($bboard->boardID==$bID){
+                        ?><li><a href="<?=PROOT?><?=$bboard->folder?>"><?=$bboard->title?></a></li><? 
                         break;
                     }
                 }
