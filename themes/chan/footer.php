@@ -17,6 +17,7 @@
 <div id="popup" class="popup" style="display:none;">Please wait...</div>
 <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
 <img id="previewImage" style="display:none;max-width:400px;max-height:400px;float:left;position:absolute;" alt="preview"/>
+<link rel="alternate" type="application/rss+xml" title="<?=$c->o['chan_title']?> Latest Posts Feed" href="<?=Toolkit::url('api','chan/rss')?>" />
 
 <? global $c;
 $time = explode(' ',microtime());

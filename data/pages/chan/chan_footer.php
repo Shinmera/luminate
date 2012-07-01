@@ -35,6 +35,12 @@
     <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
     <img id="previewImage" style="display:none;max-width:400px;max-height:400px;float:left;position:absolute;" alt="preview"/>
     <script type="text/javascript">var boardName = "<?=$boardfolder?>";</script>
+    <link rel="alternate" type="application/rss+xml" title="<?=$c->o['chan_title']?> Latest Posts Feed" href="<?=Toolkit::url('api','chan/rss')?>" />
+    <link rel="alternate" type="application/rss+xml" title="/<?=$boardfolder?>/ Thread Feed" href="<?=Toolkit::url('api','chan/rss/board/?bid='.$board)?>" />
+    <? if($thread!=0){ ?>
+        <link rel="alternate" type="application/rss+xml" title="<?=$title?> Post Feed" href="<?=Toolkit::url('api','chan/rss/thread/?id='.$thread.'&bid='.$board)?>" />
+    <? } ?>
+    
     
     <? global $GEN_STARTTIME;
     $time = explode(' ',microtime());$time = $time[1]+$time[0];$total_time = round(($time-$GEN_STARTTIME),4); ?>
