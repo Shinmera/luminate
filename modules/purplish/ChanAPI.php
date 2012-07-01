@@ -21,8 +21,16 @@ function display(){
         case 'options': $this->displayOptions();    break;
         case 'watch':   $this->displayThreadWatch();break;
         case 'report':  $this->displayReport();     break;
+        case 'rss':     $this->displayRSS();        break;
         default:        echo('Purplish v'.$chan::$version.' / API'.$this::$version);break;
     }
+}
+
+function displayRSS(){
+    global $l,$params;
+    $params=array_slice($params,1);
+    $rss = $l->loadModule('ChanRSS');
+    $rss->display();
 }
 
 function displayMove(){
@@ -286,10 +294,11 @@ function displayOptions(){
         <input type="checkbox" value="s" id="cbs" /><label style="width:200px;display:inline-block;vertical-align:middle">Scroll to post when selecting</label><br />
         <input type="checkbox" value="q" id="cbq" /><label style="width:200px;display:inline-block;vertical-align:middle">Show post quote previews</label><br />
         <input type="checkbox" value="w" id="cbw" /><label style="width:200px;display:inline-block;vertical-align:middle">Always show watched threads</label><br />
+        <input type="checkbox" value="v" id="cbv" /><label style="width:200px;display:inline-block;vertical-align:middle">Hide embedded videos</label><br />
         <input type="submit" id="saveOptions" value="Save" /> 
         <span id="saveResult" style="color:red;font-weight:bold;"></span>
     </form><script type="text/javascript">
-        var ops = ['u','p','e','h','s','q','w','f'];
+        var ops = ['u','p','e','h','s','q','w','f','v'];
         for(var i=0;i<ops.length;i++){
             if(options.indexOf(ops[i])!=-1)$("#cb"+ops[i]).prop("checked", true);
         }
