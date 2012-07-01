@@ -25,7 +25,7 @@
     <?if(file_exists(PAGEPATH.'chan_glob_header.php'))echo(file_get_contents(PAGEPATH.'chan_glob_header.php')); ?>
     <div class="boardTitle"><?=$board->title?></div>
 
-    
+    <? $l->triggerHook('header','Purplish',array($title,$board,$thread)); ?>
 
     <ul class="menu" id="menu">
         <li><a href="<?=Toolkit::url("chan","/")?>" class="menulink">TyNET</a><ul>
@@ -69,6 +69,8 @@
                 <?='<? $temp=$c->getData("SELECT COUNT(ip) FROM ch_reports",array());echo($temp[0]["COUNT(ip)"]); ?>'?> )</a>
             </ul></li>
         <?='<? } ?>'?>
+            
+        <? $l->triggerHook('menu','Purplish',array($title,$board,$thread)); ?>
     </ul>
 
     
@@ -141,6 +143,7 @@
                 <input type="hidden" name="varboard" id="varboard" value="<?=$board->boardID?>" />
                 <input type="hidden" name="varthread" id="varthread" value="<?=$thread?>" />
                 <div class="postResponse" id="postResponse"></div>
+                <? $l->triggerHook('form','Purplish',array($title,$board,$thread)); ?>
             </form></div>
         <?='<? } ?>'?>
     <? } ?>

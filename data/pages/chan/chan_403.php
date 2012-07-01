@@ -1,5 +1,5 @@
 <? header('HTTP/1.0 500 denied'); ?>
-<? global $c;?>
+<? global $c,$l;?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -25,6 +25,7 @@ while(($file=readdir($dir))!==FALSE){
             <blockquote>
                 <h2>Hm, it looks like we can't allow you to see this!</h2>
                 Perhaps you simply forgot to <a href="<?=Toolkit::url('login')?>">log in</a>?<br />
+                <? $l->triggerHook('403','Purplish') ?>
             </blockquote>
         </article>
     </div>

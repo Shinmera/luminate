@@ -9,6 +9,7 @@
     <div class="box <?=implode(' ',$box->classes)?>">
         <h2><?=$box->title?></h2>
         <?=$l->triggerPARSE('Purplish',$box->text);?>
+        <? $l->triggerHook('frontBox','Purplish',$box); ?>
     </div>
     <? } ?>
     <div class="stretch"></div>
@@ -19,6 +20,7 @@
                                        FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
                                        WHERE p.options NOT REGEXP ?
                                        ORDER BY time DESC LIMIT ?',array('h',$c->o['chan_frontposts']));
+    $posts = $l->triggerHookSequentially('frontPosts','Purplish',$posts);
     Toolkit::assureArray($posts);
     foreach($posts as $post){
         if($post->PID==0)$post->PID=$post->postID; ?>
