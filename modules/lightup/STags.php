@@ -17,12 +17,13 @@ class TAGTag extends Tag{
         $this->args = array('tag' => array('name'=>'tag',  'type'=>'STRI','required'=>true,'default'=>''),
                             'class'=>array('name'=>'class','type'=>'TEXT','required'=>false,'default'=>''),
                             'style'=>array('name'=>'style','type'=>'TEXT','required'=>false,'default'=>''),
-                            'extra'=>array('name'=>'extra','type'=>'TEXT','required'=>false,'default'=>''));
+                            'extra'=>array('name'=>'extra','type'=>'TEXT','required'=>false,'default'=>''),
+                            'force'=>array('name'=>'force','type'=>'BOOL','required'=>false,'default'=>false));
         $args = $this->checkArguments($args);
         if($args===FALSE)return FALSE;
         $this->makeVarsInArgs($args);
         
-        if(trim($content)=='')
+        if(trim($content)==''&&$args['force'][0]==false)
             $content='$r.=\'<'.$args['tag'][0].' class="'.$args['class'][0].'" style="'.$args['style'][0].'" '.$args['extra'][0].' />\';';
         else
             $content='$r.=\'<'.$args['tag'][0].' class="'.$args['class'][0].'" style="'.$args['style'][0].'" '.$args['extra'][0].' >\';'.$content.'$r.=\'</'.$args['tag'][0].'>\';';
@@ -149,6 +150,22 @@ class REPLACETag extends Tag{
     }
 }
 
+class REGEXTag extends Tag{
+    function parse($content,$args){
+        $this->args = array('search'=> array('name'=>'search',  'type'=>'TEXT','required'=>true,'default'=>''),
+                            'replace'=>array('name'=>'replace', 'type'=>'TEXT','required'=>true,'default'=>''),
+                            'options'=>array('name'=>'options', 'type'=>'STRI','required'=>false,'default'=>'is'),
+                            'limit'=>  array('name'=>'limit',   'type'=>'INTE','required'=>false,'default'=>-1),
+                            'counter'=>array('name'=>'counter', 'type'=>'STRI','required'=>false,'default'=>'count'));
+        $args = $this->checkArguments($args);
+        if($args===FALSE)return FALSE;
+        $this->makeVarsInArgs($args);
+        $content = $this->makeVarsInString($content);
+        
+        return 'preg_replace(\'`'.$args['search'][0].'`'.$args['options'][0].'\',\''.$args['replace'][0].'\','.$content.','.$args['limit'][0].',$v[\''.$args['counter'].'\'][0])';
+    }
+}
+
 class MATHTag extends Tag{
     function parse($content,$args){
         global $k;
@@ -191,6 +208,17 @@ class MATHTag extends Tag{
     }
 }
 
+class URLARGSTAG extends Tag{
+    function parse($content,$args){
+        $this->args = array('var'=> array('name'=>'var',  'type'=>'STRI','required'=>false,'default'=>'params'));
+        $args = $this->checkArguments($args);
+        $this->makeVarsInArgs($args);
+        $content = $this->makeVarsInString($content);
+        
+        return 'parse_str( parse_url( \''.$content.'\' , PHP_URL_QUERY ), $v["'.$args['var'][0].'"] );';
+    }
+}
+
 class BAILOUTTag extends Tag{
     function parse($content,$args){
         return 'return FALSE;';
@@ -203,6 +231,17 @@ class VALIDATETag extends Tag{
         $args = $this->checkArguments($args);
         if($args===FALSE)return 'FALSE';
         else             return 'TRUE';
+    }
+}
+
+class AUTHTag extends Tag{
+    function parse($content,$args){
+        $this->args = array('perm'=> array('name'=>'perm',  'type'=>'TEXT','required'=>false,'default'=>'base.*'));
+        $args = $this->checkArguments($args);
+        $this->makeVarsInArgs($args);
+        $content = $this->makeVarsInString($content);
+        
+        return '$a->check(\''.$args['perm'][0].'\');';
     }
 }
 ?>
