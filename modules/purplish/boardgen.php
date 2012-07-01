@@ -7,7 +7,7 @@ class BoardGenerator{
     }
 
     public static function generateBoardFromObject($board,$genposts=false,$genthreads=false){
-        global $c,$k,$t,$l,$PAGETITLE;
+        global $c,$k,$t,$l,$PAGETITLE,$NO_BUFFER;
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/';
         $previousTheme = $t->tname;
@@ -19,8 +19,8 @@ class BoardGenerator{
         $totalthreads = $totalthreads[0]['COUNT(postID)'];
         $threads=array(1);
         
-        if(BUFFER)ob_end_flush;flush();
-        ob_start();
+        $NO_BUFFER=true; //To stop the theme header to flush automatically
+        ob_start(create_function('$a', 'return "";'));
         for($i=0;count($threads)>0;$i++){
             if($i>$board->maxpages){
                 if(!class_exists("DataGenerator"))include(TROOT.'modules/chan/datagen.php');
@@ -41,7 +41,6 @@ class BoardGenerator{
                 ?>
 
                 <?='<? define("POST_SHORT",TRUE); ?>'?>
-                
                 <? require_once(PAGEPATH.'chan/chan_header.php'); ?>
                 <?=write_header($board->title.' - '.$c->o['chan_title'],$board,0,$board->options)?>
 
@@ -77,9 +76,8 @@ class BoardGenerator{
                 </div>
                 <br class="clear" />
                 <?=$k->pager(PROOT.$board->folder.'/',$totalthreads,$i,$c->o['chan_tpp'],true)."\n"?>
-                 
                 <? require_once(PAGEPATH.'chan/chan_footer.php'); ?>
-                <?=write_footer($board->title.' - '.$c->o['chan_title'],$board->boardID,$board->folder,0,$board->options)?>
+                <?=write_footer($board->title.' - '.$c->o['chan_title'],$board->boardID,$board->folder,0,$board->options);?>
 
                 <?                    
                 file_put_contents($path.$i.'.php',ob_get_contents(),LOCK_EX);
@@ -88,7 +86,7 @@ class BoardGenerator{
         }
         file_put_contents($path.'index.php','<?php include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/0.php"); ?>',LOCK_EX);
         ob_end_clean();
-        if(BUFFER)ob_start();
+        $NO_BUFFER=false;
         $t->loadTheme($previousTheme);
     }
 }
