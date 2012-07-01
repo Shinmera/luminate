@@ -1,5 +1,5 @@
 <? function write_footer($title,$board,$boardfolder,$thread=0,$options=""){
-    global $c,$CORE;
+    global $c,$l,$CORE;
     ?>
     <input type="hidden" name="board" value="<?=$board?>" />
     <input type="hidden" name="folder" id="varfolder" value="<?=$boardfolder?>" />

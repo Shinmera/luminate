@@ -24,7 +24,7 @@ class ThreadGenerator{
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/threads/'.$pID.'.php';
         
         flush();$NO_BUFFER=true;
-        ob_start(create_function('$buffer', 'return "";'));
+        ob_start();
         ?>
         
         <?='<? $postlist=array('.$pID?>

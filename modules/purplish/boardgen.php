@@ -20,7 +20,7 @@ class BoardGenerator{
         $threads=array(1);
         
         $NO_BUFFER=true; //To stop the theme header to flush automatically
-        ob_start(create_function('$a', 'return "";'));
+        ob_start();
         for($i=0;count($threads)>0;$i++){
             if($i>$board->maxpages){
                 if(!class_exists("DataGenerator"))include(TROOT.'modules/chan/datagen.php');

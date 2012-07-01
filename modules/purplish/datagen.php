@@ -20,8 +20,8 @@ class DataGenerator{
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         if($old==$new)return $threadID;
         
-        $old = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',$old);
-        $new = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',$new);
+        $old = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',array($old));
+        $new = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',array($new));
         if($old==null||$new==null)throw new Exception('Boards not found.');
         
         //Clone OP
@@ -43,7 +43,7 @@ class DataGenerator{
         $post->saveData();
         
         //Update posts
-        $posts = DataModel::getData('ch_posts','SELECT * FROM ch_posts WHERE BID=? AND PID=?',array($old->boardID,$threadID));
+        $posts = DataModel::getData('ch_posts','SELECT * FROM ch_posts WHERE BID=? AND PID=? ORDER BY time DESC',array($old->boardID,$threadID));
         Toolkit::assureArray($posts);
         global $postIDs;$postIDs=array();
         foreach($posts as $post){
@@ -55,11 +55,15 @@ class DataGenerator{
             $post->insertData();
             $postIDs[$oldID]=$c->insertID();
             
+            $post->postID=$oldID;
+            $post->BID=$old->boardID;
+            $post->deleteData();
+            
             if($post->file!=''){
                 rename(ROOT.DATAPATH.'chan/'.$old->folder.'/files/'.$post->file, ROOT.DATAPATH.'chan/'.$new->folder.'/files/'.$post->file);
                 rename(ROOT.DATAPATH.'chan/'.$old->folder.'/thumbs/'.$post->file,ROOT.DATAPATH.'chan/'.$new->folder.'/thumbs/'.$post->file);
             }
-            unlink(ROOT.DATAPATH.'chan/'.$old->folder.'/posts/'.$oldID);
+            unlink(ROOT.DATAPATH.'chan/'.$old->folder.'/posts/'.$oldID.'.php');
         }
 
         //Regenerate
