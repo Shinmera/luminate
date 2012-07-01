@@ -73,6 +73,7 @@ a.directQuote{
     color: #AAA;
     z-index: 10;
     position: absolute;
+    right: 10px;
     top: 50px;
     opacity: 0.5;
 }
