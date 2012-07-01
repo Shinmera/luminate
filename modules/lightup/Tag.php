@@ -70,7 +70,7 @@ class Tag{
             }
         }
         
-        $function = 'global $_g;$r="";$v=&$args;
+        $function = 'global $_g,$a;$r="";$v=&$args;
                      $v["content"][0]=$content;'."\n";
         
         $block = $this->parseDeftagRecursively($block);
@@ -199,7 +199,7 @@ class Tag{
                 case 'MAIL':$argumentOK=$k->checkMailVailidity($arg);           break;
                 case 'DATE':$argumentOK=$k->checkDateVailidity($arg);           break;
                 case 'INTE':$argumentOK=is_numeric($arg);                       break;
-                case 'BOOL':$argumentOK=is_bool($arg);break;
+                case 'BOOL':$argumentOK=($arg=='0'||$arg=='1'||$arg=='true'||$arg=='false');break;
                 default:
                     if(substr($type,0,4)=="INTE")
                             $argumentOK=(is_numeric($arg)&&(int)$arg<=(int)substr($type,4));
