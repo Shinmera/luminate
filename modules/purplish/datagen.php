@@ -2,7 +2,7 @@
 class DataGenerator{
 
     function mergeThread($threadID,$board,$newID){
-        global $c;
+        global $c,$l;
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         if(!class_exists("PostGenerator"))include('postgen.php');
@@ -11,113 +11,112 @@ class DataGenerator{
         
         ThreadGenerator::generateThread($newID,$board,true);
         BoardGenerator::generateBoard($board);
+        $l->triggerHook('mergeThread','Purplish',array($threadID,$board,$newID));
     }
     
-    function moveThread($threadID,$oldboard,$newboard){
-        global $c,$a,$k;
+    function moveThread($threadID,$old,$new){
+        global $c,$l;
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
-        if(!class_exists("PostGenerator"))include('postgen.php');
-        if($oldboard==$newboard)return $threadID;
+        if($old==$new)return $threadID;
         
-        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file,subject FROM ch_posts WHERE (PID=? OR postID=?) AND BID=? ORDER BY postID ASC",array($threadID,$threadID,$oldboard));
-        if(count($post)==0)throw new Exception("No such thread.");
-        $oboard=ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($oldboard));
-        $nboard=ChanDataBoard::loadFromDB("SELECT folder FROM ch_boards WHERE boardID=?",array($newboard));
-        if(count($nboard)==0||count($oboard)==0)throw new Exception("No such board.");
-        $oldboard=$post[0]->BID;
-
-        //UPDATE DATA
-        $lastBoardID=$c->getData("SELECT postID FROM ch_posts WHERE BID=? ORDER BY postID DESC LIMIT 1;",array($newboard));
-        $lastBoardID=$lastBoardID[0]['postID'];
-        global $threadOldBoard,   $threadNewBoard,          $threadOldID,          $threadNewID,               $idmap;
-        $threadOldBoard=$oldboard;$threadNewBoard=$newboard;$threadOldID=$threadID;$threadNewID=$lastBoardID+1;$idmap=array();
+        $old = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',$old);
+        $new = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',$new);
+        if($old==null||$new==null)throw new Exception('Boards not found.');
         
-        for($i=0;$i<count($post);$i++){
-            $idmap[$post[$i]->postID]=($lastBoardID+$i+1);
-            //FIX DIRECT QUOTES
-            $post[$i]->subject=str_ireplace("&lt;","<",$post[$i]->subject);
-            $post[$i]->subject=str_ireplace("&gt;",">",$post[$i]->subject);
-            $post[$i]->subject=str_ireplace("&#36;","$",$post[$i]->subject);
-            $post[$i]->subject=str_ireplace("&lsquo;","'",$post[$i]->subject);
-            $post[$i]->subject=str_ireplace("&quot;",'"',$post[$i]->subject);
-            $post[$i]->subject=preg_replace_callback('`>>([0-9]+)`is',array(&$this, 'fixBrokenQuote'),$post[$i]->subject);
-
-            $post[$i]->changePrimaryKey(($lastBoardID+$i+1),$newboard);
-            if($post[$i]->PID!=0)$post[$i]->PID=($lastBoardID+1);
-            $post[$i]->saveToDB();
-            //MOVE FILES
-            if($post[$i]->file!=""){
-                if($i==0){
-                    copy(ROOT.DATAPATH.'chan/'.$oboard[0]->folder.'/files/'.$post[$i]->file,
-                           ROOT.DATAPATH.'chan/'.$nboard[0]->folder.'/files/'.$post[$i]->file);
-                    copy(ROOT.DATAPATH.'chan/'.$oboard[0]->folder.'/thumbs/'.$post[$i]->file,
-                           ROOT.DATAPATH.'chan/'.$nboard[0]->folder.'/thumbs/'.$post[$i]->file);
-                }else{
-                    rename(ROOT.DATAPATH.'chan/'.$oboard[0]->folder.'/files/'.$post[$i]->file,
-                           ROOT.DATAPATH.'chan/'.$nboard[0]->folder.'/files/'.$post[$i]->file);
-                    rename(ROOT.DATAPATH.'chan/'.$oboard[0]->folder.'/thumbs/'.$post[$i]->file,
-                           ROOT.DATAPATH.'chan/'.$nboard[0]->folder.'/thumbs/'.$post[$i]->file);
-                }
+        //Clone OP
+        $post = DataModel::getData('ch_posts','SELECT * FROM ch_posts WHERE BID=? AND postID=?',array($old->boardID,$threadID));
+        if($post==null)throw new Exception('No such thread.');
+        if($post->PID!=0)throw new Exception('This isn\'t a thread.');
+        $post->postID=null;
+        $post->BID=$new->boardID;
+        $post->insertData();
+        $newID=$c->insertID();
+        copy(ROOT.DATAPATH.'chan/'.$old->folder.'/files/'.$post->file, ROOT.DATAPATH.'chan/'.$new->folder.'/files/'.$post->file);
+        copy(ROOT.DATAPATH.'chan/'.$old->folder.'/thumbs/'.$post->file,ROOT.DATAPATH.'chan/'.$new->folder.'/thumbs/'.$post->file);
+        
+        //Modify old post and save data.
+        $post->postID = $threadID;
+        $post->BID = $old->boardID;
+        $post->options = "l";
+        $post->subject = 'This thread has been moved to >>'.$new->folder.'/'.$newID;
+        $post->saveData();
+        
+        //Update posts
+        $posts = DataModel::getData('ch_posts','SELECT * FROM ch_posts WHERE BID=? AND PID=?',array($old->boardID,$threadID));
+        Toolkit::assureArray($posts);
+        global $postIDs;$postIDs=array();
+        foreach($posts as $post){
+            $oldID=$post->postID;
+            $post->postID=null;
+            $post->BID=$new->boardID;
+            $post->PID=$newID;
+            $post->subject=  preg_replace_callback('`(&gt;){2,4}([0-9]+)`is', array(&$this,'moveThreadCallback'), $post->subject);
+            $post->insertData();
+            $postIDs[$oldID]=$c->insertID();
+            
+            if($post->file!=''){
+                rename(ROOT.DATAPATH.'chan/'.$old->folder.'/files/'.$post->file, ROOT.DATAPATH.'chan/'.$new->folder.'/files/'.$post->file);
+                rename(ROOT.DATAPATH.'chan/'.$old->folder.'/thumbs/'.$post->file,ROOT.DATAPATH.'chan/'.$new->folder.'/thumbs/'.$post->file);
             }
-            unlink(ROOT.DATAPATH.'chan/'.$oboard[0]->folder.'/posts/'.$post[$i]->postID.".php");
+            unlink(ROOT.DATAPATH.'chan/'.$old->folder.'/posts/'.$oldID);
         }
-        
-        //ADD POST REFER
-        $post[0]->postID = $threadID;
-        $post[0]->BID = $oldboard;
-        $post[0]->changePrimaryKey($threadID,$oldboard);
-        $post[0]->options = "";
-        $post[0]->inserted = false;
-        $post[0]->loaded = false;
-        $post[0]->subject = 'This thread has been moved to >>'.$nboard[0]->folder.'/'.($lastBoardID+1);
-        $post[0]->saveToDB();
 
-        //GENERATE NEW ONES
-        ThreadGenerator::generateThread(($lastBoardID+1),$newboard,true);
-        ThreadGenerator::generateThread($threadID,$oldboard,true);
-        BoardGenerator::generateBoard($newboard);
-        BoardGenerator::generateBoard($oldboard);
-        return $post[0]->postID;
+        //Regenerate
+        ThreadGenerator::generateThread($newID,$new->boardID,true);
+        ThreadGenerator::generateThread($threadID,$old->boardID,true);
+        BoardGenerator::generateBoardFromObject($old);
+        BoardGenerator::generateBoardFromObject($new);
+        $l->triggerHook('moveThread','Purplish',array($threadID,$old->boardID,$new->boardID));
+        return $newID;
     }
-
-    function fixBrokenQuote($matches){
-        global $threadOldBoard,$threadNewBoard,$idmap,$threadOldID,$threadNewID;
-        if(array_key_exists($matches[1],$idmap))return '>>'.$idmap[$matches[1]];
-        else                                    return $matches[0];
+    function moveThreadCallback($matches){
+        global $postIDs;
+        if(array_key_exists($matches[2], $postIDs))return '&gt;&gt;'.$postIDs[$matches[2]];
+        else return $matches[0];
     }
+    
 
     function deleteByIP($ip){
+        global $c,$l;
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
-        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file FROM ch_posts WHERE ip=?",array($ip));
-        $board= DataModel::getData('ch_boards',"SELECT folder FROM ch_boards WHERE boardID=?",array($post[0]->BID));
+        $posts = DataModel::getData('ch_posts','SELECT postID,PID,BID,file,folder 
+                                               FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
+                                               WHERE ip=?',array($ip));
+        if($posts==null)throw new Exception('No posts recorded for this IP.');
+        Toolkit::assureArray($posts);
 
-        //FILE
+        //Create query
         $data=array($ip);
         $query="ip=?";
         $boardsgen=array();
-        for($i=0;$i<count($post);$i++){
-            if($post[$i]->PID==0){
+        foreach($posts as $post){
+            if($post->PID==0){
                 $query.=" OR PID=?";
-                $data[]=$post[$i]->postID;
-                if(!in_array($post[$i]->BID,$boardsgen))$boardsgen[]=$post[$i]->BID;
-                $this->cleanThread($post[$i]->postID);
-            }else{
-                ThreadGenerator::generateThread($post[$i]->PID,$post[$i]->BID);
+                $data[]=$post->postID;
+                $this->cleanThread($post->postID,$post->folder);
             }
-            $this->deleteTraces($board->folder,$post[$i]->postID,$post[$i]->file);
+            $this->deleteTraces($post->folder,$post->postID,$post->file);
         }
         $c->query("UPDATE ch_posts SET `options`=CONCAT(`options`,'d') WHERE ".$query,$data);
         
-        //REGEN BOARDS
-        for($i=0;$i<count($boardsgen);$i++){
-            BoardGenerator::generateBoard($boardsgen[$i]);
+        //Regenerate
+        foreach($posts as $post){
+            if($post->PID!=0){
+                ThreadGenerator::generateThread($post->PID,$post->BID);
+            }
+            if(!in_array($post->BID,$boardsgen)){
+                $boardsgen[]=$post->BID;
+                BoardGenerator::generateBoard($post->BID);
+            }
         }
+        
+        $l->triggerHook('purge','Purplish',array($ip));
     }
 
     function deletePost($postID,$board,$generate=true,$imageonly=false){
-        global $k,$a,$c;
+        global $l,$a,$c;
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         
@@ -133,8 +132,8 @@ class DataGenerator{
         //FILE
         $boardo = DataModel::getData('ch_boards',"SELECT folder FROM ch_boards WHERE boardID=?",array($board));
         if(!$imageonly){
-            $this->deleteTraces($boardo->folder,$postID,$post->file);
-            if($post->PID==0)$this->cleanThread($postID);
+            if($post->PID==0)$this->cleanThread($postID,$boardo->folder);
+            else             $this->deleteTraces($boardo->folder,$postID,$post->file);
         }else{
             $this->deleteTraces($boardo->folder,$postID,$post->file,false,false);
         }
@@ -143,10 +142,12 @@ class DataGenerator{
             if($post->PID!=0)ThreadGenerator::generateThread($thread,$board);
             BoardGenerator::generateBoard($board);
         }
+        
+        $l->triggerHook('delete','Purplish',array($postID,$board,$imageonly));
     }
 
     function submitPost(){
-        global $k,$p,$c,$a;
+        global $k,$l,$c,$a;
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         if(!class_exists("PostGenerator"))include('postgen.php');
@@ -290,6 +291,7 @@ class DataGenerator{
         ThreadGenerator::generateThread($thread,$board->boardID);
         BoardGenerator::generateBoard($board->boardID);
 
+        $l->triggerPOST('Purplish','Purplish',$post->BID,$post->subject,'',$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID),$post->title);
         if(in_array("noko",$mail)){
             header('Location: '.$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
         }else{
@@ -410,7 +412,7 @@ class DataGenerator{
     }
 
     function cleanBoard($boardID,$folder=null){
-        global $c;
+        global $c,$l;
         if($folder==null){
             $folder= DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=?",array($boardID));
             $folder=$folder->folder;
@@ -439,6 +441,8 @@ class DataGenerator{
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         echo('</div>');
         flush();
+        
+        $l->triggerHook('clean','Purplish',array($boardID,$folder));
     }
 
     function deleteTraces($board,$postid,$file,$thread=false,$post=true){
@@ -457,16 +461,18 @@ class DataGenerator{
         }
     }
 
-    function cleanThread($threadID){
+    function cleanThread($threadID,$folder){
+        global $l;
         $posts = DataModel::getData('ch_posts',"SELECT postID,BID,file FROM ch_posts WHERE PID=? OR postID=? ORDER BY postID DESC",array($threadID,$threadID));
         if($posts==null)return false;
-        if(!is_array($posts))$posts=array($posts);
-        $board = DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=?",array($posts[0]->BID));
-        if($board==null)return false;
+        Toolkit::assureArray($posts);
+        
         for($i=1;$i<count($posts);$i++){
-            $this->deleteTraces($board->folder,$posts[$i]->postID,$posts[$i]->file);
+            $this->deleteTraces($folder,$posts[$i]->postID,$posts[$i]->file);
         }
-        $this->deleteTraces($board->folder,$posts[0]->postID,$posts[0]->file,true);
+        $this->deleteTraces($folder,$posts[0]->postID,$posts[0]->file,true);
+        
+        $l->triggerHook('cleanThread','Purplish',array($threadID,$folder));
         return true;
     }
 }

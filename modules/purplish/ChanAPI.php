@@ -132,7 +132,7 @@ function displayDelete(){
 }
 
 function displayEdit(){
-    global $a,$c;
+    global $a,$c,$l;
     if(!$a->check('chan.mod.edit'))die('Insufficient privileges.');
     $post = DataModel::getData('ch_posts','SELECT p.*,ch_boards.folder 
                                             FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
@@ -158,6 +158,7 @@ function displayEdit(){
         $post->mail = $c->enparse($post->mail,true);
         $post->fileOrig = $c->enparse($post->fileOrig,true);
         PostGenerator::generatePostFromObject($post);
+        $l->triggerHook('editPost','Purplish',$post);
         die('Post edited!');
     }else{
         echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css/forms.css' id='dynstyle' />");
@@ -182,7 +183,7 @@ function displayEdit(){
 }
 
 function displayBan(){
-    global $a;
+    global $a,$l;
     if(!$a->check('chan.mod.ban'))die('Insufficient privileges.');
     $post = DataModel::getData('ch_posts','SELECT p.*,ch_boards.folder 
                                             FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
@@ -200,6 +201,7 @@ function displayBan(){
         if($_POST['appeal']=='a')$ban->appeal='You cannot appeal to this ban.';
         if($_POST['mute']=='m')$ban->mute=1;else $ban->mute=0;
         $ban->insertData();
+        $l->triggerHook('ban','Purplish',$ban);
         
         $post->subject = $_POST['text'];
         $post->saveData();
@@ -243,7 +245,7 @@ function displayPost(){
 }
 
 function displayReport(){
-    global $a;
+    global $a,$l;
     if(!is_array($_POST['varposts'])||$_POST['varposts']=='')die('No posts selected.');
     if(!Toolkit::updateTimeout('chan_report', 5))            die('Please wait 5 seconds between reports or deletions.');
     if($_POST['submitter']=='Report'){
@@ -257,6 +259,7 @@ function displayReport(){
         foreach($_POST['varposts'] AS $post){
             $report->PID = $post;
             $report->insertData();
+            $l->triggerHook('report','Purplish',$report);
             $ret.='Report for post #'.$post.' on '.$_POST['folder'].' has been submitted.<br />';
         }
         $ret = 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
