@@ -18,6 +18,7 @@ class DataGenerator{
         global $c,$l;
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
+        if(!class_exists("PostGenerator"))include('postgen.php');
         if($old==$new)return $threadID;
         
         $old = DataModel::getData('','SELECT * FROM ch_boards WHERE boardID=?',array($old));
@@ -43,9 +44,9 @@ class DataGenerator{
         $post->saveData();
         
         //Update posts
-        $posts = DataModel::getData('ch_posts','SELECT * FROM ch_posts WHERE BID=? AND PID=? ORDER BY time DESC',array($old->boardID,$threadID));
+        $posts = DataModel::getData('ch_posts','SELECT * FROM ch_posts WHERE BID=? AND PID=? ORDER BY postID ASC',array($old->boardID,$threadID));
         Toolkit::assureArray($posts);
-        global $postIDs;$postIDs=array();
+        global $postIDs;$postIDs=array($threadID=>$newID);
         foreach($posts as $post){
             $oldID=$post->postID;
             $post->postID=null;
@@ -54,6 +55,7 @@ class DataGenerator{
             $post->subject=  preg_replace_callback('`(&gt;){2,4}([0-9]+)`is', array(&$this,'moveThreadCallback'), $post->subject);
             $post->insertData();
             $postIDs[$oldID]=$c->insertID();
+            PostGenerator::generatePostFromObject($post);
             
             $post->postID=$oldID;
             $post->BID=$old->boardID;
@@ -67,8 +69,8 @@ class DataGenerator{
         }
 
         //Regenerate
-        ThreadGenerator::generateThread($newID,$new->boardID,true);
-        ThreadGenerator::generateThread($threadID,$old->boardID,true);
+        ThreadGenerator::generateThread($newID,$new->boardID,false);
+        ThreadGenerator::generateThread($threadID,$old->boardID,false);
         BoardGenerator::generateBoardFromObject($old);
         BoardGenerator::generateBoardFromObject($new);
         $l->triggerHook('moveThread','Purplish',array($threadID,$old->boardID,$new->boardID));
@@ -381,12 +383,14 @@ class DataGenerator{
         $sites=array('arch'=>'http://stevenarch.tymoon.eu/',
                      '4chan'=>'http://4chan.org/');
         $matches[3]=str_replace('/','',$matches[3]);
+        $text = $matches[0];
         
         if(is_numeric($matches[2])){
             //Same board reference
             $id=$matches[2];
             $board=$threadBoardName;
             $href=PROOT.$threadBoardName.'/threads/'.$threadThreadID.'.php#'.$id;
+            if($id==$threadThreadID)$text=$matches[0].' (OP)';
         }else if($matches[4]==''){
             //Board reference
             $id='';
@@ -412,7 +416,7 @@ class DataGenerator{
             $id='';$board='';
             $href=$sites[$matches[3]].$matches[5].$matches[6];
         }
-        return '<a class="directQuote" id="'.$id.'" board="'.$board.'" href="'.$href.'">'.$matches[0].'</a>';
+        return '<a class="directQuote" id="'.$id.'" board="'.$board.'" href="'.$href.'">'.$text.'</a>';
     }
 
     function cleanBoard($boardID,$folder=null){
