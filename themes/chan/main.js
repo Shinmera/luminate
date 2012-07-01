@@ -258,8 +258,9 @@ function registerSelectScroll(){
                 real=true;
             }
         });
+        if($(this).attr('board')!==$("#varfolder").val())real=false;
         if(real&&!$(this).hasClass('direct'))return false;
-        else return true;
+        else                                 return true;
     });
 
     if($('#P'+anchor).length>0){
