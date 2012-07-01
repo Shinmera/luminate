@@ -22,9 +22,12 @@ public static $hooks=array("foo");
         $this->Stags['print']=new PRINTTag('print','','sys');
         $this->Stags['echo']=new ECHOTag('echo','','sys');
         $this->Stags['replace']=new REPLACETag('replace','','sys');
+        $this->Stags['regex']=new REGEXTag('regex','','sys');
+        $this->Stags['urlargs']=new URLARGSTag('urlargs','','sys');
         $this->Stags['math']=new MATHTag('math','','sys');
         $this->Stags['bailout']=new BAILOUTTag('bailout','','sys');
         $this->Stags['valid']=new VALIDATETag('valid','','sys');
+        $this->Stags['auth']=new AUTHTag('auth','','sys');
     }
     
     function displayApiPage(){
