@@ -23,7 +23,7 @@ class ThreadGenerator{
         $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/threads/'.$pID.'.php';
         
-        if(BUFFER)ob_end_flush;flush();$NO_BUFFER=true;
+        flush();$NO_BUFFER=true;
         ob_start(create_function('$buffer', 'return "";'));
         ?>
         
@@ -68,7 +68,7 @@ class ThreadGenerator{
         <?
         file_put_contents($path,ob_get_contents(),LOCK_EX);
         ob_end_clean();
-        if(BUFFER)ob_start();$NO_BUFFER=false;
+        $NO_BUFFER=false;
         $t->loadTheme($previousTheme);
     }
 }

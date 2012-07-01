@@ -20,7 +20,7 @@ class PostGenerator{
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
 
-        if(BUFFER)ob_end_flush();flush();
+        flush();
         ob_start();
         
         ?>
@@ -96,7 +96,6 @@ class PostGenerator{
         $data = ob_get_contents();
         ob_end_clean();
         file_put_contents($path,$data,LOCK_EX);
-        if(BUFFER)ob_start();
     }
 
 }
