@@ -2,8 +2,8 @@
 //TODO: Add hooks.
 //TODO: Sanitize for v4.
 //TODO: Re-test everything.
-//TODO: Implement video hiding.
 //TODO: Investigate header issue.
+//TODO: Fix auto update.
 
 class Purplish{
 public static $name="Chan";
@@ -54,12 +54,6 @@ function displayAdmin(){
     global $l;
     $admin = $l->loadModule('ChanAdmin');
     $admin->display();
-}
-
-function displayRSS(){
-    global $l;
-    $rss = $l->loadModule('ChanRSS');
-    $rss->display();
 }
 
 function displayAPI(){
