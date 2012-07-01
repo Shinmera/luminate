@@ -1,5 +1,5 @@
 <? header('HTTP/1.0 404 Not Found'); ?>
-<? global $c;?>
+<? global $c,$l;?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -27,6 +27,7 @@ while(($file=readdir($dir))!==FALSE){
                 Maybe you mistyped the URL or it simply expired and the content got deleted.<br />
                 If that's the case, we're sorry. Maybe you can still find it through the 
                 <a href="http://wayback.archive.org/web/*/http://chan.<?=HOST.$_SERVER['REQUEST_URI']?>">Wayback Machine</a>?
+                <? $l->triggerHook('404','Purplish'); ?>
             </blockquote>
         </article>
     </div>

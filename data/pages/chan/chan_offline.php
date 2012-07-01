@@ -1,4 +1,4 @@
-<? global $c;?>
+<? global $c,$l;?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -25,6 +25,7 @@ while(($file=readdir($dir))!==FALSE){
                 <h2>Don't worry though, this is done on purpose!</h2>
                 Most likely the administrators are currently working on something and everything will be back up soon.<br />
                 Until then, please bear with us and remain calm.
+                <? $l->triggerParse('offline','Purplish') ?>
             </blockquote>
         </article>
     </div>

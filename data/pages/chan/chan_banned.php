@@ -1,4 +1,4 @@
-<? global $c;
+<? global $c,$l;
 $bans = DataModel::getData('ch_bans','SELECT * FROM ch_bans WHERE ip LIKE ? AND mute=0',array($_SERVER['REMOTE_ADDR']));
 $c->query('DELETE FROM ch_bans WHERE ip=? AND (time+period)<? AND period>0',array($_SERVER['REMOTE_ADDR'],time()));
 
@@ -57,6 +57,7 @@ while(($file=readdir($dir))!==FALSE){
                 include(ROOT.DATAPATH.'chan/'.$ban->folder.'/posts/'.$ban->PID.'.php');
             } ?>
         </div>
+        <? $l->triggerHook('banPage','Purplish',$bans); ?>
         <? if($appeal==''){ ?>
             <h2>Submit an appeal:</h2>
             <form action="#" method="post">

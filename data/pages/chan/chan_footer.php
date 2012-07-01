@@ -41,6 +41,7 @@
         <link rel="alternate" type="application/rss+xml" title="<?=$title?> Post Feed" href="<?=Toolkit::url('api','chan/rss/thread/?id='.$thread.'&bid='.$board)?>" />
     <? } ?>
     
+    <? $l->triggerHook('footer','Purplish',array($title,$board,$thread)); ?>
     
     <? global $GEN_STARTTIME;
     $time = explode(' ',microtime());$time = $time[1]+$time[0];$total_time = round(($time-$GEN_STARTTIME),4); ?>

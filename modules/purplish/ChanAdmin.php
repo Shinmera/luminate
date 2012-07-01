@@ -73,7 +73,7 @@ function displayStatistics(){
 }
 
 function displayGeneralOptions(){
-    global $c;
+    global $c,$l;
     if($_POST['action']=='Save'){
         Toolkit::set('chan_title',$_POST['title']);
         Toolkit::set('chan_opthumbsize',$_POST['opts'],'i');
@@ -86,6 +86,7 @@ function displayGeneralOptions(){
         Toolkit::set('chan_fileloc_extern',$_POST['cdn'],'u');
         Toolkit::set('chan_online',$_POST['online'],'b');
         echo('<div class="success">Options saved!</div>');
+        $l->triggerHook('options','Purplish');
     }
     
     
@@ -106,6 +107,7 @@ function displayGeneralOptions(){
 }
 
 function displayFrontpage(){
+    global $l;
     if($_POST['action']=='submit'){
         $box = DataModel::getData('ch_frontpage','SELECT * FROM ch_frontpage WHERE title=?',array($_POST['title']));
         if($box==null){
@@ -114,11 +116,13 @@ function displayFrontpage(){
             $box->text=$_POST['text'];
             @$box->classes=implode(' ',$_POST['classes']);
             $box->insertData();
+            $l->triggerHook('addBox','Purplish',$box);
             echo('<div class="success">Box added.</div>');
         }else{
             $box->text=$_POST['text'];
             $box->classes=implode(' ',$_POST['classes']);
             $box->saveData();
+            $l->triggerHook('editBox','Purplish',$box);
             echo('<div class="success">Box edited.</div>');
         }
     }
@@ -129,6 +133,7 @@ function displayFrontpage(){
         $box = DataModel::getData('ch_frontpage','SELECT * FROM ch_frontpage WHERE title=?',array($_POST['title']));
         if($box!=null){
             $box->deleteData();$box=null;
+            $l->triggerHook('deleteBox','Purplish',$box);
             echo('<div class="success">Box deleted.</div>');
         }
     }
@@ -174,10 +179,12 @@ function displayFrontpage(){
 }
 
 function displayCategories(){
+    global $l;
     if($_POST['action']=='Delete'){
         $cat = DataModel::getData('ch_categories','SELECT title FROM ch_categories WHERE title=?',array($_POST['title']));
         if($cat!=null){
             $cat->deleteData();
+            $l->triggerHook('deleteCategory','Purplish',$cat);
             echo('<div class="success">Category deleted!</div>');
         }
     }
@@ -186,6 +193,7 @@ function displayCategories(){
         $cat->title = $_POST['title'];
         $cat->order = implode(',',$_POST['order']);
         $cat->insertData();
+        $l->triggerHook('addCategory','Purplish',$cat);
         echo('<div class="success">Category added!</div>');
     }
     
@@ -290,7 +298,7 @@ function displayBoards(){
 }
 
 function displayEditBoard(){
-    global $c;include(MODULEPATH.'gui/Editor.php');
+    global $c,$l;include(MODULEPATH.'gui/Editor.php');
     $board = DataModel::getData('ch_boards','SELECT * FROM ch_boards WHERE title=?',array($_POST['title']));
     
     if($board==null){
@@ -319,6 +327,7 @@ function displayEditBoard(){
             
             if($existing){
                 $board->saveData();
+                $l->triggerHook('editBoard','Purplish',$board);
                 $ret.='Board edited.';
             }else{
                 Toolkit::mkdir(ROOT.DATAPATH.'chan/'.$board->folder.'/posts');
@@ -333,6 +342,7 @@ function displayEditBoard(){
                 $board->insertData();
                 $board->boardID=$c->insertID();
                 $_POST['rebuild'][]='b';
+                $l->triggerHook('addBoard','Purplish',$board);
                 $ret.='Board added.';
             }
 
@@ -416,11 +426,13 @@ function displayEditBoard(){
 }
 
 function displayFiletypes(){
+    global $l;
     if($_POST['action']=='Delete'){
         $type = DataModel::getData('ch_filetypes','SELECT title,preview FROM ch_filetypes WHERE title=?',array($_POST['title']));
         if($type!=null){
             unlink(ROOT.IMAGEPATH.'chan/previews/'.$type->preview);
             $type->deleteData();
+            $l->triggerHook('deleteFiletype','Purplish',$type);
             echo('<div class="success">Filetype deleted!</div>');
         }
     }
@@ -432,6 +444,7 @@ function displayFiletypes(){
             $type->mime = $_POST['mime'];
             $type->preview = substr($file,strrpos($file,'/')+1);
             $type->insertData();
+            $l->triggerHook('addFiletype','Purplish',$type);
             echo('<div class="success">Filetype added!</div>');
         }catch(Exception $ex){
             echo('<div class="failure">'.$ex->getMessage().'</div>');
@@ -507,11 +520,12 @@ function displayLatestPosts(){
 }
 
 function displayReports(){
-    global $a;
+    global $a,$l;
     if($_POST['action']=='Remove'){
         $report = DataModel::getData('ch_reports','SELECT ip,time FROM ch_reports WHERE ip=? AND time=?',array($_POST['ip'],$_POST['time']));
         if($report!=null){
             $report->deleteData();
+            $l->triggerHook('deteleReport','Purplish',$report);
             echo('<div class="success">Report removed.</div>');
         }
     }
@@ -576,11 +590,12 @@ function displayReports(){
 }
 
 function displayBans(){
-    
+    global $l;
     if($_POST['action']=='Delete'){
         $ban = DataModel::getData('ch_bans','SELECT * FROM ch_bans WHERE ip=? AND time=?',array($_POST['ip'],$_POST['time']));
         if($ban!=null){
             $ban->deleteData();
+            $l->triggerHook('liftBan','Purplish',array($ban));
             echo('<div class="success">Ban on '.$_POST['ip'].' lifted.</div>');
         }
     }

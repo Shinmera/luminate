@@ -1,6 +1,4 @@
 <?
-//TODO: Add hooks.
-//TODO: Sanitize for v4.
 //TODO: Re-test everything.
 //TODO: Investigate header issue.
 //TODO: Fix auto update.
