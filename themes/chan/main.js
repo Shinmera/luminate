@@ -2,8 +2,8 @@ var anchor = document.location.hash.substring(1);
 var focused = window;
 var post_ids="";var checked_ids="";
 var origtitle = document.title;
-//update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f
-//abcdgijklmnoqrtvxyz
+//update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f video hiding v
+//abcdgijklmnoqrtxyz
 var options = 'upeshq';
 //TODO: Fix updated post spasms
 
@@ -373,6 +373,15 @@ function registerThreadRead(){
     }
 }
 
+function hideVideos(){
+    $("iframe.youtube-player").each(function(){
+        var src = $(this).attr("src");
+        url = src.replace('embed/','watch?v=');
+        $('<a href="'+url+'" title="'+url+'">Watch Youtube Video</a>').insertBefore(this);
+        $(this).remove();
+    });
+}
+
 $(function(){
     if($.cookie("chan_options")!=null){options=$.cookie('chan_options');}
     else $.cookie('chan_options',options,{ expires: 356, path: '/' });
@@ -395,11 +404,12 @@ $(function(){
     if(options.indexOf('q')!=-1){registerQuotes();}
     if(options.indexOf('s')!=-1){registerSelectScroll();}
     if(options.indexOf('u')!=-1){registerAutoUpdate();}
+    if(options.indexOf('v')!=-1){hideVideos();}
     if(options.indexOf('w')!=-1){$("#threadWatch").fadeIn();}
     registerPostReply();
     
     if(options.indexOf('f')==-1){
-        $("#postBox").css("left",($(document).width()-$("#postBox").outerWidth()-10)+"px");
+        $("#postBox").css("left",($(document).width()-$("#postBox").outerWidth()-20)+"px");
         $("#postBox").draggable({containment: 'document'});
     }else{
         $("#postBox").css({position:'static',display:'block',width:'400px','margin-left':'auto','margin-right':'auto'});
