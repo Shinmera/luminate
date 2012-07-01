@@ -34,7 +34,7 @@ function displayRSS(){
 }
 
 function displayMove(){
-    global $a;
+    global $a,$c;
     if(!$a->check('chan.mod.move'))die('Insufficient privileges.');
     $post = DataModel::getData('ch_posts','SELECT BID,PID FROM ch_posts WHERE postID=? AND BID=?',array($_GET['id'],$_GET['bid']));
     if($post==null)                die('No such post found.');
@@ -54,7 +54,7 @@ function displayMove(){
         }
         die($ret);
     }else{
-        ?><form action="<?=PROOT?>api/chan/purge?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
+        ?><form action="<?=PROOT?>api/chan/move?id=<?=$_GET['id']?>&bid=<?$_GET['bid']?>" method="post" id="form">
             Change this thread's options:<br />
             <? $boards= DataModel::getData('ch_boards','SELECT boardID,folder FROM ch_boards'); ?>
             Board: <?=Toolkit::printSelectObj("board",$boards,'folder','boardID',$_GET['bid']);?><br />
