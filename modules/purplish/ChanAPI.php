@@ -173,6 +173,11 @@ function displayEdit(){
         $editor->addTextField('title', 'Title', $post->title, 'text', 'placeholder="..."');
         $editor->addCheckbox('options[]', 'Hidden', 'h', strpos($post->options,'h')!==FALSE);
         $editor->addCheckbox('options[]', 'Modpost', 'm',strpos($post->options,'m')!==FALSE);
+        if($post->PID==0){
+            $editor->addCheckbox('options[]', 'Locked', 'l', strpos($post->options,'l')!==FALSE);
+            $editor->addCheckbox('options[]', 'Sticky', 's',strpos($post->options,'s')!==FALSE);
+            $editor->addCheckbox('options[]', 'Autosage', 'a',strpos($post->options,'a')!==FALSE);
+        }
         $editor->addCustom('
             <input type="hidden" name="id" value="'.$_GET['id'].'" />
             <input type="hidden" name="bid" value="'.$_GET['bid'].'" />');
