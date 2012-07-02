@@ -29,7 +29,7 @@ function apiCall(){
         $site = $params[0];
         $params = array_slice($params, 1);
     }
-    if($site=='time')die(time());
+    if($site=='time'){echo(time());die();}
     $l->triggerHook("API".$site,$this);
 }
 
