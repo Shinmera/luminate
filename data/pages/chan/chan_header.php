@@ -22,7 +22,7 @@
     <body><div class="content">
     
     <?=$l->triggerPARSE('Purplish',$board->subject);?>
-    <?if(file_exists(PAGEPATH.'chan_glob_header.php'))echo(file_get_contents(PAGEPATH.'chan_glob_header.php')); ?>
+    <?=include(PAGEPATH.'chan/chan_glob_header.php')?>
     <div class="boardTitle"><?=$board->title?></div>
 
     <? $l->triggerHook('header','Purplish',array($title,$board,$thread)); ?>
@@ -111,6 +111,10 @@
                     <input type="file" name="varfile" id="varfile"/>
                 </div>
                 <div>
+                    <label class="eldesc">Password</label>
+                    <input type="password" name="varpassword" class="password" id="varpass"/>
+                </div>
+                <div>
                     <label class="eldesc">Options</label>
                     <input type="checkbox" name="varoptions[]" value="r" />Spoiler 
                     <input type="checkbox" name="varoptions[]" value="w" />NSFW 
@@ -129,10 +133,6 @@
                         <? } ?>
                     </div>
                 <?='<? } ?>'?>
-                <div>
-                    <label class="eldesc">Password</label>
-                    <input type="password" name="varpassword" class="password" id="varpass"/>
-                </div>
                 <? $filetypes=explode(";",$board->filetypes);
                 for($x=0;$x<count($filetypes);$x++){$filetypes[$x]=substr($filetypes[$x],strpos($filetypes[$x],"/")+1);}
                 $filetypes=implode(", ",$filetypes); ?>
