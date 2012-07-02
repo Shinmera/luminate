@@ -15,7 +15,7 @@
 
     </div><br clear="all">
     
-    <div id="threadWatch" class="threadWatch" style="display:none;float:left;position:absolute;">
+    <div id="threadWatch" class="threadWatch">
         <table><thead>
             <tr>
                 <th id="watchRemoveCol"></th>
@@ -31,6 +31,7 @@
         <a href="#" id="watchReadButton" class="watchButton" title="Read All">✔</a> 
         <a href="#" id="watchClearButton" class="watchButton" title="Clear">✘</a> 
     </div>
+    <div id="proot" style="display:none;"><?=PROOT?></div>
     <div id="popup" class="popup" style="display:none;">Please wait...</div>
     <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
     <img id="previewImage" style="display:none;max-width:400px;max-height:400px;float:left;position:absolute;" alt="preview"/>
