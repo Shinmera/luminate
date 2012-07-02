@@ -158,6 +158,12 @@ function displayEdit(){
         $post->mail = $c->enparse($post->mail,true);
         $post->fileOrig = $c->enparse($post->fileOrig,true);
         PostGenerator::generatePostFromObject($post);
+        if($post->PID==0){
+            include('threadgen.php');
+            include('boardgen.php');
+            ThreadGenerator::generateThreadFromObject($post);
+            BoardGenerator::generateBoard($post->BID);
+        }
         $l->triggerHook('editPost','Purplish',$post);
         die('Post edited!');
     }else{
