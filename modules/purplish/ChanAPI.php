@@ -288,7 +288,9 @@ function displayReport(){
 }
 
 function displayOptions(){
-    ?><form>
+    ?>
+    <h4>Options</h4>
+    <form>
         <input type="checkbox" value="u" id="cbu" /><label style="width:200px;display:inline-block;vertical-align:middle">Auto update threads</label><br />
         <input type="checkbox" value="f" id="cbf" /><label style="width:200px;display:inline-block;vertical-align:middle">Fixed post box</label><br />
         <input type="checkbox" value="p" id="cbp" /><label style="width:200px;display:inline-block;vertical-align:middle">Show image previews</label><br />
@@ -318,9 +320,10 @@ function displayOptions(){
 }
 
 function displayThreadWatch(){
+    global $c,$k;
     $watched = array_filter(explode(";",$_COOKIE['chan_watched']));
     sort($watched);
-    if(count($watched)==0)return "";
+    if(count($watched)==0)die('No threads watched.');
 
     for($i=0,$temp=count($watched);$i<$temp;$i++){
         $temp2=explode(" ",$watched[$i]);
@@ -329,10 +332,10 @@ function displayThreadWatch(){
             $querypart.=" OR (postID=".$temp2[1]." AND BID=".$temp2[0]." AND PID=0)";
         }
     }
-    if(trim($querypart)=="")return "";
+    if(trim($querypart)=="")die('No threads watched.');
     $data = $c->getData("SELECT postID,BID,title,name,trip FROM ch_posts WHERE ".substr($querypart,4)." LIMIT 20");
     $boards=$c->getData("SELECT boardID,folder FROM ch_boards WHERE ".substr($boardIDs,4));
-    if(count($data)==0)return '';
+    if(count($data)==0)die('Watched threads not found.');
 
     $ret="";
     for($i=0,$temp=count($data);$i<$temp;$i++){
@@ -357,10 +360,10 @@ function displayThreadWatch(){
                 '<td><a href="'.$k->url('chan',$folder.'/threads/'.$data[$i]['postID']).'">'.$data[$i]['postID'].'</a></td>'.
                 '<td>'.$data[$i]['name'].$data[$i]['trip'].'</td>'.
                 '<td>'.$data[$i]['title'].'</td>';
-        if($postcount>0)$ret.='<td class="watchNewPosts"><a href="'.$k->url('chan',$folder.'/threads/'.$data[$i]['postID']).'">'.$postcount.'</a></td></tr>';
+        if($postcount>0)$ret.='<td class="watchNewPosts"><a href="'.PROOT.$folder.'/threads/'.$data[$i]['postID'].'.php">'.$postcount.'</a></td></tr>';
         else            $ret.='<td>0</td></tr>';
     }
-    return $ret;
+    die($ret);
 }
 }
 ?>
