@@ -181,7 +181,6 @@ function registerButtons(){
     $("#watchMenuButton").each(function(){
         $(this).click(function(){
             if($("#threadWatch").css("display")=="none"){
-                $("#threadWatch").css({"top":(window.scrollY+40)+"px"});
                 $("#threadWatch").stop(true, true).fadeIn();
                 refreshWatched();
             }else $("#threadWatch").stop(true, true).fadeOut();
@@ -194,7 +193,7 @@ function registerButtons(){
     $(".watchThread").each(function(){
         $(this).click(function(){
             addWatchedThread($("#varboard").attr("value"),$(this).attr("id"));
-            $("#threadWatch").css("display","");
+            $("#threadWatch").fadeIn();
             return false;
         });
     });
@@ -356,7 +355,7 @@ function registerShortcuts(){
 
 function registerAutoUpdate(){
     if($("#view").val()=="thread"){
-        $(".thread").everyTime(5000,function(){
+        $(".thread").everyTime(10000,function(){
             updateThread();
         });
         $(window).scroll(function(){ 
@@ -409,14 +408,21 @@ $(function(){
     if(options.indexOf('w')!=-1){$("#threadWatch").fadeIn();}
     registerPostReply();
     
-    if(options.indexOf('f')==-1){
-        $("#postBox").css("left",($(document).width()-$("#postBox").outerWidth()-20)+"px");
-        $("#postBox").draggable({containment: 'document'});
-    }else{
-        $("#postBox").css({position:'static',display:'block',width:'400px','margin-left':'auto','margin-right':'auto'});
+    if($("#postBox").css("content")!=='\'!draggable\''){
+        if(options.indexOf('f')==-1){
+            $("#postBox").css("left",($(document).width()-$("#postBox").outerWidth()-20)+"px");
+            $("#postBox").draggable({containment: 'document'});
+        }else{
+            $("#postBox").css({position:'static',display:'block',width:'400px','margin-left':'auto','margin-right':'auto'});
+        }
     }
-    $("#fulltext").resizable();
-    $("#threadWatch").draggable({containment: 'document'});
-    $("#threadWatch").resizable({minWidth:300,minHeight:30}).css({"width":"400px","height":"100px"});
-    $("#threadWatch").css({right:"0px",top:(65+$("#postBox").height())+"px"});
+    if($("#fulltext").css("content")!=='\'!resizable\''){
+        $("#fulltext").resizable();
+    }
+    
+    if($("#threadWatch").css("content")!=='\'!draggable\''){
+        $("#threadWatch").draggable({containment: 'document'});
+        $("#threadWatch").resizable({minWidth:300,minHeight:30}).css({"width":"400px","height":"100px"});
+        $("#threadWatch").css({right:"0px",top:(65+$("#postBox").height())+"px"});
+    }
 });
