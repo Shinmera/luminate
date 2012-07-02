@@ -1,0 +1,426 @@
+@charset "utf-8";
+/* CSS Document */
+.clear{clear:both;}
+a:link{color:#00EEFF;}
+a:visited{color:#00EEFF;}
+a:active{color:#00EEFF;}
+a:hover{color:#FFF;}
+IMG.flLeft {float: left;padding:3px;}
+IMG.flRight {float: right;padding:3px;}
+input{border: 1px solid #CCC;background:#000;color:#FFF;}
+hr{border:none;border-bottom: 1px solid #FFF;box-shadow: 0 0 5px #FFF;}
+
+html,body{
+    background: #000 url("../images/blockbg.jpg");
+    color:#FFF;
+    font-family: Arial, Monospace;
+    font-size:10pt;
+    margin:0;padding:0;
+}
+*::-webkit-scrollbar{width:9px;height:9px;}
+*::-webkit-scrollbar-button:start:decrement,
+  *::-webkit-scrollbar-button:end:increment{display:block;height:0;background-color:transparent;}
+*::-webkit-scrollbar-track-piece{background-color:#000;}
+*::-webkit-scrollbar-thumb:vertical,
+  *::-webkit-scrollbar-thumb:horizontal{width:50px;background-color:#555;}
+
+.spoiler{border: 1px dotted #EEE;}
+.sspoiler{
+    background: #000;
+    border: 1px dotted #555;
+    color: #000;
+}
+
+.boardTitle{
+    font-size:24pt;
+    font-weight:bold;
+    position:fixed;
+    right: 0;top:90px;
+    width: 300px;
+    text-align:center;
+}
+#pageBanner{
+    position:fixed;
+    right: 0;top:20px;
+    width: 300px;
+    text-align:center;
+    -webkit-box-reflect: below -5px -webkit-gradient( linear, left top, left bottom, from(transparent), color-stop(91%, rgba(255, 255, 255, .5)), color-stop(21.01%, transparent) );
+}
+
+.quote{
+    padding:5px;
+    border: 1px solid #000;
+    background-color:#222;
+    color:#EEE;
+    box-shadow: 0px 0px 5px #000;
+}
+
+.quoteLine{
+    color: #FF0000;
+    text-shadow: none;
+}
+
+a.directQuote{
+    color: #FF0000;
+    text-shadow: 0px 0px 3px #FF0000;
+    text-decoration: none;
+}
+
+.postBox{
+    display: inline-block;
+    position: fixed;
+    bottom: 50px;
+    right: 0;
+    width:300px;
+    font-size:8pt;
+    content: "!draggable";
+    background: rgba(0,0,0,0.5);
+}
+.postBox input{
+    font-size:10pt;
+    height:15px;
+    border: 1px solid #000;
+    background: #333;
+}
+.postBox textarea{
+    background: #000;
+    width:300px;
+    content: "!resizable";
+    color: #FFF;
+}
+.postBox .eldesc{width:90px;float:left;}
+.postBox #varname{width:100px;}
+.postBox #varmail{width:100px;}
+.postBox #varpass{width:200px;}
+.postBox #varfile{width:200px;height:18px;}
+.postBox #vartitle{width:250px;}
+.postBox #varsubmit{width:40px;height:20px;margin-top:5px;}
+.postBox .tac{font-size:8pt;margin-top:10px;}
+.toolbar{
+    width:100%;
+    box-sizing:border-box;
+    background: #000;
+    list-style:none;
+    padding:0;margin:0;
+}
+.toolbar li{display:inline-block;}
+
+.threadWatch{
+    background: rgba(0,0,0,0.5);
+    font-size:8pt;
+    z-index: 10;
+    content: "!draggable";
+    position: fixed;
+    top: 150px;
+    right: 0;
+    width:300px;
+    min-height: 200px;
+}
+.threadWatch a{color:#DDD;text-decoration:none;}
+.threadWatch table{margin:0px;border-spacing: 0px;width:100%;}
+.threadWatch table thead tr{background-color:#000;color:#00EEFF;}
+.threadWatch table tbody tr:nth-child(2n){background-color:#333;}
+.threadWatch table tbody tr:nth-child(2n+1){background-color:#555;}
+.threadWatch table tbody td{border-right:1px solid #000;}
+.threadWatch table tbody td:nth-child(1){text-align:center;}
+.threadWatch table tbody td:nth-child(2){text-align:center;}
+.threadWatch table tbody td:nth-child(3){text-align:center;}
+.threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
+.watchButton{font-size:18pt;text-decoration: none;}
+.watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
+#watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
+#watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
+#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;font-weight:bold;}
+#watchRefreshButton:hoevr{color:#FFD900;text-shadow: 0px 0px 5px #FFD900;}
+#watchRemoveCol{width:20px;}
+#watchBoardCol{width:40px;}
+#watchIDCol{width:30px;}
+#watchPosterCol{width:100px;}
+#watchUnreadCol{width:10px;}
+.watchNewPosts{
+    color:#EEEEEE;
+    text-shadow: 0px 0px 5px #EEEEEE;
+    font-weight:bold;
+    box-shadow: 0px 0px 5px #FF0000;
+    background: #FF0000;
+}
+
+#boardForm{
+    display: block;
+    margin-right:302px;
+    padding-top: 25px;
+    padding-left:2px;
+    border-right:1px solid #FFF;
+    background: rgba(0,0,0,0.5);
+}
+
+#boardForm .board>br{display:none;}
+#boardForm .thread>br{display:none;}
+
+.post, .postOP{
+    display: block;
+    border-top: 1px solid #333;
+}
+
+.post{
+    background-color: rgba(0,0,0,0.2);
+    margin-top:2px;
+    opacity: 0.9;
+}
+
+.postOP{
+    opacity: 0.9;
+    background: -moz-linear-gradient(top, rgba(204,204,204,0.4) 0%, rgba(204,204,204,0) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0.4)), color-stop(100%,rgba(204,204,204,0))); /* Chrome,Safari4+ */
+}
+
+.selected{
+    background: rgba(204,204,204,0.3);
+    border-top: 1px solid #00EEFF;
+    border-bottom: 1px solid #00EEFF;
+}
+
+.postContent blockquote{margin:0;margin-left:10px;}
+
+.postImage{
+    float:left;
+    margin:5px;
+    max-width:100%;
+    max-height:100%;
+    box-shadow: 0px 0px 5px #00EEFF;
+}
+
+.postTitle{
+    font-size:14pt;
+    font-weight:bold;
+    text-shadow: 0px 0px 5px #FF0000;
+}
+
+.postUsername, .postTrip{font-size:10pt;}
+
+.postUsername{
+    color: #FF0000;
+    font-weight:bold;
+}
+
+.postTrip{
+    color: #FFDD00;
+    text-shadow: 0px 0px 5px #000000;
+}
+
+.postMod{
+    color: #FFDD00;
+    text-shadow: 0px 0px 5px #000000;
+    border-top: 2px dotted #FF0000;
+    border-bottom: 2px dotted #FF0000;
+}
+
+#postType{background: none;}
+
+a.omittedText{
+    font-weight: bold;
+    font-size: 8pt;
+    color: #FF0000;
+    opacity: 0.6;
+}
+a.omittedText:hover{opacity:1;}
+
+.threadToolbar{
+    margin-top: 10px;
+    margin-bottom:3px;
+}
+
+.threadToolbar a{
+    padding:3px;
+    text-align:center;
+    color:#EEE;
+    text-decoration: none;
+    font-size:8pt;
+    background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0)), color-stop(100%,rgba(204,204,204,0.2))); /* Chrome,Safari4+ */
+}
+
+.threadToolbar a:hover{
+    background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0)), color-stop(100%,rgba(204,204,204,0.65))); /* Chrome,Safari4+ */
+}
+
+.buttons a{
+    position:relative;
+    top:-3px;
+    padding: 2px 2px 2px 2px;
+    border-radius: 0 0 5px 5px;
+    color:#CCC;
+    text-decoration: none;
+    background: #333;
+}
+.buttons a:hover{
+    background-color:#000;
+    color: #FFF;
+}
+
+.deleteBox, .reportBox{
+    float:right;
+    clear:right;
+}
+
+.footer{
+    text-align:center;
+    font-size:8pt;
+    margin-top:10px;
+    color: #CCC;
+    position:fixed;
+    bottom:0;
+    right:0;
+    width:300px;
+    height:50px;
+    background: rgba(0,0,0,0.5);
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 17%;
+    left: 50%;
+    margin-left: -300px;
+    width: 600px;
+    background-color: #000;
+    box-shadow: 0 0 50px #00EEFF;
+    color: #FFF;
+    border: 2px solid #00EEFF;
+    border-radius:10px;
+    padding: 12px;
+}
+
+#previewPost{
+    background: #000 url("../images/blockbg.jpg");
+    z-index:200;
+}
+
+.jqmOverlay { background-color: #000; }
+
+.menu{
+    background-color:#000;
+    list-style:none;
+    position:fixed;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;left:0px;right:0px;
+    box-shadow: 0 0 20px #00EEFF;
+}
+.menu *{
+    margin:0;
+    padding:0;
+}
+.menu a{
+    color:#FFF;
+    text-decoration:none;
+}
+.menu li a{
+    display:block;
+    padding: 2px 10px 2px 10px;
+}
+.menu li a:hover{color: #FF0000;}
+.menu li{
+    position:relative;
+    display:block;
+    float:left;
+}
+.menu li ul{
+    position:absolute;
+    list-style:none;
+    width:1000px;
+    margin:0px;
+    padding:0px;
+    display:none;
+}
+.menu li ul li{
+    background: #000;
+    float:left;
+    display:inline-block;
+}
+.menu .separator{
+    width:1px;
+    background: #FFF;
+    box-shadow: 0 0 5px #FFF;
+}
+.menu .separator2{
+    width:1px;
+    background: #FFF;
+    box-shadow: 0 0 3px #FFF;
+}
+.menu > li > a.menulink{
+    background-color:#00EEFF;
+}
+
+h1,h2,h3,h4,h5,h6{margin:0;}
+.fullwidth{width:100%;box-sizing: border-box;}
+
+#content{}
+
+#chanTitle{
+    padding: 2px 10px 2px 10px;
+    text-align:center;
+    margin-top:25px;
+    margin-right:300px;
+    font-size: 36pt;
+    text-shadow: 0 0 10px #FFF;
+}
+
+#news{
+    margin-right: 300px;
+    min-height: 600px;
+    padding:5px;
+    text-align: justify;
+    text-justify: distribute-all-lines;
+}
+#news img{max-width:100%;}
+
+#news .box{
+    display:inline-block;
+    position:relative;
+    min-width:32%;
+    min-height:200px;
+    vertical-align:text-top;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.5);
+    margin: 2px;
+    padding: 3px;
+    box-sizing:border-box;
+    zoom: 1;
+    text-align:justify;
+}
+#news .stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}
+
+#postSidebar{
+    border-left: 1px solid rgba(255,255,255,0.5);
+    position:absolute;
+    right:0;top:40px;bottom:50px;
+    width: 300px;
+    background: rgba(0,0,0,0.5);
+    overflow:auto;
+    overflow-x: hidden;
+}
+#postSidebar h3{
+    background: rgba(0,0,0,0.5);
+    position:fixed;
+    right:0;top:20px;
+    width:300px;height:20px;
+    text-align:center;
+}
+#postSidebar .simplePost{margin-top:5px;}
+#postSidebar .simplePost .postInfo{
+    background: #333;
+    text-indent: 5px;
+}
+#postSidebar .simplePost article{padding:2px;}
+#postSidebar .simplePost .postImage{max-width:100px;max-height:100px;}
+#postSidebar .simplePost iframe{max-width:100px;max-height:100px;}
