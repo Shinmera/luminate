@@ -56,20 +56,51 @@ function displayStatistics(){
     include(MODULEPATH.'gui/Statistics.php');
     $weekago = time()-604800;
     
+    $total = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts');
+    $tpics = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts WHERE file!=""');
+    $topip = DataModel::getData('','SELECT COUNT(postID) AS count,ip FROM ch_posts GROUP BY ip  ORDER BY count DESC LIMIT 1');
+    $topnew= DataModel::getData('','SELECT COUNT(postID) AS count,ip FROM ch_posts WHERE time > ? GROUP BY ip  ORDER BY count DESC LIMIT 1',array($weekago));
+    $topboard=DataModel::getData('','SELECT COUNT(postID) AS count,ch_boards.title FROM ch_posts 
+                                     LEFT JOIN ch_boards ON BID=boardID GROUP BY folder ORDER BY count DESC LIMIT 1');
+    $firstp= DataModel::getData('','SELECT time FROM ch_posts WHERE time > 0 ORDER BY time ASC LIMIT 1;');
+    $perday= ($total->count/(time()-$firstp->time))*60*60*24;
+    ?><div class="box">
+        <h3>Overview</h3>
+        Total amount of posts: <?=$total->count?><br />
+        Total amount of pictures: <?=$tpics->count?><br />
+        Average posts per day: <?=round($perday,2)?><br />
+        Most active user: <?=$topip->ip?> (<?=$topip->count?>)<br />
+        Most active newcomer: <?=$topnew->ip?> (<?=$topnew->count?>)<br />
+        Top board: <?=$topboard->title?> (<?=$topboard->count?>)
+    </div><?
+    
     $posts = DataModel::getData('','SELECT COUNT(postID) AS count,folder
                                     FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
                                     WHERE time > ? GROUP BY folder ORDER BY folder DESC',array($weekago));
     if(is_array($posts)){
+        echo('<div class="box"><h3>Posts in the last week - By board</h3>');
         $postsByBoard=array();
         foreach($posts as $post){
-            $postsByBoard['Posts'][] = $post->count;
+            $postsByBoard['Posts'][$post->folder] = $post->count;
             $bb[]=$post->folder;
         }
-
         $chartByBoards = new Chart('postchart',$bb,$postsByBoard,'bar');
-        $chartByBoards->setCaption('Posts in the last week - By board');
+        $chartByBoards->setSize('500px','250px');
         $chartByBoards->display();
+        echo('</div>');
     }
+    
+    $posts = array();$dates=array();
+    for($i=7;$i>=0;$i--){
+        $post = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts WHERE time < ? AND time > ?',array(time()-($i)*24*60*60,time()-($i+1)*24*60*60));
+        $dates[$i]=Toolkit::toDate(time()-$i*24*60*60,'l d.M');
+        $posts['Posts'][$dates[$i]] = $post->count;
+    }
+    echo('<div class="box"><h3>Posts in the last week - Over time</h3>');
+    $chartByTime = new Chart('timechart',$dates,$posts,'line');
+    $chartByTime->setSize('500px','250px');
+    $chartByTime->display();
+    echo('</div>');
 }
 
 function displayGeneralOptions(){
