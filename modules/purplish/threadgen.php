@@ -30,6 +30,7 @@ class ThreadGenerator{
         <?='<? $postlist=array('.$pID?>
         <? for($i=0;$i<count($postlist);$i++){
             echo(','.$postlist[$i]['postID']);
+            PostGenerator::generatePost($postlist[$i]['postID'], $post->BID);
          } ?>
         <?=');
         if($_GET["a"]=="postlist")die(implode(";",$postlist));

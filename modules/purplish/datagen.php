@@ -39,7 +39,7 @@ class DataGenerator{
         //Modify old post and save data.
         $post->postID = $threadID;
         $post->BID = $old->boardID;
-        $post->options = "l";
+        $post->options = ",l,r";
         $post->subject = 'This thread has been moved to >>'.$new->folder.'/'.$newID;
         $post->saveData();
         
@@ -55,7 +55,6 @@ class DataGenerator{
             $post->subject=  preg_replace_callback('`(&gt;){2,4}([0-9]+)`is', array(&$this,'moveThreadCallback'), $post->subject);
             $post->insertData();
             $postIDs[$oldID]=$c->insertID();
-            PostGenerator::generatePostFromObject($post);
             
             $post->postID=$oldID;
             $post->BID=$old->boardID;
@@ -69,8 +68,8 @@ class DataGenerator{
         }
 
         //Regenerate
-        ThreadGenerator::generateThread($newID,$new->boardID,false);
-        ThreadGenerator::generateThread($threadID,$old->boardID,false);
+        ThreadGenerator::generateThread($newID,$new->boardID,true);
+        ThreadGenerator::generateThread($threadID,$old->boardID,true);
         BoardGenerator::generateBoardFromObject($old);
         BoardGenerator::generateBoardFromObject($new);
         $l->triggerHook('moveThread','Purplish',array($threadID,$old->boardID,$new->boardID));
