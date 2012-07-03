@@ -136,21 +136,32 @@ function refreshWatched(){
 }
 
 function hideThread(id){
-    if($.cookie('chan_thread_hidden')!=null){
-        var threads=$.cookie('chan_thread_hidden').split(";");
-        if($.inArray(id,threads)){
-            $.cookie('chan_thread_hidden',$.cookie('chan_thread_hidden').replace(","+id+",",''),{ expires: 356, path: '/' });
-            $("#P"+id+" .postContent").slideToggle();
-            $("#T"+id).slideToggle();
+    var threads = new Array();
+    if($.cookie('chan_thread_hidden')!=null&&$.cookie('chan_thread_hidden')!=''){
+        threads=$.cookie('chan_thread_hidden').split(",");
+        if(threads.indexOf(id)!==-1){
+            threads.remove(id);
+            $("#P"+id+" .postContent").slideDown();
+            $("#T"+id).slideDown();
         }else{
-            $.cookie('chan_thread_hidden',$.cookie('chan_thread_hidden')+","+id+",",{ expires: 356, path: '/' });
-            $("#P"+id+" .postContent").slideToggle();
-            $("#T"+id).slideToggle();
+            threads.push(id);
+            $("#P"+id+" .postContent").slideUp();
+            $("#T"+id).slideUp();
         }
     }else{
-        $.cookie('chan_thread_hidden',","+id+",");
-        $("#P"+id+" .postContent").slideToggle();
-            $("#T"+id).slideToggle();
+        threads.push(id);
+        $("#P"+id+" .postContent").slideUp();
+        $("#T"+id).slideUp();
+    }
+    $.cookie('chan_thread_hidden',implode(',',threads),{ expires: 356, path: '/' });
+}
+function hideThreads(){
+    if($.cookie('chan_thread_hidden')!=null){
+        var threads = $.cookie('chan_thread_hidden').split(",");
+        for(var i=0;i<threads.length;i++){
+            $("#P"+threads[i]+" .postContent").slideUp();
+            $("#T"+threads[i]).slideUp();
+        }
     }
 }
 
@@ -163,12 +174,6 @@ function setFields(){
     });
     if($.cookie('chan_post_name')!=null)$("#varname").val($.cookie('chan_post_name'));
     if($.cookie('chan_post_mail')!=null)$("#varmail").val($.cookie('chan_post_mail'));
-}
-function hideThreads(){
-    if($.cookie('chan_thread_hidden')!=null){
-        var hiddenThreads = $.cookie('chan_thread_hidden').split(",");
-        for(var i=0;i<hiddenThreads.length;i++){hideThread(hiddenThreads[i]);}
-    }
 }
 
 function registerButtons(){
