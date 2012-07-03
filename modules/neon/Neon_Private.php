@@ -22,10 +22,8 @@ function displayControlPanelProfile(){
         case 'Save Password':
             if(strlen($_POST['newpass'])>5){
                 if($_POST['newpass']==$_POST['newpassrepeat']){
-                    $hash=hash('sha512',$_POST['newpass']);
-                    $a->user->password=$hash;
-                    $a->user->saveData();
-                    $a->login($a->user->username,$hash,false); //Revalidate cookies
+                    $a->changePassword($_POST['newpass']);
+                    $a->login($a->user->username,$_POST['newpass']); //Revalidate cookies
                     $l->triggerHook("UPDATEpassword",'User');
                     $err[5]="Password saved.";
                 }else $err[4]="The passwords do not match.";

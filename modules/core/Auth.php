@@ -13,13 +13,8 @@ var $user;
         $this->auth($_COOKIE['v4username'],$_COOKIE['v4hash']);
     }
 
-    function composeToken($name,$pass){
-        global $c;
-        return hash('sha512',$c->o['salt0'].'-'.$name.'-'.$c->o['salt1'].'-'.$_SERVER['REMOTE_ADDR'].'-'.$c->o['salt2'].'-'.$pass.'-'.$c->o['salt3']);
-    }
-
     function auth($name,$token){
-        global $c,$k;
+        global $k;
         if($name==''||$token=='')return false;
         $this->loadUser($name);
         $ctoken = $this->composeToken($name,$this->user->secret);
@@ -39,8 +34,8 @@ var $user;
     function login($name,$pass,$hash=true){
         global $c,$l;
         if($name==''||$pass=='')return false;
-        if($hash)$pass=hash('sha512',$pass);
         $this->loadUser($name);
+        if($hash)$pass=$this->getPasswordHash($pass);
         
         if($name==$this->user->username&&$this->user->password===$pass&&$this->user->status=='a'){
             $l->triggerHook('USERlogin',$this);
@@ -135,6 +130,24 @@ var $user;
                 $c->query('UPDATE ud_permissions SET tree=? WHERE UID=?',array(implode("\n",$perms),$uid),false);
             }
         }
+    }
+    
+    function changePassword($password,$user=-1){
+        if($user==-1)$user=$this->user;
+        else if(is_numeric($user))$user=DataModel::getData('ud_users','SELECT userID,password,secret FROM ud_users WHERE userID=?',array($user));
+        $user->secret = Toolkit::generateRandomString(31);
+        $user->password = $this->getPasswordHash($password,$user->secret);
+        $user->saveData();
+    }
+
+    function composeToken($name,$pass){
+        global $c;
+        return hash('sha512',$c->o['salt0'].'-'.$name.'-'.$c->o['salt1'].'-'.$_SERVER['REMOTE_ADDR'].'-'.$c->o['salt2'].'-'.$pass.'-'.$c->o['salt3']);
+    }
+    
+    function getPasswordHash($password,$secret=-1){
+        if($secret==-1)$secret=$this->user->secret;
+        return hash('sha512',$password.hash('md5',$secret));
     }
     
     function generateDelta($userID=-1,$group=''){

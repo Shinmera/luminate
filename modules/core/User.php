@@ -277,7 +277,7 @@ function addUser($username,$mail,$password,$status='',$group='Registered',$displ
     $status=substr($status,0,1);
     if($displayname=='')$displayname=$username;
     $secret=$k->generateRandomString(31);
-    $password=hash('sha512',$password);
+    $password=hash('sha512',$password+hash('md5',$secret));
     $c->query("INSERT INTO ud_users VALUES(NULL,?,?,?,?,?,?,?,?,?)",array($username,$mail,$password,$secret,$displayname,'',$group,$status,time()));
     
     $l->triggerHook("USERadd",$this,array($c->insertID()));
@@ -285,12 +285,14 @@ function addUser($username,$mail,$password,$status='',$group='Registered',$displ
 }
 
 function updateUser($userID,$fields){
-    global $l;
+    global $l,$a;
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($userID));
     if($user!=null){
-        if($fields['password']!=$user->password)$fields['password']=hash('sha512',$fields['password']); //Hash password
+        if($fields['secret']=='')$fields['secret']=$user->secret;
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
+        if($a->getPasswordHash($fields['password'],$fields['secret'])!=$user->password)
+                $a->changePassword($fields['password'],$user);
     }
     
     $l->triggerHook("USERupdate",$this,array($userID));
