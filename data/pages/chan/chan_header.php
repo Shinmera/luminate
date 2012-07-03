@@ -22,7 +22,7 @@
     <body><div class="content">
     
     <?=$l->triggerPARSE('Purplish',$board->subject);?>
-    <?=include(PAGEPATH.'chan/chan_glob_header.php')?>
+    <? include(PAGEPATH.'chan/chan_glob_header.php');?>
     <div class="boardTitle"><?=$board->title?></div>
 
     <? $l->triggerHook('header','Purplish',array($title,$board,$thread)); ?>
