@@ -19,6 +19,7 @@ class PostGenerator{
         $type = '';
         if(strpos($post->options,'s')!==FALSE)$type.="sticky";
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
+        if(strpos($post->options,'r')!==FALSE)$type ="redirect";
 
         flush();
         ob_start();
