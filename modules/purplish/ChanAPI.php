@@ -273,7 +273,7 @@ function displayReport(){
             $l->triggerHook('report','Purplish',$report);
             $ret.='Report for post #'.$post.' on '.$_POST['folder'].' has been submitted.<br />';
         }
-        $ret = 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
+        $ret .= 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
         die($ret);
     }else
     if($_POST['submitter']=='Delete'){
@@ -292,7 +292,7 @@ function displayReport(){
                 else $ret.=$e->getMessage().'<br />';
             }
         }
-        $ret = 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
+        $ret .= 'Redirecting... <script type="text/javascript">window.setTimeout("window.location=\''.$_SERVER['HTTP_REFERER'].'\'", 1000);</script>';
         die($ret);
     }
     die('Nothing to do.');

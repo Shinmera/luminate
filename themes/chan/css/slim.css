@@ -1,4 +1,5 @@
 @charset "utf-8";
+@font-face {font-family: pixelated;src: url('http://tymoon.eu/data/uploads/pixelated.ttf');}
 /* CSS Document */
 .clear{clear:both;}
 a:link{color:#00EEFF;}
@@ -8,10 +9,15 @@ a:hover{color:#FFF;}
 IMG.flLeft {float: left;padding:3px;}
 IMG.flRight {float: right;padding:3px;}
 input{border: 1px solid #CCC;background:#000;color:#FFF;}
-hr{border:none;border-bottom: 1px solid #FFF;box-shadow: 0 0 5px #FFF;}
-options{
-    content: "{'postbox':{'draggable':false,'resizable':false},'threadwatch':{'draggable':false,'resizable':false}}";
+input[type="checkbox"]{
+    width:10px;height:10px;margin:auto 2px auto 2px;display:inline-block;
+    background: #000;border: 1px solid #FFF;
+    -moz-appearance:none;-webkit-appearance:none;}
+input[type="checkbox"]:checked{
+    background:#00EEFF;box-shadow: 0 0 10px #00EEFF;
 }
+hr{border:none;border-bottom: 1px solid #FFF;box-shadow: 0 0 5px #FFF;}
+options{content: "{'postbox':{'draggable':false,'resizable':false},'threadwatch':{'draggable':false,'resizable':false}}";}
 
 html,body{
     background: #000 url("../images/blockbg.jpg");
@@ -44,7 +50,7 @@ html,body{
 }
 #pageBanner{
     position:fixed;
-    right: 0;top:20px;
+    right: 0;top:0;
     width: 300px;
     text-align:center;
     -webkit-box-reflect: below -5px -webkit-gradient( linear, left top, left bottom, from(transparent), color-stop(91%, rgba(255, 255, 255, .5)), color-stop(21.01%, transparent) );
@@ -78,7 +84,7 @@ a.directQuote{
     font-size:8pt;
     background: rgba(0,0,0,0.5);
 }
-.postBox input{
+.postBox input[type="text"],.postBox input[type="password"]{
     font-size:10pt;
     height:15px;
     border: 1px solid #000;
@@ -225,6 +231,7 @@ a.directQuote{
     text-align:right;
     font-size: 20pt;
     padding-right:2px;
+    font-family: pixelated, Arial;
 }
 #postType.locked::after{
     content:"LOCKED";
@@ -332,7 +339,7 @@ a.omittedText:hover{opacity:1;}
     margin:0px;
     padding:0px;
     z-index:20;
-    top:0px;left:0px;right:0px;
+    top:0px;left:0px;right:300px;
     box-shadow: 0 0 20px #00EEFF;
 }
 .menu *{
