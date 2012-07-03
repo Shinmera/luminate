@@ -58,6 +58,17 @@ function implode (glue, pieces) {
     return pieces;
 }
 
+Array.prototype.remove= function(){
+    var what, a= arguments, L= a.length, ax;
+    while(L && this.length){
+        what= a[--L];
+        while((ax= this.indexOf(what))!= -1){
+            this.splice(ax, 1);
+        }
+    }
+    return this;
+}
+
 $(document).ready(function(){
     //$(".date").each(function(){
     //    $(this).datepicker({dateFormat:'dd.mm.yy',yearRange:'1940:2040'});
