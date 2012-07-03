@@ -238,7 +238,7 @@ function addInteractiveElement($ul,name,val){
         id=$("li:last-child",$ul).attr("id")+1;
     else id=0;
     $ul.append('<li id="ILE'+id+'"><a>x</a><input type="hidden" name="'+$ul.parent().attr("id")+'[]" value="'+val+'" />'+name+'</li>');
-    $ul.sortable("refresh");
+    try{$ul.sortable("refresh");}catch(e){}
     var $obj= $("#ILE"+id+" a",$ul);
     $obj.click(function(){$(this).parent().remove();return false;});
     return $obj;
@@ -273,7 +273,7 @@ function createInteractiveList(){
             addInteractiveElement($u,val,dat[val]);
     }
     
-    $u.sortable({axis:"x",containment: "#"+arguments[0]+">ul"});
+    try{$u.sortable({axis:"x",containment: "#"+arguments[0]+">ul"});}catch(e){}
     $i.keypress(function(e) {
         if(e.keyCode == 13 || e.keyCode == 188 || e.keyCode == 44) {
             var val = $i.val();
