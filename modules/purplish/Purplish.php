@@ -1,7 +1,6 @@
 <?
-//TODO: Re-test everything.
 //TODO: Investigate header issue.
-//TODO: Fix auto update.
+//TODO: Fix themes.
 
 class Purplish{
 public static $name="Chan";
