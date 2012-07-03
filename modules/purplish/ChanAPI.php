@@ -301,16 +301,17 @@ function displayReport(){
 function displayOptions(){
     ?>
     <h4>Options</h4>
-    <form>
-        <input type="checkbox" value="u" id="cbu" /><label style="width:200px;display:inline-block;vertical-align:middle">Auto update threads</label><br />
-        <input type="checkbox" value="f" id="cbf" /><label style="width:200px;display:inline-block;vertical-align:middle">Fixed post box</label><br />
-        <input type="checkbox" value="p" id="cbp" /><label style="width:200px;display:inline-block;vertical-align:middle">Show image previews</label><br />
-        <input type="checkbox" value="e" id="cbe" /><label style="width:200px;display:inline-block;vertical-align:middle">Enlarge image on click</label><br />
-        <input type="checkbox" value="h" id="cbh" /><label style="width:200px;display:inline-block;vertical-align:middle">Enable thread hiding</label><br />
-        <input type="checkbox" value="s" id="cbs" /><label style="width:200px;display:inline-block;vertical-align:middle">Scroll to post when selecting</label><br />
-        <input type="checkbox" value="q" id="cbq" /><label style="width:200px;display:inline-block;vertical-align:middle">Show post quote previews</label><br />
-        <input type="checkbox" value="w" id="cbw" /><label style="width:200px;display:inline-block;vertical-align:middle">Always show watched threads</label><br />
-        <input type="checkbox" value="v" id="cbv" /><label style="width:200px;display:inline-block;vertical-align:middle">Hide embedded videos</label><br />
+    <form id="optionsForm">
+        <input type="checkbox" value="u" id="cbu" /><label>Auto update threads</label><br />
+        <input type="checkbox" value="f" id="cbf" /><label>Fixed post box</label><br />
+        <input type="checkbox" value="p" id="cbp" /><label>Show image previews</label><br />
+        <input type="checkbox" value="e" id="cbe" /><label>Enlarge image on click</label><br />
+        <input type="checkbox" value="h" id="cbh" /><label>Enable thread hiding</label><br />
+        <input type="checkbox" value="s" id="cbs" /><label>Scroll to post when selecting</label><br />
+        <input type="checkbox" value="q" id="cbq" /><label>Show post quote previews</label><br />
+        <input type="checkbox" value="a" id="cba" /><label>Automatically watch threads you post in</label><br />
+        <input type="checkbox" value="w" id="cbw" /><label>Always show watched threads</label><br />
+        <input type="checkbox" value="v" id="cbv" /><label>Hide embedded videos</label><br />
         <input type="submit" id="saveOptions" value="Save" /> 
         <span id="saveResult" style="color:red;font-weight:bold;"></span>
     </form><script type="text/javascript">
