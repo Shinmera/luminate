@@ -5,6 +5,8 @@ class Chart{
     var $data;
     var $type;
     var $caption;
+    var $width=500;
+    var $height=500;
     
     function __construct($id,$cats,$data=array(),$type='line'){
         $this->id=$id;
@@ -15,9 +17,10 @@ class Chart{
     
     function setData($data){$this->data=$data;}
     function setCaption($caption){$this->caption=$caption;}
+    function setSize($width,$height){$this->width=$width;$this->height=$height;}
     
     function display($dir='x'){
-        ?><table id=<?=$this->id?>>
+        ?><table id=<?=$this->id?> style="display:none;">
             <thead>
                 <tr>
                     <td></td>
@@ -38,15 +41,17 @@ class Chart{
             </tbody>
         </table>
         
-        <link rel="stylesheet" type="text/css" href="<?=PROOT?>css/visualize/basic.css"/>
-        <link rel="stylesheet" type="text/css" href="<?=PROOT?>css/visualize/visualize.css"/>
-        <script type="text/javascript" src="<?=PROOT?>js/visualize/excanvas.js"></script>
-        <script type="text/javascript" src="<?=PROOT?>js/visualize/visualize.js"></script>
+        <link rel="stylesheet" type="text/css" href="<?=DATAPATH?>css/visualize/basic.css"/>
+        <link rel="stylesheet" type="text/css" href="<?=DATAPATH?>css/visualize/visualize.css"/>
+        <script type="text/javascript" src="<?=DATAPATH?>js/visualize/excanvas.js"></script>
+        <script type="text/javascript" src="<?=DATAPATH?>js/visualize/visualize.js"></script>
         <script type="text/javascript">
             $(function(){
                 $('#<?=$this->id?>').visualize({'type':'<?=$this->type?>',
                                                 'title':'<?=$this->caption?>',
-                                                'parseDirection':'<?=$dir?>'});
+                                                'parseDirection':'<?=$dir?>',
+                                                'width':'<?=$this->width?>',
+                                                'height':'<?=$this->height?>'});
             });
         </script><?
     }
