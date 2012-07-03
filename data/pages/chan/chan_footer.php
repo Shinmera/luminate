@@ -12,7 +12,6 @@
         <label>Report:</label><br /><input type="text" name="reason" placeholder="reason" maxlength="512" autocomplete="off" />
         <input type="submit" name="submitter" value="Report" />
     </div></form>
-
     </div><br clear="all">
     
     <div id="threadWatch" class="threadWatch">
@@ -31,6 +30,7 @@
         <a href="#" id="watchReadButton" class="watchButton" title="Read All">✔</a> 
         <a href="#" id="watchClearButton" class="watchButton" title="Clear">✘</a> 
     </div>
+    <options id="options"></options>
     <div id="proot" style="display:none;"><?=PROOT?></div>
     <div id="popup" class="popup" style="display:none;">Please wait...</div>
     <div id="previewPost" style="display:none;float:left;position:absolute;"></div>
