@@ -109,7 +109,7 @@ class SimpleEditor extends Editor{
             $().ready(function(){
                 $("#<?=$this->formname?> #previewbutton").click(function(){
                     if($(this).attr("value")=="Preview"){
-                        $("#<?=$this->formname?> textarea").css({display:"none"});
+                        $("#<?=$this->formname?>txt").css({display:"none"});
                         $("#preview").css({display:"inline-block",
                                            width:$("#<?=$this->formname?> textarea").width()+"px",
                                            height:$("#<?=$this->formname?> textarea").height()+"px"});
@@ -120,7 +120,7 @@ class SimpleEditor extends Editor{
                             $("#previewbutton").attr("value","Edit");
                         });
                     }else{
-                        $("#<?=$this->formname?> textarea").css("display","inline-block");
+                        $("#<?=$this->formname?>txt").css("display","inline-block");
                         $("#preview").css("display","none");
                         $("#previewbutton").attr("value","Preview");
                     }
