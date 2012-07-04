@@ -131,7 +131,7 @@ function displayStatistics(){
         $hitsByBoard['Hits'][$post->folder] = $count;
         $bb[]=$post->folder;
     }
-    echo('<div class="box fullwidth"><h3>Posts and hits in the last week - By board</h3>');
+    echo('<div class="box"><h3>Posts and hits in the last week - By board</h3>');
         $chartByBoards = new Chart('postchart',$bb,$postsByBoard,'bar');
         $chartByBoards->setSize('600px','250px');
         $chartByBoards->display();
@@ -156,7 +156,7 @@ function displayStatistics(){
             $posts[$board->folder][$dates[$i]] = $count;
         }
     }
-    echo('<div class="box fullwidth"><h3>Posts in the last week - Over time</h3>');
+    echo('<div class="box"><h3>Posts in the last week - Over time</h3>');
         $chartByTime = new Chart('timechart',$dates,$posts,'area');
         $chartByTime->setSize('600px','250px');
         $chartByTime->display();
@@ -176,7 +176,7 @@ function displayStatistics(){
             $hits[$board->folder][$dates[$i]] = $count;
         }
     }
-    echo('<div class="box fullwidth"><h3>Hits in the last week - Over time</h3>');
+    echo('<div class="box"><h3>Hits in the last week - Over time</h3>');
         $chartByTime = new Chart('htimechart',$dates,$hits,'area');
         $chartByTime->setSize('600px','250px');
         $chartByTime->display();
@@ -196,7 +196,7 @@ function displayStatistics(){
             $hits[$board->folder][$dates[$i]] = $count;
         }
     }
-    echo('<div class="box fullwidth"><h3>Hits in the last day - Over time</h3>');
+    echo('<div class="box"><h3>Hits in the last 24 hours - Over time</h3>');
         $chartByTime = new Chart('dtimechart',$dates,$hits,'area');
         $chartByTime->setSize('600px','250px');
         $chartByTime->display();
