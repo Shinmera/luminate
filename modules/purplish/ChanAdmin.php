@@ -121,27 +121,25 @@ function displayStatistics(){
     $hits  = DataModel::getData('','SELECT COUNT(time) AS count,folder
                                     FROM ch_hits LEFT JOIN ch_boards ON BID=boardID
                                     WHERE time > ? GROUP BY BID ORDER BY folder DESC',array($weekago));
-    Toolkit::assureArray($images);Toolkit::assureArray($hits);
-    if(is_array($posts)){
-        $postsByBoard=array();
-        foreach($posts as $post){
-            $postsByBoard['Posts'][$post->folder] = $post->count;
-            $count=0;foreach($images as $img){if($img->folder==$post->folder){$count = $img->count;break;}}
-            $postsByBoard['Images'][$post->folder] = $count;
-            $count=0;foreach($hits as $hit){if($hit->folder==$post->folder){$count = $hit->count;break;}}
-            $hitsByBoard['Hits'][$post->folder] = $count;
-            $bb[]=$post->folder;
-        }
-        echo('<div class="box fullwidth"><h3>Posts and hits in the last week - By board</h3>');
-            $chartByBoards = new Chart('postchart',$bb,$postsByBoard,'bar');
-            $chartByBoards->setSize('600px','250px');
-            $chartByBoards->display();
-            
-            $chartByHits = new Chart('hitschart',$bb,$hitsByBoard,'bar');
-            $chartByHits->setSize('600px','250px');
-            $chartByHits->display();
-        echo('</div>');
+    Toolkit::assureArray($images);Toolkit::assureArray($hits);Toolkit::assureArray($posts);
+    $postsByBoard=array();
+    foreach($posts as $post){
+        $postsByBoard['Posts'][$post->folder] = $post->count;
+        $count=0;foreach($images as $img){if($img->folder==$post->folder){$count = $img->count;break;}}
+        $postsByBoard['Images'][$post->folder] = $count;
+        $count=0;foreach($hits as $hit){if($hit->folder==$post->folder){$count = $hit->count;break;}}
+        $hitsByBoard['Hits'][$post->folder] = $count;
+        $bb[]=$post->folder;
     }
+    echo('<div class="box fullwidth"><h3>Posts and hits in the last week - By board</h3>');
+        $chartByBoards = new Chart('postchart',$bb,$postsByBoard,'bar');
+        $chartByBoards->setSize('600px','250px');
+        $chartByBoards->display();
+
+        $chartByHits = new Chart('hitschart',$bb,$hitsByBoard,'bar');
+        $chartByHits->setSize('600px','250px');
+        $chartByHits->display();
+    echo('</div>');
     
     $posts = array();$dates=array();$bdat=array();
     $boards = DataModel::getData('','SELECT folder FROM ch_boards');
