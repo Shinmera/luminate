@@ -54,52 +54,154 @@ function displayPanel(){
 function displayStatistics(){
     //TODO: Finish
     include(MODULEPATH.'gui/Statistics.php');
-    $weekago = time()-604800;
+    $midnight= mktime(0,0,0);
+    $thishour= mktime(date("H"),0,0);
+    $weekago = $midnight-604800;
     
     $total = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts');
     $tpics = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts WHERE file!=""');
-    $topip = DataModel::getData('','SELECT COUNT(postID) AS count,ip FROM ch_posts GROUP BY ip  ORDER BY count DESC LIMIT 1');
+    $topip = DataModel::getData('','SELECT COUNT(postID) AS count,ip FROM ch_posts GROUP BY ip ORDER BY count DESC LIMIT 1');
     $topnew= DataModel::getData('','SELECT COUNT(postID) AS count,ip FROM ch_posts WHERE time > ? GROUP BY ip  ORDER BY count DESC LIMIT 1',array($weekago));
     $topboard=DataModel::getData('','SELECT COUNT(postID) AS count,ch_boards.title FROM ch_posts 
                                      LEFT JOIN ch_boards ON BID=boardID GROUP BY folder ORDER BY count DESC LIMIT 1');
     $firstp= DataModel::getData('','SELECT time FROM ch_posts WHERE time > 0 ORDER BY time ASC LIMIT 1;');
-    $perday= ($total->count/(time()-$firstp->time))*60*60*24;
-    ?><div class="box">
+    $perday= ($total->count/(time()-$firstp->time))*3600*24;
+    
+    $hits  = DataModel::getData('','SELECT COUNT(time) AS count FROM ch_hits');
+    $weekh = DataModel::getData('','SELECT COUNT(time) AS count FROM ch_hits WHERE time > ?',array($weekago));
+    $hperday=($hits->count/(time()-$firstp->time))*3600*24;
+    $tophboard=DataModel::getData('','SELECT COUNT(time) AS count,ch_boards.title FROM ch_hits 
+                                      LEFT JOIN ch_boards ON BID=boardID GROUP BY folder ORDER BY count DESC LIMIT 1');
+    $tophip= DataModel::getData('','SELECT COUNT(time) AS count,ip FROM ch_hits GROUP BY ip ORDER BY count DESC LIMIT 1');
+    $totalips=DataModel::getData('','SELECT COUNT(ip) AS count FROM ch_hits GROUP BY ip');
+    
+    $pdbsize=DataModel::getData('','SELECT SUM( data_length + index_length) AS size FROM `information_schema`.`TABLES` 
+                                    WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ? LIMIT 1',array(SQLDB,'ch_posts'));
+    $imgsize=DataModel::getData('','SELECT SUM( filesize ) AS size FROM ch_posts');
+    ?><div class="box fullwidth">
         <h3>Overview</h3>
-        Total amount of posts: <?=$total->count?><br />
-        Total amount of pictures: <?=$tpics->count?><br />
-        Average posts per day: <?=round($perday,2)?><br />
-        Most active user: <?=$topip->ip?> (<?=$topip->count?>)<br />
-        Most active newcomer: <?=$topnew->ip?> (<?=$topnew->count?>)<br />
-        Top board: <?=$topboard->title?> (<?=$topboard->count?>)
+        <div style="display:inline-block;vertical-align:text-top;margin:10px">
+            <h4>Post stats</h4>
+            Total amount of posts: <?=$total->count?><br />
+            Total amount of pictures: <?=$tpics->count?><br />
+            Average posts per day: <?=round($perday,2)?><br />
+        </div>
+        <div style="display:inline-block;vertical-align:text-top;margin:10px">
+            <h4>Hit stats</h4>
+            Total hits: <?=$hits->count?><br />
+            Hits in the last week: <?=$weekh->count?><br />
+            Average hits per day: <?=round($hperday,2)?><br />
+        </div>
+        <div style="display:inline-block;vertical-align:text-top;margin:10px">
+            <h4>Board stats</h4>
+            Top board by posts: <?=$topboard->title?> (<?=$topboard->count?>)<br />
+            Top board by hits: <?=$tophboard->title?> (<?=$tophboard->count?>)<br />
+        </div>
+        <div style="display:inline-block;vertical-align:text-top;margin:10px">
+            <h4>User stats</h4>
+            Registered IPs: <?=$totalips->count?><br />
+            Most active user: <?=$topip->ip?> (<?=$topip->count?>)<br />
+            Most active newcomer: <?=$topnew->ip?> (<?=$topnew->count?>)<br />
+            Most active lurker: <?=$tophip->ip?> (<?=$tophip->count?>)<br />
+        </div>
+        <div style="display:inline-block;vertical-align:text-top;margin:10px">
+            <h4>Disc stats</h4>
+            Post table size: <?=Toolkit::toLiteralFilesize($pdbsize->size)?><br />
+            Image file size: <?=Toolkit::toLiteralFilesize($imgsize->size)?><br />
+            Data folder size: <?=Toolkit::toLiteralFilesize(Toolkit::foldersize(ROOT.DATAPATH.'chan/'))?>
+        </div>
     </div><?
     
     $posts = DataModel::getData('','SELECT COUNT(postID) AS count,folder
                                     FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
                                     WHERE time > ? GROUP BY folder ORDER BY folder DESC',array($weekago));
+    $images= DataModel::getData('','SELECT COUNT(postID) AS count,folder
+                                    FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
+                                    WHERE time > ? AND file!="" GROUP BY folder ORDER BY folder DESC',array($weekago));
+    $hits  = DataModel::getData('','SELECT COUNT(time) AS count,folder
+                                    FROM ch_hits LEFT JOIN ch_boards ON BID=boardID
+                                    WHERE time > ? GROUP BY BID ORDER BY folder DESC',array($weekago));
+    Toolkit::assureArray($images);Toolkit::assureArray($hits);
     if(is_array($posts)){
-        echo('<div class="box"><h3>Posts in the last week - By board</h3>');
         $postsByBoard=array();
         foreach($posts as $post){
             $postsByBoard['Posts'][$post->folder] = $post->count;
+            $count=0;foreach($images as $img){if($img->folder==$post->folder){$count = $img->count;break;}}
+            $postsByBoard['Images'][$post->folder] = $count;
+            $count=0;foreach($hits as $hit){if($hit->folder==$post->folder){$count = $hit->count;break;}}
+            $hitsByBoard['Hits'][$post->folder] = $count;
             $bb[]=$post->folder;
         }
-        $chartByBoards = new Chart('postchart',$bb,$postsByBoard,'bar');
-        $chartByBoards->setSize('500px','250px');
-        $chartByBoards->display();
+        echo('<div class="box fullwidth"><h3>Posts and hits in the last week - By board</h3>');
+            $chartByBoards = new Chart('postchart',$bb,$postsByBoard,'bar');
+            $chartByBoards->setSize('600px','250px');
+            $chartByBoards->display();
+            
+            $chartByHits = new Chart('hitschart',$bb,$hitsByBoard,'bar');
+            $chartByHits->setSize('600px','250px');
+            $chartByHits->display();
         echo('</div>');
     }
     
-    $posts = array();$dates=array();
+    $posts = array();$dates=array();$bdat=array();
+    $boards = DataModel::getData('','SELECT folder FROM ch_boards');
     for($i=7;$i>=0;$i--){
-        $post = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts WHERE time < ? AND time > ?',array(time()-($i)*24*60*60,time()-($i+1)*24*60*60));
-        $dates[$i]=Toolkit::toDate(time()-$i*24*60*60,'l d.M');
-        $posts['Posts'][$dates[$i]] = $post->count;
+        $post = DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts 
+                                       WHERE time < ? AND time > ?',array($midnight-($i-1)*24*60*60,$midnight-($i)*24*60*60));
+        $bdat = DataModel::getData('','SELECT COUNT(postID) AS count,folder FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
+                                       WHERE time < ? AND time > ? GROUP BY BID',array($midnight-($i-1)*24*60*60,$midnight-($i)*24*60*60));
+        Toolkit::assureArray($bdat);
+        $dates[$i]=Toolkit::toDate($midnight-$i*24*60*60,'l d.M');
+        $posts['Total'][$dates[$i]] = $post->count;
+        foreach($boards as $board){
+            $count=0;foreach($bdat as $dat){if($dat->folder==$board->folder){$count=$dat->count;break;}}
+            $posts[$board->folder][$dates[$i]] = $count;
+        }
     }
-    echo('<div class="box"><h3>Posts in the last week - Over time</h3>');
-    $chartByTime = new Chart('timechart',$dates,$posts,'line');
-    $chartByTime->setSize('500px','250px');
-    $chartByTime->display();
+    echo('<div class="box fullwidth"><h3>Posts in the last week - Over time</h3>');
+        $chartByTime = new Chart('timechart',$dates,$posts,'area');
+        $chartByTime->setSize('600px','250px');
+        $chartByTime->display();
+    echo('</div>');
+    
+    $hits = array();$dates=array();$bdat=array();
+    for($i=7;$i>=0;$i--){
+        $hit  = DataModel::getData('','SELECT COUNT(time) AS count FROM ch_hits
+                                       WHERE time < ? AND time > ?',array($midnight-($i-1)*24*60*60,$midnight-($i)*24*60*60));
+        $bdat = DataModel::getData('','SELECT COUNT(time) AS count,folder FROM ch_hits LEFT JOIN ch_boards ON BID=boardID
+                                       WHERE time < ? AND time > ? GROUP BY BID',array($midnight-($i-1)*24*60*60,$midnight-($i)*24*60*60));
+        Toolkit::assureArray($bdat);
+        $dates[$i]=Toolkit::toDate($midnight-$i*24*60*60,'l d.M');
+        $hits['Total'][$dates[$i]] = $hit->count;
+        foreach($boards as $board){
+            $count=0;foreach($bdat as $dat){if($dat->folder==$board->folder){$count=$dat->count;break;}}
+            $hits[$board->folder][$dates[$i]] = $count;
+        }
+    }
+    echo('<div class="box fullwidth"><h3>Hits in the last week - Over time</h3>');
+        $chartByTime = new Chart('htimechart',$dates,$hits,'area');
+        $chartByTime->setSize('600px','250px');
+        $chartByTime->display();
+    echo('</div>');
+    
+    $hits = array();$dates=array();$bdat=array();
+    for($i=23;$i>=0;$i--){
+        $hit  = DataModel::getData('','SELECT COUNT(time) AS count FROM ch_hits
+                                       WHERE time < ? AND time > ?',array($thishour-($i-1)*3600,$thishour-($i)*3600));
+        $bdat = DataModel::getData('','SELECT COUNT(time) AS count,folder FROM ch_hits LEFT JOIN ch_boards ON BID=boardID
+                                       WHERE time < ? AND time > ? GROUP BY BID',array($thishour-($i-1)*3600,$thishour-($i)*3600));
+        Toolkit::assureArray($bdat);
+        $dates[$i]=Toolkit::toDate($thishour-$i*3600,'H');
+        $hits['Total'][$dates[$i]] = $hit->count;
+        foreach($boards as $board){
+            $count=0;foreach($bdat as $dat){if($dat->folder==$board->folder){$count=$dat->count;break;}}
+            $hits[$board->folder][$dates[$i]] = $count;
+        }
+    }
+    echo('<div class="box fullwidth"><h3>Hits in the last day - Over time</h3>');
+        $chartByTime = new Chart('dtimechart',$dates,$hits,'area');
+        $chartByTime->setSize('600px','250px');
+        $chartByTime->display();
     echo('</div>');
 }
 
@@ -411,6 +513,7 @@ function displayEditBoard(){
         try{
             Toolkit::rmdir(ROOT.DATAPATH.'chan/'.$board->folder);
             $c->query('DELETE FROM ch_posts WHERE BID=?',array($board->boardID));
+            $c->query('DELETE FROM ch_hits WHERE BID=?',array($board->boardID));
             $c->query('DELETE FROM ch_boards WHERE boardID=?',array($board->boardID));
             echo('<div class="success">Board deleted.</div>');
         }catch(Exception $ex){
