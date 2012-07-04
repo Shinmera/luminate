@@ -78,6 +78,12 @@ function displayStatistics(){
     $pdbsize=DataModel::getData('','SELECT SUM( data_length + index_length) AS size FROM `information_schema`.`TABLES` 
                                     WHERE `TABLE_SCHEMA` = ? AND `TABLE_NAME` = ? LIMIT 1',array(SQLDB,'ch_posts'));
     $imgsize=DataModel::getData('','SELECT SUM( filesize ) AS size FROM ch_posts');
+    
+    $totalt= DataModel::getData('','SELECT COUNT(postID) AS count FROM ch_posts WHERE PID=0');
+    $topthread=DataModel::getData('','SELECT COUNT(time) AS count,PID,folder FROM ch_hits LEFT JOIN ch_boards ON BID=boardID
+                                      WHERE PID > 0 GROUP BY PID ORDER BY count DESC LIMIT 1');
+    $bigthread=DataModel::getData('','SELECT COUNT(postID) AS count,PID,folder FROM ch_posts LEFT JOIN ch_boards ON BID=boardID
+                                      WHERE PID > 0 GROUP BY PID ORDER BY count DESC LIMIT 1');
     ?><div class="box fullwidth">
         <h3>Overview</h3>
         <div style="display:inline-block;vertical-align:text-top;margin:10px">
@@ -96,6 +102,12 @@ function displayStatistics(){
             <h4>Board stats</h4>
             Top board by posts: <?=$topboard->title?> (<?=$topboard->count?>)<br />
             Top board by hits: <?=$tophboard->title?> (<?=$tophboard->count?>)<br />
+        </div>
+        <div style="display:inline-block;vertical-align:text-top;margin:10px">
+            <h4>Thread stats</h4>
+            Total threads: <?=$totalt->count?><br />
+            Largest thread: <a href="<?=Toolkit::url('chan',$bigthread->folder.'/threads/'.$bigthread->PID.'.php')?>"><?=$bigthread->PID?></a> (<?=$bigthread->count?>)<br />
+            Most viewed thread: <a href="<?=Toolkit::url('chan',$topthread->folder.'/threads/'.$topthread->PID.'.php')?>"><?=$topthread->PID?></a> (<?=$topthread->count?>)<br />
         </div>
         <div style="display:inline-block;vertical-align:text-top;margin:10px">
             <h4>User stats</h4>
