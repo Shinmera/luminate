@@ -2,12 +2,13 @@
 class DIVTag extends Tag{
     function parse($content,$args){
         $this->args = array('class'=>array('name'=>'class','type'=>'TEXT','required'=>false,'default'=>''),
-                            'style'=>array('name'=>'style','type'=>'TEXT','required'=>false,'default'=>''));
+                            'style'=>array('name'=>'style','type'=>'TEXT','required'=>false,'default'=>''),
+                            'id'   =>array('id'=>'extra','type'=>'STRI','required'=>false,'default'=>''));
         $args = $this->checkArguments($args);
         if($args===FALSE)return FALSE;
         $this->makeVarsInArgs($args);
         
-        $content = '$r.=\'<div class="'.$args['class'][0].'" style="'.$args['style'][0].'">\';'.$content.'$r.=\'</div>\';';
+        $content = '$r.=\'<div class="'.$args['class'][0].'" style="'.$args['style'][0].'" id="'.$args['id'][0].'" >\';'.$content.'$r.=\'</div>\';';
         return $content."\n";
     }
 }
@@ -242,6 +243,13 @@ class AUTHTag extends Tag{
         $content = $this->makeVarsInString($content);
         
         return '$a->check(\''.$args['perm'][0].'\');';
+    }
+}
+
+class JAVASCRIPTTag extends Tag{
+    function parse($content,$args){
+        $content = $this->makeVarsInString($content);
+        return '$r.=\'<script type="text/javascript">'.str_replace('&dollar;','$',$content).'</script>\';';
     }
 }
 ?>

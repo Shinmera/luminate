@@ -194,7 +194,7 @@ class Tag{
             $argumentOK=false;
             switch($type){
                 case 'TEXT':$argumentOK=true;$arg=str_replace('{','&lbrace;',str_replace('}','&rbrace;',$arg));break;
-                case 'STRI':$argumentOK=($k->sanitizeString($arg,'\-_#${}[]"')==$arg);break;
+                case 'STRI':$argumentOK=($k->sanitizeString($arg,'\-_#${}[]*"')==$arg);break;
                 case 'URLS':$argumentOK=$k->checkURLValidity($arg);             break;
                 case 'MAIL':$argumentOK=$k->checkMailVailidity($arg);           break;
                 case 'DATE':$argumentOK=$k->checkDateVailidity($arg);           break;
