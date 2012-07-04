@@ -368,10 +368,27 @@ public static function toLiteralTime($time){
     return $time.' '.$periods[$j];
 }
 
+public static function toLiteralFilesize($filesize){return self::displayFilesize($filesize);}
+
 public static function convertHTML($html){
     $html = str_replace("<","&lt;",$html);
     $html = str_replace(">","&gt;",$html);
     return $html;
+}
+
+public static function displayFilesize($filesize){
+    if(is_numeric($filesize)){
+        $decr = 1024; $step = 0;
+        $prefix = array('Byte','KB','MB','GB','TB','PB');
+
+        while(($filesize / $decr) > 0.9){
+            $filesize = $filesize / $decr;
+            $step++;
+        }
+        return round($filesize,2).' '.$prefix[$step];
+    } else {
+        return 'NaN';
+    }
 }
 
 public static function unzipFile($file,$destination){
@@ -476,21 +493,6 @@ public static function getMimeType($file){
     
     if(!$type) throw new Exception('Failed to determine filetype!');
     return $type;
-}
-
-public static function displayFilesize($filesize){
-    if(is_numeric($filesize)){
-        $decr = 1024; $step = 0;
-        $prefix = array('Byte','KB','MB','GB','TB','PB');
-
-        while(($filesize / $decr) > 0.9){
-            $filesize = $filesize / $decr;
-            $step++;
-        }
-        return round($filesize,2).' '.$prefix[$step];
-    } else {
-        return 'NaN';
-    }
 }
 
 public static function displayPager(){
@@ -770,6 +772,14 @@ public static function rmdir($dirPath) {
     }
     if(!rmdir($dirPath))throw new Exception('Failed to delete '.$dirPath);
 }
+
+public static function foldersize($path){
+    $io = popen('/usr/bin/du -sb '.$path, 'r');
+    $size = intval(fgets($io,80));
+    pclose($io);
+    return $size;
+}
+
 
 }
 ?>
