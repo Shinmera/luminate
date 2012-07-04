@@ -26,7 +26,7 @@ class ThreadGenerator{
         flush();$NO_BUFFER=true;
         ob_start();
         ?>
-        
+
         <?='<? $postlist=array('.$pID?>
         <? for($i=0;$i<count($postlist);$i++){
             echo(','.$postlist[$i]['postID']);
