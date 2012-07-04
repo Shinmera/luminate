@@ -28,6 +28,7 @@ public static $hooks=array("foo");
         $this->Stags['bailout']=new BAILOUTTag('bailout','','sys');
         $this->Stags['valid']=new VALIDATETag('valid','','sys');
         $this->Stags['auth']=new AUTHTag('auth','','sys');
+        $this->Stags['js']=new JAVASCRIPTTag('js','','sys');
     }
     
     function displayApiPage(){

@@ -115,12 +115,6 @@ $(document).ready(function(){
         tabcontainer.children("div:nth-child("+(tabselect+1)+"),form:nth-child("+(tabselect+1)+")").css("display","block");
     });
     
-    $(".spoiler input").each(function(){
-        $(this).click(function(){
-            $(this).parent().children(".spoilertext").slideToggle();
-        });
-    });
-
     $(".sspoiler").each(function(){
         $(this).hover(function(){
             $(this).removeClass("sspoiler");
@@ -290,3 +284,18 @@ function createInteractiveList(){
         addVal(pre[item]);
     }
 }
+
+$(function(){
+    $('.spoiler').each(function(){
+        var open = $('>.open',this).html();
+        var close = $('>.close',this).html();
+        var $div = $('>div',this);
+        $('>button',this).unbind('click').click(function(event){
+            event.preventDefault();
+            if($(this).html()==open) $(this).html(close);
+            else                     $(this).html(open);
+            $div.stop(true,true).slideToggle(200);
+            return false;
+        });
+    })
+});
