@@ -8,7 +8,6 @@
     ?>
     <?='<? if(!defined("INIT"))include("'.TROOT.'config.php"); ?>'."\n"?>
     <?='<? global $a,$l,$t,$c; if($a==null)$a = $l->loadModule("Auth"); ?>'."\n"?>
-    <?='<? $c->query("INSERT INTO ch_hits VALUES(?,?,?,?)",array($_SERVER["REMOTE_ADDR"],time(),'.$board->boardID.','.$thread.'));?>'."\n" ?>
     <?=(BUFFER)?'<? if(COMPRESS)ob_start("ob_gzhandler");else ob_start(); ?>':''?>
     <? if(strpos($options,"h")!==FALSE){ ?>
         <?='<? if(!$a->check("chan.mod"))include("'.PAGEPATH.'chan/chan_403.php"); ?>'?>
