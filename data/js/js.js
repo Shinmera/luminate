@@ -58,7 +58,7 @@ function implode (glue, pieces) {
     return pieces;
 }
 
-Array.prototype.remove= function(){
+Array.prototype.remove = function(){
     var what, a= arguments, L= a.length, ax;
     while(L && this.length){
         what= a[--L];
@@ -237,7 +237,7 @@ function addInteractiveElement($ul,name,val){
     $obj.click(function(){$(this).parent().remove();return false;});
     return $obj;
 }
-
+//??? ODDITY
 function createInteractiveList(){
     switch(arguments.length){
         case 0:return;break;
@@ -276,6 +276,7 @@ function createInteractiveList(){
             $i.focus();
             return false;
         }
+        return true;
     });
 
     var e = jQuery.Event("keypress");
