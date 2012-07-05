@@ -7,12 +7,13 @@ public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
 function displayPage(){
-    global $params,$t;
+    global $params,$t,$SUPERIORPATH;
     $t->css[]='/reader.css';
     if(!is_numeric($params[1])){
         if(strpos($params[1],'-')!==FALSE)$params[1]=substr($params[1],0,strpos($params[1],'-'));
         if(!is_numeric($params[1]))$params[1]=-1;
     }
+    $SUPERIORPATH=$params[0].'/'.$params[1];
     switch($params[0]){
         case 'f':$this->displayFolder($params[1]);break;
         case 'p':$this->displayEntry($params[1]);break;
@@ -86,7 +87,7 @@ function displayEntry($entryID){
     $entry = DataModel::getData('','SELECT b.*,f.title AS ftitle,u.displayname,u.filename FROM bl_entries as b
                                     LEFT JOIN bl_folders AS f ON FID=folderID 
                                     LEFT JOIN ud_users AS u ON owner=userID
-                                    ORDER BY time DESC WHERE entryID=?',array($entryID));
+                                    WHERE entryID=?',array($entryID));
     if($entry==null){
         $t->openPage('404 - Blog');
         $this->displayHead();
@@ -94,7 +95,6 @@ function displayEntry($entryID){
     }else{
         $t->openPage($entry->title.' - Blog');
         $this->displayHead();
-        
         ?>
         <div id="bloghead">
             <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
