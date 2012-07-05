@@ -1,4 +1,5 @@
 <?php
+
 class LightUp  extends Module{
 public static $name="LightUp";
 public static $version=3.21;

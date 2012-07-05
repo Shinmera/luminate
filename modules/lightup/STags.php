@@ -3,7 +3,7 @@ class DIVTag extends Tag{
     function parse($content,$args){
         $this->args = array('class'=>array('name'=>'class','type'=>'TEXT','required'=>false,'default'=>''),
                             'style'=>array('name'=>'style','type'=>'TEXT','required'=>false,'default'=>''),
-                            'id'   =>array('id'=>'extra','type'=>'STRI','required'=>false,'default'=>''));
+                            'id'   =>array('name'=>'id',   'type'=>'STRI','required'=>false,'default'=>''));
         $args = $this->checkArguments($args);
         if($args===FALSE)return FALSE;
         $this->makeVarsInArgs($args);
