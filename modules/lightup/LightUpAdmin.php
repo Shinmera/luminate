@@ -121,6 +121,7 @@
             foreach($_POST as $name => $value){
                 $tag->$name = $value;
             }
+            $tag->setSecure(false);
             if($params[2]!=""){$tag->saveData();$err="Tag updated!";}
             else              {$tag->insertData();$err="Tag added!";}
         }
