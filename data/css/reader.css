@@ -1,0 +1,100 @@
+
+#content{background-color: #555 !important;}
+#editor{
+    margin: 0 !important;
+    background: #E5E5E5 !important;
+    border-radius: 0 !important;
+    margin-top:-20px !important;
+}
+.pagerForm{
+    position:absolute;
+    right:0;
+    bottom:-27px;
+    height:25px;
+    background: #E5E5E5;
+    border: 2px solid #AE61ED;
+    border-top:none;border-right:none;
+    border-radius: 0 0 0 5px;
+    z-index: 10;
+}
+
+
+#bloghead{
+    height:85px;
+    border-radius: 0 0 10px 10px;
+    z-index:20;
+    background: #B2B2B2;
+    position:relative;
+    top:-22px;
+    margin-left:20px;
+    margin-right:20px;
+    border: 2px solid #AE61ED;
+    border-top: none;
+    padding-top:10px;
+}
+
+#bloghead h2{
+    display:inline-block;
+    margin:0;padding:0;
+}
+
+#bloghead .userAvatar img{
+    float:left;
+}
+
+article{color: #FFF;}
+
+#blogfoot,#folderfoot{
+    min-height:20px;
+    background: #E5E5E5;
+    border-top: 2px solid #AE61ED;
+}
+
+.commentSection{
+    border:none !important;
+    border-radius:0 !important;
+    background:none !important;
+    box-shadow:none !important;
+    display: block !important;
+}
+.commentList>center{text-align:left;}
+
+
+#folderhead{
+    min-height:25px;
+    z-index:20;
+    background: #E5E5E5;
+    position:relative;
+    top:-20px;
+    border-bottom: 2px solid #AE61ED;
+    padding:10px;
+}
+
+#folderhead h2{
+    display:inline-block;
+    margin:0;padding:0;
+}
+
+.entry{
+    border-top: 1px solid #FFF;
+    border-bottom: 1px solid #FFF;
+    box-shadow: 0 0 5px #FFF;
+    background: #FFF;
+    margin-bottom:10px;
+    color: #000;
+}
+
+.entry .bloghead{
+    min-height: 60px;
+}
+.entry .bloghead h2{
+    display:inline-block;
+    margin:0;padding:0;
+}
+.entry .bloghead .userAvatar img{
+    float:left;height:50px !important;width:50px !important;
+}
+.entry blockquote{
+    margin: 0;padding: 20px;
+    background: #CCC;
+}
