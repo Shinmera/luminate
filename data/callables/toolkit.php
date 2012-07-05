@@ -720,7 +720,7 @@ public static function getUserPage($user,$return=false){
 
 public static function getUserAvatar($user,$file,$return=false,$size=150){
     if($file=="")$file="noguy.png";
-    $t = '<a href="'.Toolkit::url("user",$user).'">
+    $t = '<a href="'.Toolkit::url("user",$user).'" class="userAvatar">
           <img src="'.AVATARPATH.$file.'" alt="" title="'.$user.'\'s avatar" style="width:'.$size.'px;height:'.$size.'px;" /></a>';
     if(!$return)echo($t);else return $t;
 }
