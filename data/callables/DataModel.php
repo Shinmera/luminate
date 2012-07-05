@@ -4,6 +4,7 @@ class DataModel{
     private $fields=array();
     private $primary=array();
     private $holder=array();
+    private $secure=true;
   
     public function __get($key){
         return isset($this->holder[$key]) ? $this->holder[$key] : false;
@@ -17,6 +18,7 @@ class DataModel{
         return print_r($this->holder, true);
     }
     
+    public function setSecure($bool=true){$this->secure=$bool;}
     public function getTable(){return $this->table;}
     public function getHolder(){return $this->holder;}
     
@@ -45,7 +47,7 @@ class DataModel{
         $query=substr($query,0,strlen($query)-1).' WHERE ';
         
         $this->composeWherePart($data, $query);
-        $c->query($query,$data);
+        $c->query($query,$data,$this->secure);
     }
     
     public function deleteData(){
@@ -90,7 +92,7 @@ class DataModel{
             }
         }
         $query=substr($query,0,strlen($query)-1);
-        $c->query($query,$data);
+        $c->query($query,$data,$this->secure);
     }
     
     public static function getData($table,$query,$args=array(),$fields=array(),$loadFields=false){
