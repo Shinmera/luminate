@@ -1,5 +1,5 @@
 img{max-width:100%;max-height:100%;margin:5px;}
-label{min-width:150px;display:inline-block;}
+label{min-width:100px;display:inline-block;}
 label.fixed{height:16px;white-space:nowrap;overflow:visible;}
 label.failure,label.success{padding:2px;margin:2px;min-height:15px;}
 input,.button,textarea,.preview{border: 1px solid #CCC;background: #EEE;text-decoration:none;box-shadow: 0px 0px 3px #FFF;padding:2px;margin:2px;color:#000;}

@@ -325,20 +325,21 @@ a.omittedText{
     height:50px;
 }
 
+
 .popup {
     display: none;
-
-    position: fixed;
-    top: 17%;
+    position: absolute;
+    top: 10%;
     left: 50%;
-
     margin-left: -300px;
     width: 600px;
-
-    background-color: #EEE;
-    color: #333;
-    border: 1px solid black;
+    background-color: #000;
+    box-shadow: 0 0 50px #00EEFF;
+    color: #FFF;
+    border: 2px solid #00EEFF;
+    border-radius:10px;
     padding: 12px;
+    overflow: auto;
 }
 
 .jqmOverlay { background-color: #000; }

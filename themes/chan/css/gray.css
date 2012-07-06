@@ -272,20 +272,19 @@ html,body{
     margin-top:10px;
 }
 
+
 .popup {
     display: none;
-
-    position: fixed;
-    top: 17%;
+    position: absolute;
+    top: 10%;
     left: 50%;
-
     margin-left: -300px;
     width: 600px;
-
-    background-color: #EEE;
-    color: #333;
-    border: 1px solid black;
-    padding: 12px;
+    background-color: #000;
+    color: #FFF;
+    border: 1px solid #CCC;
+    padding: 2px;
+    overflow: auto;
 }
 
 .jqmOverlay { background-color: #000; }

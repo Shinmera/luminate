@@ -2,6 +2,7 @@
 //TODO: Investigate header issue.
 //TODO: Fix themes.
 //TODO: More themes.
+//TODO: Fix popup
 
 class Purplish{
 public static $name="Chan";
