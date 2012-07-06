@@ -95,7 +95,7 @@ a.directQuote{
     width:300px;min-height:70px;
     color: #FFF;
 }
-.postBox .eldesc{width:90px;float:left;}
+.postBox .eldesc{width:90px;float:left;position:relative;}
 .postBox #varname{width:100px;}
 .postBox #varmail{width:100px;}
 .postBox #varpass{width:200px;}
@@ -312,8 +312,8 @@ a.omittedText:hover{opacity:1;}
 
 .popup {
     display: none;
-    position: fixed;
-    top: 17%;
+    position: absolute;
+    top: 10%;
     left: 50%;
     margin-left: -300px;
     width: 600px;
@@ -323,6 +323,7 @@ a.omittedText:hover{opacity:1;}
     border: 2px solid #00EEFF;
     border-radius:10px;
     padding: 12px;
+    overflow: auto;
 }
 
 #previewPost{
