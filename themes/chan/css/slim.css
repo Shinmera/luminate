@@ -250,11 +250,14 @@ a.directQuote{
     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));}
 
-a.omittedText{
+a.omittedText,a.fetchPrevious,a.fetchNext{
     font-weight: bold;
     font-size: 8pt;
     color: #FF0000;
-    opacity: 0.6;
+    opacity: 0.8;
+    border-radius:2px 2px 0 0;
+    background: #333;
+    padding:2px;
 }
 a.omittedText:hover{opacity:1;}
 
