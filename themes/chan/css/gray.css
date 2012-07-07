@@ -231,7 +231,6 @@ a.omittedText,a.fetchPrevious,a.fetchNext{
     margin:2px;padding:2px;
     border: 1px solid #FFF;
 }
-a.omittedText:hover{}
 
 .threadToolbar{
     margin-bottom:0px;
