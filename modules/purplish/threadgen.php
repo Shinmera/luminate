@@ -49,7 +49,7 @@ class ThreadGenerator{
         
         <?='<? 
         $begin=$_GET["b"];
-        if(!is_numeric($begin))$begin=-'.$c->o['chan_defaultamount'].';
+        if(!is_numeric($begin))$begin='.(-1*$c->o['chan_defaultamount']).';
         if($begin<0)           $begin=count($postlist)+$begin;
         if($begin<=0)          $begin=1;
         $end  =$_GET["e"];

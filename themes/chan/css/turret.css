@@ -40,6 +40,10 @@ html,body{
     text-shadow: 0px 0px 5px #FF0000;
 }
 
+#pageBanner{
+    text-align:center;
+}
+
 .quote{
     padding:5px;
     border: 1px solid #000;
@@ -115,7 +119,7 @@ a.directQuote{
     background-color:#FFF;
     border-radius:5px;
     border: 1px solid black;
-    display: inline-block;
+    display: none;
     padding: 5px;
     color: #000;
     z-index: 10;
@@ -254,9 +258,11 @@ a.directQuote{
     background: none;    
 }
 
-.omittedText{
+a.omittedText,a.fetchPrevious,a.fetchNext{
     font-weight: bold;
-    font-size: 12pt;
+    font-size: 10pt;
+    color: #FF0000;
+    margin:2px;padding:2px;
 }
 
 .threadToolbar{
