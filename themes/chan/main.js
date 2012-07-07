@@ -1,6 +1,6 @@
 var anchor = document.location.hash.substring(1);
 var focused = window;
-var post_ids="";var checked_ids="";
+var post_ids="";
 var origtitle = document.title;
 //update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f video hiding v auto-watch a
 //bcdgijklmnoqrtxyz
@@ -18,28 +18,54 @@ function updateThread(){
     $.ajax({
         url: "?a=postlist",
         success: function(data){
+            data=data.trim();
             if(data!=post_ids){
                 if(post_ids!=""){
                     curposts = post_ids.split(";");
                     allposts = data.split(";");
-                    newposts = allposts.filter(function(x) {return curposts.indexOf(x) < 0});
-                    for(i=0;i<newposts.length;i++){
-                        if($("#P"+newposts[i]).length==0){
-                            $.ajax({
-                                url: $("#proot").html()+"data/chan/"+$("#varfolder").val()+"/posts/"+newposts[i]+".php",
-                                success: function(post){
-                                    $(".thread").append(post);
-                                    customizePost($("#P"+newposts[i]));
-                                }
-                            });
-                        }
-                    }
-                    document.title = "("+(allposts.length-checked_ids.split(";").length)+") "+origtitle;
-                }else{checked_ids=data;}
-                post_ids=data;
+                    post_ids=data;
+                    addMissingPosts(allposts.length-curposts.length);
+                    document.title = "("+(allposts.length-curposts.length)+") "+origtitle;
+                }else{
+                    post_ids=data;
+                }
             }
         }
     });
+}
+
+function addMissingPosts(n){
+    var allposts = post_ids.split(";"),posts = {};
+    var i=0,v=0,m=0;
+    if(n>0){i=1;v=n;m=-1;n--;}
+    else   {i=allposts.length+parseInt(n);v=allposts.length+2;m=1;n*=-1;}
+    for(;i<v;i++){
+        if($("#P"+allposts[i]).length==0){
+            $.ajax({
+                url: $("#proot").html()+"data/chan/"+$("#varfolder").val()+"/posts/"+allposts[i]+".php",
+                success: function(post){
+                    $post = $(post);
+                    customizePost($post);
+                    posts[$post.attr("id")] = $post;
+                    if(Object.size(posts)==n){
+                        addMissingPostsHelper(posts,m);
+                    }
+                }
+            });
+        }
+    }
+}
+function addMissingPostsHelper(posts,m){
+    var allposts = post_ids.split(";");
+    var $first = $(".thread .post:first-child");
+    for(var id in allposts){
+        var post = posts['P'+allposts[id]];
+        if(post!=undefined){
+            $(post).fadeIn();
+            if(m>0)$(".thread").append($(post));
+            else   $(post).insertBefore($first);
+        }
+    }
 }
 
 function addWatchedThread(board,id){
@@ -146,7 +172,7 @@ function hideThread(id){
     if($.cookie('chan_thread_hidden')!=null&&$.cookie('chan_thread_hidden')!=''){
         threads=$.cookie('chan_thread_hidden').split(",");
         if(threads.indexOf(id)!==-1){
-            threads.remove(id);
+            removeA(threads,id);
             $("#P"+id+" .postContent").slideDown();
             $("#T"+id).slideDown();
         }else{
@@ -217,6 +243,19 @@ function registerButtons(){
                      onLoad: function(){
                          eval($('#popup script').html());
                      }});
+                 
+    $('.fetchNext,.fetchPrevious').click(function(){
+        var $self=$(this);
+        $self.html('Fetching posts...');
+        $.ajax({
+            url: "?a=postlist",
+            success: function(data){
+                post_ids=data.trim();
+                addMissingPosts($self.attr("amount"));
+                $self.remove();
+        }});
+        return false;
+    });
 }
 
 function customizePost(post){
