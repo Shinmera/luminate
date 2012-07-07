@@ -50,18 +50,25 @@ class ThreadGenerator{
         <?='<? 
         $begin=$_GET["b"];
         if(!is_numeric($begin))$begin=1;
-        if($begin<=0)          $begin=count($postlist)+$begin;
+        if($begin<0)           $begin=count($postlist)+$begin;
         if($begin<=0)          $begin=1;
         $end  =$_GET["e"];
         if(!is_numeric($end)||$end<=0)$end=count($postlist);
         
-        @ include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/posts/".$postlist[0].".php");?>'?>
+        @ include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/posts/".$postlist[0].".php");
+        
+        $n=($begin-1);
+        if($begin>1)echo(\'<a href="?b=0&e=\'.$end.\'" class="fetchPrevious" amount="\'.($n+1).\'">Fetch previous \'.$n.\' posts</a>\');
+        ?>'?>
         <div class="thread" id="T<?=$pID?>">
             <?='<?
             for($i=$begin,$temp=count($postlist);$i<$end&&$i<$temp;$i++){
                 @ include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/posts/".$postlist[$i].".php");
             } ?>'?>
         </div><br class="clear" />
+        <?='<? $n=(count($postlist)-$end);
+        if($end<count($postlist))echo(\'<a href="?b=\'.$begin.\'&e=0" class="fetchNext" amount="\'.(-1*$n).\'">Fetch next \'.$n.\' posts</a>\');
+        ?>'?>
         
         <? require_once(PAGEPATH.'chan/chan_footer.php'); ?>
         <?=write_footer($post->title.' - '.$c->o['chan_title'],$post->BID,$board->folder,$pID,$post->options.$board->options);?>
