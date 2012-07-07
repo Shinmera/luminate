@@ -41,7 +41,7 @@ class ThreadGenerator{
 
         <input type="hidden" id="view" value="thread" />
         <div class="threadToolbar">
-            <a href="<?=$k->url("chan",$board->folder)?>">Return</a> 
+            <a href="<?PROOT.$board->folder?>">Return</a> 
             <a href="?b=-50">Last 50</a> 
             <a href="?e=100">First 100</a>
             <a href='#' class='watchThread' id='<?=$pID?>'>Watch</a>

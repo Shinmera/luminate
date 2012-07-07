@@ -54,9 +54,9 @@ class BoardGenerator{
                         
                         $folder=$board->folder;
                         ?><div class='threadToolbar'>
-                            <a href='<?=$k->url("chan",$folder.'/threads/'.$threads[$j]->postID.'.php')?>'>Whole Thread(<?=$postcount?>)</a>
-                            <a href='<?=$k->url("chan",$folder.'/threads/'.$threads[$j]->postID.'.php?b=-50')?>'>Last 50</a> 
-                            <a href='<?=$k->url("chan",$folder.'/threads/'.$threads[$j]->postID.'.php?e=100')?>'>First 100</a> 
+                            <a href='<?=PROOT.$folder.'/threads/'.$threads[$j]->postID.'.php?b=1'?>'>Whole Thread(<?=$postcount?>)</a>
+                            <a href='<?=PROOT.$folder.'/threads/'.$threads[$j]->postID.'.php?b=-50'?>'>Last 50</a> 
+                            <a href='<?=PROOT.$folder.'/threads/'.$threads[$j]->postID.'.php?e=100'?>'>First 100</a> 
                             <a href='#' class='watchThread' id='<?=$threads[$j]->postID?>'>Watch</a> 
                             <a href='#' class='hideThread' id='<?=$threads[$j]->postID?>'>Hide</a>
                         </div>
