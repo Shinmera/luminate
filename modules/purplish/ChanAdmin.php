@@ -223,6 +223,7 @@ function displayGeneralOptions(){
         Toolkit::set('chan_thumbsize',$_POST['ts'],'i');
         Toolkit::set('chan_maxlines',$_POST['mlines'],'i');
         Toolkit::set('chan_tpp',$_POST['tpp'],'i');
+        Toolkit::set('chan_defaultamount',$_POST['defaultamount'],'i');
         Toolkit::set('chan_posttimeout',$_POST['timeout'],'i');
         Toolkit::set('chan_frontposts',$_POST['frontposts'],'i');
         Toolkit::set('chan_trips',$_POST['trips']);
@@ -240,6 +241,7 @@ function displayGeneralOptions(){
         <br /><label>Thumb Size:</label>       <input type="number" name="ts" value="<?=$c->o['chan_thumbsize']?>" />
         <br /><label>Short Post Lines:</label> <input type="number" name="mlines" value="<?=$c->o['chan_maxlines']?>" />
         <br /><label>Threads Per Page:</label> <input type="number" name="tpp" value="<?=$c->o['chan_tpp']?>" />
+        <br /><label>Default post amount:</label> <input type="number" name="defaultamount" value="<?=$c->o['chan_defaultamount']?>" />
         <br /><label>Post Timeout:</label>     <input type="number" name="timeout" value="<?=$c->o['chan_posttimeout']?>" />
         <br /><label>Frontpage posts:</label>  <input type="number" name="frontposts" value="<?=$c->o['chan_frontposts']?>" />
         <br /><label>Tripcodes:</label>        <textarea name="trips" style="vertical-align:text-top;"><?=$c->o['chan_trips']?></textarea>
