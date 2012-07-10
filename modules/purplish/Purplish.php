@@ -1,5 +1,4 @@
 <?
-//TODO: Investigate header issue.
 //TODO: More themes.
 
 class Purplish{
@@ -59,7 +58,7 @@ function displayAPI(){
     if($c->o['chan_online']=='1'||$a->check('chan.admin.*'))
         $api->display();
     else
-        die('Offline mode active. Please wait with your request.');
+        die('Offline mode active. Please hold your request.');
 }
 }
 ?>

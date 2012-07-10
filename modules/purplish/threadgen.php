@@ -23,7 +23,7 @@ class ThreadGenerator{
         $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/threads/'.$pID.'.php';
         
-        flush();$NO_BUFFER=true;
+        $NO_BUFFER=true;
         ob_start();
         ?>
 
@@ -41,7 +41,7 @@ class ThreadGenerator{
 
         <input type="hidden" id="view" value="thread" />
         <div class="threadToolbar">
-            <a href="<?PROOT.$board->folder?>">Return</a> 
+            <a href="<?=PROOT.$board->folder?>/">Return</a> 
             <a href="?b=-50">Last 50</a> 
             <a href="?e=100">First 100</a>
             <a href='#' class='watchThread' id='<?=$pID?>'>Watch</a>
