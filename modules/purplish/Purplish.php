@@ -4,7 +4,7 @@
 class Purplish{
 public static $name="Chan";
 public static $author="NexT";
-public static $version=2.21;
+public static $version=2.26;
 public static $short='chan';
 public static $required=array("Auth");
 public static $hooks=array("foo");
