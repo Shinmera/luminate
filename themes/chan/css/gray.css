@@ -146,6 +146,7 @@ html,body{
 
 .post, .postOP{
     display: inline-block;
+    position:relative;
     padding: 2px;
 }
 
@@ -169,25 +170,37 @@ html,body{
     background: -moz-linear-gradient(top,  #777,  #333);
 }
 
-.sticky{
-    background: -webkit-gradient(linear, left top, left bottom, from(#3D8BA6), to(#333));
-    background: -moz-linear-gradient(top,  #3D8BA6,  #333);
-}
-
-.locked{
-    background: -webkit-gradient(linear, left top, left bottom, from(#111), to(#333));
-    background: -moz-linear-gradient(top,  #111,  #333);
-}
-
-.stickylocked{
-    background: -webkit-gradient(linear, left top, left bottom, from(#465E78), to(#333));
-    background: -moz-linear-gradient(top,  #465E78,  #333);
-}
-
 .selected{
-    background: -webkit-gradient(linear, left top, right top, from(#3D8BA6), to(#333));
-    background: -moz-linear-gradient(left,  #3D8BA6,  #333);
+    border: 1px solid #FF0000;
+    box-shadow: 0 0 20px #FF0000;
 }
+
+#postType{background: none;}
+#postType::after{
+    position:absolute;
+    right:0;top:0;
+    width:250px;
+    text-align:right;
+    font-size: 20pt;
+    padding-right:2px;
+    font-family: Arial;
+}
+#postType.locked::after{
+    content:"LOCKED";
+    background: -moz-linear-gradient(left, rgba(255,0,0,0) 0%, rgba(255,0,0,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,0,0,0)), color-stop(100%,rgba(255,0,0,1)));}
+#postType.sticky::after{
+    content:"STICKY";
+    background: -moz-linear-gradient(left, rgba(0,255,0,0) 0%, rgba(0,255,0,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,255,0,0)), color-stop(100%,rgba(0,255,0,1)));}
+#postType.stickylocked::after{
+    content:"ANNOUNCEMENT";
+    background: -moz-linear-gradient(left, rgba(0,0,255,0) 0%, rgba(0,0,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,255,0)), color-stop(100%,rgba(0,0,255,1)));}
+#postType.redirect::after{
+    content:"REDIRECT";color: #000;
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));}
 
 .postImage{
     float:left;
