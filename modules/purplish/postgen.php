@@ -7,7 +7,7 @@ class PostGenerator{
     }
 
     public static function generatePostFromObject($post){
-        global $c,$k,$l;
+        global $c,$k,$l,$NO_BUFFER;
         if(!class_exists("DataGenerator"))include('datagen.php');
         $pID=$post->postID;
         if($post->PID!=0)$tID=$post->PID;else $tID=$post->postID;
@@ -21,9 +21,7 @@ class PostGenerator{
         if(strpos($post->options,'l')!==FALSE)$type.="locked";
         if(strpos($post->options,'r')!==FALSE)$type ="redirect";
 
-        flush();
         ob_start();
-        
         ?>
         <?='<? if(!defined("INIT"))include("'.TROOT.'config.php"); ?>'."\n"?>
         <?='<? global $a,$l; if($a==null)$a = $l->loadModule("Auth"); ?>'."\n"?>

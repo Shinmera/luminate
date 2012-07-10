@@ -292,16 +292,23 @@ class DataGenerator{
         $post->trip = $c->enparse($post->trip,true);
         $post->mail = $c->enparse($post->mail,true);
         $post->fileOrig = $c->enparse($post->fileOrig,true);
+        
         PostGenerator::generatePostFromObject($post);
         ThreadGenerator::generateThread($thread,$board->boardID);
         BoardGenerator::generateBoard($board->boardID);
 
         $l->triggerPOST('Purplish','Purplish',$post->BID,$post->subject,'',$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID),$post->title);
-        if(in_array("noko",$mail)){
-            header('Location: '.$k->url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
+        $hfile='';$hline='';
+        if(!headers_sent($hfile,$hline)){
+            if(in_array("noko",$mail)){
+                header('Location: '.Toolkit::url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
+            }else{
+                header('Location: '.Toolkit::url("chan",$board->folder.'/'));
+            }
         }else{
-            header('Location: '.$k->url("chan",$board->folder.'/'));
+            die('Error sending headers: '.$hfile.':'.$hline);
         }
+        die('Post successful.');
     }
 
     function calculateTrip($trip) {
