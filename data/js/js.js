@@ -1,14 +1,3 @@
-//TAKEN FROM: http://stackoverflow.com/questions/1596836/jquery-works-in-firefox-when-firebug-is-running-does-not-work-when-firebug-is-n
-if (typeof console === "undefined") {
-    var names = ["log", "debug", "info", "warn", "error", "assert", "dir", "dirxml",
-    "group", "groupEnd", "time", "timeEnd", "count", "trace", "profile", "profileEnd"];
-
-    window.console = {};
-    for (var i = 0; i < names.length; ++i)
-        window.console[names[i]] = function() {}
-}
-
-
 function randomstring(length){
     var temp=['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
               'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
@@ -189,7 +178,6 @@ function insertAdv(object,tagform){
                 insertAdv(object,tagform);
             }
         }else{
-            console.log(object);
             object.val(object.val().substring(0,start)+text+object.val().substring(end,len));
         }
     }
