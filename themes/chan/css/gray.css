@@ -215,14 +215,14 @@ html,body{
     text-shadow: 0px 0px 5px #000;
 }
 
-.postUsername, .postTrip{font-size:10pt;}
+.postUsername, .postTripcode{font-size:10pt;}
 
 .postUsername{
     color: #00C8FF;
     font-weight:bold;
 }
 
-.postTrip{
+.postTripcode{
     color: #00C8FF;
     text-shadow: 0px 0px 5px #00C8FF;
 }

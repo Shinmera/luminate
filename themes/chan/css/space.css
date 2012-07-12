@@ -237,16 +237,16 @@ a.directQuote{
     text-shadow: 0px 0px 5px #FFF;
 }
 
-.postUsername, .postTrip{font-size:10pt;}
+.postUsername, .postTripcode{font-size:10pt;}
 
 .postUsername{
     color: #33EEFF;
     font-weight:bold;
 }
 
-.postTrip{
-    color: #000000;
-    text-shadow: 0px 0px 5px #FFFFFF;
+.postTripcode{
+    color: #FFF;
+    text-shadow: 0px 0px 2px #FFFFFF;
 }
 
 .postMod{
