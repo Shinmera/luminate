@@ -446,8 +446,9 @@ $(function(){
     $(".post,.postOP").each(function(){customizePost($(this))});
     
     if($("options").length>0){
+        var opts = $("options").css('content').replace(/"/g,'').replace(/\\'/g,'"').replace(/'/g,'');
         if($("options").css('content').length>5)
-            cssoptions = $.parseJSON($("options").css('content').replace(/\\'/g,'"').replace(/'/g,''));
+            cssoptions = $.parseJSON(opts);
     }
     
     if(cssoptions.postbox.draggable){
