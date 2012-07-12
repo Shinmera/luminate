@@ -83,6 +83,7 @@ a.directQuote{
     width:300px;
     font-size:8pt;
     background: rgba(0,0,0,0.5);
+    z-index:11;
 }
 .postBox input[type="text"],.postBox input[type="password"]{
     font-size:10pt;
@@ -388,7 +389,8 @@ a.omittedText:hover{opacity:1;}
     box-shadow: 0 0 3px #FFF;
 }
 .menu > li > a.menulink{
-    background-color:#FFEE00;
+    background-color:#FFEE00;color: #000;
+    font-weight:bold;
 }
 
 h1,h2,h3,h4,h5,h6{margin:0;}

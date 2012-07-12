@@ -84,6 +84,7 @@ a.directQuote{
     width:300px;
     font-size:8pt;
     background: rgba(255,255,255,0.5);
+    z-index:11;
 }
 .postBox textarea{
     background: #FFF;
