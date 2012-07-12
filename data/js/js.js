@@ -178,6 +178,7 @@ function insertAdv(object,tagform){
                 insertAdv(object,tagform);
             }
         }else{
+            console.log(object);
             object.val(object.val().substring(0,start)+text+object.val().substring(end,len));
         }
     }
@@ -307,4 +308,3 @@ $(function(){
         });
     })
 });
-
