@@ -251,7 +251,7 @@ a.omittedText,a.fetchPrevious,a.fetchNext{
     color: #FF0000;
     opacity: 0.8;
     border-radius:2px 2px 0 0;
-    background: #333;
+    background: #CCC;
     padding:2px;
 }
 a.omittedText:hover{opacity:1;}
@@ -325,7 +325,7 @@ a.omittedText:hover{opacity:1;}
 }
 
 #previewPost{
-    background: #000 url("../images/blockbg.jpg");
+    background: #000 url("../images/blockbg-white.png");
     z-index:200;
 }
 
