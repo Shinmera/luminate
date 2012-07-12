@@ -204,15 +204,15 @@ a.directQuote{
     text-shadow: 0px 0px 5px #FF0000;
 }
 
-.postUsername, .postTrip{font-size:10pt;}
+.postUsername, .postTripcode{font-size:10pt;}
 
 .postUsername{
     color: #FF0000;
     font-weight:bold;
 }
 
-.postTrip{
-    color: #FFDD00;
+.postTripcode{
+    color: #FF0000;
     text-shadow: 0px 0px 5px #000000;
 }
 

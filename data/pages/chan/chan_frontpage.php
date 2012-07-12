@@ -28,7 +28,7 @@
             <div class="postInfo">
                 Post <a href="<?=PROOT.$post->folder.'/threads/'.$post->PID.'.php#'.$post->postID?>">#<?=$post->postID?></a>
                 <span class="postUsername"><?=$post->name?></span>
-                <span class="postTrip"><?=$post->trip?></span>
+                <span class="postTripcode"><?=$post->trip?></span>
             </div>
             <article>
                 <? if($post->file!=""){ ?>
