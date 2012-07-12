@@ -445,8 +445,9 @@ $(function(){
     if(options.indexOf('a')!=-1){registerAutoWatch();}
     $(".post,.postOP").each(function(){customizePost($(this))});
     
-    if($("options").css('content')!=''){
-        cssoptions = $.parseJSON($("options").css('content').replace(/\\'/g,'"').replace(/'/g,''));
+    if($("options").length>0){
+        if($("options").css('content').length>5)
+            cssoptions = $.parseJSON($("options").css('content').replace(/\\'/g,'"').replace(/'/g,''));
     }
     
     if(cssoptions.postbox.draggable){

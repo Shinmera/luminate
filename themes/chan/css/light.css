@@ -401,7 +401,7 @@ h1,h2,h3,h4,h5,h6{margin:0;}
 }
 
 #news{
-    margin-right: 300px;
+    margin-right: 310px;
     min-height: 600px;
     padding:5px;
     text-align: justify;
@@ -432,7 +432,7 @@ h1,h2,h3,h4,h5,h6{margin:0;}
 
 #postSidebar{
     border-left: 1px solid #CCC;
-    position:absolute;
+    position:fixed;
     right:0;top:20px;bottom:50px;
     width: 300px;
     background: rgba(255,255,255,0.5);
