@@ -63,7 +63,7 @@
         <li><a href="<?=PROOT?>api/chan/options" id="options" >Options</a></li>
 
         <?='<? if($a->check("chan.mod")){ ?>'?>
-            <li class="separator">&nbsp;</li><li><a href="<?=$k->url("","admin/")?>">Admin</a><ul>
+            <li class="separator">&nbsp;</li><li><a href="<?=$k->url("admin","Chan/")?>">Admin</a><ul>
                 <li><a href="<?=$k->url("admin","Chan/latestposts")?>">Latest Posts</a></li>
                 <li><a href="<?=$k->url("admin","Chan/reports")?>">Reports (
                 <?='<? $temp=$c->getData("SELECT COUNT(ip) FROM ch_reports",array());echo($temp[0]["COUNT(ip)"]); ?>'?> )</a>
