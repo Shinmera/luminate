@@ -428,7 +428,7 @@ $(function(){
     
     $(".styleLink").each(function(){
         $(this).click(function(){
-            $("#dynstyle").attr("href",$(this).attr("id"));
+            $("#dynstyle").attr("href",$("#proot").html()+'themes/chan/css/'+$(this).attr("id"));
             $.cookie("chan_style",$(this).attr("id"),{ expires: 356, path: '/' });
         });
     });
