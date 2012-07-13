@@ -238,7 +238,7 @@ function displayGeneralOptions(){
     ?><form action="#" method="post" class="box">
         <h3>Settings</h3>
               <label>Chan Title:</label>       <input type="text" name="title" value="<?=$c->o['chan_title']?>" />
-        <br /><label>Default Theme:</label>    <input type="number" name="theme" value="<?=$c->o['chan_theme']?>" />
+        <br /><label>Default Theme:</label>    <input type="text" name="theme" value="<?=$c->o['chan_theme']?>" />
         <br /><label>OP Thumb Size:</label>    <input type="number" name="opts" value="<?=$c->o['chan_opthumbsize']?>" />
         <br /><label>Thumb Size:</label>       <input type="number" name="ts" value="<?=$c->o['chan_thumbsize']?>" />
         <br /><label>Short Post Lines:</label> <input type="number" name="mlines" value="<?=$c->o['chan_maxlines']?>" />
