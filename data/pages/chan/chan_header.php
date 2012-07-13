@@ -15,7 +15,7 @@
     <? include(PAGEPATH.'global_header.php'); ?>
     <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme=$c->o['chan_theme']; ?>
     <script type="text/javascript">
-        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'?>"+$.cookie("chan_theme"));
+        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'?>"+$.cookie("chan_style"));
         else                                $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'.$board->defaultTheme?>");
     </script>
     <?=(BUFFER)?'<? ob_flush(); ?>':''?>
