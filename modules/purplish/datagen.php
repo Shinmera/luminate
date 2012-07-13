@@ -184,10 +184,10 @@ class DataGenerator{
         if($file['tmp_name']=="" && strpos($board->options,"f")!==FALSE) throw new Exception("You need to post a file.");
         
         //SAVE FIELDS
-        setcookie("chan_post_pw",$c->enparse($password),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+        setcookie("chan2_post_pw",$c->enparse($password),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         if(strpos($board->options,"n")===FALSE){;
-            setcookie("chan_post_name",$c->enparse($name),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
-            setcookie("chan_post_mail",$c->enparse($mail),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+            setcookie("chan2_post_name",$c->enparse($name),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
+            setcookie("chan2_post_mail",$c->enparse($mail),time()+60*60*$c->o['cookie_life_h'],'/','.'.HOST);
         }
 
         //CHECK THREAD

@@ -70,7 +70,7 @@ function addMissingPostsHelper(posts,m){
 
 function addWatchedThread(board,id){
     var pcook = "";
-    if($.cookie('chan_watched')!=null)pcook=$.cookie('chan_watched');
+    if($.cookie('chan2_watched')!=null)pcook=$.cookie('chan2_watched');
     var watched = pcook.split(";");
     if(watched.length==20)return false;
 
@@ -82,7 +82,7 @@ function addWatchedThread(board,id){
     $.ajax({
         url: $("#proot").html()+'api/time',
         success: function(html){
-            $.cookie('chan_watched',pcook+";"+board+" "+id+" "+html,{ expires: 356, path: '/' });
+            $.cookie('chan2_watched',pcook+";"+board+" "+id+" "+html,{ expires: 356, path: '/' });
             refreshWatched();
         }
     });
@@ -90,7 +90,7 @@ function addWatchedThread(board,id){
 }
 function delWatchedThread(board,id){
     var watched = [];
-    if($.cookie('chan_watched')!=null)watched=$.cookie('chan_watched').split(";");
+    if($.cookie('chan2_watched')!=null)watched=$.cookie('chan2_watched').split(";");
     if(watched.length==0)return false;
 
     for(var i=0;i<watched.length;i++){
@@ -99,13 +99,13 @@ function delWatchedThread(board,id){
             break;
         }
     }
-    $.cookie('chan_watched',implode(";",watched),{ expires: 356, path: '/' });
+    $.cookie('chan2_watched',implode(";",watched),{ expires: 356, path: '/' });
     refreshWatched();
     return true;
 }
 function setThreadRead(board,id){
     var watched = [];
-    if($.cookie('chan_watched')!=null)watched=$.cookie('chan_watched').split(";");
+    if($.cookie('chan2_watched')!=null)watched=$.cookie('chan2_watched').split(";");
     if(watched.length==0)return false;
 
     $.ajax({
@@ -117,7 +117,7 @@ function setThreadRead(board,id){
                     break;
                 }
             }
-            $.cookie('chan_watched',implode(";",watched),{ expires: 356, path: '/' });
+            $.cookie('chan2_watched',implode(";",watched),{ expires: 356, path: '/' });
             refreshWatched();
         }
     });
@@ -125,7 +125,7 @@ function setThreadRead(board,id){
 }
 function readWatched(){
     var watched = [];
-    if($.cookie('chan_watched')!=null)watched=$.cookie('chan_watched').split(";");
+    if($.cookie('chan2_watched')!=null)watched=$.cookie('chan2_watched').split(";");
     if(watched.length==0)return false;
 
     $.ajax({
@@ -136,14 +136,14 @@ function readWatched(){
                 watched[i]=temp[0]+" "+temp[1]+" "+html;
                 break;
             }
-            $.cookie('chan_watched',implode(";",watched),{ expires: 356, path: '/' });
+            $.cookie('chan2_watched',implode(";",watched),{ expires: 356, path: '/' });
             refreshWatched();
         }
     });
     return true;
 }
 function clearWatched(){
-    $.cookie('chan_watched','',{ expires: 356, path: '/' });
+    $.cookie('chan2_watched','',{ expires: 356, path: '/' });
     refreshWatched();
 }
 function refreshWatched(){
@@ -169,8 +169,8 @@ function registerAutoWatch(){
 
 function hideThread(id){
     var threads = new Array();
-    if($.cookie('chan_thread_hidden')!=null&&$.cookie('chan_thread_hidden')!=''){
-        threads=$.cookie('chan_thread_hidden').split(",");
+    if($.cookie('chan2_thread_hidden')!=null&&$.cookie('chan2_thread_hidden')!=''){
+        threads=$.cookie('chan2_thread_hidden').split(",");
         if(threads.indexOf(id)!==-1){
             removeA(threads,id);
             $("#P"+id+" .postContent").slideDown();
@@ -185,11 +185,11 @@ function hideThread(id){
         $("#P"+id+" .postContent").slideUp();
         $("#T"+id).slideUp();
     }
-    $.cookie('chan_thread_hidden',implode(',',threads),{ expires: 356, path: '/' });
+    $.cookie('chan2_thread_hidden',implode(',',threads),{ expires: 356, path: '/' });
 }
 function hideThreads(){
-    if($.cookie('chan_thread_hidden')!=null){
-        var threads = $.cookie('chan_thread_hidden').split(",");
+    if($.cookie('chan2_thread_hidden')!=null){
+        var threads = $.cookie('chan2_thread_hidden').split(",");
         for(var i=0;i<threads.length;i++){
             $("#P"+threads[i]+" .postContent").slideUp();
             $("#T"+threads[i]).slideUp();
@@ -199,13 +199,13 @@ function hideThreads(){
 
 function setFields(){
     $(".password").each(function(){
-        if($.cookie('chan_post_pw')==null){
+        if($.cookie('chan2_post_pw')==null){
             $(this).val(randomstring(15));
         }
-        else $(this).val($.cookie('chan_post_pw'));
+        else $(this).val($.cookie('chan2_post_pw'));
     });
-    if($.cookie('chan_post_name')!=null)$("#varname").val($.cookie('chan_post_name'));
-    if($.cookie('chan_post_mail')!=null)$("#varmail").val($.cookie('chan_post_mail'));
+    if($.cookie('chan2_post_name')!=null)$("#varname").val($.cookie('chan2_post_name'));
+    if($.cookie('chan2_post_mail')!=null)$("#varmail").val($.cookie('chan2_post_mail'));
 }
 
 function registerButtons(){
@@ -423,13 +423,13 @@ function hideVideos(){
 }
 
 $(function(){
-    if($.cookie("chan_options")!=null){options=$.cookie('chan_options');}
-    else $.cookie('chan_options',options,{ expires: 356, path: '/' });
+    if($.cookie("chan2_options")!=null){options=$.cookie('chan2_options');}
+    else $.cookie('chan2_options',options,{ expires: 356, path: '/' });
     
     $(".styleLink").each(function(){
         $(this).click(function(){
             $("#dynstyle").attr("href",$("#proot").html()+'themes/chan/css/'+$(this).attr("id"));
-            $.cookie("chan_style",$(this).attr("id"),{ expires: 356, path: '/' });
+            $.cookie("chan2_style",$(this).attr("id"),{ expires: 356, path: '/' });
         });
     });
     
