@@ -13,9 +13,9 @@
         <?='<? if(!$a->check("chan.mod"))include("'.PAGEPATH.'chan/chan_403.php"); ?>'?>
     <? } ?>
     <? include(PAGEPATH.'global_header.php'); ?>
-    <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme="steven.css"; ?>
+    <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme=$c->o['chan_theme']; ?>
     <script type="text/javascript">
-        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href",$.cookie("chan_style"));
+        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href",$.cookie("chan_theme"));
         else                                $("#dynstyle").attr("href","<?=PROOT.'themes/'.$t->tname.'/css/'.$board->defaultTheme?>");
     </script>
     <?=(BUFFER)?'<? ob_flush(); ?>':''?>
