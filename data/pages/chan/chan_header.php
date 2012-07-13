@@ -15,8 +15,8 @@
     <? include(PAGEPATH.'global_header.php'); ?>
     <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme=$c->o['chan_theme']; ?>
     <script type="text/javascript">
-        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href",$.cookie("chan_theme"));
-        else                                $("#dynstyle").attr("href","<?=PROOT.'themes/'.$t->tname.'/css/'.$board->defaultTheme?>");
+        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'?>"+$.cookie("chan_theme"));
+        else                                $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'.$board->defaultTheme?>");
     </script>
     <?=(BUFFER)?'<? ob_flush(); ?>':''?>
     <body><div class="content">
@@ -53,7 +53,7 @@
             while (($file = readdir($d))!==FALSE) {
                 $ext = substr($file,strrpos($file,"."));
                 if($ext==".css"){
-                    ?><li><a href="#" class="styleLink" id="<?=PROOT?>/themes/chan/css/<?=$file?>"><?=substr($file,0,strrpos($file,"."))?></a></li><?
+                    ?><li><a href="#" class="styleLink" id="<?=$file?>"><?=substr($file,0,strrpos($file,"."))?></a></li><?
                 }
             }
             closedir($d); ?>
