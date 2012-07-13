@@ -22,7 +22,7 @@ for($i=0;$i<count($t->js);$i++){
     if(substr($t->js[$i],0,1)=='/')echo("<script type='text/javascript' src='".DATAPATH."js".$t->js[$i]."' ></script>\n");
     else                           echo("<script type='text/javascript' src='".THEMEPATH.$t->tname."/".$t->js[$i]."' ></script>\n");
 }?>
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" ></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/jquery-ui.min.js" ></script>
 <script type="text/javascript" src="<?=DATAPATH.'js/plugins.js'?>" ></script>
 </body>
 </html>
