@@ -12,11 +12,13 @@
     <? if(strpos($options,"h")!==FALSE){ ?>
         <?='<? if(!$a->check("chan.mod"))include("'.PAGEPATH.'chan/chan_403.php"); ?>'?>
     <? } ?>
-    <? include(PAGEPATH.'global_header.php'); ?>
     <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme=$c->o['chan_theme']; ?>
+    <? global $DYNSTYLE;$DYNSTYLE=PROOT."themes/chan/css/".$board->defaultTheme; ?>
+    <? include(PAGEPATH.'global_header.php'); ?>
     <script type="text/javascript">
-        if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'?>"+$.cookie("chan2_style"));
-        else                                $("#dynstyle").attr("href","<?=PROOT.'themes/chan/css/'.$board->defaultTheme?>");
+        if($.cookie("chan2_style")!=null){
+            $("#dynstyle").attr("href","<?=PROOT?>themes/chan/css/"+$.cookie("chan2_style"));
+        }
     </script>
     <?=(BUFFER)?'<? ob_flush(); ?>':''?>
     <body><div class="content">
