@@ -1,7 +1,8 @@
 <? global $t,$c,$a; ?>
 <script type="text/javascript">
-    if($.cookie("chan_style")!=null)    $("#dynstyle").attr("href",$.cookie("chan_style"));
-    else                                $("#dynstyle").attr("href","<?=PROOT?>themes/chan/css/turret.css");
+    if($.cookie("chan2_style")!=null){
+        $("#dynstyle").attr("href","<?=PROOT?>themes/chan/css/"+$.cookie("chan2_style"));
+    }
 </script>
 <ul class="menu" id="menu">
         <li><a href="<?=Toolkit::url("chan","/")?>" class="menulink">TyNET</a>
@@ -30,7 +31,7 @@
             while (($file = readdir($d))!==FALSE) {
                 $ext = substr($file,strrpos($file,"."));
                 if($ext==".css"){
-                    ?><li><a href="#" class="styleLink" id="<?=PROOT?>/themes/chan/css/<?=$file?>"><?=substr($file,0,strrpos($file,"."))?></a></li><?
+                    ?><li><a href="#" class="styleLink" id="<?=$file?>"><?=substr($file,0,strrpos($file,"."))?></a></li><?
                 }
             }
             closedir($d); ?>

@@ -1,4 +1,5 @@
 <? global $l,$t,$c;$t = $l->loadModule('Themes');$t->loadTheme('chan'); ?>
+<? global $DYNSTYLE;$DYNSTYLE=PROOT."themes/chan/css/".$c->o['chan_theme']; ?>
 <? $t->openPage('Stevenchan'); ?>
     
 <h1 id="chanTitle">Stevenchan</h1>
