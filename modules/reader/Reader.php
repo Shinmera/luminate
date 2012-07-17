@@ -26,10 +26,11 @@ function displayHead(){
     global $a,$params;
     ?><div id='pageNav'>
         <div style='display:inline-block'>
+            <a name="blog" />
             <h1 class='sectionheader'>Blog</h1>
         </div>
         <div class='tabs'>
-            <a href='<?=PROOT?>' class='tab <? if($params[0]=='')echo('activated'); ?>'>Home</a>
+            <a href='<?=PROOT?>' class='tab <? if($params[0]==''||$params[0]=='p')echo('activated'); ?>'>Articles</a>
             <a href='<?=PROOT?>f' class='tab <? if($params[0]=='f')echo('activated'); ?>'>Folders</a>
             <? if($a->check('reader.folder.*')){ ?>
                 <a href='<?=PROOT?>e/<?=($params[0]=='p')?$params[1]:''?>' class='tab <? if($params[0]=='e')echo('activated'); ?>'>Edit</a>
@@ -42,7 +43,7 @@ function displayHome(){
     global $t,$l;
     
     $max = DataModel::getData('','SELECT COUNT(entryID) AS max FROM bl_entries');
-    Toolkit::sanitizePager($max->max);
+    Toolkit::sanitizePager($max->max,array(),'',20);
     $t->openPage('Blog Home');
     $this->displayHead();
     ?>
@@ -57,20 +58,21 @@ function displayHome(){
     <? $entries = DataModel::getData('', 'SELECT b.*,f.title AS ftitle,u.displayname,u.filename FROM bl_entries as b
                                           LEFT JOIN bl_folders AS f ON FID=folderID 
                                           LEFT JOIN ud_users AS u ON owner=userID 
-                                          LIMIT '.$_GET['f'].','.$_GET['s']);
+                                          ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s']);
     Toolkit::assureArray($entries);
     foreach($entries as $entry){ ?>
         <article class="entry">
             <div class="bloghead">
                 <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
-                <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.$entry->title?>"><?=$entry->title?></a></h2>
-                in <a href="<?=PROOT.'f/'.$entry->FID.'-'.$entry->ftitle?>"><?=$entry->ftitle?></a><br />
+                <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
+                in <a href="<?=PROOT.'f/'.$entry->FID.'-'.Toolkit::makeUrlReady($entry->ftitle)?>"><?=$entry->ftitle?></a><br />
                 Posted on <?=Toolkit::toDate($entry->time)?> by <?=Toolkit::getUserPage($entry->displayname)?>.
                 <?=$l->triggerHook('entryHead','Reader',$entry);?>
                 <br style="clear:left;" />
             </div>
             <blockquote>
                 <?=$l->triggerPARSE('Reader',$entry->short);?>
+                <br style="clear:both;" />
             </blockquote>
         </article>
     <? } ?>
@@ -98,17 +100,18 @@ function displayEntry($entryID){
         ?>
         <div id="bloghead">
             <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
-            <h2><?=$entry->title?></h2>
-            in <a href="<?=PROOT.'f/'.$entry->FID.'-'.$entry->ftitle?>"><?=$entry->ftitle?></a><br />
+            <h2><a href="<?=PROOT.'p/'.$entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
+            in <a href="<?=PROOT.'f/'.$entry->FID.'-'.Toolkit::makeUrlReady($entry->ftitle)?>"><?=$entry->ftitle?></a><br />
             Posted on <?=Toolkit::toDate($entry->time)?> by <?=Toolkit::getUserPage($entry->displayname)?>.
             <?=$l->triggerHook('entryHead','Reader',$entry);?>
             <br style="clear:left;" />
         </div>
         <?=$l->triggerHook('entryTop','Reader',$entry);?>
-        <article>
+        <article id="article" class="entry">
             <blockquote>
                 <?=$l->triggerPARSE('Reader',$entry->short);?><br />
                 <?=$l->triggerPARSE('Reader',$entry->subject);?>
+                <br style="clear:both;" />
             </blockquote>
         </article>
         <div id="blogfoot">
@@ -136,10 +139,11 @@ function displayFolder($folderID){
         foreach($folders as $folder){ ?>
             <article class="entry">
                 <div class="bloghead">
-                    <h2><a href="<?=PROOT.'f/'.$folder->folderID.'-'.$folder->title?>"><?=$folder->title?></a></h2>
+                    <h2><a href="<?=PROOT.'f/'.$folder->folderID.'-'.Toolkit::makeUrlReady($folder->title)?>"><?=$folder->title?></a></h2>
                     ( <?=$folder->count?> entries )<br />
                     <blockquote>
                         <?=$l->triggerPARSE('Reader',$folder->text);?>
+                        <br style="clear:both;" />
                     </blockquote>
                 </div>
             </article>
@@ -178,14 +182,15 @@ function displayFolder($folderID){
                 <article class="entry">
                     <div class="bloghead">
                         <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
-                        <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.$entry->title?>"><?=$entry->title?></a></h2>
-                        in <a href="<?=PROOT.'f/'.$entry->FID.'-'.$entry->ftitle?>"><?=$entry->ftitle?></a><br />
+                        <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
+                        in <a href="<?=PROOT.'f/'.$entry->FID.'-'.Toolkit::makeUrlReady($entry->ftitle)?>"><?=$entry->ftitle?></a><br />
                         Posted on <?=Toolkit::toDate($entry->time)?> by <?=Toolkit::getUserPage($entry->displayname)?>.
                         <?=$l->triggerHook('entryHead','Reader',$entry);?>
                         <br />
                     </div>
                     <blockquote>
                         <?=$l->triggerPARSE('Reader',$entry->short);?>
+                        <br style="clear:both;" />
                     </blockquote>
                 </article>
             <? } ?>
