@@ -35,7 +35,7 @@
     float:left;
 }
 
-#article{color: #000;border-bottom:none;}
+#article{color: #000;border-bottom:none;font-size:12pt;}
 #article blockquote{margin-top:0;}
 #article blockquote img,#article blockquote iframe{
     float:none;
