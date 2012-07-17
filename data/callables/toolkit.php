@@ -579,6 +579,10 @@ public static function checkURLValidity($url){
     return true;
 }
 
+public static function makeUrlReady($s){
+    return str_replace(' ','_',self::sanitizeString($s));
+}
+
 public static function displayImageSized($imgpath,$limit=800,$title="",$alt="image"){
     $d = getimagesize(ROOT.$imgpath);
     if($d[0]>$limit)$d=$limit;else $d=$d[0];
