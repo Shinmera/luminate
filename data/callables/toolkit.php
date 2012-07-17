@@ -510,7 +510,8 @@ public static function displayPager(){
 }
 
 public static function sanitizePager($max,$orders=array(),$defaultOrder="",$step=50){
-    switch($_GET['action']){
+    if($_GET['dir']=='')$_GET['dir']=$_GET['action'];
+    switch($_GET['dir']){
         case '<<':$_GET['f']=0;  $_GET['t']=$step; break;
         case '<' :$_GET['f']-=$step;$_GET['t']-=$step;break;
         case '>' :$_GET['f']+=$step;$_GET['t']+=$step;break;
