@@ -33,7 +33,7 @@ public static $hooks=array("foo");
     }
     
     function displayApiPage(){
-        $text=$this->deparse(array("text"=>$_POST['text'],"formatted"=>true,"allowRaw"=>false));
+        $text=$this->deparse(array("text"=>htmlspecialchars($_POST['text']),"formatted"=>true,"allowRaw"=>false));
         echo($text['text']);
     }
     function displayApiOrderPage(){
@@ -57,7 +57,7 @@ public static $hooks=array("foo");
         if(trim($ret)!='')die('Failed to compile: <br />'.$ret);
         else{
             $this->loadCode(true);
-            die($this->parseFuncEM($_POST['text'],array('*')));
+            die($this->parseFuncEM(htmlspecialchars($_POST['text']),array('*')));
         }
     }
     
