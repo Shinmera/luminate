@@ -204,7 +204,7 @@ function displayFolder($folderID){
 }
 
 function displayEdit($entryID){
-    global $t,$a;
+    global $t,$a,$l,$c;
     $entry = DataModel::getData('bl_entries','SELECT * FROM bl_entries WHERE entryID=?',array($entryID));
     
     if(!$a->check('reader.folder.*')&&$entry->owner!==$a->user->userID){
@@ -232,6 +232,7 @@ function displayEdit($entryID){
                 $entry->owner=$a->user->userID;
                 $entry->time=time();
                 $entry->insertData();
+                $l->triggerPOST('Reader','Reader',$entry->FID,$entry->short,"",Toolkit::url('blog','p/'.$c->insertID()),$entry->title);
                 echo('<div class="success">Blog entry added!</div>');
             }else{
                 $entry->saveData();
