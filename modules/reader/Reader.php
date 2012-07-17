@@ -257,13 +257,17 @@ function displayEdit($entryID){
         $editor->addTextField('title', 'Title', $entry->title,'text','required maxlength="128"','width:200px;');
         $editor->addDropDown('FID', $fIDs, $fLs, 'Folder', $entry->FID);
         $editor->addCustom('<label>Tags: </label>'.Toolkit::interactiveList('tags', array(), array(), explode(',',$entry->tags), true,true));
+        $editor->addCustom($l->triggerHookSequentially('editor','Reader'));
         $editor->addCustom('<label>Extract: </label><br /><textarea name="short">'.$entry->short.'</textarea>');
         $_POST['text']=$entry->subject;
         $editor->addExtraAction('Delete');
         $editor->show();
 
-        ?><style>#editor{display:block;border:none;background:none;margin:10px;}
-                #editor textarea{width:100%;box-sizing:border-box;}</style><?
+        ?><style>
+            #editor{display:block;border:none;background:none;margin:10px;}
+            #editor textarea{width:100%;box-sizing:border-box;}
+            .filerButton{position:absolute;bottom:5px;right:0;font-weight:bold;}
+        </style><?
     }
     $t->closePage();
 }
