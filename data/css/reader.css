@@ -1,12 +1,11 @@
 
-#content{background-color: #555 !important;}
 #editor{
     margin: 0 !important;
     background: #E5E5E5 !important;
     border-radius: 0 !important;
     margin-top:-20px !important;
 }
-.pagerForm{
+#folderhead .pagerForm{
     position:absolute;
     right:0;
     bottom:-27px;
@@ -21,32 +20,34 @@
 
 #bloghead{
     height:85px;
-    border-radius: 0 0 10px 10px;
     z-index:20;
-    background: #B2B2B2;
     position:relative;
-    top:-22px;
-    margin-left:20px;
-    margin-right:20px;
-    border: 2px solid #AE61ED;
-    border-top: none;
-    padding-top:10px;
+    top:-20px;
 }
 
 #bloghead h2{
     display:inline-block;
     margin:0;padding:0;
+    font-size:20pt;
 }
 
 #bloghead .userAvatar img{
     float:left;
 }
 
-article{color: #FFF;}
+#article{color: #000;border-bottom:none;}
+#article blockquote{margin-top:0;}
+#article blockquote img,#article blockquote iframe{
+    float:none;
+    border:none;
+    border-radius:0;
+    max-width:100%;
+    max-height:100%;
+}
 
 #blogfoot,#folderfoot{
     min-height:20px;
-    background: #E5E5E5;
+    background: #FFF;
     border-top: 2px solid #AE61ED;
 }
 
@@ -76,13 +77,11 @@ article{color: #FFF;}
 }
 
 .entry{
-    border-top: 1px solid #FFF;
-    border-bottom: 1px solid #FFF;
-    box-shadow: 0 0 5px #FFF;
-    background: #FFF;
     margin-bottom:10px;
     color: #000;
+    border-bottom: 2px solid #555;
 }
+.entry:last-child{border-bottom:none;}
 
 .entry .bloghead{
     min-height: 60px;
@@ -95,6 +94,14 @@ article{color: #FFF;}
     float:left;height:50px !important;width:50px !important;
 }
 .entry blockquote{
-    margin: 0;padding: 20px;
+    margin: 10px;padding: 5px;
     background: #CCC;
+    border-radius: 5px;
+}
+.entry blockquote img,.entry blockquote iframe{
+    float:right;
+    max-width:250px;
+    max-height:250px;
+    border: 2px solid #555;
+    border-radius: 5px;
 }
