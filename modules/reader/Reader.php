@@ -43,7 +43,7 @@ function displayHome(){
     global $t,$l;
     
     $max = DataModel::getData('','SELECT COUNT(entryID) AS max FROM bl_entries');
-    Toolkit::sanitizePager($max->max,array(),'',20);
+    Toolkit::sanitizePager($max->max,array(),'',10);
     $t->openPage('Blog Home');
     $this->displayHead();
     ?>
@@ -161,7 +161,7 @@ function displayFolder($folderID){
             include(PAGEPATH.'404.php');
         }else{
             $max = DataModel::getData('','SELECT COUNT(entryID) AS max FROM bl_entries WHERE FID=?',array($folderID));
-            Toolkit::sanitizePager($max->max);
+            Toolkit::sanitizePager($max->max,array(),'',10);
             $t->openPage('Blog Home');
             $this->displayHead();
             ?>
