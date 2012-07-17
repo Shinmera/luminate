@@ -134,7 +134,8 @@ function displayFolder($folderID){
         </div>
         <?=$l->triggerHook('folderTop','Reader',$folder);?>
         <? $folders = DataModel::getData('', 'SELECT folderID,f.title,text,COUNT(entryID) AS count
-                                              FROM bl_folders AS f LEFT JOIN bl_entries ON folderID=FID ORDER BY title DESC');
+                                              FROM bl_folders AS f LEFT JOIN bl_entries ON folderID=FID 
+                                              GROUP BY folderID ORDER BY title DESC');
         Toolkit::assureArray($folders);
         foreach($folders as $folder){ ?>
             <article class="entry">
