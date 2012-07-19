@@ -40,6 +40,7 @@ table th:first-child{border-radius:5px 0px 0px 0px;}
 table th:last-child{border-radius:0px 5px 0px 0px;}
 table tbody tr{background-color:#CCC;}
 table tbody tr:nth-child(2n){background-color:#BBB;}
+blockquote{text-align:justify;}
 pre br{display:none;}
 .flLeft{float:left;}
 .flRight{float:right;}
