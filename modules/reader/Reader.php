@@ -235,12 +235,13 @@ function displayEdit($entryID){
                 $entry->insertData();
                 $l->triggerPOST('Reader','Reader',$entry->FID,$entry->short,"",Toolkit::url('blog','p/'.$c->insertID()),$entry->title);
                 echo('<div class="success">Blog entry added!</div>');
+                $new=false;
             }else{
                 $entry->saveData();
                 echo('<div class="success">Blog entry edited!</div>');
             }
         }
-        if($_POST['action']=='delete'&&!$new){
+        if($_POST['action']=='Delete'&&!$new){
             $entry->deleteData();
             echo('<div class="success">Blog entry deleted!</div>');
             $entry = DataModel::getHull('bl_entries');$new=true;
