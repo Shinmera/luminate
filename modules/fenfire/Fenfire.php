@@ -259,7 +259,7 @@ function submitCommentForm(){
         
         //Check akismet
         if($c->o['akismet_key']!=''){
-            require_once('./callables/akismet.php');
+            require_once(CALLABLESPATH.'akismet.php');
             $akismet = new Akismet(HOST ,$c->o['akismet_key']);
             $akismet->setCommentAuthor($username);
             $akismet->setCommentAuthorEmail($mail);
