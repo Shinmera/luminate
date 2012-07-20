@@ -389,7 +389,7 @@ function commentList($FID="",$width=440){
                                 <a class="button replyButton" id="<?=$comment->commentID?>">Reply</a>
                             </div>
                             <p>
-                                <?=$l->triggerHookSequentially("PARSEText","CORE",$comment->text);?>
+                                <?=$l->triggerParse("Fenfire",$comment->text);?>
                             </p>
                         </div>
                     </div><?
