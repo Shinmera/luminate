@@ -353,6 +353,7 @@ pre br{display:none;}
   vertical-align:text-top;
   text-align:justify;
   font-size: 12pt;
+  max-width: 80%;
 
   border-radius: 10px;
   border: 2px solid #490093;
