@@ -210,8 +210,8 @@ function commentBox($FID=null){
     <form class="commentBox" method="post" action="<?=$k->url("API","SubmitComment")?>">
         <b><a title="commentBox">Add a comment:</a></b><br />
         <? if($a->user==null) {?>
-            <label><a href="<?=$k->url("login","")?>" title="If you have a registered account, please log in first.">Username:</a></label><input name="varuser" value="<?=$saveduser?>" type="text" /><br />
-            <label><a title="Email will not be published.">E-Mail:</a></label>                                                            <input name="varmail" value="<?=$savedmail?>" type="text" /><br />
+            <label><a href="<?=$k->url("login","")?>" title="If you have a registered account, please log in first.">Username:</a></label> <input name="varuser" value="<?=$saveduser?>" type="text" /><br />
+            <label><a title="Email will not be published.">E-Mail:</a></label>                                                             <input name="varmail" value="<?=$savedmail?>" type="text" /><br />
         <? } ?>
             
         <? $l->triggerHook("EDITOR",$this); ?>
@@ -240,7 +240,7 @@ function submitCommentForm(){
     if($a->user==null){
         if($_POST['varuser']==""){$k->err("No username given.",true,true);return;}
         if($_POST['varmail']==""){$k->err("No email address given.",true,true);return;}
-        if(DataModel::getData("SELECT userID FROM ud_users WHERE username=? OR displayname=? LIMIT 1",array($_POST['varuser'],$_POST['varuser']))!=null){
+        if(DataModel::getData("","SELECT userID FROM ud_users WHERE username=? OR displayname=? LIMIT 1",array($_POST['varuser'],$_POST['varuser']))!=null){
             $k->err("You cannot use the name of a registered user.<br />If this name belongs to you, please <a href='".$k->url("login","")."'>log in</a> first.",false,true);
             return;
         }
