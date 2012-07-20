@@ -240,7 +240,7 @@ function submitCommentForm(){
     if($a->user==null){
         if($_POST['varuser']==""){$k->err("No username given.",true,true);return;}
         if($_POST['varmail']==""){$k->err("No email address given.",true,true);return;}
-        if(DataModel::getData("SELECT userID FROM ud_users WHERE username=? OR displayname=? LIMIT1",array($_POST['varuser'],$_POST['varuser']))!=null){
+        if(DataModel::getData("SELECT userID FROM ud_users WHERE username=? OR displayname=? LIMIT 1",array($_POST['varuser'],$_POST['varuser']))!=null){
             $k->err("You cannot use the name of a registered user.<br />If this name belongs to you, please <a href='".$k->url("login","")."'>log in</a> first.",false,true);
             return;
         }
