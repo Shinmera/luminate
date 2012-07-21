@@ -26,44 +26,48 @@ function displayPage($params){
     global $a,$t,$l,$param,$site;
     $t->openPage("Administration");
     
-    ?><div id='pageNav'>
-        <h1 class="sectionheader">Administration</h1>
-        <div class="tabs"></div>
-    </div>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $(".sidebar li ul").css("display","none");
-            $(".sidebar").find("li").each(function() {
-                
-                if ($(this).find("ul").length > 0){
-                    $(this).addClass("menu");
+    if($a->check('admin.*')){
+        ?><div id='pageNav'>
+            <h1 class="sectionheader">Administration</h1>
+            <div class="tabs"></div>
+        </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $(".sidebar li ul").css("display","none");
+                $(".sidebar").find("li").each(function() {
 
-                    $(this).click(function() {
-                        $(this).find("ul").stop(true, true).slideToggle();
-                    });
-                    
-                    $('ul a',this).each(function(){
-                        if($(this).attr('href')=='<?=PROOT.$param?>' || $(this).attr('href')== '<?=Toolkit::url('admin',$param);?>'){
-                            $(this).parent().slideDown();
-                        }
-                    })
-                }
-                
-                
+                    if ($(this).find("ul").length > 0){
+                        $(this).addClass("menu");
+
+                        $(this).click(function() {
+                            $(this).find("ul").stop(true, true).slideToggle();
+                        });
+
+                        $('ul a',this).each(function(){
+                            if($(this).attr('href')=='<?=PROOT.$param?>' || $(this).attr('href')== '<?=Toolkit::url('admin',$param);?>'){
+                                $(this).parent().slideDown();
+                            }
+                        })
+                    }
+
+
+                });
             });
-        });
-    </script>
-    <div class="sidebar-container" id="adminsidebar">
-        <ul class="sidebar">
-            <? $l->triggerHook("PANELdisplay",$this); ?>
-        </ul>
-        <div class="sidebar-content"><?
-            if($a->check('admin.panel')){
-                $l->triggerHook("ADMIN".$site,$this);
-            }else{
-                echo("<center>You are not authorized to view this page.</center>");
-            }
-    ?></div></div><?
+        </script>
+        <div class="sidebar-container" id="adminsidebar">
+            <ul class="sidebar">
+                <? $l->triggerHook("PANELdisplay",$this); ?>
+            </ul>
+            <div class="sidebar-content"><?
+                if($a->check('admin.panel')){
+                    $l->triggerHook("ADMIN".$site,$this);
+                }else{
+                    echo("<center>You are not authorized to view this page.</center>");
+                }
+        ?></div></div><?
+    }else{
+        include(PAGEPATH.'403.php');
+    }
     $t->closePage();
 }
 
