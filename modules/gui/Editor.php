@@ -117,6 +117,7 @@ class SimpleEditor extends Editor{
                         
                         $.post("<?=PROOT?>api/<?=$this->apiUrl?>", $("#<?=$this->formname?>").serialize(), function(data){
                             $("#preview").html(data);
+                            $("#preview a,#preview button,#preview input").unbind('click').click(function(){return false;});
                             $("#previewbutton").attr("value","Edit");
                         });
                     }else{
