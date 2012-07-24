@@ -284,12 +284,12 @@ a.omittedText:hover{opacity:1;}
 
 .buttons a{
     position:relative;
-    top:-3px;
+    top:-2px;
     padding: 2px 2px 2px 2px;
     border-radius: 0 0 5px 5px;
     color:#CCC;
     text-decoration: none;
-    background: #333;
+    background: #222;
 }
 .buttons a:hover{
     background-color:#000;
