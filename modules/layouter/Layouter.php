@@ -30,7 +30,7 @@ function displayAdmin(){
 }
 
 function displayAdminLayouts(){
-    
+    //Simply use files. No DB needed.
 }
 
 function displayAdminInstances(){
