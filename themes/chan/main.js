@@ -359,7 +359,7 @@ function customizePost(post){
     }
     
     if(cssoptions.post.filenamelimit){
-        $(".fileName",post).mouseenter(function(){$(this).stop(true,true).animate({maxWidth:"100000px"},500);})
+        $(".fileName",post).mouseenter(function(){$(this).stop(true,true).animate({maxWidth:"500px"},500);})
                            .mouseleave(function(){$(this).stop(true,true).animate({maxWidth:"100px"},500);});
     }
 }
