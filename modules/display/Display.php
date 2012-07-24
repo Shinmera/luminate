@@ -451,7 +451,96 @@ function displayFolderChooser(){
     $t->closePage();
 }
 
+function displayPanel(){
+    global $k,$a;
+    ?>
+    <li>Display
+    <ul class="menu">
+        <? if($a->check("display.admin.folders")){ ?>
+        <a href="<?=$k->url("admin","Display/folders")?>"><li>Folder Management</li></a><? } ?>
+        <? if($a->check("display.admin.pictures")){ ?>
+        <a href="<?=$k->url("admin","Display/pictures")?>"><li>Manage Pictures</li></a><? } ?>
+    </ul></li><?
+}
 function displayAdmin(){
+    global $params,$a;
+    switch($params[1]){
+        case 'folders':if($a->check("display.admin.folders"))$this->displayAdminFolders();break;
+        case 'pictures':if($a->check("display.admin.pictures"))$this->displayAdminPictures();break;
+    }
+}
+
+function displayAdminFolders(){
+    global $c;
+    $folder = DataModel::getData("display_folders","SELECT * FROM display_folders WHERE folder=?",array($_POST['folder']));
+    if($folder==null)$folder = DataModel::getHull("display_folders");
+    
+    if($_POST['action']=="Submit"){
+        $folder->text=$_POST['text'];
+        if($folder->folder==""){
+            try{
+                Toolkit::mkdir(ROOT.DATAPATH.'uploads/display/res/'.$_POST['folder']);
+                Toolkit::mkdir(ROOT.DATAPATH.'uploads/display/src/'.$_POST['folder']);
+                $folder->folder=$_POST['folder'];
+                $folder->insertData();
+                echo("<div class='success'>Folder added.</div>");
+            }catch(Exception $e){
+                echo("<div class='failure'>Failed to create folder!</div>");
+            }
+        }else{
+            $folder->saveData();
+            echo("<div class='success'>Folder edited.</div>");
+        }
+    }
+    
+    if($_POST['action']=="Delete"){
+        try{
+            Toolkit::rmdir(ROOT.DATAPATH.'uploads/display/res/'.$folder->folder);
+            Toolkit::rmdir(ROOT.DATAPATH.'uploads/display/src/'.$folder->folder);
+            $c->query('DELETE FROM display_pictures WHERE folder LIKE ?',array($folder->folder));
+            $folder->deleteData();
+            echo("<div class='success'>Folder and all its pictures deleted.</div>");
+        }catch(Exception $e){
+            echo("<div class='failure'>Failed to delete pictures!</div>");
+        }
+    }
+    
+    $folders = DataModel::getData("display_folders","SELECT * FROM display_folders ORDER BY folder DESC");
+    Toolkit::assureArray($folders);
+    ?><form class="box" method="post" action="#">
+        Path: <input type="text" name="folder" value="<?=$folder->folder?>" placeholder="path/name" maxlength="128" autocomplete="off" /><br />
+        <textarea name="text"><?=$folder->text?></textarea><br />
+        <input type="submit" name="action" value="Submit" />
+    </form> 
+    <div class="box fullwidth">
+        <table>
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Text</th>
+                    <th>Pictures</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <? foreach($folders as $folder){ ?>
+                    <tr>
+                        <td><?=$folder->folder?></td>
+                        <td><?=$folder->text?></td>
+                        <td><?=$folder->pictures?></td>
+                        <td><form method="post" action="#">
+                                <input type="hidden" name="folder" value="<?=$folder->folder?>" />
+                                <input type="submit" name="action" value="Edit" />
+                                <input type="submit" name="action" value="Delete" />
+                            </form></td>
+                    </tr>
+                <? } ?>
+            </tbody>
+        </table>
+    </div><?
+}
+
+function displayAdminPictures(){
     
 }
 
