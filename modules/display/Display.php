@@ -148,7 +148,7 @@ function displayPicture($pictureID){
 function displayFolder($folderpath){
     global $t,$l,$a,$c;
     if(substr($folderpath,strlen($folderpath)-1)=='/')$folderpath=substr($folderpath,0,strlen($folderpath)-1);
-    if($folderpath=='')$folderpath==$c->o['display_default_gallery'];
+    if($folderpath=='')$folderpath=$c->o['display_default_gallery'];
     
     $folder = DataModel::getData('display_folders','SELECT folder,text FROM display_folders WHERE folder LIKE ?',array($folderpath));
     if($folder==null){
