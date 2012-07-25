@@ -165,8 +165,9 @@ function displayFolder($folderpath){
                                                            WHERE folder LIKE ? ORDER BY time DESC
                                                            LIMIT '.$_GET['f'].','.$_GET['s'],array($folder->folder));
         
-        $subfolders = DataModel::getData('display_folders','SELECT display_folders.folder,display_pictures.filename 
-                                                            FROM display_folders JOIN display_pictures USING(folder)
+        $subfolders = DataModel::getData('display_folders','SELECT display_folders.folder,filename 
+                                                            FROM display_folders LEFT JOIN 
+                                                                (SELECT filename,folder FROM display_pictures ORDER BY time DESC) AS p USING(folder)
                                                             WHERE folder LIKE ? 
                                                             GROUP BY display_folders.folder
                                                             ORDER BY display_folders.folder ASC',array($folder->folder.'/%'));
