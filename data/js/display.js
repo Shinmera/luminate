@@ -124,6 +124,7 @@ function initManage(){
     $(">li>.collapse",$folderlist).click(function(){
         $("ul",$(this).parent()).slideToggle();
     });
+    $(">li>.collapse",$folderlist).click();
 
     $("a.delete",$imagelist).click(function(){
         var id = $(this).parent().attr("id");
