@@ -189,7 +189,7 @@ function displayEditUserPage(){
         <label>Password</label>     <input autocomplete="off" type="password" required="required" name="password" value="<?=$user->password?>" placeholder="Random"/><br />
         <label>Secret</label>       <input autocomplete="off" type="text" name="secret" value="<?=$user->secret?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
         <label>Filename</label>     <input autocomplete="off" type="text" name="filename" value="<?=$user->filename?>" placeholder="noguy.png" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
-        <label>Time</label>         <input autocomplete="off" type="number" name="time" value="<?=  strtotime($user->time)?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
+        <label>Time</label>         <input autocomplete="off" type="number" name="time" value="<?=$user->time?>" placeholder="Generated" <? if($_POST['action']=="Add")echo('disabled="disabled"'); ?>/><br />
         <label>Group</label>
             <select name="group">
                 <? foreach($groups as $g){
@@ -205,7 +205,7 @@ function displayEditUserPage(){
                 <option value="s" <? if($user->status=="s")echo('selected'); ?>>System</option>
             </select><br />
         <input type="hidden" name="userID" value="<?=$user->userID?>" />
-        <input type="submit" name="action" value="<?=$_POST['action']?>" class="flRight" style="font-weight:bold;"/>
+        <input type="submit" name="action" value="<?=($_POST['action']=='Add')? 'Add' : 'Edit';?>" class="flRight" style="font-weight:bold;"/>
         <input type="submit" name="action" value="Delete"/> 
     </form>
         
@@ -291,6 +291,7 @@ function updateUser($userID,$fields){
         if($fields['secret']=='')$fields['secret']=$user->secret;
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
+        echo(">>PWH: ".$a->getPasswordHash($fields['password'],$fields['secret'])." PW: ".$user->password.' PWF: '.$fields['password'].' S: '.$fields['secret']);
         if($a->getPasswordHash($fields['password'],$fields['secret'])!=$user->password)
                 $a->changePassword($fields['password'],$user);
     }
