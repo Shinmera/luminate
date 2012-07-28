@@ -221,7 +221,7 @@ function displayFolder($folderpath){
 
 function displayEdit($picture){
     global $a,$t,$c,$l;
-    if((!$picture->pictureID!=''&& $a->check('display.folder.'.str_replace('/','.',$picture->folder).'.upload'))||
+    if(( $picture->pictureID==''&& $a->check('display.folder.'.str_replace('/','.',$picture->folder).'.upload'))||
        ( $picture->pictureID!=''&&($a->check('display.folder.'.str_replace('/','.',$picture->folder).'.manage')||$a->user->username==$picture->user))){
         $folder = DataModel::getData('display_folders','SELECT folder,text,pictures FROM display_folders WHERE folder=?',array($picture->folder));
         
