@@ -150,7 +150,7 @@ function displayRegisterPage(){
             }else{
                 $user->status='a';
                 $user->insertData();
-                $suc[0]='Your account has been registered successfully! You can now <a href="/">log in</a>.';
+                $suc[0]='Your account has been registered successfully! You can now <a href="'.PROOT.'">log in</a>.';
             }
         }
     }
@@ -232,7 +232,7 @@ function displayControlPanelPage(){
         </div>
     </div><?
     
-    if($a->check("user.settings")){
+    if($a->check("user.profile")){
         include(MODULEPATH.$MODULECACHE['Neon_Private']);
         switch($params[1]){
             case 'Profile':displayControlPanelProfile();break;
