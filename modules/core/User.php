@@ -287,13 +287,14 @@ function addUser($username,$mail,$password,$status='',$group='Registered',$displ
 function updateUser($userID,$fields){
     global $l,$a;
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($userID));
+    $olduserpassword = $user->password;
     if($user!=null){
         if($fields['secret']=='')$fields['secret']=$user->secret;
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
-        if($fields['password']!=$user->password)
-                $a->changePassword($fields['password'],$user);
     }
+    if($fields['password']!=$olduserpassword)
+        $a->changePassword($fields['password'],$user);
     
     $l->triggerHook("USERupdate",$this,array($userID));
     Toolkit::log("Updated user @".$userID);
