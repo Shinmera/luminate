@@ -12,7 +12,7 @@
     }?>
     <link rel='stylesheet' type='text/css' href='<?=$DYNSTYLE?>' id='dynstyle' />
     <link rel="icon" type="image/png" href="<?=DATAPATH?>images/favicon.png" />
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all">
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="<?=DATAPATH?>js/jquery.js"><\/script>')</script>
