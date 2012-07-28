@@ -291,8 +291,7 @@ function updateUser($userID,$fields){
         if($fields['secret']=='')$fields['secret']=$user->secret;
         foreach($fields as $key => $value){$user->$key = $value;}
         $user->saveData();
-        echo(">>PWH: ".$a->getPasswordHash($fields['password'],$fields['secret'])." PW: ".$user->password.' PWF: '.$fields['password'].' S: '.$fields['secret']);
-        if($a->getPasswordHash($fields['password'],$fields['secret'])!=$user->password)
+        if($fields['password']!=$user->password)
                 $a->changePassword($fields['password'],$user);
     }
     
