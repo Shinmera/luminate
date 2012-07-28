@@ -172,7 +172,7 @@ function displayEditUserPage(){
             $_POST['status']='';
             break;
         case 'Edit': $this->updateUser($_POST['userID'], $_POST);break;
-        case "Save Fields": $this->updateUserFields($_POST['userID'], $_POST);$_POST['action']='Edit';break;
+        case "Save Fields": $this->updateUserFields($_POST['userID'], $_POST);break;
         case "Save Permissions": $this->updateUserPermissions($_POST['userID'],$_POST['tree']);break;
         case "Delete": $this->deleteUser($_POST['userID']);header('Location: /'.PROOT.'/users');break;
     }
