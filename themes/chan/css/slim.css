@@ -179,6 +179,8 @@ a.directQuote{
 .postOP{
     opacity: 0.9;
     background: -moz-linear-gradient(top, rgba(204,204,204,0.4) 0%, rgba(204,204,204,0) 100%); /* FF3.6+ */
+    background: -ms-linear-gradient(top, rgba(204,204,204,0.4) 0%, rgba(204,204,204,0) 100%);
+    background: -o-linear-gradient(top, rgba(204,204,204,0.4) 0%, rgba(204,204,204,0) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0.4)), color-stop(100%,rgba(204,204,204,0))); /* Chrome,Safari4+ */
 }
 
@@ -237,18 +239,26 @@ a.directQuote{
 #postType.locked::after{
     content:"LOCKED";
     background: -moz-linear-gradient(left, rgba(255,0,0,0) 0%, rgba(255,0,0,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,0,0,0) 0%, rgba(255,0,0,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,0,0,0) 0%, rgba(255,0,0,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,0,0,0)), color-stop(100%,rgba(255,0,0,1)));}
 #postType.sticky::after{
     content:"STICKY";
     background: -moz-linear-gradient(left, rgba(0,255,0,0) 0%, rgba(0,255,0,1) 100%);
+    background: -ms-linear-gradient(left, rgba(0,255,0,0) 0%, rgba(0,255,0,1) 100%);
+    background: -o-linear-gradient(left, rgba(0,255,0,0) 0%, rgba(0,255,0,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,255,0,0)), color-stop(100%,rgba(0,255,0,1)));}
 #postType.stickylocked::after{
     content:"ANNOUNCEMENT";
     background: -moz-linear-gradient(left, rgba(0,0,255,0) 0%, rgba(0,0,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(0,0,255,0) 0%, rgba(0,0,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(0,0,255,0) 0%, rgba(0,0,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(0,0,255,0)), color-stop(100%,rgba(0,0,255,1)));}
 #postType.redirect::after{
     content:"REDIRECT";color: #000;
     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(100%,rgba(255,255,255,1)));}
 
 a.omittedText,a.fetchPrevious,a.fetchNext{
@@ -274,11 +284,15 @@ a.omittedText:hover{opacity:1;}
     text-decoration: none;
     font-size:8pt;
     background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%); /* FF3.6+ */
+    background: -ms-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%);
+    background: -o-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0)), color-stop(100%,rgba(204,204,204,0.2))); /* Chrome,Safari4+ */
 }
 
 .threadToolbar a:hover{
     background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%); /* FF3.6+ */
+    background: -ms-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%);
+    background: -o-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0)), color-stop(100%,rgba(204,204,204,0.65))); /* Chrome,Safari4+ */
 }
 
