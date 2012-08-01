@@ -6,8 +6,7 @@ public static $short='display';
 public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
-//TODO: Add ability to delete pic on its edit page
-//TODO: Add admin back-end for folder management.
+//TODO: Add admin back-end for picture management.
 
 function buildMenu($menu){
     global $a;
@@ -231,6 +230,22 @@ function displayEdit($picture){
             $folder->title=ucfirst(str_replace('_',' ',$fpath[count($fpath)-1]));
             $path = DATAPATH.'uploads/display/src/'.$picture->folder.'/';
 
+            if($_POST['action']=="Delete"){
+                if(@!unlink(ROOT.$path.$picture->filename)||
+                   @!unlink(ROOT.str_replace('/src/','/res/',$path).$picture->filename)){
+                    $err='Failed to delete files! ';
+                }else{
+                    $picfolder = $picture->folder;
+                    $picture->deleteData();
+
+                    $picture = DataModel::getHull('display_pictures');
+                    $picture->folder=$picfolder;
+                    $picture->time=time();
+                    $picture->user=$a->user->username;
+
+                    $err="Picture deleted.";
+                }
+            }else
             if(isset($_POST['action'])){
                 if($c->o['display_edit_timeout']=='')$c->o['display_edit_timeout']=60;
                 if($c->o['display_thumbnail_size']=='')$c->o['display_thumbnail_size']=100;
@@ -290,10 +305,11 @@ function displayEdit($picture){
             if($picture->pictureID!='')$editor->addCustom('<a href="'.PROOT.'view/'.$picture->pictureID.'#picture"><img src="'.$path.$picture->filename.'" alt="" /></a>');
             $editor->addTextField('title', 'Title', $picture->title, 'text', 'maxlength="256" required');
             if($picture->pictureID!='')$editor->addTextField('file','Upload','','file');
-            else                          $editor->addTextField('file','Upload','','file','required');
+            else                       $editor->addTextField('file','Upload','','file','required');
             $editor->addCustom('<br class="clear" />');
             if($picture->tags!='')$editor->addCustom('<label>Tags</label>'.Toolkit::interactiveList('tags', explode(',',$picture->tags), explode(',',$picture->tags), explode(',',$picture->tags), true, true));
             else                  $editor->addCustom('<label>Tags</label>'.Toolkit::interactiveList('tags', array(), array(), array(), true, true));
+            if($picture->pictureID!='')$editor->addExtraAction("Delete");
             $_POST['text']=$picture->text;
             $l->triggerHookSequentially('EditEditor','Display',$editor);
             
