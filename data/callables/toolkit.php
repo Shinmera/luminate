@@ -595,13 +595,18 @@ public static function updateTimeout($action,$timeout){
 }
 
 public static function updateTimestamp($action,$timeout){
-    global $c,$a;
-    $result=$c->getData("SELECT `time` FROM ms_timer WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],$action));
-    if(count($result)>0){
-        if((time()-$result[0]['time'])<=$timeout)return false;
-        $c->query("UPDATE ms_timer SET time=? WHERE IP=? AND action=?",array($_SERVER['REMOTE_ADDR'],time(),$action));
+    $result = DataModel::getData('ms_timer',"SELECT * FROM ms_timer WHERE IP LIKE ? AND action LIKE ? LIMIT 1;",array($_SERVER['REMOTE_ADDR'],$action));
+    if($result!=null){
+        echo("SETTING: ".$action." : ".$timeout);
+        if((time()-$result->time)<=$timeout)return false;
+        $result->time=time();
+        $result->saveData();
     }else{
-        $c->query("INSERT INTO ms_timer VALUES(?,?,?)",array($_SERVER['REMOTE_ADDR'],time(),$action));
+        $result = DataModel::getHull('ms_timer');
+        $result->IP=$_SERVER['REMOTE_ADDR'];
+        $result->time=time();
+        $result->action=$action;
+        $result->insertData();
     }
     return true;
 }
