@@ -147,54 +147,72 @@ function displayControlPanelFriends(){
             }
             break;
         case 'Add Friend':
-            //TODO: Add multi-user support
+            if(strpos($_POST['user'],',')===FALSE)$_POST['user']=array($_POST['user']);
+            else                                  $_POST['user']=explode(',',$_POST['user']);
+            
             $friend = DataModel::getHull("neon_friends");
-            $exists = $c->getData("SELECT userID FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($_POST['user'],$_POST['user']));
-            $exists = $exists[0]['userID'];
-            if($exists!=''){
-                $friend->uID1=$a->user->userID;
-                $friend->uID2=$exists;
-                $friend->type='r';
-                $friend->insertData();
-                $l->triggerHook("FRIENDrequest",'User',array($a->user->userID,$exists));
-                $err[1]="Friend request sent.";
-            }else $err[1]="No such user.";
+            foreach($_POST['user'] as $username){
+                if($username==$a->user->username||$username==$a->user->displayname){
+                    $err[1].='You can\'t befriend yourself! ';
+                }else{
+                    $exists = $c->getData("SELECT userID,displayname FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($username,$username));
+                    if(count($exists)>0){
+                        $friend->uID1=$a->user->userID;
+                        $friend->uID2=$exists[0]['userID'];
+                        $friend->type='r';
+                        $friend->insertData();
+                        $l->triggerHook("FRIENDrequest",'User',array($a->user->userID,$exists[0]['userID']));
+                        $err[1].="Friend request sent to ".$exists[0]['displayname'].". ";
+                    }else $err[1].="No such user '".$username."'. ";
+                }
+            }
             break;
-        case 'Accept': //FIXME Adding oneself.
+        case 'Accept':
             $friend = DataModel::getHull("neon_friends");
             foreach($_POST['requests'] as $request){
-                $friend->uID1=$a->user->userID;
-                $friend->uID2=$request;
-                $friend->type='f';
-                $friend->insertData();
-                $friend->uID2=$request;
-                $friend->uID1=$a->user->userID;
-                $friend->saveData();
-                $l->triggerHook("FRIENDaccept",'User',array($a->user->userID,$request));
-                $err[2]="Friend accepted.";
+                if($request!=$a->user->userID){
+                    $friend->uID1=$a->user->userID;
+                    $friend->uID2=$request;
+                    $friend->type='f';
+                    $friend->insertData();
+                    $friend->uID2=$request;
+                    $friend->uID1=$a->user->userID;
+                    $friend->saveData();
+                    $l->triggerHook("FRIENDaccept",'User',array($a->user->userID,$request));
+                    $err[2].="Friend accepted. ";
+                }else{
+                    $err[2].="You can't befriend yourself! ";
+                }
             }
             break;
         case 'Block':
-            //TODO: Add multi-user support
-            $exists = $c->getData("SELECT userID FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($_POST['user'],$_POST['user']));
-            $exists = $exists[0]['userID'];
-            if($exists!=''){
-                $already = $c->getData("SELECT uID1,uID2 FROM neon_friends WHERE (uID1=? AND uID2=?) OR (uID2=? AND uID1=?)",
-                                        array($a->user->userID,$exists,$a->user->userID,$exists));
-                if(count($already)==0){
-                    $block = DataModel::getHull("neon_friends");
-                    $block->uID1=$a->user->userID;
-                    $block->uID2=$exists;
-                    $block->type='b';
-                    $block->insertData();
+            if(strpos($_POST['user'],',')===FALSE)$_POST['user']=array($_POST['user']);
+            else                                  $_POST['user']=explode(',',$_POST['user']);
+            
+            foreach($_POST['user'] as $username){
+                if($username==$a->user->username||$username==$a->user->displayname){
+                    $err[4].='You can\'t block yourself! ';
                 }else{
-                    $block = DataModel::getData("neon_friends","SELECT * FROM neon_friends WHERE uID1=? AND uID2=?",array($already[0]['uID1'],$already[0]['uID2']));
-                    $block->type='b';
-                    $block->saveData();
+                    $exists = $c->getData("SELECT userID,displayname FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($username,$username));
+                    if(count($exists)>0){
+                        $already = $c->getData("SELECT uID1,uID2 FROM neon_friends WHERE (uID1=? AND uID2=?) OR (uID2=? AND uID1=?)",
+                                                array($a->user->userID,$exists[0]['userID'],$a->user->userID,$exists[0]['userID']));
+                        if(count($already)==0){
+                            $block = DataModel::getHull("neon_friends");
+                            $block->uID1=$a->user->userID;
+                            $block->uID2=$exists;
+                            $block->type='b';
+                            $block->insertData();
+                        }else{
+                            $block = DataModel::getData("neon_friends","SELECT * FROM neon_friends WHERE uID1=? AND uID2=?",array($already[0]['uID1'],$already[0]['uID2']));
+                            $block->type='b';
+                            $block->saveData();
+                        }
+                        $l->triggerHook("FRIENDblock","Neon",array($a->user->userID,$exists[0]['userID']));
+                        $err[4].=$exists[0]['displayname']." blocked.";
+                    }else $err[4].="No such user '".$username."'.";
                 }
-                $l->triggerHook("FRIENDblock","Neon",array($a->user->userID,$exists));
-                $err[4]="User blocked.";
-            }else $err[4]="No such user.";
+            }
             break;
     }
     
