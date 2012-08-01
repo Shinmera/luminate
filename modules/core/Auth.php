@@ -98,10 +98,12 @@ var $user;
     }
 
     function check($tree){
+        $tree=trim(strtolower($tree));
         if(substr($tree,0,1)!='!')
             if($this->check('!'.$tree))         return false; //Exclusion check, overrides all.
         $tree=explode('.',trim(strtolower($tree)));
-        if(array_key_exists('*',$this->udPTree))return true;
+        if(array_key_exists('*',$this->udPTree)&&substr($tree[0],0,1)!='!')
+                                                return true;
         if(!isset($this->udPTree[$tree[0]]))    return false;
         
         foreach($this->udPTree[$tree[0]] as $branch){
