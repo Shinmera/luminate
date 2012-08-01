@@ -251,7 +251,7 @@ function displayAPIPreviewPage(){
 
 //TODO: Test
 function installTheme(){
-    global $k,$c,$l;
+    global $k,$l;
     $k->pf('<div class="box"><b>Starting installation...</b><br />');
     $k->pf('Extracting archive...');
     mkdir(TEMPPATH.'theme/');
