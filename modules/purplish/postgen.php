@@ -88,7 +88,7 @@ class PostGenerator{
                     </blockquote></article>
                     <br class="clear" />
                 </div>
-            </div><br />
+            </div>
         <?='<? } ?>'?>
         
         <?
