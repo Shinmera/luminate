@@ -61,12 +61,11 @@ class BoardGenerator{
                             <a href='#' class='hideThread' id='<?=$threads[$j]->postID?>'>Hide</a>
                         </div>
                         
-                        <?='<? @ include("'.ROOT.DATAPATH.'chan/'.$folder.'/posts/'.$threads[$j]->postID.'.php"); ?>'."\n"?>
+                        <?='<? @ include("'.ROOT.DATAPATH.'chan/'.$folder.'/posts/'.$threads[$j]->postID.'.php"); ?>'?>
+                        <a class="omittedText" href="<?=PROOT.$folder.'/threads/'.$threads[$j]->postID.'.php'?>">
+                            (<?=$postcount-count($posts)?> posts omitted.)
+                        </a>
                         <div class='thread' id='T<?=$threads[$j]->postID?>' >
-                            <a class="omittedText" href="<?=$k->url("chan",$folder.'/threads/'.$threads[$j]->postID.'.php')?>">
-                                (<?=$postcount-count($posts)?> posts omitted.)
-                            </a><br />
-
                             <? for($n=count($posts)-1;$n>=0;$n--){ ?>
                                 <?='<? @ include("'.ROOT.DATAPATH.'chan/'.$folder.'/posts/'.$posts[$n]->postID.'.php"); ?>'."\n"?>
                             <? } ?>
