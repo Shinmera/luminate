@@ -1,0 +1,454 @@
+@charset "utf-8";
+@font-face {font-family: pixelated;src: url('http://tymoon.eu/data/uploads/pixelated.ttf');}
+/* CSS Document */
+.clear{clear:both;}
+a:link{color:#C4E5FF;}
+a:visited{color:#C4E5FF;}
+a:active{color:#C4E5FF;}
+a:hover{color:#FFF;}
+IMG.flLeft {float: left;padding:3px;}
+IMG.flRight {float: right;padding:3px;}
+input,button,textarea{border: 1px solid #A1BAF0; background: #172545;color: #A1BAF0;}
+input[type="checkbox"]{
+    width:10px;height:10px;margin:auto 2px auto 2px;display:inline-block;
+    background: #000;border: 1px solid #FFF;
+    -moz-appearance:none;-webkit-appearance:none;}
+input[type="checkbox"]:checked{
+    background:#C4E5FF;box-shadow: 0 0 10px #C4E5FF;
+}
+hr{border:none;border-bottom: 1px solid #FFF;box-shadow: 0 0 5px #FFF;}
+options{content: "{'postbox':{'draggable':false,'resizable':false},'threadwatch':{'draggable':false,'resizable':false},'post':{'filenamelimit':true}}";}
+
+html,body{
+    background: #172545;
+    color:#A1BAF0;
+    font-family: Arial, Monospace;
+    font-size:10pt;
+    margin:0;padding:0;
+}
+*::-webkit-scrollbar{width:9px;height:9px;}
+*::-webkit-scrollbar-button:start:decrement,
+  *::-webkit-scrollbar-button:end:increment{display:block;height:0;background-color:transparent;}
+*::-webkit-scrollbar-track-piece{background-color:#000;}
+*::-webkit-scrollbar-thumb:vertical,
+  *::-webkit-scrollbar-thumb:horizontal{width:50px;background-color:#112247;}
+
+.spoiler{border: 1px dotted #A1BAF0;}
+.sspoiler{
+    background: #000;
+    border: 1px dotted #555;
+    color: #000;
+}
+
+.boardTitle{
+    font-size:24pt;
+    font-weight:bold;
+    position:fixed;
+    right: 0;top:90px;
+    width: 300px;
+    text-align:center;
+}
+#pageBanner{
+    position:fixed;
+    right: 0;top:0;
+    width: 300px;
+    text-align:center;
+    -webkit-box-reflect: below -5px -webkit-gradient( linear, left top, left bottom, from(transparent), color-stop(91%, rgba(255, 255, 255, .5)), color-stop(21.01%, transparent) );
+}
+
+.quote{
+    padding:5px;
+    border: 1px solid #000;
+    background-color:#222;
+    color:#EEE;
+    box-shadow: 0px 0px 5px #000;
+}
+
+.quoteLine{
+    color: #91E0EB;
+    text-shadow: none;
+}
+
+a.directQuote{
+    color: #91E0EB;
+    text-decoration: none;
+}
+
+.postBox{
+    display: inline-block;
+    position: fixed;
+    bottom: 50px;
+    right: 0;
+    width:300px;
+    font-size:8pt;
+    background: rgba(0,0,0,0.5);
+    z-index:11;
+}
+.postBox input[type="text"],.postBox input[type="password"]{
+    font-size:10pt;
+    height:15px;
+}
+.postBox textarea{
+    width:300px;min-height:70px;
+}
+.postBox .eldesc{width:90px;float:left;position:relative;}
+.postBox #varname{width:100px;}
+.postBox #varmail{width:100px;}
+.postBox #varpass{width:200px;}
+.postBox #varfile{width:200px;height:18px;}
+.postBox #vartitle{width:250px;}
+.postBox #varsubmit{width:40px;height:20px;margin-top:5px;}
+.postBox .tac{font-size:8pt;margin-top:10px;}
+.toolbar{
+    width:100%;
+    box-sizing:border-box;
+    background: #000;
+    list-style:none;
+    padding:0;margin:0;
+}
+.toolbar li{display:inline-block;}
+
+.threadWatch{
+    background: rgba(0,0,0,0.5);
+    font-size:8pt;
+    z-index: 10;
+    position: fixed;
+    top: 150px;
+    right: 0;
+    width:300px;
+    min-height: 200px;
+}
+.threadWatch a{color:#DDD;text-decoration:none;}
+.threadWatch table{margin:0px;border-spacing: 0px;width:100%;}
+.threadWatch table thead tr{background-color:#000;color:#C4E5FF;}
+.threadWatch table tbody tr:nth-child(2n){background-color:#333;}
+.threadWatch table tbody tr:nth-child(2n+1){background-color:#555;}
+.threadWatch table tbody td{border-right:1px solid #000;}
+.threadWatch table tbody td:nth-child(1){text-align:center;}
+.threadWatch table tbody td:nth-child(2){text-align:center;}
+.threadWatch table tbody td:nth-child(3){text-align:center;}
+.threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
+.watchButton{font-size:18pt;text-decoration: none;}
+.watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
+#watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
+#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
+#watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
+#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;font-weight:bold;}
+#watchRefreshButton:hover{color:#FFD900;text-shadow: 0px 0px 5px #FFD900;}
+#watchRemoveCol{width:20px;}
+#watchBoardCol{width:40px;}
+#watchIDCol{width:30px;}
+#watchPosterCol{width:100px;}
+#watchUnreadCol{width:10px;}
+.watchNewPosts{
+    color:#EEEEEE;
+    text-shadow: 0px 0px 5px #EEEEEE;
+    font-weight:bold;
+    box-shadow: 0px 0px 5px #FF0000;
+    background: #FF0000;
+}
+
+#boardForm{
+    display: block;
+    margin-right:302px;
+    padding-top: 25px;
+    padding-left:2px;
+    border-right:1px solid #000;
+}
+
+#boardForm .board>br{display:none;}
+#boardForm .thread>br{display:none;}
+
+.post, .postOP{
+    display: block;position:relative;
+    border-top: 1px solid #090D17;
+}
+
+.post{
+    background-color: rgba(0,0,0,0.2);
+    margin-top:2px;
+}
+
+.postOP{background-color: rgba(0,0,0,0.3);}
+.thread{clear:both;}
+
+.selected{
+    background: rgba(204,204,204,0.3);
+    border-top: 1px solid #C4E5FF;
+    border-bottom: 1px solid #C4E5FF;
+}
+
+.postContent blockquote{margin:0;margin-left:10px;}
+
+.postImage{
+    float:left;
+    margin:5px;
+    max-width:100%;
+    max-height:100%;
+    box-shadow: 0px 0px 5px #C4E5FF;
+}
+
+.postTitle{
+    font-size:12pt;
+    font-weight:bold;
+    color: #FFF;
+}
+
+.postUsername, .postTripcode{font-size:10pt;}
+
+.postUsername{
+    color: #A3EBFF;
+    font-weight:bold;
+}
+
+.postTripcode{color: #00FFBF;}
+.fileLink{color:#A1BAF0!important;}
+.fileLink:hover{color: #FFF!important;}
+.fileName{overflow:hidden;display:inline-block;white-space: nowrap;}
+
+.postMod{
+    color: #FF0000;
+    text-shadow: 0px 0px 5px #FF0000;
+    border-top: 2px dotted #FF0000;
+    border-bottom: 2px dotted #FF0000;
+}
+
+#postType{background: none;}
+#postType::after{
+    position:absolute;
+    right:0;top:0;
+    width:250px;
+    text-align:right;
+    font-size: 20pt;
+    padding-right:2px;
+    font-family: pixelated, Arial;
+    color: #FFF;
+    background: -moz-linear-gradient(left, rgba(150,195,255,0) 0%, rgba(150,195,255,0.65) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(150,195,255,0)), color-stop(100%,rgba(150,195,255,0.65)));
+    background: -webkit-linear-gradient(left, rgba(150,195,255,0) 0%,rgba(150,195,255,0.65) 100%);
+    background: -o-linear-gradient(left, rgba(150,195,255,0) 0%,rgba(150,195,255,0.65) 100%);
+    background: -ms-linear-gradient(left, rgba(150,195,255,0) 0%,rgba(150,195,255,0.65) 100%);
+    background: linear-gradient(to right, rgba(150,195,255,0) 0%,rgba(150,195,255,0.65) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0096c3ff', endColorstr='#a696c3ff',GradientType=1 );
+}
+#postType.locked::after{content:"LOCKED";}
+#postType.sticky::after{content:"STICKY";}
+#postType.stickylocked::after{content:"ANNOUNCEMENT";}
+#postType.redirect::after{content:"REDIRECT";}
+
+a.omittedText,a.fetchPrevious,a.fetchNext{
+    font-weight: bold;
+    font-size: 8pt;
+    background-color: rgba(0,0,0,0.3);
+    padding:2px;
+    float:right;
+    z-index:50;
+}
+
+.threadToolbar{
+    margin-top: 10px;
+    margin-bottom:3px;
+}
+
+.threadToolbar a{
+    padding:3px;
+    text-align:center;
+    color:#EEE;
+    text-decoration: none;
+    font-size:8pt;
+    background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%); /* FF3.6+ */
+    background: -ms-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%);
+    background: -o-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0)), color-stop(100%,rgba(204,204,204,0.2))); /* Chrome,Safari4+ */
+}
+
+.threadToolbar a:hover{
+    background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%); /* FF3.6+ */
+    background: -ms-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%);
+    background: -o-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.65) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(204,204,204,0)), color-stop(100%,rgba(204,204,204,0.65))); /* Chrome,Safari4+ */
+}
+
+.buttons a{
+    position:relative;
+    padding: 2px 2px 2px 2px;
+    border-radius: 0 0 5px 5px;
+    color:#CCC;
+    text-decoration: none;
+    background: #090D17;
+}
+.buttons a:hover{
+    background-color:#1F2845;
+    color: #FFF;
+}
+
+.deleteBox, .reportBox{
+    float:right;
+    clear:right;
+}
+
+.footer{
+    text-align:center;
+    font-size:8pt;
+    margin-top:10px;
+    color: #CCC;
+    position:fixed;
+    bottom:0;
+    right:0;
+    width:300px;
+    height:50px;
+    background: rgba(0,0,0,0.5);
+}
+
+.popup {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin-left: -300px;
+    width: 600px;
+    background-color: #000;
+    box-shadow: 0 0 50px #C4E5FF;
+    color: #FFF;
+    border: 2px solid #C4E5FF;
+    border-radius:10px;
+    padding: 12px;
+    overflow: auto;
+}
+
+#previewPost{
+    background: #181936;
+    padding:2px;
+    z-index:200;
+}
+
+.jqmOverlay { background-color: #000; }
+
+.menu{
+    background-color:#000;
+    list-style:none;
+    position:fixed;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;left:0px;right:300px;
+    box-shadow: 0 0 20px #C4E5FF;
+}
+.menu *{
+    margin:0;
+    padding:0;
+}
+.menu a{
+    color:#FFF;
+    text-decoration:none;
+}
+.menu li a{
+    display:block;
+    padding: 2px 10px 2px 10px;
+}
+.menu li a:hover{color: #5496FF;}
+.menu li{
+    position:relative;
+    display:block;
+    float:left;
+}
+.menu li ul{
+    position:absolute;
+    list-style:none;
+    width:1000px;
+    margin:0px;
+    padding:0px;
+    display:none;
+}
+.menu li ul li{
+    background: #000;
+    float:left;
+    display:inline-block;
+}
+.menu .separator{
+    width:1px;
+    background: #FFF;
+    box-shadow: 0 0 5px #FFF;
+}
+.menu .separator2{
+    width:1px;
+    background: #FFF;
+    box-shadow: 0 0 3px #FFF;
+}
+.menu > li > a.menulink{
+    background-color:#C4E5FF;color: #000;
+    font-weight:bold;
+}
+
+h1,h2,h3,h4,h5,h6{margin:0;}
+.fullwidth{width:100%;box-sizing: border-box;}
+
+#content{}
+
+#chanTitle{
+    padding: 2px 10px 2px 10px;
+    text-align:center;
+    margin-top:25px;
+    margin-right:300px;
+    font-size: 36pt;
+    text-shadow: 0 0 10px #FFF;
+}
+
+#news{
+    margin-right: 310px;
+    min-height: 600px;
+    padding:5px;
+    text-align: justify;
+    text-justify: distribute-all-lines;
+    position:relative;
+}
+#news img{max-width:100%;}
+
+#news .box{
+    display:inline-block;
+    position:relative;
+    min-width:32%;
+    min-height:200px;
+    vertical-align:text-top;
+    background: rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.5);
+    margin: 2px;
+    padding: 3px;
+    box-sizing:border-box;
+    zoom: 1;
+    text-align:justify;
+}
+#news .stretch {
+    width: 100%;
+    display: inline-block;
+    font-size: 0;
+    line-height: 0
+}
+
+#postSidebar{
+    border-left: 1px solid rgba(255,255,255,0.5);
+    position:fixed;
+    right:0;top:20px;bottom:50px;
+    width: 300px;
+    background: rgba(0,0,0,0.5);
+    overflow:auto;
+    overflow-x: hidden;
+    z-index:1000000;
+}
+#postSidebar h3{
+    background: rgba(0,0,0,0.5);
+    position:fixed;
+    right:0;top:0;
+    width:300px;height:20px;
+    text-align:center;
+    z-index:1000000;
+}
+#postSidebar .simplePost{margin-top:5px;}
+#postSidebar .simplePost .postInfo{
+    background: #333;
+    text-indent: 5px;
+}
+#postSidebar .simplePost article{padding:2px;}
+#postSidebar .simplePost .postImage{max-width:100px;max-height:100px;}
+#postSidebar .simplePost iframe{max-width:100px;max-height:100px;}
