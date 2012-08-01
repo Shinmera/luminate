@@ -94,7 +94,7 @@
                     <? $availableTags = $l->triggerHookSequentially("GETtags","CORE",array());?>
                     <ul class="toolbar">
                         <? foreach($availableTags as $tag){
-                          if(in_array($tag[3],array('default','plus','chan'))){ ?>
+                          if(in_array($tag[3],array('default','plus','chan'))&&file_exists(ROOT.DATAPATH.'images/icons/'.$tag[0].'.png')){ ?>
                             <li><img title="<?=$tag[1]?>" alt="<?=$tag[0]?>" class="icon" src="<?=DATAPATH.'images/icons/'.$tag[0]?>.png" tag="<?=$tag[2]?>" /></li>
                         <? }} ?>
                     </ul>

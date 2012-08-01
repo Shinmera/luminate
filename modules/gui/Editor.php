@@ -53,7 +53,7 @@ class Editor{
         
         echo('<ul class="toolbar">');
         foreach($this->availableTags as $tag){
-            if(in_array($tag[3],$this->suites))
+            if(in_array($tag[3],$this->suites)&&file_exists(ROOT.DATAPATH.'images/icons/'.$tag[0].'.png'))
                 echo('<li><img title="'.$tag[1].'" alt="'.$tag[0].'" class="icon" src="'.DATAPATH.'images/icons/'.$tag[0].'.png" tag="'.$tag[2].'" /></li>');
         }
         echo('</ul>');
