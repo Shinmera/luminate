@@ -597,7 +597,6 @@ public static function updateTimeout($action,$timeout){
 public static function updateTimestamp($action,$timeout){
     $result = DataModel::getData('ms_timer',"SELECT * FROM ms_timer WHERE IP LIKE ? AND action LIKE ? LIMIT 1;",array($_SERVER['REMOTE_ADDR'],$action));
     if($result!=null){
-        echo("SETTING: ".$action." : ".$timeout);
         if((time()-$result->time)<=$timeout)return false;
         $result->time=time();
         $result->saveData();
