@@ -6,10 +6,12 @@ html{
     font-size: 10pt;
     background: #888;
     padding:0px;
+    height:100%;
 }
 body{
     margin:0;
     margin-top:40px;
+    min-height:100%;
 }
 
 img{max-width:100%;max-height:100%;margin:5px;}
@@ -205,6 +207,7 @@ pre br{display:none;}
     background-color: #e5e5e5;
     /*padding-bottom: 20px;*/
     position:relative;
+    min-height:500px;
 }
 
 #footer{
@@ -443,7 +446,7 @@ pre br{display:none;}
   padding: 10px;
   margin: 10px;
   border: 2px solid #490093;
-  border-radius: 10px;
+  border-radius: 3px;
   display: inline-block;
   background: #ffffff; /* Old browsers */
   background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
@@ -458,7 +461,7 @@ pre br{display:none;}
   padding: 10px;
   margin: 3px;
   border: 2px solid #490093;
-  border-radius: 10px;
+  border-radius: 3px;
   position:relative;
   display:inline-block;
   background: #ffffff; /* Old browsers */
