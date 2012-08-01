@@ -48,7 +48,7 @@ function displayLogin(){
 }
 
 function displayRegisterPage(){
-    global $k,$c,$params;
+    global $a,$k,$c,$params;
     require_once(CALLABLESPATH.'recaptchalib.php');
     
     if($params[1]!=''&&$params[2]!=''){
@@ -113,7 +113,7 @@ function displayRegisterPage(){
             $user = DataModel::getHull('ud_users');
             $user->username=$_POST['username'];
             $user->mail=$_POST['email'];
-            $user->password=hash('sha512',$_POST['password']);
+            $user->password=$a->getPasswordHash($_POST['password'],$activationCode);
             $user->secret=$activationCode;
             $user->displayname=$_POST['username'];
             $user->group='Unregistered';
@@ -145,13 +145,12 @@ function displayRegisterPage(){
             $headers .= 'From: TymoonNET <noreply@tymoon.eu>' . "\r\n";
             
             if(mail($_POST['email'],'Account confirmation for TyNET',$message,$headers)){
-                $user->insertData();
                 $suc[0]='Your account has been registered successfully! Please check your e-mail for the activation code.';
             }else{
                 $user->status='a';
-                $user->insertData();
                 $suc[0]='Your account has been registered successfully! You can now <a href="'.PROOT.'">log in</a>.';
             }
+            $user->insertData();
         }
     }
     
