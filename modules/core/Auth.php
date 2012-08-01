@@ -97,9 +97,9 @@ var $user;
         }
     }
 
-    //TODO: Add exclusion masks
     function check($tree){
         $tree=explode('.',trim(strtolower($tree)));
+        if($this->check('!'.$tree))             return false; //Exclusion check, overrides all.
         if(array_key_exists('*',$this->udPTree))return true;
         if(!isset($this->udPTree[$tree[0]]))    return false;
         
