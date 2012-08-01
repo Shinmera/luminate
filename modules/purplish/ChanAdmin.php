@@ -52,7 +52,6 @@ function displayPanel(){
 }
 
 function displayStatistics(){
-    //TODO: Finish
     include(MODULEPATH.'gui/Statistics.php');
     $midnight= mktime(0,0,0);
     $thishour= mktime(date("H"),0,0);

@@ -1,6 +1,4 @@
 <?
-//TODO: More themes.
-
 class Purplish{
 public static $name="Chan";
 public static $author="NexT";
