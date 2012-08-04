@@ -4,8 +4,8 @@
         $("#dynstyle").attr("href","<?=PROOT?>themes/chan/css/"+$.cookie("chan2_style"));
     }
 </script>
-<ul class="menu" id="menu">
-        <li><a href="<?=Toolkit::url("chan","/")?>" class="menulink">TyNET</a>
+<ul class="menu sf-menu" id="menu">
+        <li><a href="<?=PROOT?>" class="menulink">TyNET</a>
             <?=$t->printMenu();?>
         </li>
         
@@ -35,6 +35,7 @@
                 }
             }
             closedir($d); ?>
+            <li><b>Note:</b> Some themes need a page reload after being selected, due to JS changes.</li>
         </ul></li>
         
         <li><a href="#" id="watchMenuButton" >Watch</a></li>
