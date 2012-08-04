@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Offline!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
     <link rel="icon" type="image/png" href="<?=DATAPATH?>images/offline.png" />
     <? include(PAGEPATH.'/meta.php'); ?>
     <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanspecial.css' />

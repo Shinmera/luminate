@@ -5,6 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <title>403, Permission Denied!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
     <link rel="icon" type="image/png" href="<?=DATAPATH?>images/500.png" />
     <? include(PAGEPATH.'/meta.php'); ?>
     <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanspecial.css' />

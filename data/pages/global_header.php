@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title><?=$PAGETITLE?> - <?=$c->o['sitename']?></title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
     
     <? for($i=0;$i<count($t->css);$i++){
         if(substr($t->css[$i],0,1)=='/')echo("<link rel='stylesheet' type='text/css' href='".DATAPATH."css".$t->css[$i]."' />\n");
