@@ -41,10 +41,10 @@ class ThreadGenerator{
 
         <input type="hidden" id="view" value="thread" />
         <div class="threadToolbar">
-            <a href="<?=PROOT.$board->folder?>/">Return</a> 
-            <a href="?b=-50">Last 50</a> 
-            <a href="?e=100">First 100</a>
-            <a href='#' class='watchThread' id='<?=$pID?>'>Watch</a>
+            <a href="<?=PROOT.$board->folder?>/" title="Return to the board index">Return</a> 
+            <a href="?b=-50" title="Show the last 50 posts">Last 50</a> 
+            <a href="?e=100" title="Show the first 100 posts">First 100</a>
+            <a href='#' class='watchThread' id='<?=$pID?>' title="Add this thread to the watched toolbar">Watch</a>
         </div>
         
         <?='<? 
