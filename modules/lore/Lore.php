@@ -6,7 +6,6 @@ public static $short='lore';
 public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
-function buildMenu($menu){$menu[]=array('Wiki',Toolkit::url("wiki",""));return $menu;}
 function adminNavbar($menu){$menu[]='Lore';return $menu;}
 
 function displayApiParse(){

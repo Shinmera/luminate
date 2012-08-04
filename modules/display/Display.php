@@ -8,18 +8,6 @@ public static $hooks=array("foo");
 
 //TODO: Add admin back-end for picture management.
 
-function buildMenu($menu){
-    global $a;
-    if($a->check('display.folder.*')){
-        $inner=array(
-            array('Upload',Toolkit::url('gallery','upload/')),
-            array('Manage',Toolkit::url('gallery','manage/'))
-        );
-    }else $inner=array();
-    $menu[]=array('Gallery',Toolkit::url('gallery'),'',$inner);
-    return $menu;
-}
-
 function displayPage(){
     global $t,$a,$params,$param;
     $t->js[]='/display.js';
