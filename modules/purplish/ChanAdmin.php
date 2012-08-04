@@ -548,6 +548,7 @@ function displayEditBoard(){
         <h3>Edit Board Settings</h3>
               <label>Title: </label>          <input type="text" name="title" value="<?=$board->title?>" required maxlength="128"/>
               <label>Folder: </label>         <input type="text" name="folder" value="<?=$board->folder?>" required maxlength="32" <?=($existing)? 'disabled':''?>/>
+                                              <?=($existing)? '<input type="hidden" name="folder" value="'.$board->folder.'" /> ' :''?>
         <br /><label>Max Filesize: </label>   <input type="number" name="maxfilesize" value="<?=$board->maxfilesize?>" required/>
               <label>Max Pages: </label>      <input type="number" name="maxpages" value="<?=$board->maxpages?>" required/>
         <br /><label>Sage Limit: </label>     <input type="number" name="postlimit" value="<?=$board->postlimit?>" required/>
