@@ -99,6 +99,7 @@ var $user;
 
     function check($tree){
         $tree=trim(strtolower($tree));
+        if($tree=='')return true;
         if(substr($tree,0,1)!='!')
             if($this->check('!'.$tree))         return false; //Exclusion check, overrides all.
         $tree=explode('.',trim(strtolower($tree)));
