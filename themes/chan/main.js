@@ -424,7 +424,6 @@ $(function(){
     if($.cookie("chan2_options")!=null){options=$.cookie('chan2_options');}
     else $.cookie('chan2_options',options,{ expires: 356, path: '/' });
     
-    if(isMobile.any())alert("MOBILE!");
     $(".styleLink").click(function(){
         $("#dynstyle").attr("href",$("#proot").html()+'themes/chan/css/'+$(this).attr("id"));
         $.cookie("chan2_style",$(this).attr("id"),{ expires: 356, path: '/' });
