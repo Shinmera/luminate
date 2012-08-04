@@ -25,7 +25,7 @@
     
     <?=$l->triggerPARSE('Purplish',$board->subject);?>
     <? include(PAGEPATH.'chan/chan_glob_header.php');?>
-    <div class="boardTitle"><?=$board->title?></div>
+    <h1 class="boardTitle"><?=$board->title?></h1>
 
     <? $l->triggerHook('header','Purplish',array($title,$board,$thread)); ?>
 

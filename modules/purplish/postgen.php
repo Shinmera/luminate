@@ -26,14 +26,15 @@ class PostGenerator{
         <?='<? if(!defined("INIT"))include("'.TROOT.'config.php"); ?>'."\n"?>
         <?='<? global $a,$l; if($a==null)$a = $l->loadModule("Auth"); ?>'."\n"?>
         <?='<? if("'.$post->ip.'"==$_SERVER["REMOTE_ADDR"]||strpos("'.$post->options.'",",h")===FALSE||$a->check("chan.mod.hidden")){ ?>'."\n"?>
-            <? if($post->PID==0){ ?><div class="postOP <?=$type?>" id="P<?=$pID?>">
-            <? }else            { ?><div class="post   <?=$type?>" id="P<?=$pID?>"><? } ?>
+            <article class="post<?=($post->PID==0)?'OP':''?> <?=$type?>" id="P<?=$pID?>" 
+                     data-time="<?=$post->time?>" data-name="<?=$post->name?>" data-trip="<?=$post->trip?>" data-mail="<?=$post->mail?>"
+                     data-postid="<?=$pID?>" >
                 <a name="<?=$pID?>"></a>
                 <div class="postInfo">
                     <input type="checkbox" name="varposts[]" value="<?=$pID?>" /> 
                     <a href="<?=$tpath?>#<?=$pID?>">No.</a> 
                     <a class="postReply" href="<?=$tpath?>#q<?=$pID?>" id="<?=$tID?>"><?=$pID?></a> 
-                    <span class="postTitle"><?=$post->title?></span> 
+                    <h3 class="postTitle"><?=$post->title?></h3> 
                     <span class="postUsername">
                         <? if(trim($post->name)==""&&trim($post->trip)=="")$post->name="Anonymous"; 
                         if($post->mail!="")echo('<a href="mailto:'.$post->mail.'">'.$post->name.'</a>');
@@ -50,15 +51,20 @@ class PostGenerator{
                             <?='<? } ?>'?>
                         <? } ?>
                         <?='<? if($a->check("chan.mod.purge")){ ?>'?>
-                            <a class="banUser" href="<?=PROOT?>api/chan/ban?id=<?=$post->postID?>&bid=<?=$post->BID?>">Ban</a>
+                            <a class="banUser" title="Ban this user"
+                               href="<?=PROOT?>api/chan/ban?id=<?=$post->postID?>&bid=<?=$post->BID?>">Ban</a>
                         <?='<? }if($a->check("chan.mod.ban")){ ?>'?>
-                            <a class="purgeUser" href="<?=PROOT?>api/chan/purge?id=<?=$post->postID?>&bid=<?=$post->BID?>">Purge</a>
+                            <a class="purgeUser" title="Delete all posts by this user"
+                               href="<?=PROOT?>api/chan/purge?id=<?=$post->postID?>&bid=<?=$post->BID?>">Purge</a>
                         <?='<? }if($a->check("chan.mod.search")){ ?>'?>
-                            <a class="searchUser" href="<?=PROOT?>api/chan/search?id=<?=$post->postID?>&bid=<?=$post->BID?>">Search</a>
+                            <a class="searchUser" title="Search for posts by this user"
+                               href="<?=PROOT?>api/chan/search?id=<?=$post->postID?>&bid=<?=$post->BID?>">Search</a>
                         <?='<? }if($a->check("chan.mod.delete")){ ?>'?>
-                            <a class="deletePost" href="<?=PROOT?>api/chan/delete?id=<?=$post->postID?>&bid=<?=$post->BID?>">Delete</a>
+                            <a class="deletePost" title="Delete this post"
+                               href="<?=PROOT?>api/chan/delete?id=<?=$post->postID?>&bid=<?=$post->BID?>">Delete</a>
                         <?='<? }if($a->check("chan.mod.edit")){ ?>'?>
-                            <a class="editPost" href="<?=PROOT?>api/chan/edit?id=<?=$post->postID?>&bid=<?=$post->BID?>">Edit</a>
+                            <a class="editPost" title="Edit this post"
+                               href="<?=PROOT?>api/chan/edit?id=<?=$post->postID?>&bid=<?=$post->BID?>">Edit</a>
                         <?='<? } ?>'?>
                     </span> <br />
                     <? if($post->file!=""){ ?>
@@ -79,16 +85,16 @@ class PostGenerator{
                     $shorttemp=str_replace("\n",'<br />',Toolkit::limitLines(str_replace('<br />',"\n",$temp),$c->o['chan_maxlines']));
                     
                     ?>
-                    <article><blockquote>
+                    <blockquote>
                         <?='<? if(POST_SHORT===TRUE){ ?>'?>
                             <?=($shorttemp==$temp)?$temp:$shorttemp.'<hr /><a href="'.$tpath.'#'.$pID.'" class="direct">Post abbreviated.</a>'?>
                         <?='<? }else{ ?>'?>
                             <?=$temp;?>
                         <?='<? } ?>'?>
-                    </blockquote></article>
+                    </blockquote>
                     <br class="clear" />
                 </div>
-            </div>
+            </article>
         <?='<? } ?>'?>
         
         <?
