@@ -8,6 +8,7 @@ if($bans!=null){?>
 <head>
     <meta charset="utf-8" />
     <title>Crime Scene</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
     <link rel="icon" type="image/png" href="<?=DATAPATH?>images/banned.png" />
     <? include(PAGEPATH.'/meta.php'); ?>
     <link rel='stylesheet' type='text/css' href='<?=DATAPATH?>css/chanspecial.css' />

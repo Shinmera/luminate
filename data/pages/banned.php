@@ -8,50 +8,51 @@
 }?>
 <html>
 <head>
-<title>B&.</title>
-<style type='text/css'>
-body,html{
-    margin-left:auto;
-    margin-right:auto;
-    width:1000px;
-    font-family:Arial;
-}
-.content{
-    background-color:#AAA;
-    width:100%;
-    min-height:200px;
-    padding:10px;
-    margin-top:50px;
-    border-radius:5px;
-    box-shadow: 0px 0px 5px #000;
-}
-.banimage{
-    position:relative;
-    right:-10px;
-    top:-30px;
-    float:right;
-}
-.banimage img{
-    border-radius: 0px 5px 0px 0px;
-}
-.heading{
-    background-color:black;
-    color:red;
-    margin-left:-10px;
-    margin-right:-10px;
-    padding-left:10px;
-    font-weight:bold;
-    box-shadow: 0px 0px 5px #000;
-    text-shadow: 0px 0px 5px #FF0000;
-}
-.banreason{
-    margin-top:10px;
-}
-.appeal{
-    padding:10px;
-    margin-top:10px;
-}
-</style>
+    <title>B&.</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+    <style type='text/css'>
+    body,html{
+        margin-left:auto;
+        margin-right:auto;
+        width:1000px;
+        font-family:Arial;
+    }
+    .content{
+        background-color:#AAA;
+        width:100%;
+        min-height:200px;
+        padding:10px;
+        margin-top:50px;
+        border-radius:5px;
+        box-shadow: 0px 0px 5px #000;
+    }
+    .banimage{
+        position:relative;
+        right:-10px;
+        top:-30px;
+        float:right;
+    }
+    .banimage img{
+        border-radius: 0px 5px 0px 0px;
+    }
+    .heading{
+        background-color:black;
+        color:red;
+        margin-left:-10px;
+        margin-right:-10px;
+        padding-left:10px;
+        font-weight:bold;
+        box-shadow: 0px 0px 5px #000;
+        text-shadow: 0px 0px 5px #FF0000;
+    }
+    .banreason{
+        margin-top:10px;
+    }
+    .appeal{
+        padding:10px;
+        margin-top:10px;
+    }
+    </style>
 </head>
 <body>
 <div class="content">
