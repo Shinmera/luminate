@@ -29,10 +29,10 @@
 
     <? $l->triggerHook('header','Purplish',array($title,$board,$thread)); ?>
 
-    <ul class="menu" id="menu">
-        <li><a href="<?=Toolkit::url("chan","/")?>" class="menulink">TyNET</a><ul>
+    <ul class="menu sf-menu" id="menu">
+        <li><a href="<?=PROOT?>" class="menulink">TyNET</a>
             <?=$t->printMenu();?>
-        </ul></li>
+        </li>
         
         <? $boards = DataModel::getData('','SELECT boardID,title,folder FROM ch_boards');
         $cats = DataModel::getData('','SELECT `order` FROM ch_categories');
@@ -59,6 +59,7 @@
                 }
             }
             closedir($d); ?>
+            <li><b>Note:</b> Some themes need a page reload after being selected, due to JS changes.</li>
         </ul></li>
         
         <li><a href="#" id="watchMenuButton" >Watch</a></li>
