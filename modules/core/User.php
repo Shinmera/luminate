@@ -82,7 +82,7 @@ function displayUserManagementPage(){
                 }
                 ?>
             </tbody>
-        </table><input type="hidden" name="action" value="Edit" /></form>
+        </table><input type="hidden" value="Edit" /></form>
     </div><?
 }
 
@@ -165,7 +165,7 @@ function displayFieldsManagementPage(){
 function displayEditUserPage(){
     if($_POST['userID']=='')$_POST['userID']=$_GET['userID'];
     switch($_POST['action']){
-        case '':$_POST['action']='Add';
+        case '':$_POST['action']='Add';break;
         case 'Add':
             $this->addUser($_POST['username'],$_POST['mail'],$_POST['password'],$_POST['status'],$_POST['group'],$_POST['displayname']);
             $_POST['action']='Edit';
@@ -179,7 +179,7 @@ function displayEditUserPage(){
     
     $user = DataModel::getData("ud_users", "SELECT * FROM ud_users WHERE userID=?",array($_POST['userID']));
     $groups=DataModel::getData("ud_groups","SELECT title FROM ud_groups");
-    if($user==null)$user = DataModel::getHull("ud_users");
+    if($user==null){$user = DataModel::getHull("ud_users");$_POST['action']='Add';}else{$_POST['action']='Edit';}
     ?><form action="#" method="post" class="box">
         <h2 class="title">User Variables</h2>
         <label>UserID</label>       <input autocomplete="off" type="number" value="<?=$user->userID?>" readonly="readonly" placeholder="Generated"/><br />
