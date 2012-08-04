@@ -179,15 +179,15 @@ function displayRegisterPage(){
 function buildMenu($menu){
     global $a,$k,$l;
     if($a->user->userID=='')
-        $menu[]=array('Login',$k->url("login",""),"float:right;");
+        $menu[]=array('Login',$k->url("login",""),"Login or Register","float:right;");
     else{
         $innermenu=array(
-            array('Settings',$k->url("user","panel")),
-            array('Profile',$k->url("user",$a->user->displayname))
+            array('Settings',$k->url("user","panel"),"Settings"),
+            array('Profile',$k->url("user",$a->user->displayname),"Show your profile")
         );
         $innermenu=$l->triggerHookSequentially("buildMenu",'User',$innermenu);
-        $innermenu[]=array('Logout',$k->url("login","logout"));
-        $menu[]=array($a->user->displayname,$k->url("user","panel"),"float:right;",$innermenu);
+        $innermenu[]=array('Logout',$k->url("login","logout"),"Log out and close the session.");
+        $menu[]=array($a->user->displayname,$k->url("user","panel"),"Settings","float:right;",$innermenu);
     }
     return $menu;
 }

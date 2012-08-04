@@ -22,6 +22,7 @@ function buildMenuHelper($links,$pid){
             $link->link=str_replace('PROOT',PROOT,$link->link);
             $link->link=str_replace('HOST',HOST.PROOT,$link->link);
             $subdat[]=$link->link;
+            $subdat[]=$link->description;
             $subdat[]=$link->style;
             $subels=$this->buildMenuHelper($links,$link->linkID);
             if(count($subels)>0)$subdat[]=$subels;
