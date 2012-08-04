@@ -89,7 +89,7 @@ var $user;
             }
             //Individual permissions override group permissions.
             $results=$c->getData('SELECT tree FROM ud_permissions WHERE UID=?',array($this->user->userID));
-            $results=explode("\n",$results[0]['permissions']);
+            $results=explode("\n",$results[0]['tree']);
             foreach($results as $result){
                 $base = explode('.',$result);
                 $this->udPTree[$base[0]][]=array_slice($base,1);
