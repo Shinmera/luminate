@@ -88,8 +88,8 @@ function closePage(){
 function printMenu($menu=null,$nostyle=false){
     /**
      * Sample menu format:
-     * Pseudo: [ [ A, link, (style) ], [ B, link, (style) ], [ C, link, (style), [ CA, link, (style) ]]]
-     * PHP:    array(array('A','/A'),array('B','/B'),array('C','/C','',array('CA','/CA')))
+     * Pseudo: [ [ A, link, (title), (style) ], [ B, link, (title), (style) ], [ C, link, (style), (title), [ CA, link, (style) ]]]
+     * PHP:    array(array('A','/A'),array('B','/B'),array('C','/C','','',array('CA','/CA')))
      * Produces:
      * V        [   A   ] [   B   ] [   C   ]
      * H                            [  CA   ]
@@ -104,8 +104,8 @@ function printMenu($menu=null,$nostyle=false){
     echo('<ul>');
     foreach($menu as $item){
         if($nostyle)$item[2]='';
-        echo('<li style="'.$item[2].'"><a href="'.$item[1].'">'.$item[0].'</a>');
-            if(count($item)==4)$this->printMenu($item[3]);
+        echo('<li style="'.$item[3].'"><a href="'.$item[1].'" title="'.$item[2].'">'.$item[0].'</a>');
+            if(count($item)==5)$this->printMenu($item[4]);
         echo('</li>');
     }
     echo('</ul>');
