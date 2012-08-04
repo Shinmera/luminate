@@ -328,6 +328,11 @@ a.omittedText:hover{opacity:1;}
     background: rgba(0,0,0,0.5);
 }
 
+#previewPost{
+    background: #000 url("../images/blockbg.jpg");
+    z-index:200;
+}
+
 .popup {
     display: none;
     position: absolute;
@@ -342,11 +347,6 @@ a.omittedText:hover{opacity:1;}
     border-radius:10px;
     padding: 12px;
     overflow: auto;
-}
-
-#previewPost{
-    background: #000 url("../images/blockbg.jpg");
-    z-index:200;
 }
 
 .jqmOverlay { background-color: #000; }
