@@ -433,7 +433,7 @@ function displayBoards(){
                         <td><?=$board->postlimit?></td>
                         <td><?=$board->options?></td>
                         <td><form action="<?=PROOT?>Chan/edit" method="post">
-                            <input type="hidden" name="title" value="<?=$board->title?>" />
+                            <input type="hidden" name="folder" value="<?=$board->folder?>" />
                             <input type="submit" name="action" value="Edit" />
                         </form></td>
                     </tr>
@@ -444,8 +444,9 @@ function displayBoards(){
 }
 
 function displayEditBoard(){
-    global $c,$l;include(MODULEPATH.'gui/Editor.php');
-    $board = DataModel::getData('ch_boards','SELECT * FROM ch_boards WHERE title=?',array($_POST['title']));
+    global $c,$l,$params;include(MODULEPATH.'gui/Editor.php');
+    if($params[2]!='')$_POST['folder']=$params[2];
+    $board = DataModel::getData('ch_boards','SELECT * FROM ch_boards WHERE folder=?',array($_POST['folder']));
     
     if($board==null){
         $board = DataModel::getHull('ch_boards');
