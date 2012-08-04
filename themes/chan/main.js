@@ -365,27 +365,17 @@ function customizePost(post){
 }
 
 function animateMenu(){
-    var hovering=0;
-    $("#menu li ul").each(function(){
-        $(this).css({"left":"0px",
-                     "top":($(this).parent().outerHeight()+$(this).parent().offset.y)+"px"});
-        $(this).hover(function(){
-            hovering++;
-        },function(){
-            hovering--;
-            if(hovering==0)$(this).children("ul").stop(true, true).fadeOut();
-        });
-    });
-
-    $("#menu>li").each(function(){
-        $(this).hover(function(){
-            hovering++;
-            $(this).children("ul").stop(true, true).fadeIn();
-        },function(){
-            hovering--;
-            if(hovering==0)$(this).children("ul").stop(true, true).fadeOut();
-        });
-    });
+    $("#menu").supersubs({ 
+        minWidth:    12,   // minimum width of sub-menus in em units 
+        maxWidth:    27,   // maximum width of sub-menus in em units 
+        extraWidth:  1     // extra width can ensure lines don't sometimes turn over 
+                           // due to slight rounding differences and font-family 
+        }).superfish({
+            pathClass:  'current' ,
+            animation:   {height:'show'}
+        });          // call supersubs first, then superfish, so that subs are 
+                     // not display:none when measuring. Call before initialising 
+                     // containing tabs for same reason. 
 }
 
 function registerShortcuts(){
