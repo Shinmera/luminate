@@ -1,0 +1,195 @@
+@charset "utf-8";
+/* CSS Document */
+.clear{clear:both;}
+img{max-width:100px;max-height:100px;}
+h1,h2,h3,h4,h5,h6{margin:0;display:inline;}
+blockquote{margin:5px;padding:0;}
+options{content: "{'postbox':{'draggable':false,'resizable':false},'threadwatch':{'draggable':false,'resizable':false},'post':{'filenamelimit':true}}";display:none;}
+input,button{border: 1px solid #CCC;border-radius:3px;background: #FFF;}
+input[type="submit"],button{font-weight:bold;background: #EEE;}
+html,body{
+    font-family: Arial;
+    font-size: 10pt;
+    margin:0;padding:0;
+    background: #333;
+}
+body{margin-top:20px;}
+
+.menu{
+    background-color:#000;
+    list-style:none;
+    position:absolute;
+    margin:0px;
+    padding:0px;
+    z-index:20;
+    top:0px;left:0px;right:0px;
+    color:#FFF;
+}
+.menu a{color:#FFF;}
+.menu li{background: #000;}
+.menu li a{padding: 2px 5px 2px 5px;}
+.menu li a:hover{color: #5496FF;}
+.menu>li>ul{margin-top:-16px;}
+
+.menu .separator,.menu .separator2{
+    width:1px;
+    background: #FFF;
+    box-shadow: 0 0 5px #FFF;
+}
+.menu>li>a.menulink{
+    background-color:#C4E5FF;color: #000;
+    font-weight:bold;
+}
+
+#news{display:none;}
+#postSidebar>h3{display:none;}
+
+#chanTitle,.boardTitle{display:block;color: #FFF;text-align:center;}
+#chanTitle{margin-top: 40px;}
+#pageBanner{margin:5px;text-align:center;}
+
+#boardForm{clear:left;}
+.board{
+    position:relative;
+    border: 1px solid #2964A3;
+    margin:3px 3px 0px 3px;
+    border-radius: 5px 5px 0 0;
+    padding-top: 12px;
+    background: #DDD;
+}
+.board::before{
+    content: " ";
+    position:absolute;
+    height:10px;
+    left:0;right:0;top:0;
+    border-radius: 3px 3px 0 0;
+    background: #2964A3;
+    display:block;
+}
+
+.post,.postOP,.simplePost{
+    background: #CCC;position:relative;
+    border-top: 1px solid #000;
+}
+
+.postImage{float:left;margin:2px;}
+
+.postInfo{
+    font-size:8pt;
+    background: #AAA;
+}
+.postInfo a{font-size:12pt;font-weight:bold;}
+a.fileLink{font-size:8pt;}
+
+#postType{background: none;}
+#postType::after{
+    font-size: 12pt;
+    font-weight:bold;
+    color: #FFF;
+    background: #000;
+    border-radius: 5px;
+}
+#postType.locked::after{content:"LOCKED";}
+#postType.sticky::after{content:"STICKY";}
+#postType.stickylocked::after{content:"ANNOUNCEMENT";}
+#postType.redirect::after{content:"REDIRECT";}
+
+.buttons{
+    background: #000;
+    position:absolute;
+    right:0;top:0;
+    border-radius: 0 0 0 3px;
+}
+.buttons a{
+    color: #FFF;
+    padding: 2px;
+    display: inline-block;
+    font-weight: normal;
+    font-size:8pt;
+}
+
+.threadToolbar{
+    background: #000;
+    border-radius: 0 3px 0 0;
+    display:inline-block;
+    font-weight: bold;
+    font-size:10pt;
+}
+.threadToolbar a{
+    color: #FFF;
+    padding: 2px;
+    display: inline-block;
+}
+a.watchThread{display:none;}
+a#watchMenuButton{display:none;}
+
+.omittedText,.fetchPrevious,.fetchNext{
+    background: #CCC;
+    padding: 2px;
+    text-align:right;
+    display: block;
+}
+
+.postBox,.reportBox,.deleteBox,.popup{
+    position:relative;
+    background: #DDD;
+    border: 1px solid #AAA;
+    border-radius: 3px;
+    margin:3px;
+    padding:2px;
+    clear:left;
+}
+.postBox{height:20px;overflow:hidden;}
+.postBox:hover,.postBox:focus{height: auto;}
+.postBox textarea{
+    min-height:70px;
+    width: 100%;
+    box-sizing: border-box;
+}
+.postBox .eldesc{width:20%;float:left;position:relative;clear:left;font-size:8pt;}
+.postBox #varname{width:38%;}
+.postBox #varmail{width:38%;}
+.postBox #varpass{width:79%;}
+.postBox #varfile{width:79%;height:18px;}
+.postBox #vartitle{width:79%;}
+.postBox #varsubmit{width:19%;height:20px;margin-top:5px;}
+.postBox .tac{clear:left;font-size:8pt;margin-top:10px;}
+.toolbar{
+    width:100%;
+    box-sizing:border-box;
+    background: #000;
+    list-style:none;
+    padding:0;margin:0;
+}
+.toolbar li{display:inline-block;}
+.threadWatch{display:none;}
+
+#boardForm>br{display:none;}
+.board>br{display:none;}
+.pager{
+    background: #2964A3;
+    border-radius: 0 0 5px 5px;
+    color: #FFF;
+    padding: 2px;
+    margin: 0 3px 3px 3px;
+}
+
+.footer{
+    font-size:8pt;
+    text-align:center;
+    color: #FFF;
+    background: #000;
+}
+.footer br{display:none;}
+
+.popup {
+    display: none;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+    box-shadow: 0 0 50px #000;
+    overflow: auto;
+}
+.jqmOverlay { background-color: #000; }
