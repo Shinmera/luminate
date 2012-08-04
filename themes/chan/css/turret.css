@@ -25,7 +25,7 @@ html,body{
 }
 
 .content{
-    padding-top:50px;
+    padding-top:20px;
 }
 
 .boardTitle{
@@ -160,19 +160,19 @@ a.directQuote{
 }
 
 .post, .postOP{
-    display: inline-block;
-    padding: 5px;
+    display: block;
+    padding: 2px;
+    position:relative;
 }
 
 .post{
     background-color:#FFFFFF;
-    position:relative;
     border-radius:5px;
     border: 2px solid #E8E8E8;
     margin-left: 20px;
     margin-top:5px;
-    width: inherit;
     opacity: 0.9;
+    display: table;
 }
 
 .postOP{
@@ -355,83 +355,29 @@ a.omittedText,a.fetchPrevious,a.fetchNext{
 .jqmOverlay { background-color: #000; }
 
 .menu{
-    background-color:#000;
-    background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#555));
-    background: -moz-linear-gradient(top,  #FFF,  #555);
-    background: -ms-linear-gradient(top,  #FFF,  #555);
-    background: -o-linear-gradient(top,  #FFF,  #555);
-    box-shadow: 0px 3px 10px #000;
+    background-color:#FFF;
     list-style:none;
     position:fixed;
-    width:100%;
     margin:0px;
     padding:0px;
     z-index:20;
-    top:0px;
-    left:0px;
+    top:0px;left:0px;right:0px;
+    box-shadow: 0 0 20px #FF0000;
 }
-.menu *{
-    margin:0;
-    padding:0;
+.menu a{color:#000;}
+.menu li{background: #FFF;}
+.menu li a{padding: 2px 10px 2px 10px;}
+.menu li a:hover{color: #FF0000;}
+.menu>li>ul{margin-top:-16px;}
+
+.menu .separator,.menu .separator2{
+    width:1px;
+    background: #FF0000;
+    box-shadow: 0 0 5px #FF0000;
 }
-.menu a{
-    color:#FFF;
-    text-decoration:none;
-}
-.menu li a{
-    display:block;
-    padding:10px;
-    height:20px;
-}
-.menu li a:hover{
-    background: -webkit-gradient(linear, left top, left bottom, from(#FF0000), to(#000));
-    background: -moz-linear-gradient(top,  #FF0000,  #000);
-    background: -ms-linear-gradient(top,  #FF0000,  #000);
-    background: -o-linear-gradient(top,  #FF0000,  #000);
-}
-.menu li{
-    position:relative;
-    display:block;
-    float:left;
-}
-.menu li ul{
-    position:absolute;
-    list-style:none;
-    width:1000px;
-    margin:0px;
-    padding:0px;
-    display:none;
-    height:40px;
-}
-.menu li ul li{
-    background: #000;
-    float:left;
-    display:inline-block;
-}
-.menu .separator{
-    padding-top: 10px;
-    padding-bottom: 10px;
-    height: 20px;
-    background-color:#333;
-    background: -webkit-gradient(linear, left top, left bottom, from(#FF0000), to(#000));
-    background: -moz-linear-gradient(top,  #FF0000,  #000);
-    background: -ms-linear-gradient(top,  #FF0000,  #000);
-    background: -o-linear-gradient(top,  #FF0000,  #000);
-}
-.menu .separator2{
-    padding-top: 10px;
-    padding-bottom: 10px;
-    height: 20px;
-    width:2px;
-    background:#000;
-}
-.menu > li > a.menulink{
-    background-color:#333;
-    background: -webkit-gradient(linear, left top, left bottom, from(#BBB), to(#000));
-    background: -moz-linear-gradient(top,  #BBB,  #000);
-    background: -ms-linear-gradient(top,  #BBB,  #000);
-    background: -o-linear-gradient(top,  #BBB,  #000);
-    text-shadow: 0px 0px 5px #FF0000;
+.menu>li>a.menulink{
+    background-color:#FF0000;color: #000;
+    font-weight:bold;
 }
 
 h1,h2,h3,h4,h5,h6{margin:0;}

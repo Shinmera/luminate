@@ -197,26 +197,23 @@ a.directQuote{
 }
 
 .postTitle{
-    font-size:14pt;
+    font-size:12pt;
     font-weight:bold;
-    text-shadow: 0px 0px 5px #FF0000;
 }
 
 .postUsername, .postTripcode{font-size:10pt;}
 
 .postUsername{
-    color: #FF0000;
+    color: #5496FF;
     font-weight:bold;
 }
 
 .postTripcode{
     color: #000;
-    text-shadow: 0px 0px 5px #FFEE00;
 }
 
 .postMod{
-    color: #FFDD00;
-    text-shadow: 0px 0px 5px #000000;
+    color: #FF0000;
     border-top: 2px dotted #FF0000;
     border-bottom: 2px dotted #FF0000;
 }
@@ -347,58 +344,30 @@ a.omittedText:hover{opacity:1;}
 .jqmOverlay { background-color: #000; }
 
 .menu{
-    background-color:#000;
+    background-color:#FFF;
     list-style:none;
     position:fixed;
     margin:0px;
     padding:0px;
     z-index:20;
     top:0px;left:0px;right:300px;
-    box-shadow: 0 0 20px #1B77E0;
+    box-shadow: 0 0 20px #C4E5FF;
 }
-.menu *{
-    margin:0;
-    padding:0;
-}
-.menu a{
-    color:#FFF;
-    text-decoration:none;
-}
-.menu li a{
-    display:block;
-    padding: 2px 10px 2px 10px;
-}
-.menu li a:hover{color: #FF0000;}
-.menu li{
-    position:relative;
-    display:block;
-    float:left;
-}
-.menu li ul{
-    position:absolute;
-    list-style:none;
-    width:1000px;
-    margin:0px;
-    padding:0px;
-    display:none;
-}
-.menu li ul li{
-    background: #000;
-    float:left;
-    display:inline-block;
-}
-.menu .separator{
+.menu a{color:#5496FF;}
+.menu li{background: #FFF;}
+.menu li a{padding: 2px 10px 2px 10px;}
+.menu li:hover{background-color: #5496FF;}
+.menu li a:hover{color: #FFF;}
+.menu>li>ul{margin-top:-16px;}
+
+.menu .separator,.menu .separator2{
     width:1px;
-    background: #FFF;
-    box-shadow: 0 0 5px #FFF;
+    background: #5496FF;
+    box-shadow: 0 0 5px #5496FF;
 }
-.menu .separator2{
-    width:1px;
-    background: #FFF;
-    box-shadow: 0 0 3px #FFF;
-}
-.menu > li > a.menulink{
-    background-color:#1B77E0;
+.menu>li>a.menulink{
+    background-color:#C4E5FF;color: #000;
+    font-weight:bold;
 }
 
 h1,h2,h3,h4,h5,h6{margin:0;}

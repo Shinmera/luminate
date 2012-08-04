@@ -372,6 +372,8 @@ a.omittedText,a.fetchPrevious,a.fetchNext{
     float:left;
     display:inline-block;
 }
+.menu li ul li:hover{background: #888;}
+
 .menu .separator{
     height: 30px;
     background-color:#333;
