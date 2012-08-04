@@ -84,7 +84,7 @@ function displayAdmin(){
         
         ?><style>input[type="text"]{width:100px;}input[type="number"]{width:30px;}</style>
         <form class="box fullwidth" action="#" method="post">
-            Parent <select name="PID"><?=$options?></select>
+            Add: Parent <select name="PID"><?=$options?></select>
             <input type="text" name="title" placeholder="Title"         value="" required maxlength="32" />
             <input type="text" name="link"  placeholder="Link"          value="" maxlength="256" />
             <input type="text" name="desc"  placeholder="Description"   value="" maxlength="128" />
