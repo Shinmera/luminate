@@ -21,7 +21,8 @@ try{
         $params=array_slice($params, 1);
     }
     if($params[0]=='')$site='index';else $site=$params[0];
-    if($c->o['offline']==='1'&&$domain!='admin')$domain="offline";
+    if($c->o['offline']==='1'&&$domain!='admin'&&
+       strpos(TRUSTEDIPS,$_SERVER['REMOTE_ADDR'])===FALSE)$domain="offline";
     define('DOMAIN',$domain);
     
     $l->triggerHook('HIT'.DOMAIN,'CORE',array($params),array(),true);

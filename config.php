@@ -33,7 +33,8 @@ define("SQLPASS","DtuyAEuNesZMhLNc");
 define("SQLDB","tymoonD");
 //other bs
 define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
-define("NO_ACCESS",'<div class="large" style="text-align:center;">You are not authorized to view this page.</div>');
+define("TRUSTEDIPS","188.154.8.12 192.168.0.1 127.0.0.1 0.0.0.1");
+
 if(extension_loaded('gzip'))define("COMPRESS",TRUE);
 else                        define("COMPRESS",FALSE);
 define("BUFFER",TRUE);
