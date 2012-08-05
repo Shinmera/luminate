@@ -140,7 +140,7 @@
                 for($x=0;$x<count($filetypes);$x++){$filetypes[$x]=substr($filetypes[$x],strpos($filetypes[$x],"/")+1);}
                 $filetypes=implode(", ",$filetypes); ?>
                 <div class="tac">
-                    By posting you agree to the <a href="<?=$k->url('pages','TAC')?>">Terms And Conditions</a>.<br />
+                    By posting you agree to the <a href="<?=$k->url('page','tac')?>">Terms And Conditions</a>.<br />
                     Allowed Filetypes: <?=$filetypes?>
                 </div>
                 <input type="hidden" name="varboard" id="varboard" value="<?=$board->boardID?>" />
