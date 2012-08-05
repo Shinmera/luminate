@@ -79,6 +79,7 @@ code{
     position:relative;
     font-family:Inconsolata, Consolas, Courier, Courier New, monospace;
     background: #FFF;
+    min-width: 200px;
 }
 code .codehead{
     position:absolute;
