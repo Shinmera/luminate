@@ -12,7 +12,6 @@ function printTimePassed(){
     global $k,$l,$SUPERIORPATH;
     $l->loadModule("Auth");
     $t = $l->loadModule("Themes");
-    $fenfire = $l->loadModule("Fenfire");
     
     $t->openPage("INDEX");
     $SUPERIORPATH="INDEX";
@@ -25,6 +24,19 @@ function printTimePassed(){
 
 function offline(){
     include(PAGEPATH.'offline.php');
+}
+
+function page(){
+    global $params,$l;
+    $t = $l->loadModule("Themes");
+    $t->openPage($params[0]);
+    
+    if(file_exists(PAGEPATH.$params[0]))include(PAGEPATH.$params[0]);
+    else if(file_exists(PAGEPATH.$params[0].'.php'))include(PAGEPATH.$params[0].'.php');
+    else if(file_exists(PAGEPATH.$params[0].'.html'))include(PAGEPATH.$params[0].'.html');
+    else include(PAGEPATH.'404.php');
+    
+    $t->closePage();
 }
 
 function apiCall(){
