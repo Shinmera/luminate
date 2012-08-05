@@ -23,7 +23,7 @@
     <?=(BUFFER)?'<? ob_flush(); ?>':''?>
     <body><div class="content">
     
-    <?=$l->triggerPARSE('Purplish',$board->subject);?>
+    <?=$l->triggerPARSE('Purplish',$board->subject,true,true);?>
     <? include(PAGEPATH.'chan/chan_glob_header.php');?>
     <h1 class="boardTitle"><?=$board->title?></h1>
 
