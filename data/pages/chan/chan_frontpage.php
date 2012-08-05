@@ -19,8 +19,8 @@
     <h3>Latest Posts:</h3>
     <? $posts = DataModel::getData('','SELECT postID,folder,PID,p.subject,name,trip,file,fileOrig
                                        FROM ch_posts AS p LEFT JOIN ch_boards ON BID=boardID
-                                       WHERE p.options NOT REGEXP ?
-                                       ORDER BY time DESC LIMIT ?',array('h',$c->o['chan_frontposts']));
+                                       WHERE p.options NOT REGEXP ? AND p.options NOT REGEXP ?
+                                       ORDER BY time DESC LIMIT ?',array('h','d',$c->o['chan_frontposts']));
     $posts = $l->triggerHookSequentially('frontPosts','Purplish',$posts);
     Toolkit::assureArray($posts);
     foreach($posts as $post){
