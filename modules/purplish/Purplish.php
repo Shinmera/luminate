@@ -29,6 +29,9 @@ function displayPage(){
                     include(ROOT.DATAPATH.'chan/'.$param.'/index.php');
                 else if(file_exists(ROOT.DATAPATH.'chan/'.$param)&&!is_dir(ROOT.DATAPATH.'chan/'.$param))
                     include(ROOT.DATAPATH.'chan/'.$param);
+                
+                else if(file_exists(ROOT.DATAPATH.'chan/'.$param.'.php')&&!is_dir(ROOT.DATAPATH.'chan/'.$param))
+                    include(ROOT.DATAPATH.'chan/'.$param.'.php');
                 else{
                     include(PAGEPATH.'chan/chan_404.php');
                 }
