@@ -7,6 +7,10 @@ blockquote{margin:5px;padding:0;}
 options{content: "{'postbox':{'draggable':false,'resizable':false},'threadwatch':{'draggable':false,'resizable':false},'post':{'filenamelimit':true}}";display:none;}
 input,button{border: 1px solid #CCC;border-radius:3px;background: #FFF;}
 input[type="submit"],button{font-weight:bold;background: #EEE;}
+.sspoiler{
+    background: #000;
+    color: #000;
+}
 html,body{
     font-family: Arial;
     font-size: 10pt;
