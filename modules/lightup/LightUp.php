@@ -200,7 +200,7 @@ public static $hooks=array("foo");
         return $text;
     }
     function secureNoParseCallback($matches){
-        return str_replace('}','&rbrace;',str_replace('{',' &lbrace;',$matches[1]));
+        return str_replace('}',' &rbrace;',str_replace('{','&lbrace;',$matches[1]));
     }
 
     function parseFuncEM($text,$suites=array('*')){
