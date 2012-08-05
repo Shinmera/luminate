@@ -283,6 +283,7 @@ class DataGenerator{
             $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board->boardID,'d'));
             if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.="e";
             $tpost->saveData();
+            echo('CTIME: '.time().' THREAD TIME: '.$tpost->bumptime);
         }else{
             $thread=$post->postID;
         }
@@ -301,9 +302,9 @@ class DataGenerator{
         $hfile='';$hline='';
         if(!headers_sent($hfile,$hline)){
             if(in_array("noko",$mail)){
-                header('Location: '.Toolkit::url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
+                //header('Location: '.Toolkit::url("chan",$board->folder.'/threads/'.$thread.'.php#'.$post->postID));
             }else{
-                header('Location: '.Toolkit::url("chan",$board->folder.'/'));
+                //header('Location: '.Toolkit::url("chan",$board->folder.'/'));
             }
         }else{
             die('Error sending headers: '.$hfile.':'.$hline);
