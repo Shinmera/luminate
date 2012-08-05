@@ -23,6 +23,10 @@ function printTimePassed(){
     $t->closePage();
 }
 
+function offline(){
+    include(PAGEPATH.'offline.php');
+}
+
 function apiCall(){
     global $l,$site,$params;
     if($site=="api"){
