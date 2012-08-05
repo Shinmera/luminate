@@ -621,14 +621,14 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
 }
 
 public static function autoBreakLines($text,$length=100){
-    $pointer = $length;
+    $pointer = $length;$lastfound = 0;
     while($pointer<strlen($text)){
         if(substr($text,$pointer,1)==' '){
             $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
             $pointer+=1;
         }else{
-            $npointer=strrpos($text,' ',-strlen($text)+$pointer);
-            if($npointer!==FALSE){
+            $npointer=strrpos($text,' ',$pointer-strlen($text));
+            if($npointer!==FALSE&&$npointer>$lastfound){
                 $text=substr($text,0,$npointer)."\n".substr($text,$npointer);
                 $pointer=$npointer+1;
             }else{
@@ -636,6 +636,7 @@ public static function autoBreakLines($text,$length=100){
                 $pointer+=2;
             }
         }
+        $lastfound=$pointer;
         $pointer+=$length;
     }
     return $text;
