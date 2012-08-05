@@ -399,13 +399,54 @@ function displayBoards(){
     $boards = DataModel::getData('', 'SELECT * FROM ch_boards 
                                       ORDER BY `'.$_GET['o'].'` '.$_GET['d'].' 
                                       LIMIT '.$_GET['f'].','.$_GET['s'],array());
-    if($boards==null)$boards=array();if(!is_array($boards))$boards=array($boards);
+    Toolkit::assureArray($boards);
     
-    ?><form class="box fullwidth" action="<?=PROOT?>Chan/edit" method="post">
+    if($_POST['action']=='Rebuild all'){
+        include('datagen.php');
+        include('boardgen.php');
+        include('threadgen.php');
+        include('postgen.php');
+        echo('<div class="success"><span style="font-size:14pt">Processing Boards:</span><br />');
+        foreach($boards as $board){
+            echo($board->folder.':<blockquote>');
+            if(in_array('c',$_POST['rebuild'])){
+                $datagen = new DataGenerator();
+                $datagen->cleanBoard($board->boardID, $board->folder);
+            }
+            if(in_array('b',$_POST['rebuild'])){
+                BoardGenerator::generateBoardFromObject($board);
+                echo('board...<br />');
+            }
+            if(in_array('t',$_POST['rebuild'])){
+                $threads = DataModel::getData('','SELECT * FROM ch_posts WHERE PID=0 AND BID=?',array($board->boardID));
+                Toolkit::assureArray($threads);
+                foreach($threads as $thread){ThreadGenerator::generateThreadFromObject($thread);}
+                echo('threads...<br />');
+            }
+            if(in_array('p',$_POST['rebuild'])){
+                $posts = DataModel::getData('','SELECT * FROM ch_posts WHERE BID=?',array($board->boardID));
+                Toolkit::assureArray($posts);
+                foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
+                echo('posts...<br />');
+            }
+            echo('</blockquote>');
+            if(BUFFER)ob_flush();flush();
+        }
+        echo("</div>");
+    }
+    
+    ?><form class="box" action="<?=PROOT?>Chan/edit" method="post">
         <h4>Add a board:</h4>
         Title:  <input type="text" maxlength="128" name="title" required />
         Folder:  <input type="text" maxlength="32" name="folder" required />
         <input type="submit" name="action" value="Add" />
+    </form>
+    <form class="box" action="#" method="post">
+        <input type="submit" name="action" value="Rebuild all" /> 
+        <input type="checkbox" name="rebuild[]" value="b" checked /> boards
+        <input type="checkbox" name="rebuild[]" value="t" checked /> threads
+        <input type="checkbox" name="rebuild[]" value="p" /> posts
+        <input type="checkbox" name="rebuild[]" value="c" /> clean them as well.
     </form>
     <div class="box fullwidth">
         <?=Toolkit::displayPager();?>
@@ -496,6 +537,11 @@ function displayEditBoard(){
             include('boardgen.php');
             include('threadgen.php');
             include('postgen.php');
+            if(in_array('c',$_POST['rebuild'])){
+                if(!class_exists('DataGenerator'))include('datagen.php');
+                $datagen = new DataGenerator();
+                $datagen->cleanBoard($board->boardID, $board->folder);
+            }
             if(in_array('b',$_POST['rebuild'])){
                 BoardGenerator::generateBoardFromObject($board);
                 $ret.='<br />Board regenerated.';
@@ -511,11 +557,6 @@ function displayEditBoard(){
                 Toolkit::assureArray($posts);
                 foreach($posts as $post){PostGenerator::generatePostFromObject($post);}
                 $ret.='<br />Posts regenerated.';
-            }
-            if(in_array('c',$_POST['rebuild'])){
-                if(!class_exists('DataGenerator'))include('datagen.php');
-                $datagen = new DataGenerator();
-                $datagen->cleanBoard($board->boardID, $board->folder);
             }
             echo('<div class="success">'.$ret.'</div>');
         }catch(Exception $ex){
