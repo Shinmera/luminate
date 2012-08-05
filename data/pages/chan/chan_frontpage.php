@@ -8,7 +8,7 @@
     Toolkit::assureArray($boxes);
     foreach($boxes as $box){ ?>
     <div class="box <?=str_replace(',',' ',$box->classes)?>">
-        <h2><?=$box->title?></h2>
+        <h2><?=$box->title?></h2><br />
         <?=$l->triggerPARSE('Purplish',$box->text);?>
         <? $l->triggerHook('frontBox','Purplish',$box); ?>
     </div>
