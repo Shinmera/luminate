@@ -131,7 +131,7 @@ a#watchMenuButton{display:none;}
     display: block;
 }
 
-.postBox,.reportBox,.deleteBox,.popup{
+.postBox,.reportBox,.deleteBox,.popup,.jqmWindow{
     position:relative;
     background: #DDD;
     border: 1px solid #AAA;
@@ -183,7 +183,7 @@ a#watchMenuButton{display:none;}
 }
 .footer br{display:none;}
 
-.popup {
+.popup,.jqmWindow {
     display: none;
     position: absolute;
     top: 10%;

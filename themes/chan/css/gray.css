@@ -310,7 +310,7 @@ a.omittedText,a.fetchPrevious,a.fetchNext{
 }
 
 
-.popup {
+.popup,.jqmWindow {
     display: none;
     position: absolute;
     top: 10%;
