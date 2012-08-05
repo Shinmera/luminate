@@ -42,7 +42,7 @@
             foreach($order AS $bID){
                 foreach($boards as $bboard){
                     if($bboard->boardID==$bID){
-                        ?><li><a href="<?=PROOT?><?=$bboard->folder?>"><?=$bboard->title?></a></li><? 
+                        ?><li><a href="<?=PROOT?><?=$bboard->folder?>" title="<?=$bboard->title?>"><?=$bboard->folder?></a></li><? 
                         break;
                     }
                 }
