@@ -271,7 +271,7 @@ a.omittedText:hover{opacity:1;}
 .threadToolbar a{
     padding:3px;
     text-align:center;
-    color:#EEE;
+    color:#000;
     text-decoration: none;
     font-size:8pt;
     background: -moz-linear-gradient(top, rgba(204,204,204,0) 0%, rgba(204,204,204,0.2) 100%); /* FF3.6+ */
