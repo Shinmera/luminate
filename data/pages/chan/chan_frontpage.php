@@ -27,8 +27,8 @@
         if($post->PID==0)$post->PID=$post->postID; ?>
         <div class="simplePost">
             <div class="postInfo">
-                Post <a href="<?=PROOT.$post->folder?>">/<?=$post->folder?>/</a> 
-                    <a href="<?=PROOT.$post->folder.'/threads/'.$post->PID.'.php#'.$post->postID?>"> #<?=$post->postID?></a>
+                <a href="<?=PROOT.$post->folder?>">/<?=$post->folder?>/</a> 
+                <a href="<?=PROOT.$post->folder.'/threads/'.$post->PID.'.php#'.$post->postID?>"> #<?=$post->postID?></a>
                 <span class="postUsername"><?=$post->name?></span>
                 <span class="postTripcode"><?=$post->trip?></span>
             </div>
