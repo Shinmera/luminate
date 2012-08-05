@@ -333,7 +333,7 @@ a.omittedText:hover{opacity:1;}
     z-index:200;
 }
 
-.popup {
+.popup,.jqmWindow {
     display: none;
     position: absolute;
     top: 10%;
