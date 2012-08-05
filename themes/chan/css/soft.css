@@ -234,7 +234,7 @@ a.directQuote{
 }
 #postType.locked::after{content:"LOCKED";}
 #postType.sticky::after{content:"STICKY";}
-#postType.stickylocked::after{content:"ANNOUNCEMENT";}
+#postType.stickylocked::after{content:"INFO";}
 #postType.redirect::after{content:"REDIRECT";}
 
 a.omittedText,a.fetchPrevious,a.fetchNext{
