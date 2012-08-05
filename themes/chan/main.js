@@ -7,7 +7,7 @@ var origtitle = document.title;
 var options = 'upeshq';
 var cssoptions = {"postbox":    {"draggable": true,"resizable": true},
                   "threadwatch":{"draggable": true,"resizable": true},
-                  "post":       {"filenamefade":false}};
+                  "post":       {"filenamelimit":false}};
 
 function isScrollBottom() { 
     var documentHeight = $(document).height(); 
