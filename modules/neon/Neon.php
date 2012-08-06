@@ -210,10 +210,9 @@ function displayMainPage(){
     }
 }
 
-function displayControlPanelPage(){
-    global $t,$a,$l,$k,$params,$MODULECACHE;
-    $t->openPage("User Settings");
-    
+
+function displayControlPanelHeader(){
+    global $t,$a,$l,$k,$params;
     if($params[1]=='')$params[1]='Profile';
     $pages = array('Profile','Friends');
     $pages = $l->triggerHookSequentially('SETTINGSNavbar',"User",$pages);
@@ -230,6 +229,10 @@ function displayControlPanelPage(){
             }if(!in_array($params[1], $pages))echo('<a href="'.$k->url("user",$params[1]).'" class="tab activated">'.$params[1].'</a>'); ?>
         </div>
     </div><?
+}
+
+function displayControlPanelPage(){
+    global $a,$l,$params,$MODULECACHE;
     
     if($a->check("user.profile")){
         include(MODULEPATH.$MODULECACHE['Neon_Private']);
@@ -241,7 +244,6 @@ function displayControlPanelPage(){
     }else{
         echo(NO_ACCESS);
     }
-    $t->closePage();
 }
 
 }
