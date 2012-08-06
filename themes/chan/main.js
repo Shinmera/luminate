@@ -1,7 +1,8 @@
 var anchor = document.location.hash.substring(1);
 var focused = window;
-var post_ids="";
+var post_ids = "";
 var origtitle = document.title;
+var fetch = 10;
 //update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f video hiding v auto-watch a
 //bcdgijklmnoqrtxyz
 var options = 'upeshq';
@@ -37,31 +38,39 @@ function updateThread(){
 
 function addMissingPosts(n){
     var allposts = post_ids.split(";"),posts = {};
-    var i=0,v=0,m=0;
-    if(n>0){i=1;v=n;m=-1;n--;}
-    else   {i=allposts.length+parseInt(n);v=allposts.length+2;m=1;n*=-1;}
+    var i=0,v=0,m=n,id=0;
+    
+    if(n>0){
+        id=$(".thread .post:last-child").data("postid");
+        i=allposts.indexOf(id+"")+1;
+        v=i+n;
+        if(v>allposts.length){n=allposts.length-i;v=allposts.length;}
+    }else{n*=-1;
+        id=$(".thread .post:first-child").data("postid");
+        v=allposts.indexOf(id+"");
+        i=v-n;
+        if(i<0){i=0;n=v;}
+    }
     for(;i<v;i++){
-        if($("#P"+allposts[i]).length==0){
-            $.ajax({
-                url: $("#proot").html()+"data/chan/"+$("#varfolder").val()+"/posts/"+allposts[i]+".php",
-                success: function(post){
-                    $post = $(post);
-                    customizePost($post);
-                    posts[$post.attr("id")] = $post;
-                    if(Object.size(posts)==n){
-                        addMissingPostsHelper(posts,m);
-                    }
+        $.ajax({
+            url: $("#proot").html()+"data/chan/"+$("#varfolder").val()+"/posts/"+allposts[i]+".php",
+            success: function(post){
+                $post = $(post);
+                customizePost($post);
+                posts[$post.data("postid")] = $post;
+                if(Object.size(posts)==n){
+                    addMissingPostsHelper(posts,m);
                 }
-            });
-        }
+            }
+        });
     }
 }
 function addMissingPostsHelper(posts,m){
     var allposts = post_ids.split(";");
     var $first = $(".thread .post:first-child");
-    for(var id in allposts){
-        var post = posts['P'+allposts[id]];
-        if(post!=undefined){
+    for(var id in posts){
+        if(allposts.indexOf(id)!=-1&&$("#P"+id).length==0){
+            post = posts[id];
             $(post).fadeIn();
             if(m>0)$(".thread").append($(post));
             else   $(post).insertBefore($first);
@@ -245,15 +254,33 @@ function registerButtons(){
                          eval($('#popup script').html());
                      }});
                  
-    $('.fetchNext,.fetchPrevious').click(function(){
+    $('.fetchPrevious').click(function(){
         var $self=$(this);
         $self.html('Fetching posts...');
         $.ajax({
             url: "?a=postlist",
             success: function(data){
                 post_ids=data.trim();
-                addMissingPosts($self.attr("amount"));
-                $self.remove();
+                addMissingPosts(-1*fetch);
+                $self.attr("amount",$self.attr("amount")-fetch);
+                if($self.attr("amount")>=fetch) $self.html("Fetch previous "+fetch+"/"+$self.attr("amount"));
+                else if($self.attr("amount")>0) $self.html("Fetch previous "+$self.attr("amount"));
+                else                            $self.remove();
+        }});
+        return false;
+    });
+    $('.fetchNext').click(function(){
+        var $self=$(this);
+        $self.html('Fetching posts...');
+        $.ajax({
+            url: "?a=postlist",
+            success: function(data){
+                post_ids=data.trim();
+                addMissingPosts(fetch);
+                $self.attr("amount",$self.attr("amount")-fetch);
+                if($self.attr("amount")>=fetch) $self.html("Fetch next "+fetch+"/"+$self.attr("amount"));
+                else if($self.attr("amount")>0) $self.html("Fetch next "+$self.attr("amount"));
+                else                            $self.remove();
         }});
         return false;
     });
