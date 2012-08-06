@@ -9,7 +9,7 @@
     foreach($boxes as $box){ ?>
     <div class="box <?=str_replace(',',' ',$box->classes)?>">
         <h2><?=$box->title?></h2><br />
-        <?=$l->triggerPARSE('Purplish',$box->text);?>
+        <?=$l->triggerPARSE('Purplish',$box->text,true,true);?>
         <? $l->triggerHook('frontBox','Purplish',$box); ?>
     </div>
     <? } ?>
@@ -39,7 +39,7 @@
                     </a>
                 <? } ?>
                 <blockquote>
-                    <?=$l->triggerPARSE('Purplish',substr($post->subject,0,200).'...'); ?>
+                    <?=$l->triggerPARSE('Purplish',(strlen($post->subject)>200) ? substr($post->subject,0,200).'...' : $post->subject); ?>
                 </blockquote>
             </article>
             <br style="clear:both" />
