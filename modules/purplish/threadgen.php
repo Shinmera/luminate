@@ -58,7 +58,7 @@ class ThreadGenerator{
         @ include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/posts/".$postlist[0].".php");
         
         $n=($begin-1);
-        if($begin>1)echo(\'<a href="?b=0&e=\'.$end.\'" class="fetchPrevious" amount="\'.($n+1).\'">Fetch previous \'.$n.\' posts</a>\');
+        if($begin>1)echo(\'<a href="?b=0&e=\'.$end.\'" class="fetchPrevious" amount="\'.($n+1).\'">Fetch previous 10/\'.$n.\' posts</a>\');
         ?>'?>
         <div class="thread" id="T<?=$pID?>">
             <?='<?
@@ -67,7 +67,7 @@ class ThreadGenerator{
             } ?>'?>
         </div><br class="clear" />
         <?='<? $n=(count($postlist)-$end);
-        if($end<count($postlist))echo(\'<a href="?b=\'.$begin.\'&e=0" class="fetchNext" amount="\'.(-1*$n).\'">Fetch next \'.$n.\' posts</a>\');
+        if($end<count($postlist))echo(\'<a href="?b=\'.$begin.\'&e=0" class="fetchNext" amount="\'.$n.\'">Fetch next 10/\'.$n.\' posts</a>\');
         ?>'?>
         
         <? require_once(PAGEPATH.'chan/chan_footer.php'); ?>
