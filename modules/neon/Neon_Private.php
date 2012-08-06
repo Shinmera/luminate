@@ -1,6 +1,7 @@
 <?php
+
 function displayControlPanelProfile(){
-    global $a,$c,$k,$l;
+    global $a,$c,$k,$l,$neon,$t;
     
     switch($_POST['action']){
         case 'Update Account':
@@ -48,6 +49,8 @@ function displayControlPanelProfile(){
             break;
     }
     
+    $t->openPage('Profile Settings');
+    $neon->displayControlPanelHeader();
     ?>
     <div class="tabbed">
         <form action="#" method="post" name="Profile">
@@ -97,10 +100,11 @@ function displayControlPanelProfile(){
         </form>
         <div name="View Profile" href="<?=$k->url("user",$a->user->username);?>" ></div>
     </div><?
+    $t->closePage();
 }
 
 function displayControlPanelFriends(){
-    global $a,$k,$c,$l;
+    global $a,$k,$c,$l,$t,$neon;
     
     switch($_POST['action']){
         case 'Remove':
@@ -232,6 +236,9 @@ function displayControlPanelFriends(){
     if(!is_array($friends))$friends=array($friends);
     if(!is_array($requests))$requests=array($requests);
     if(!is_array($blocked))$blocked=array($blocked);
+    
+    $t->openPage('Friends / Foes');
+    $neon->displayControlPanelHeader();
     ?>
     <div class="tabbed">
         <div name="Friends">
@@ -283,5 +290,6 @@ function displayControlPanelFriends(){
             </form>
         </div>
     </div><?
+    $t->closePage();
 }
 ?>
