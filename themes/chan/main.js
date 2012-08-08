@@ -515,7 +515,13 @@ $(function(){
     
     if(options.indexOf('b')!=-1){console.log("[INIT] CSS");}
     if($("options").length>0){
-        var opts = $("options").css('content').replace(/"/g,'').replace(/\\'/g,'"').replace(/'/g,'');
+        var opts = $("options").css('content');
+        if(options.indexOf('b')!=-1){console.log('[CSS] Read OPTS: '+opts);}
+        
+        opts = opts.replace(/\\'/g,'"').replace(/'/g,'"');
+        if(opts.substring(0,1)=='"'){ //FIREFOX FIX
+            opts = opts.substring(1,opts.length-1);
+        }
         if($("options").css('content').length>5){
             if(options.indexOf('b')!=-1){console.log('[CSS] Attempting to parse OPTS: '+opts);}
             jQuery.extend(cssoptions,$.parseJSON(opts));
