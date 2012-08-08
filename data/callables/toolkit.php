@@ -636,9 +636,9 @@ public static function autoBreakLines($text,$length=100){
                 $pointer+=2;
             }
         }
-        $lastfound=$pointer;
         $temp = strrpos(substr($text,$pointer,$length),"\n");
         if($temp!==FALSE)$pointer+=$temp;
+        $lastfound=$pointer;
         $pointer+=$length;
     }
     return $text;
