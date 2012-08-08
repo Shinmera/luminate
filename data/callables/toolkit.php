@@ -623,21 +623,22 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
 public static function autoBreakLines($text,$length=100){
     $pointer = $length;$lastfound = 0;
     while($pointer<strlen($text)){
-        if(substr($text,$pointer,1)==' '){
+        if(substr($text,$pointer,1)==' '){                                      //Neat, we're on a space, so just break here.
             $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
             $pointer+=1;
         }else{
-            $npointer=strrpos($text,' ',$pointer-strlen($text));
-            if($npointer!==FALSE&&$npointer>$lastfound){
+            $npointer=strrpos($text,' ',$pointer-strlen($text));                //Find the last position of a space...
+            if($npointer!==FALSE&&$npointer>$lastfound){                        //if it's within our step, break there
                 $text=substr($text,0,$npointer)."\n".substr($text,$npointer);
                 $pointer=$npointer+1;
-            }else{
-                $text=substr($text,0,$pointer)."-\n".substr($text,$pointer);
+            }else{                                                              //else just break apart the word we're currently
+                $text=substr($text,0,$pointer)."-\n".substr($text,$pointer);    //standing in.
                 $pointer+=2;
             }
         }
-        $temp = strrpos(substr($text,$pointer,$length),"\n");
-        if($temp!==FALSE)$pointer+=$temp;
+        $temp = strrpos(substr($text,$pointer,$length),"\n");                   //Searching for new lines in between step, if so
+        if($temp!==FALSE)$pointer+=$temp;                                       //Move directly to them, since we start anew on each line
+        
         $lastfound=$pointer;
         $pointer+=$length;
     }
