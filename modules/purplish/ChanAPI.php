@@ -312,10 +312,11 @@ function displayOptions(){
         <input type="checkbox" value="a" id="cba" /><label>Automatically watch threads you post in</label><br />
         <input type="checkbox" value="w" id="cbw" /><label>Always show watched threads</label><br />
         <input type="checkbox" value="v" id="cbv" /><label>Hide embedded videos</label><br />
+        <input type="checkbox" value="b" id="cbb" /><label>Enable JS debug mode</label><br />
         <input type="submit" id="saveOptions" value="Save" /> 
         <span id="saveResult" style="color:red;font-weight:bold;"></span>
     </form><script type="text/javascript">
-        var ops = ['u','p','e','h','s','q','w','f','v'];
+        var ops = ['u','p','e','h','s','q','w','f','v','b'];
         for(var i=0;i<ops.length;i++){
             if(options.indexOf(ops[i])!=-1)$("#cb"+ops[i]).prop("checked", true);
         }
@@ -324,7 +325,7 @@ function displayOptions(){
             for(var i=0;i<ops.length;i++){
                 if($("#cb"+ops[i]).is(":checked"))options+=ops[i];
             }
-            $.cookie("chan_options",options,{ expires: 356, path: '/' });
+            $.cookie("chan2_options",options,{ expires: 356, path: '/' });
             $("#saveResult").html("Saved! Reloading page...");
             window.setTimeout('location.reload()', 1000);
         });
