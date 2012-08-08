@@ -518,13 +518,25 @@ $(function(){
         var opts = $("options").css('content');
         if(options.indexOf('b')!=-1){console.log('[CSS] Read OPTS: '+opts);}
         
-        opts = opts.replace(/\\'/g,'"').replace(/'/g,'"');
+        opts = opts.replace(/\\'/g,'"').replace(/'/g,'"').trim();
         if(opts.substring(0,1)=='"'){ //FIREFOX FIX
             opts = opts.substring(1,opts.length-1);
         }
-        if($("options").css('content').length>5){
+        if(opts!=''&&opts!='none'){
             if(options.indexOf('b')!=-1){console.log('[CSS] Attempting to parse OPTS: '+opts);}
-            jQuery.extend(cssoptions,$.parseJSON(opts));
+            try{
+                var parsed = $.parseJSON(opts);
+                if(typeof parsed == 'object'){
+                    jQuery.extend(cssoptions,parsed);
+                }else{
+                    throw "Failed to parse";
+                }
+            }catch(ex){
+                if(options.indexOf('b')!=-1){console.log('[CSS] I don\'t know what I received. THIS IS NOT NORMAL!');}
+                if(options.indexOf('b')!=-1){console.log('[CSS] Continuing with default options.');}
+            }
+        }else{
+            if(options.indexOf('b')!=-1){console.log('[CSS] No opts found, continuing with default options.');}
         }
     }
     
