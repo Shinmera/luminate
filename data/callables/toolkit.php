@@ -621,8 +621,14 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
 }
 
 public static function autoBreakLines($text,$length=100){
-    $pointer = $length;$lastfound = 0;
+    $pointer = 0;$lastfound = 0;
     while($pointer<strlen($text)){
+        $temp = strrpos(substr($text,$pointer,$length),"\n");                   //Searching for new lines in between step, if so
+        if($temp!==FALSE)$pointer+=$temp;                                       //Move directly to them, since we start anew on each line
+        
+        $lastfound=$pointer;
+        $pointer+=$length;
+        
         if(substr($text,$pointer,1)==' '){                                      //Neat, we're on a space, so just break here.
             $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
             $pointer+=1;
@@ -636,11 +642,6 @@ public static function autoBreakLines($text,$length=100){
                 $pointer+=2;
             }
         }
-        $temp = strrpos(substr($text,$pointer,$length),"\n");                   //Searching for new lines in between step, if so
-        if($temp!==FALSE)$pointer+=$temp;                                       //Move directly to them, since we start anew on each line
-        
-        $lastfound=$pointer;
-        $pointer+=$length;
     }
     return $text;
 }
