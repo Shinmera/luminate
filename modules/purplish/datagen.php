@@ -162,7 +162,7 @@ class DataGenerator{
         //CHECK FOR POST EMPTINESS
         $thread=(int)$_POST['varthread'];
         $file=$_FILES['varfile'];
-        $board=(int)$_POST['varboard'];
+        $boardid=(int)$_POST['varboard'];
         $name=trim($_POST['varname']);
         $mail=trim($_POST['varmail']);
         $password=trim($_POST['varpassword']);
@@ -176,7 +176,7 @@ class DataGenerator{
         if($file['error'] !== UPLOAD_ERR_OK && $file['error'] !== UPLOAD_ERR_NO_FILE && $file['error'] != "")throw new Exception("File upload failed. (ERR".$file['error'].")");
 
         //CHECK BOARD
-        $board = DataModel::getData('ch_boards',"SELECT boardID,folder,maxfilesize,filetypes,options,postlimit FROM ch_boards WHERE boardID=?", array($board));
+        $board = DataModel::getData('ch_boards',"SELECT boardID,folder,maxfilesize,filetypes,options,postlimit FROM ch_boards WHERE boardID=?", array($boardid));
         if($board==null)throw new Exception("No such board. (".board.")");
         if(!$a->check("chan.mod")&&(strpos($board->options,"l")!==FALSE||
                                     strpos($board->options,"m")!==FALSE||
@@ -193,7 +193,7 @@ class DataGenerator{
         //CHECK THREAD
         if(!is_numeric($thread)||$thread=="")$thread=0;
         if($thread!=0){
-            $threadp = DataModel::getData('ch_posts',"SELECT BID,options FROM ch_posts WHERE postID=? AND PID=0 AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board->boardID));
+            $threadp = DataModel::getData('ch_posts',"SELECT BID,options FROM ch_posts WHERE postID=? AND PID=0 AND BID=? LIMIT 1", array($thread,$board->boardID));
             if($threadp==null)throw new Exception("No such thread.");
             if($threadp->BID!=$board->boardID)throw new Exception("Invalid board. (".$board->boardID."/".$threadp->BID.")");
             if(!$a->check("chan.mod")&&(strpos($threadp->options,"l")!==FALSE||
@@ -278,11 +278,13 @@ class DataGenerator{
 
         //UPDATE THREAD
         if($thread!=0){
-            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? ORDER BY postID DESC LIMIT 1", array($thread,$board->boardID));
-            if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail))$tpost->bumptime=time();
-            $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board->boardID,'d'));
-            if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.="e";
-            $tpost->saveData();
+            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? AND PID=0 LIMIT 1", array($thread,$board->boardID));
+            if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail)){
+                $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board->boardID,'d'));
+                if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.="e";
+                $tpost->bumptime=time();
+                $tpost->saveData();
+            }
         }else{
             $thread=$post->postID;
         }
