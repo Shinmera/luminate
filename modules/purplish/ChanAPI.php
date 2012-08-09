@@ -182,7 +182,7 @@ function displayEdit(){
         if($post->PID==0){
             $editor->addCheckbox('options[]', 'Locked', 'l', strpos($post->options,'l')!==FALSE);
             $editor->addCheckbox('options[]', 'Sticky', 's',strpos($post->options,'s')!==FALSE);
-            $editor->addCheckbox('options[]', 'Autosage', 'a',strpos($post->options,'a')!==FALSE);
+            $editor->addCheckbox('options[]', 'Autosage', 'e',strpos($post->options,'e')!==FALSE);
         }
         $editor->addCustom('
             <input type="hidden" name="id" value="'.$_GET['id'].'" />
