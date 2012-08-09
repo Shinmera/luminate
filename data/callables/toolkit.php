@@ -623,12 +623,9 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
 public static function autoBreakLines($text,$length=100){
     $pointer = 0;$lastfound = 0;
     while($pointer+$length<strlen($text)){
-        $pointer+=1;								// TODO: Weirdly requires this line or 500 errors???
-                                                                                // Cannot work out why right now
-        
-        $temp = strrpos(substr($text,$pointer,$length),"\n");                   //Searching for new lines in between step, if so
+        $temp = strrpos(substr($text,$pointer,$length),"\n");                       //Searching for new lines in between step, if so
         if($temp!==FALSE){
-        	$pointer+=$temp;                                                //Move directly to them, since we start anew on each line
+        	$pointer+=$temp+1;                                                  //Move directly to them, since we start anew on each line
         	$lastfound=$pointer;
         }else{
             $lastfound=$pointer;
