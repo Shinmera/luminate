@@ -625,12 +625,10 @@ public static function autoBreakLines($text,$length=100){
     while($pointer+$length<strlen($text)){
         $temp = strrpos(substr($text,$pointer,$length),"\n");                       //Searching for new lines in between step, if so
         if($temp!==FALSE){
-        	$pointer+=$temp+1;                                                  //Move directly to them, since we start anew on each line
-        	$lastfound=$pointer;
+            $pointer+=$temp+1;                                                      //Move directly to them, since we start anew on each line
         }else{
             $lastfound=$pointer;
             $pointer+=$length;
-
             if(substr($text,$pointer,1)==' '){                                      //Neat, we're on a space, so just break here.
                 $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
                 $pointer+=1;
