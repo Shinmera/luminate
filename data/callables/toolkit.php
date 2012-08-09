@@ -621,29 +621,27 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
 }
 
 public static function autoBreakLines($text,$length=100){
-    $lastfound = 0;
-
-    $temp = strrpos(substr($text,0,$length),"\n");                   		//Jump to 
-    if($temp!==FALSE) 	$pointer = $temp+$length;
-    else		$pointer = $length;
-    while($pointer<strlen($text)){
-        $temp = strrpos(substr($text,$pointer,$length),"\n");                   //Searching for new lines in between step, if so
-        if($temp!==FALSE)$pointer+=$temp;                                       //Move directly to them, since we start anew on each line
+    $lastfound = 0;$pointer=0;
+    while(true){                                                                //No need to do a check here anyway, saves some operation time.
+        $nline=-1;
+        while($nline!==FALSE){                                                  //As long as there are newlines in the steps, skip to them.
+            $pointer+=$nline+1;
+            $nline = strrpos(substr($text,$pointer,$length),"\n");
+        }
         
         $lastfound=$pointer;
         $pointer+=$length;
         
+        if($pointer>=strlen($text))break;                                       //Might have gone ahead with the last step.
+        
         if(substr($text,$pointer,1)==' '){                                      //Neat, we're on a space, so just break here.
             $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
-            $pointer+=1;
         }else{
             $npointer=strrpos($text,' ',$pointer-strlen($text));                //Find the last position of a space...
             if($npointer!==FALSE&&$npointer>$lastfound){                        //if it's within our step, break there
                 $text=substr($text,0,$npointer)."\n".substr($text,$npointer);
-                $pointer=$npointer+1;
             }else{                                                              //else just break apart the word we're currently
                 $text=substr($text,0,$pointer)."-\n".substr($text,$pointer);    //standing in.
-                $pointer+=2;
             }
         }
     }
