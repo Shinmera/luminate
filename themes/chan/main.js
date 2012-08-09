@@ -29,7 +29,7 @@ function updateThread(){
                     curposts = post_ids.split(";");
                     allposts = data.split(";");
                     post_ids=data;
-                    addMissingPosts(curposts.length-allposts.length);
+                    addMissingPosts(allposts.length-curposts.length);
                     document.title = "("+(allposts.length-curposts.length)+") "+origtitle;
                 }else{
                     post_ids=data;
