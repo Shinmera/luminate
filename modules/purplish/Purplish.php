@@ -1,4 +1,10 @@
 <?
+//TODO: Add API for privilege check
+//TODO: Add automatic inclusion of deleted posts for mods although with special class: deleted
+//TODO: Add admin delete reason options for akismet tuning
+//FIXME: IE javascript css options readout
+//FIXME: IE markup buttons
+
 class Purplish{
 public static $name="Chan";
 public static $author="NexT";
