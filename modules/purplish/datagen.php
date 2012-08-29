@@ -159,7 +159,6 @@ class DataGenerator{
         if(!$k->updateTimestamp('chan_post',$c->o['chan_posttimeout']))
             throw new Exception("Please wait ".$c->o['chan_posttimeout']." seconds between posts.");
 
-        //CHECK FOR POST EMPTINESS
         $thread=(int)$_POST['varthread'];
         $file=$_FILES['varfile'];
         $boardid=(int)$_POST['varboard'];
@@ -171,6 +170,7 @@ class DataGenerator{
         if(!is_array($options))$options=array();
         $text=trim($_POST['vartext']);
         
+        //CHECK FOR POST EMPTINESS
         if($file['tmp_name']==""&&trim(str_replace("\n",'',$text))=="")throw new Exception("File or text required.");
         if($c->o['chan_postlength']>0&&strlen($text)>$c->o['chan_postlength'])throw new Exception("Sorry, your text is too long. Please shorten it to ".$c->o['chan_postlength']." characters.");
         if($file['error'] !== UPLOAD_ERR_OK && $file['error'] !== UPLOAD_ERR_NO_FILE && $file['error'] != "")throw new Exception("File upload failed. (ERR".$file['error'].")");
@@ -278,10 +278,10 @@ class DataGenerator{
 
         //UPDATE THREAD
         if($thread!=0){
-            $tpost = DataModel::getData('ch_posts',"SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? AND PID=0 LIMIT 1", array($thread,$board->boardID));
-            if(strpos($tpost->options,"e")===FALSE&&!in_array("sage",$mail)){
-                $posts = $c->getData("SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?",array($thread,$board->boardID,'d'));
-                if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.="e";
+            $tpost = DataModel::getData('ch_posts','SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? AND PID=0 LIMIT 1', array($thread,$board->boardID));
+            if(strpos($tpost->options,'e')===FALSE&&!in_array("sage",$mail)){
+                $posts = $c->getData('SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?',array($thread,$board->boardID,'d'));
+                if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.='e';
                 $tpost->bumptime=time();
                 $tpost->saveData();
             }
