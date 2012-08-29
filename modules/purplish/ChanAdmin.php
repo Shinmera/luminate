@@ -24,7 +24,7 @@ function display(){
 
 function displayPanel(){
     global $k,$a;
-    if($a->check('chan.admin.*')){
+    if($a->check('chan.admin.*')||$a->check('chan.mod.*')){
         ?><li>Purplish
             <ul class="menu">
                 <a href="<?=$k->url("admin","Chan/")?>"><li>Overview</li></a>
