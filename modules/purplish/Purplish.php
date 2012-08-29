@@ -25,7 +25,7 @@ function displayPage(){
                 if($board==null||$thread==null)die();
                 if($thread->PID==0)$thread->PID=$params[2];
 
-                header('Location: '.Toolkit::url("chan",$board[0]['folder'].'/threads/'.$thread->PID.'.php'));
+                header('Location: '.Toolkit::url("chan",$board->folder.'/threads/'.$thread->PID.'.php'));
                 break;
             case '':
                 include(PAGEPATH.'chan/chan_frontpage.php');
