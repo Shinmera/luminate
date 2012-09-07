@@ -19,8 +19,8 @@ function displayPage(){
     if($c->o['chan_online']=='1'||$a->check('chan.admin.*')){
         switch(trim($params[0])){
             case 'byID':
-                $board = DataModel::getData('',"SELECT folder FROM ch_boards WHERE boardID=? OR folder LIKE ?",array($params[1],$params[1]));
-                $thread = DataModel::getData('',"SELECT PID FROM ch_posts WHERE postID=?",array($params[2]));
+                $board = DataModel::getData('',"SELECT boardID,folder FROM ch_boards WHERE boardID=? OR folder LIKE ? LIMIT 1",array($params[1],$params[1]));
+                $thread = DataModel::getData('',"SELECT PID FROM ch_posts WHERE postID=? AND BID=? LIMIT 1",array($params[2],$board->boardID));
 
                 if($board==null||$thread==null)die();
                 if($thread->PID==0)$thread->PID=$params[2];
