@@ -318,27 +318,10 @@ public static function pager($base,$max,$current=0,$step=25,$return=false){
     if($max==0)$max=1;
     if($step==0)$step=25;
     if($current<0)$current*=-1;
-    if($max/$step<15){
-        for($i=0;$i<$max;$i+=$step){
-            if($i/$step==$current) $ret.="<span class='pager_current'>".($i/$step+1)."</span> ";
-            else $ret.="<a href='".$base."".($i/$step)."'>".($i/$step+1)."</a> ";
-        }
-    }else{
-        if($current<5||$current>($max/$step)-5){
-            for($i=0;$i<5;$i+=$step){
-                $ret.="<a href='".$base."".($i/$step)."'>".($i/$step+1)."</a> ";
-            }
-        }else{
-            for($i=$current-2;$i<$current+2;$i+=$step){
-                $ret.="<a href='".$base."".($i/$step)."'>".($i/$step+1)."</a> ";
-            }
-        }echo("... ");
-        for($i=$max-5;$i<$max;$i+=$step){
-            if($i/$step+1==$current) $ret.="<span class='pager_current'>".($i/$step+1)."</span> ";
-            $ret.="<a href='".$base."".($i/$step)."'>".($i/$ste+1)."</a> ";
-        }
+    for($i=0;$i<$max;$i+=$step){
+        if($i/$step==$current) $ret.="<span class='pager_current'>".($i/$step+1)."</span> ";
+        else $ret.="<a href='".$base."".($i/$step)."'>".($i/$step+1)."</a> ";
     }
-    $ret.="</div>";
     if($return)return $ret;else echo($ret);
 }
 
