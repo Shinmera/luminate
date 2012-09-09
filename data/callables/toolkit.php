@@ -335,7 +335,7 @@ public static function pager($base,$max,$current=0,$step=25,$return=false){
         }echo("... ");
         for($i=$max-5;$i<$max;$i+=$step){
             if($i/$step+1==$current) $ret.="<span class='pager_current'>".($i/$step+1)."</span> ";
-            $ret.="<a href='".$base."".($i/$step)."'>".($i/$ste+1)."</a> ";
+            $ret.="<a href='".$base."".($i/$step)."'>".($i/$step+1)."</a> ";
         }
     }
     $ret.="</div>";
