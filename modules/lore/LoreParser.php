@@ -17,7 +17,7 @@ public static $hooks=array("foo");
         $text = $args['text'];
         
         $text = preg_replace_callback('`\[([\w_-]*)\]`is',             array(&$this,'pageCallback'),       $text);
-        $text = preg_replace_callback('`\[([\w_-]*)\|([.+?]*)\]`is',array(&$this,'pageCallback'),       $text);
+        $text = preg_replace_callback('`\[([\w_-]*)\|(.+?)\]`is',array(&$this,'pageCallback'),       $text);
         
         $text = preg_replace_callback('`\#\!category:([\w_-]*)`is',    array(&$this,'categoryCallback'),   $text);
         $text = preg_replace_callback('`\#\!portal:([\w_-]*)`is',      array(&$this,'portalCallback'),     $text);
