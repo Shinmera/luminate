@@ -9,8 +9,9 @@ public static $hooks=array("foo");
 function runTests(){
     global $c,$l,$k,$t;
 
-    $up = $l->loadModule("LightUpStream");
-    
+    include(MODULEPATH.'lightupstream/LightUpStream.php');
+    $up = new LightUpStream();
+    $RESULT = $up->deparse(array('text'=>$_POST['INP'],'formatted'=>true))['text'];
 
     ?><style>
         form textarea,form input,form label,#out label,#out>div{width:500px;display: inline-block;}
@@ -29,7 +30,7 @@ function runTests(){
         <label>Compiled Code</label>
         <label>Resulting Formatted Text</label><br />
         <div id="fem-output"><pre><?=$CODE?></pre>&nbsp;</div>
-        <div id="inp-output"><pre><?=$RESULT?></pre>&nbsp;</div>
+        <div id="inp-output"><pre><?=htmlspecialchars($RESULT)?></pre>&nbsp;</div>
     </div>
     <?
     
