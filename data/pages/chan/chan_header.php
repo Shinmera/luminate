@@ -14,6 +14,7 @@
     <? } ?>
     <? if(strpos($board->defaultTheme,".css")==FALSE)$board->defaultTheme=$c->o['chan_theme']; ?>
     <? global $DYNSTYLE;$DYNSTYLE=PROOT."themes/chan/css/".$board->defaultTheme; ?>
+    <? global $FAVICON;$FAVICON=IMAGEPATH."chan/favicon.png"; ?>
     <? include(PAGEPATH.'global_header.php'); ?>
     <script type="text/javascript">
         if($.cookie("chan2_style")!=null){
