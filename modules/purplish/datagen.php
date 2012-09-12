@@ -171,6 +171,7 @@ class DataGenerator{
         $text=trim($_POST['vartext']);
         
         //CHECK FOR POST EMPTINESS
+        if($_POST['email']!="")throw new Exception("Fields are filled incorrectly.");
         if($file['tmp_name']==""&&trim(str_replace("\n",'',$text))=="")throw new Exception("File or text required.");
         if($c->o['chan_postlength']>0&&strlen($text)>$c->o['chan_postlength'])throw new Exception("Sorry, your text is too long. Please shorten it to ".$c->o['chan_postlength']." characters.");
         if($file['error'] !== UPLOAD_ERR_OK && $file['error'] !== UPLOAD_ERR_NO_FILE && $file['error'] != "")throw new Exception("File upload failed. (ERR".$file['error'].")");

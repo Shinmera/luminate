@@ -87,6 +87,8 @@
                         <input type="text" name="varname" id="varname" placeholder="name#tripcode#secure#add" />
                     <? } ?>
                     <input type="text" name="varmail" id="varmail" placeholder="email#sage#noko" />
+                    <input type="text" name="email" id="email" placeholder="should not be filled out" />
+                    <style>input#email{display:none}</style>
                 </div>
                 <div>
                     <input type="text" name="vartitle" id="vartitle" placeholder="title" /><input type="submit" name="varsubmit" id="varsubmit" value="Post" />
