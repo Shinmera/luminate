@@ -1,4 +1,4 @@
-<? global $c,$t,$PAGETITLE,$NO_BUFFER,$DYNSTYLE; ?>
+<? global $c,$t,$PAGETITLE,$NO_BUFFER,$DYNSTYLE,$FAVICON; ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -12,7 +12,7 @@
     
     }?>
     <link rel='stylesheet' type='text/css' href='<?=$DYNSTYLE?>' id='dynstyle' />
-    <link rel="icon" type="image/png" href="<?=DATAPATH?>images/favicon.png" />
+    <link rel="icon" type="image/png" href="<?=$FAVICON?>" />
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
