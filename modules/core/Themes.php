@@ -47,6 +47,7 @@ function loadTheme($themename,$override=true){
         if($key=="description")$this->tdescription=$value;
         if($key=="header")$this->headerf=$value;
         if($key=="footer")$this->footerf=$value;
+        if($key=="favicon")$this->favicon=THEMEPATH.$themename."/".$value;
     }
 }
 
