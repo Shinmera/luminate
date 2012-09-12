@@ -30,10 +30,11 @@
     <? $l->triggerHook('header','Purplish',array($title,$board,$thread)); ?>
 
     <ul class="menu sf-menu" id="menu">
-        <li><a href="<?=PROOT?>" class="menulink">TyNET</a>
+        <li><a href="<?=$k->url("www")?>" class="menulink">TyNET</a>
             <?=$t->printMenu();?>
         </li>
-        
+        <li><a href="<?=PROOT?>"><?=$c->o['chan_title']?></a></li>
+        <li class="separator2">&nbsp;</li>
         <? $boards = DataModel::getData('','SELECT boardID,title,folder FROM ch_boards');
         $cats = DataModel::getData('','SELECT `order` FROM ch_categories');
         Toolkit::assureArray($boards);Toolkit::assureArray($cats);
