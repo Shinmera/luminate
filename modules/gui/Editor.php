@@ -111,8 +111,8 @@ class SimpleEditor extends Editor{
                     if($(this).attr("value")=="Preview"){
                         $("#<?=$this->formname?>txt").css({display:"none"});
                         $("#preview").css({display:"inline-block",
-                                           width:$("#<?=$this->formname?> textarea").width()+"px",
-                                           height:$("#<?=$this->formname?> textarea").height()+"px"});
+                                           width: $("#<?=$this->formname?> #<?=$this->formname?>txt").width()+"px",
+                                           height:$("#<?=$this->formname?> #<?=$this->formname?>txt").height()+"px"});
                         $("#preview").html("Please wait...");
                         
                         $.post("<?=PROOT?>api/<?=$this->apiUrl?>", $("#<?=$this->formname?>").serialize(), function(data){
