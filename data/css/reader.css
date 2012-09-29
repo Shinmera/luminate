@@ -137,6 +137,7 @@
     padding-top:2px;
     text-align:center;
     vertical-align: text-top;
+    cursor: pointer;
 }
 #article #articleButtons #fontLarger{font-size:16pt;}
 #article #articleButtons #fontSmaller{font-size:10pt;}
