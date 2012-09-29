@@ -122,6 +122,7 @@ public static $hooks=array("foo");
         $this->loadCode();
         
         $s = &$args['text'];
+        $s = $s."\n";
         $s = $this->fixslashes($s);
         if($args['allowRaw']) $s = preg_replace_callback("`html\{(.+?)\}html`is",array(&$this, 'reparseHTML'), $s);
         if($args['formatted']){
@@ -133,7 +134,7 @@ public static $hooks=array("foo");
         $s = preg_replace( '`(?<![\{\}"\'/>])\b(?:(?:https?|ftp|file)://|www\.|ftp\.)[-A-Z0-9+&@#/%=~_|$?!:,.]*[A-Z0-9+&@#/%=~_|$]`is',
                            '<a href="\0" target="_blank">\0'.$c->o['link_symbol'].'</a>', $s );
         $s = preg_replace( '`@([-A-Z0-9._-]*)`is', '<a href="'.Toolkit::url("user","").'\1" target="_blank">@\1</a>',$s);
-        $s = str_ireplace("\n","<br />",$s);
+        $s = '<p>'.str_ireplace("\n","</p><p>",trim($s)).'</p>';
         $args['text']=$s;
         return $args;
     }
