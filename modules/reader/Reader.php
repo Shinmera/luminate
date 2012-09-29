@@ -112,7 +112,8 @@ function displayEntry($entryID){
             <ul id="articleButtons">
                 <li id="fontSmaller" title="Smaller font"><i class="icon-font"></i></li>
                 <li id="fontLarger" title="Larger font"><i class="icon-font"></i></li>
-                <li id="fontInvert" class="normal" title="Invert colours"><i class="icon-font"></i></li>
+                <li id="fontInvert" title="Invert colours"><i class="icon-font"></i></li>
+                <li id="sizeToggle" title="Change width"><i class="icon-resize-full"></i></li>
             </ul>
             <blockquote>
                 <?=$l->triggerPARSE('Reader',$entry->short);?><br />
@@ -134,11 +135,12 @@ function displayEntry($entryID){
                     $("#article blockquote").css("font-size",curSize*1.2 + "px");
                 });
                 $("#fontInvert").click(function(){
-                    if ($("#content").hasClass("invert")){
-                        $("#content").removeClass("invert");
-                    }else{
-                        $("#content").addClass("invert");
-                    }
+                    $("#content").toggleClass("invert");
+                });
+                $("#sizeToggle").click(function(){
+                    $("#article").toggleClass("fullEntry");
+                    $("#sizeToggle i").toggleClass("icon-resize-full");
+                    $("#sizeToggle i").toggleClass("icon-resize-small");
                 });
             });
         </script>
