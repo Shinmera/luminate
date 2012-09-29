@@ -38,7 +38,7 @@
 }
 
 #article{color: #000;border-bottom:none;font-size:12pt;}
-#article blockquote{margin-top:0;}
+#article blockquote{margin-top:0;padding-top: 15px;}
 #article blockquote img,#article blockquote iframe{
     float:none;
     border:none;
@@ -85,6 +85,8 @@
     font-family: Georgia,Serif;
     line-height: 120%;
     font-size: 12pt;
+    max-width: 800px;
+    margin: auto;
 }
 .entry:last-child{border-bottom:none;}
 
@@ -103,6 +105,7 @@
     background: #FFF;
     border-radius: 5px;
     box-shadow: 0px 0px 10px #CCC;
+    padding-right: 200px;
 }
 .entry blockquote img,.entry blockquote iframe{
     float:right;
@@ -113,11 +116,10 @@
 }
 
 .fullEntry{
-    max-width: 800px;
-    margin: auto;
+    max-width: none;
 }
 .fullEntry blockquote{
-    padding-right: 200px;
+    padding-right: 0;
 }
 
 #article{position:relative;}
