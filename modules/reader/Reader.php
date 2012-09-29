@@ -109,6 +109,11 @@ function displayEntry($entryID){
         </div>
         <?=$l->triggerHook('entryTop','Reader',$entry);?>
         <article id="article" class="entry fullEntry">
+            <ul id="articleButtons">
+                <li id="fontSmaller" title="Smaller font"><i class="icon-font"></i></li>
+                <li id="fontLarger" title="Larger font"><i class="icon-font"></i></li>
+                <li id="fontInvert" class="normal" title="Invert colours"><i class="icon-font"></i></li>
+            </ul>
             <blockquote>
                 <?=$l->triggerPARSE('Reader',$entry->short);?><br />
                 <?=$l->triggerPARSE('Reader',$entry->subject);?>
@@ -118,6 +123,25 @@ function displayEntry($entryID){
         <div id="blogfoot">
             <? $l->triggerHook('entryFoot','Reader',$entry); ?>
         </div>
+        <script type="text/javascript">
+            $(function(){
+                $("#fontSmaller").click(function(){
+                    curSize = $("#article blockquote").css("font-size").replace('px','').replace('pt','');
+                    $("#article blockquote").css("font-size",curSize*0.8 + "px");
+                });
+                $("#fontLarger").click(function(){
+                    curSize = $("#article blockquote").css("font-size").replace('px','').replace('pt','');
+                    $("#article blockquote").css("font-size",curSize*1.2 + "px");
+                });
+                $("#fontInvert").click(function(){
+                    if ($("#content").hasClass("invert")){
+                        $("#content").removeClass("invert");
+                    }else{
+                        $("#content").addClass("invert");
+                    }
+                });
+            });
+        </script>
         <?
     }
     $t->closePage();
