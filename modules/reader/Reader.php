@@ -26,8 +26,9 @@ function displayHead(){
     global $a,$params;
     ?><div id='pageNav'>
         <div style='display:inline-block'>
-            <a name="blog" />
-            <h1 class='sectionheader'>Blog</h1>
+            <a name="blog" href="<?=PROOT?>" >
+                <h1 class='sectionheader'>Blog</h1>
+            </a>
         </div>
         <div class='tabs'>
             <a href='<?=PROOT?>' class='tab <? if($params[0]==''||$params[0]=='p')echo('activated'); ?>'>Articles</a>
@@ -61,7 +62,7 @@ function displayHome(){
                                           ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s']);
     Toolkit::assureArray($entries);
     foreach($entries as $entry){ ?>
-        <article class="entry">
+        <article class="entry smallEntry">
             <div class="bloghead">
                 <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
                 <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
@@ -107,7 +108,7 @@ function displayEntry($entryID){
             <br style="clear:left;" />
         </div>
         <?=$l->triggerHook('entryTop','Reader',$entry);?>
-        <article id="article" class="entry">
+        <article id="article" class="entry fullEntry">
             <blockquote>
                 <?=$l->triggerPARSE('Reader',$entry->short);?><br />
                 <?=$l->triggerPARSE('Reader',$entry->subject);?>
@@ -234,11 +235,11 @@ function displayEdit($entryID){
                 $entry->time=time();
                 $entry->insertData();
                 $l->triggerPOST('Reader','Reader',$entry->FID,$entry->short,"",Toolkit::url('blog','p/'.$c->insertID()),$entry->title);
-                echo('<div class="success">Blog entry added!</div>');
+                echo('<div class="success"><a href="'.Toolkit::url('blog','p/'.$c->insertID()).'">Blog entry</a> added!</div><br />');
                 $new=false;
             }else{
                 $entry->saveData();
-                echo('<div class="success">Blog entry edited!</div>');
+                echo('<div class="success"><a href="'.Toolkit::url('blog','p/'.$entry->entryID).'">Blog entry</a> edited!</div><br />');
             }
         }
         if($_POST['action']=='Delete'&&!$new){
