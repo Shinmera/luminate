@@ -1,3 +1,4 @@
+<? if(!defined("INIT"))include("/var/www/TyNET/config.php"); ?>
 <? global $c,$l;
 $bans = DataModel::getData('ch_bans','SELECT * FROM ch_bans WHERE ip LIKE ? AND mute=0',array($_SERVER['REMOTE_ADDR']));
 $c->query('DELETE FROM ch_bans WHERE ip=? AND (time+period)<? AND period>0',array($_SERVER['REMOTE_ADDR'],time()));

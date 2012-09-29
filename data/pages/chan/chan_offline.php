@@ -1,3 +1,4 @@
+<? if(!defined("INIT"))include("/var/www/TyNET/config.php"); ?>
 <? global $c,$l;?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">

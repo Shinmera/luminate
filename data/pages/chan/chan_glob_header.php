@@ -1,3 +1,4 @@
+<? if(!defined("INIT"))include("/var/www/TyNET/config.php"); ?>
 <? $folder = opendir(ROOT.IMAGEPATH.'chan/headers/');
 $banners = array();
 while(($file=readdir($folder))!==FALSE){

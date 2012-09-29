@@ -1,3 +1,4 @@
+<? if(!defined("INIT"))include("/var/www/TyNET/config.php"); ?>
 <? header('HTTP/1.0 404 Not Found'); ?>
 <? global $c,$l;?>
 <!DOCTYPE html>

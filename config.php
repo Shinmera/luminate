@@ -7,8 +7,8 @@ define("INIT",TRUE);
 //define("HOST","linuz.com");
 if(substr_count($_SERVER['SERVER_NAME'],'.')==1)define("HOST",$_SERVER['SERVER_NAME']);
 else                                            define("HOST",substr($_SERVER['SERVER_NAME'],strpos($_SERVER['SERVER_NAME'],'.')+1));
-define("ROOT","/var/www");
-define("PROOT","/Luminate/");
+define("ROOT","/var/www/TyNET");
+define("PROOT","/");
 define("TROOT",ROOT.PROOT);
 define("NODOMAIN","http://".HOST.PROOT);
 //shortcuts
