@@ -62,7 +62,7 @@ function displayHome(){
                                           ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s']);
     Toolkit::assureArray($entries);
     foreach($entries as $entry){ ?>
-        <article class="entry smallEntry">
+        <article class="entry fullEntry">
             <div class="bloghead">
                 <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
                 <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
@@ -165,7 +165,7 @@ function displayFolder($folderID){
                                               GROUP BY folderID ORDER BY title DESC');
         Toolkit::assureArray($folders);
         foreach($folders as $folder){ ?>
-            <article class="entry">
+            <article class="entry fullEntry">
                 <div class="bloghead">
                     <h2><a href="<?=PROOT.'f/'.$folder->folderID.'-'.Toolkit::makeUrlReady($folder->title)?>"><?=$folder->title?></a></h2>
                     ( <?=$folder->count?> entries )<br />
@@ -207,7 +207,7 @@ function displayFolder($folderID){
                                                 LIMIT '.$_GET['f'].','.$_GET['s'],array($folderID));
             Toolkit::assureArray($entries);
             foreach($entries as $entry){ ?>
-                <article class="entry">
+                <article class="entry fullEntry">
                     <div class="bloghead">
                         <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
                         <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
