@@ -19,10 +19,11 @@
 
 
 #bloghead{
+    max-width: 800px;
+    margin: auto;
     height:85px;
     z-index:20;
     position:relative;
-    top:-20px;
     font-family: Georgia,Serif;
 }
 
