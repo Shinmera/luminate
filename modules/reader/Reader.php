@@ -108,7 +108,7 @@ function displayEntry($entryID){
             <br style="clear:left;" />
         </div>
         <?=$l->triggerHook('entryTop','Reader',$entry);?>
-        <article id="article" class="entry fullEntry">
+        <article id="article" class="entry">
             <ul id="articleButtons">
                 <li id="fontSmaller" title="Smaller font"><i class="icon-font"></i></li>
                 <li id="fontLarger" title="Larger font"><i class="icon-font"></i></li>
