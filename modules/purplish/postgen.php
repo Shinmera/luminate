@@ -79,7 +79,7 @@ class PostGenerator{
                             <img class="postImage" alt="<?=$post->fileorig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
                         </a>
                     <? }
-                    $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($post->subject,120),  $post->BID, $folder, $tID);
+                    $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($post->subject,120)."\n",  $post->BID, $folder, $tID);
                     if(strpos($post->options,"p")!==FALSE)$temp=$l->triggerPARSE('Purplish',$temp,true,true,array(),array('suites'=>array('*','deftag')));
                     else                                  $temp=$l->triggerPARSE('Purplish',$temp);
                     $shorttemp=str_replace("\n",'<br />',Toolkit::limitLines(str_replace('<br />',"\n",$temp),$c->o['chan_maxlines']));
