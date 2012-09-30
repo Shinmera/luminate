@@ -89,6 +89,9 @@
     margin: auto;
 }
 .entry:last-child{border-bottom:none;}
+.entry.unpublished{
+    opacity: 0.5;
+}
 
 .entry .bloghead{
     min-height: 60px;
@@ -106,6 +109,7 @@
     border-radius: 5px;
     box-shadow: 0px 0px 10px #CCC;
     padding-right: 200px;
+    padding-left: 20px;
 }
 .entry blockquote img,.entry blockquote iframe{
     float:right;
@@ -144,6 +148,7 @@
 #article #articleButtons #fontLarger{font-size:16pt;}
 #article #articleButtons #fontSmaller{font-size:10pt;}
 #article #articleButtons #fontInvert{color:#FFF;background:#000;}
+#article #articleButtons #unpublished a{color:#FF0000;}
 #content.invert{
     background: #000;
     color: #FFF;
@@ -156,3 +161,4 @@
 #content.invert #article a,#content.invert #bloghead a{color: #FFFB00;}
 #content.invert #article #articleButtons li{background:#000; color: #FFF;}
 #content.invert #article #articleButtons #fontInvert{color:#000;background:#FFF;}
+#content.invert #article #articleButtons #unpublished a{color:#FF0000;}

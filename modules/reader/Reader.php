@@ -41,7 +41,7 @@ function displayHead(){
 }
 
 function displayHome(){
-    global $t,$l;
+    global $t,$l,$a;
     
     $max = DataModel::getData('','SELECT COUNT(entryID) AS max FROM bl_entries');
     Toolkit::sanitizePager($max->max,array(),'',10);
@@ -56,13 +56,18 @@ function displayHome(){
     </div>
     <?=$l->triggerHook('folderTop','Reader');?>
     
-    <? $entries = DataModel::getData('', 'SELECT b.*,f.title AS ftitle,u.displayname,u.filename FROM bl_entries as b
+
+    <? $userID = ($a->user!=null)? $a->user->userID : -1;
+    $entries = DataModel::getData('', 'SELECT b.*,f.title AS ftitle,u.displayname,u.filename 
+                                          FROM bl_entries as b
                                           LEFT JOIN bl_folders AS f ON FID=folderID 
                                           LEFT JOIN ud_users AS u ON owner=userID 
-                                          ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s']);
+                                          WHERE b.published=1 OR b.owner=?
+                                          ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s'],
+                                          array($userID));
     Toolkit::assureArray($entries);
     foreach($entries as $entry){ ?>
-        <article class="entry fullEntry">
+        <article class="entry fullEntry <?=($entry->published==1)? '' : 'unpublished'?>">
             <div class="bloghead">
                 <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
                 <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
@@ -86,11 +91,13 @@ function displayHome(){
 }
 
 function displayEntry($entryID){
-    global $t,$l;
+    global $t,$l,$a;
+    $userID = ($a->user!=null)? $a->user->userID : -1;
     $entry = DataModel::getData('','SELECT b.*,f.title AS ftitle,u.displayname,u.filename FROM bl_entries as b
                                     LEFT JOIN bl_folders AS f ON FID=folderID 
                                     LEFT JOIN ud_users AS u ON owner=userID
-                                    WHERE entryID=?',array($entryID));
+                                    WHERE entryID=? AND (b.published=1 OR b.owner=?)',
+                                    array($entryID,$userID));
     if($entry==null){
         $t->openPage('404 - Blog');
         $this->displayHead();
@@ -114,6 +121,11 @@ function displayEntry($entryID){
                 <li id="fontLarger" title="Larger font"><i class="icon-font"></i></li>
                 <li id="fontInvert" title="Invert colours"><i class="icon-font"></i></li>
                 <li id="sizeToggle" title="Change width"><i class="icon-resize-full"></i></li>
+                <? if($entry->published==0){ ?>
+                    <li id="unpublished" title="Publish article">
+                        <a href="<?=PROOT.'e/'.$entryID?>" class="icon-exclamation-sign"></a>
+                    </li>
+                <? } ?>
             </ul>
             <blockquote>
                 <?=$l->triggerPARSE('Reader',$entry->short);?><br />
@@ -150,7 +162,7 @@ function displayEntry($entryID){
 }
 
 function displayFolder($folderID){
-    global $t,$l;
+    global $t,$l,$a;
     if($folderID==-1){
         $t->openPage('Folders - Blog');
         $this->displayHead();
@@ -200,14 +212,16 @@ function displayFolder($folderID){
                 <br style="clear:left;" />
             </div>
             <?=$l->triggerHook('folderTop','Reader',$folder);?>
-            <? $entries = DataModel::getData('', 'SELECT b.*,f.title AS ftitle,u.displayname,u.filename FROM bl_entries as b
+            <? $userID = ($a->user!=null)? $a->user->userID : -1;
+            $entries = DataModel::getData('', 'SELECT b.*,f.title AS ftitle,u.displayname,u.filename FROM bl_entries as b
                                                 LEFT JOIN bl_folders AS f ON FID=folderID 
                                                 LEFT JOIN ud_users AS u ON owner=userID 
-                                                WHERE FID=? ORDER BY time DESC
-                                                LIMIT '.$_GET['f'].','.$_GET['s'],array($folderID));
+                                                WHERE FID=? AND (b.published=1 OR b.owner=?) 
+                                                ORDER BY time DESC LIMIT '.$_GET['f'].','.$_GET['s'],
+                                                array($folderID,$userID));
             Toolkit::assureArray($entries);
             foreach($entries as $entry){ ?>
-                <article class="entry fullEntry">
+                <article class="entry fullEntry <?=($entry->published==1)? '' : 'unpublished'?>">
                     <div class="bloghead">
                         <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
                         <h2><a href="<?=PROOT.'p/'.$entry->entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
@@ -256,6 +270,7 @@ function displayEdit($entryID){
             $entry->tags =implode(',',$_POST['tags']);
             $entry->short=$_POST['short'];
             $entry->subject=$_POST['text'];
+            $entry->published=$_POST['published'];
             if($new){
                 $entry->owner=$a->user->userID;
                 $entry->time=time();
@@ -285,6 +300,7 @@ function displayEdit($entryID){
         $editor->addTextField('title', 'Title', $entry->title,'text','required maxlength="128"','width:200px;');
         $editor->addDropDown('FID', $fIDs, $fLs, 'Folder', $entry->FID);
         $editor->addCustom('<label>Tags: </label>'.Toolkit::interactiveList('tags', array(), array(), explode(',',$entry->tags), true,true));
+        $editor->addCheckbox('published','Published','1',$entry->published);
         $editor->addCustom($l->triggerHookSequentially('editor','Reader'));
         $editor->addCustom('<label>Extract: </label><br /><textarea name="short">'.$entry->short.'</textarea>');
         $_POST['text']=$entry->subject;
@@ -324,7 +340,7 @@ function displayAdmin(){
 function displayAdminEntries(){
     global $l;
     $max = DataModel::getData('','SELECT COUNT(entryID) AS max FROM bl_entries');
-    Toolkit::sanitizePager($max->max,array('time','title','displayname','folder','tags'),'time');
+    Toolkit::sanitizePager($max->max,array('time','title','displayname','folder','published','tags'),'time');
     $entries = DataModel::getData('', 'SELECT b.*,f.title AS folder,u.displayname FROM bl_entries as b
                                        LEFT JOIN bl_folders AS f ON FID=folderID 
                                        LEFT JOIN ud_users AS u ON owner=userID
@@ -341,6 +357,7 @@ function displayAdminEntries(){
                     <th style="width:200px"><a href="?o=tags&a=<?=!$_GET['a']?>">Tags</a></th>
                     <th style="width:80px"><a href="?o=displayname&a=<?=!$_GET['a']?>">Owner</a></th>
                     <th style="width:80px"><a href="?o=time&a=<?=!$_GET['a']?>">Time</a></th>
+                    <th style="width:20px"><a href="?o=published&a=<?=!$_GET['a']?>">Publ</a></th>
                     <th style="width:20px"></th>
                 </tr>
             </thead>
@@ -353,6 +370,7 @@ function displayAdminEntries(){
                         <td><?=$entry->tags?></td>
                         <td><?=$entry->displayname?></td>
                         <td><?=Toolkit::toDate($entry->time)?></td>
+                        <td><?=$entry->published?></td>
                         <td><a href="<?=Toolkit::url('blog','e/'.$entry->entryID)?>" class="button">Edit</a></td>
                     </tr>
                 <? } ?>
