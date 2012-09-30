@@ -78,3 +78,16 @@ hr{
     text-align:center;
     color:#AAA;
 }
+
+.browsericon{
+    width: 70px;
+    height: 70px;
+    content: "";
+    background-image: url("/data/images/icons/browser-logos.png");
+    background-repeat: no-repeat no-repeat;
+}
+.browsericon.chrome{background-position: -3px 0px;}
+.browsericon.firefox{background-position: -75px 0px;}
+.browsericon.opera{background-position: -145px 0px;}
+.browsericon.safari{background-position: -215px 0px;}
+.browsericon.ie{background-position: -285px 0px;}
