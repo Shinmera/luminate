@@ -240,7 +240,7 @@ RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . /Luminate/decoder.php [L]
+RewriteRule . /TyNET/decoder.php [L]
 AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
 AddType 'text/html; charset=UTF-8' html
 AddType 'text/javascript; charset=UTF-8' js
