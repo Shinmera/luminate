@@ -232,17 +232,24 @@ function displayControlPanelHeader(){
 }
 
 function displayControlPanelPage(){
-    global $a,$l,$params,$MODULECACHE;
-    
+    //@TODO: Implement a proper standard for calling modules for pages.
+    //@NOTE: The way it is done now makes setting cookies impossible in non-buffered systems.
+    global $a,$l,$t,$params,$MODULECACHE;
     if($a->check("user.profile")){
         include(MODULEPATH.$MODULECACHE['Neon_Private']);
         switch($params[1]){
+            case '':
             case 'Profile':displayControlPanelProfile();break;
             case 'Friends':displayControlPanelFriends();break;
-            default:       $l->triggerHook('SETTINGS'.$params[1],"User");break;
+            default:
+                $t->openPage($params[1]);
+                $this->displayControlPanelHeader();
+                $l->triggerHook('SETTINGS'.$params[1],"User");
+                break;
+                $t->closePage();
         } 
     }else{
-        echo(NO_ACCESS);
+        include(PAGEPATH.'403.php');
     }
 }
 
