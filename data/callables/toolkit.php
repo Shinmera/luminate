@@ -617,6 +617,18 @@ public static function autoBreakLines($text,$length=100){
         
         if($pointer>=strlen($text))break;                                       //Might have gone ahead with the last step.
         
+        $lastopen = strpos($text,"<",$lastfound);                               //Note this code calls cthulu from the dephts of the
+        $lastclose= strpos($text,">",$lastfound);                               //HTML domains. It is not able to handle complex HTML.
+                                                                                //Thou hath been warned. Also, @FIXME I guess.
+        if($lastopen === FALSE || $lastclose === FALSE){                        //No more tag to match, so assuming incorrect 
+                                                                                //formatting.
+        }else if($lastopen<$pointer && $lastclose>$pointer){                    //We landed inside a tag.
+            $pointer = $lastclose+1;                                            //Skip ahead of it.
+            $text = substr($text,0,$pointer)." ".substr($text,$pointer);
+        }else if($lastopen<$pointer && $lastclose<$pointer){
+            $pointer += $lastclose-$lastopen;                                   //Compensate for invisible tag.
+        }
+
         if(substr($text,$pointer,1)==' '){                                      //Neat, we're on a space, so just break here.
             $text=substr($text,0,$pointer)."\n".substr($text,$pointer+1);
         }else{
