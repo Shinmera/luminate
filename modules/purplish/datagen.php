@@ -383,7 +383,7 @@ class DataGenerator{
         $s = preg_replace_callback('`(&gt;){2,4}/?((\w+/|[0-9])([0-9]+|([a-zA-Z]+)(/[0-9]*)?)?)`s', array(&$this,'parseReference'), $s);
         $s = preg_replace('/^(&gt;[^>](.*))\n/m', '<span class="quoteLine">\\1</span>'."\n", $s);
         
-        $s=str_ireplace("\n","<br />",$s);
+        //$s=str_ireplace("\n","<br />",$s);
         return $s;
     }
     
