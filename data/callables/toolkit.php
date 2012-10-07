@@ -604,7 +604,7 @@ public static function stringToVarKey($s,$delim1=";",$delim2="="){
 }
 
 public static function autoBreakLines($text,$length=100){
-    $lastfound = 0;$pointer=0;
+    $pointer=0;
     while(true){                                                                //No need to do a check here anyway, saves some operation time.
         $nline=-1;
         while($nline!==FALSE){                                                  //As long as there are newlines in the steps, skip to them.
@@ -618,7 +618,7 @@ public static function autoBreakLines($text,$length=100){
         if($pointer>=strlen($text))break;                                       //Might have gone ahead with the last step.
         
         $lastopen = strpos($text,"<",$lastfound);                               //Note this code calls cthulu from the dephts of the
-        $lastclose= strpos($text,">",$lastfound);                               //HTML domains. It is not able to handle complex HTML.
+        $lastclose= strpos($text,">",$lastopen);                                //HTML domains. It is not able to handle complex HTML.
                                                                                 //Thou hath been warned. Also, @FIXME I guess.
         if($lastopen === FALSE || $lastclose === FALSE){                        //No more tag to match, so assuming incorrect 
                                                                                 //formatting.
@@ -627,6 +627,14 @@ public static function autoBreakLines($text,$length=100){
             $text = substr($text,0,$pointer)." ".substr($text,$pointer);
         }else if($lastopen<$pointer && $lastclose<$pointer){
             $pointer += $lastclose-$lastopen;                                   //Compensate for invisible tag.
+            $nextopen = strrpos($text,"<",$pointer-strlen($text));
+            $nextclose = strpos($text,">",$nextopen);
+            if($nextopen<$pointer && $nextclose>$pointer){                      //We might have jumped into yet another tag!
+                $pointer=$nextclose+1;                                          //Fix.
+                $text = substr($text,0,$pointer)." ".substr($text,$pointer);
+            }
+        }else if($lastclose<$lastopen){
+            $pointer = $lastclose + 1;
         }
 
         if(substr($text,$pointer,1)==' '){                                      //Neat, we're on a space, so just break here.
