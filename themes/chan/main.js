@@ -390,7 +390,7 @@ function customizePost(post){
         return false;
     });
     
-    if(options.indexOf('p')!=-1){
+    if(options.indexOf('p')!=-1 && !$(".postImage",post).hasClass("spoilerimg")){
         if(options.indexOf('b')!=-1){console.log('[POST]['+post.data('postid')+'] Adding image hovering');}
         $(".postImage",post).mousemove(function(e){
             var newpath=$(this).attr("src").replace("thumbs","files");

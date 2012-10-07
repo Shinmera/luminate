@@ -74,12 +74,13 @@ class PostGenerator{
                         <span class="fileDimensions"><?=$post->filedim?></span> 
                     <? } ?>
                 </div><div class="postContent">
-                    <? if($post->file!=""){ ?>
+                    <? if($post->file!=""){ 
+                        if(strpos($post->options,'w') !== FALSE || strpos($post->options,'r') !== FALSE)$classes.="spoilerimg";?>
                         <a class="postImageLink" title="<?=$post->fileorig?>" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>">
-                            <img class="postImage" alt="<?=$post->fileorig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
+                            <img class="postImage <?=$classes?>" alt="<?=$post->fileorig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
                         </a>
                     <? }
-                    $temp=$datagen->parseQuotes(Toolkit::autoBreakLines($post->subject,120)."\n",  $post->BID, $folder, $tID);
+                    $temp=Toolkit::autoBreakLines($datagen->parseQuotes($post->subject."\n",  $post->BID, $folder, $tID), 120);
                     if(strpos($post->options,"p")!==FALSE)$temp=$l->triggerPARSE('Purplish',$temp,true,true,array(),array('suites'=>array('*','deftag')));
                     else                                  $temp=$l->triggerPARSE('Purplish',$temp);
                     $shorttemp=str_replace("\n",'<br />',Toolkit::limitLines(str_replace('<br />',"\n",$temp),$c->o['chan_maxlines']));
