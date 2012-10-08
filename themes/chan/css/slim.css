@@ -17,7 +17,7 @@ input[type="checkbox"]:checked{
     background:#FFEE00;box-shadow: 0 0 10px #FFEE00;
 }
 hr{border:none;border-bottom: 1px solid #FFF;box-shadow: 0 0 5px #FFF;}
-options{content: "{'postbox':{'draggable':false,'resizable':false},'threadwatch':{'draggable':false,'resizable':false},'post':{'filenamelimit':true}}";}
+options{content: "{'postbox':{'draggable':false,'resizable':true},'threadwatch':{'draggable':false,'resizable':false},'layout':{'orientation':'right','adapt':['#boardForm','#menu'],'sync':['#postBox','.boardTitle','#threadWatch','#pageBanner']}}";}
 
 html,body{
     background: #000 url("../images/blockbg.jpg");
@@ -110,6 +110,13 @@ a.directQuote{
     padding:0;margin:0;
 }
 .toolbar li{display:inline-block;}
+.postBox .ui-wrapper{padding:0 !important;}
+.ui-resizable-handle{min-width:10px;min-height:10px;}
+.ui-resizable-s{bottom:-3px !important;}
+.ui-resizable-e{right:-3px !important;}
+.ui-resizable-w{left:-3px !important;}
+.ui-resizable-sw{bottom:-3px !important;left:-3px !important;}
+.ui-resizable-se{bottom:-3px !important;right:-3px !important;}
 
 .threadWatch{
     background: rgba(0,0,0,0.5);
@@ -357,8 +364,9 @@ a.omittedText:hover{opacity:1;}
     margin:0px;
     padding:0px;
     z-index:20;
-    top:0px;left:0px;right:300px;
+    top:0px;left:0px;right:0px;
     box-shadow: 0 0 20px #FFEE00;
+    margin-right:300px;
 }
 .menu a{color:#FFF;}
 .menu li{background: #000;}
