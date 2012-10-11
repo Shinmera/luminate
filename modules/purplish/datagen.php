@@ -39,7 +39,7 @@ class DataGenerator{
         //Modify old post and save data.
         $post->postID = $threadID;
         $post->BID = $old->boardID;
-        $post->options = ",l,r";
+        $post->options = ",l,z";
         $post->subject = 'This thread has been moved to >>'.$new->folder.'/'.$newID;
         $post->saveData();
         
