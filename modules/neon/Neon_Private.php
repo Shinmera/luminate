@@ -47,6 +47,9 @@ function displayControlPanelProfile(){
             $u->updateUserFields($a->user->userID,$_POST);
             $err[8]="Profile settings saved.";
             break;
+        default:
+            $l->triggerHook($_POST['action']."Save","Neon");
+            break;
     }
     
     $t->openPage('Profile Settings');
@@ -76,11 +79,13 @@ function displayControlPanelProfile(){
                 echo('<br />');
             }
             ?>
+            <input type="hidden" name="tab" value="Profile" />
             <input type="submit" name="action" value="Update Profile" /><?=$err[8]?>
         </form>
         <form action="#" method="post" enctype="multipart/form-data" name="Avatar">
             <img src="<?=AVATARPATH.$a->user->filename?>" alt="Avatar" title="Your avatar image" /><br />
             <input type="file" name="avatar" accept="image/*" /><?=$err[6]?>
+            <input type="hidden" name="tab" value="Avatar" />
             <input type="submit" name="action" value="Update Avatar" /><?=$err[7]?><br />
             <span class="small">
                 Maximum filesize is <?=$c->o['avatar_maxsize']?>kb.
@@ -91,15 +96,27 @@ function displayControlPanelProfile(){
             <label>Username</label><input type="text" name="displayname" value="<?=$a->user->username?>" disabled="disabled" /><br />
             <label>Displayname</label><input type="text" name="displayname" value="<?=$a->user->displayname?>" /><?=$err[0]?><br />
             <label>E-Mail</label><input type="email" name="mail" value="<?=$a->user->mail?>" /><?=$err[1]?><br />
+            <input type="hidden" name="tab" value="Account" />
             <input type="submit" name="action" value="Update Account" /><?=$err[2]?>
         </form>
         <form action="#" method="post" name="Password">
             <label>New password:</label><input type="password" name="newpass" autocomplete="off" /><?=$err[3]?><br />
             <label>Repeat:</label><input type="password" name="newpassrepeat" autocomplete="off" /><?=$err[4]?><br />
+            <input type="hidden" name="tab" value="Password" />
             <input type="submit" name="action" value="Save Password" /><?=$err[5]?>
         </form>
+        <? $l->triggerHook("profileSettings","Neon"); ?>
         <div name="View Profile" href="<?=$k->url("user",$a->user->username);?>" ></div>
-    </div><?
+    </div>
+    <script type="text/javascript">
+        $(window).load(function(){
+            $(".tabBar li").each(function(){
+                if($(this).html() == "<?=$_POST['tab']?>"){
+                    $(this).click();
+                }
+            });
+        });
+    </script><?
     $t->closePage();
 }
 
