@@ -24,6 +24,7 @@ try{
     if($c->o['offline']==='1'&&$domain!='admin'&&
        strpos(TRUSTEDIPS,$_SERVER['REMOTE_ADDR'])===FALSE)$domain="offline";
     define('DOMAIN',$domain);
+    define('FULLURL',$domain.'.'.HOST.$_SERVER['REQUEST_URI']);
     
     $l->triggerHook('HIT'.DOMAIN,'CORE',array($params),array(),true);
     
