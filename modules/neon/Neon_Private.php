@@ -108,6 +108,7 @@ function displayControlPanelProfile(){
         <? $l->triggerHook("profileSettings","Neon"); ?>
         <div name="View Profile" href="<?=$k->url("user",$a->user->username);?>" ></div>
     </div>
+    <? if($_GET['tab']!="")$_POST['tab']=$_GET['tab']; ?>
     <script type="text/javascript">
         $(window).load(function(){
             $(".tabBar li").each(function(){
