@@ -9,12 +9,12 @@
             return $$short;
         }
         if($GLOBALS[$name::$short]!="")throw new Exception("Error globalizing '".$name::$name."': $".$name::$short." has already been defined!");
+        $this->loadDependencies($name);
         $m = new $name();
         
         if(count($m::$hooks)>0)$loadHooks=true;else $loadHooks=false;
         if($loadHooks)$this->loadHooks($m);
         $this->defineGlobally($m);
-        $this->loadDependencies($m);
         if($loadHooks)$this->triggerHook("INIT",$m,array($k->getMicrotime()));
         $MODULES[$name::$name]=$name::$short;
         return $m;
