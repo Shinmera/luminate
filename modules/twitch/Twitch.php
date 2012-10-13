@@ -121,7 +121,9 @@ function setUserAuth(){
 }
 
 function universalPostHook($args){
-    $this->apiTweet($args['toModule'].' \''.$args['postTitle'].'\': '.$args['permalink']);
+    try{
+        $this->apiTweet($args['toModule'].' \''.$args['postTitle'].'\': '.$args['permalink']);
+    }catch(Exception $e){}
 }
 
 function apiTweet($text=null){
