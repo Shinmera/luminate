@@ -1,0 +1,575 @@
+
+@charset "utf-8";
+.clear {
+    clear: both;
+}
+a:link {
+    color: #762222;
+    text-decoration:none;
+}
+a:visited {
+    color: #762222;
+}
+a:active {
+    color: #c33939;
+}
+a:hover {
+    color: #c33939;
+}
+IMG.flLeft {
+    float: left;
+    padding: 3px;
+}
+IMG.flRight {
+    float: right;
+    padding: 3px;
+}
+html, body {
+    background: #e1eade;
+    color: #000;
+    font-family: Arial,Monospace;
+    font-size: 10pt;
+}
+.spoiler {
+    border: 1px dotted #EEEEEE;
+}
+.sspoiler {
+    background: none repeat scroll 0 0 #000000;
+    color: #000000;
+}
+.content {
+    padding-top: 20px;
+}
+.boardTitle {
+    color: #6a8785;
+    display: block;
+    font-size: 36pt;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 0 0px #000000; !important
+}
+/*.boardTitle:hover {
+    color: #FF0000;
+    text-shadow: 0 0 5px #000000; !important
+}*/
+#pageBanner {
+    text-align: center;
+}
+.quote {
+    background-color: #222222;
+    border: 1px solid #000000;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 5px #000000; !important
+    color: #EEEEEE;
+    padding: 5px;
+}
+.quoteLine {
+    color: #415755;
+    text-shadow: none;
+}
+a.directQuote {
+    color: #762222;
+    text-decoration: none;
+}
+a.directQuote:hover {
+    color: #c33939;
+    text-decoration: none;
+}
+a.directQuote:visited {
+    color: #762222;
+    text-decoration: none;
+}
+.postBox {
+    background-color: #dab388;
+    border: 1px solid #897054;
+    border-radius: 0px 0px 0px 0px; !important
+    box-shadow: 0px 0px 10px #000000; !important
+    color: #000000;
+    display: inline-block;
+    opacity: 1;
+    padding: 5px;
+    position: absolute;
+    top: 50px;
+    z-index: 10;
+}
+.postBox:hover {
+    opacity: 1;
+}
+.postBox input {
+    background: #b4936e;
+    border: 1px solid #786148;
+    border-radius: 0px 0px 0px 0px;
+    color: #000;
+    font-size: 10pt;
+    height: 15px;
+    text-shadow: 0 0 0px #000000; !important
+}
+.postBox textarea {
+    background: #b4936e;
+    border: 1px solid #786148;
+    border-radius: 0 0 0px 0px;
+    color: #000000;
+}
+.postBox .eldesc {
+    float: left;
+    width: 100px;
+}
+.postBox #varname {
+    width: 125px;
+}
+.postBox #varmail {
+    width: 125px;
+}
+.postBox #varpass {
+    width: 260px;
+}
+.postBox #varfile {
+    height: 18px;
+    width: 260px;
+}
+.postBox #vartitle {
+    width: 300px;
+}
+.postBox #varsubmit {
+    height: 20px;
+    margin-top: 5px;
+    width: 60px;
+}
+.postBox #fulltext {
+    height: 70px;
+    width: 350px;
+}
+.postBox .tac {
+    font-size: 8pt;
+    margin-top: 10px;
+}
+.toolbar {
+    background: none repeat scroll 0 0 #000;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.toolbar li {
+    display: inline-block;
+}
+.threadWatch {
+    background-color: #89aca9;
+    border: 1px solid #3b4d4c;
+    border-radius: 0px 0px 0px 0px; !important
+    box-shadow: 0px 0px 10px #000000; !important
+    color: #000000;
+    display: none;
+    font-size: 8pt;
+    opacity: 1;
+    padding: 5px;
+    position: absolute;
+    top: 50px;
+    z-index: 10;
+}
+.threadWatch:hover {
+    opacity: 1;
+}
+.threadWatch a {
+    color: #fff;
+    text-decoration: none;
+}
+.threadWatch table {
+    border-spacing: 0;
+    margin: 0;
+    width: 100%;
+}
+.threadWatch table thead tr {
+    background-color: #000000;
+    color: #fff;
+    text-shadow: 0 0 0px #000; !important
+}
+.threadWatch table tbody tr:nth-child(2n) {
+    background-color: #7b9c99;
+}
+.threadWatch table tbody tr:nth-child(2n+1) {
+    background-color: #9cc2c0;
+}
+.threadWatch table tbody td {
+    border-right: 1px solid #000000;
+}
+.threadWatch table tbody td:nth-child(1) {
+    text-align: center;
+}
+.threadWatch table tbody td:nth-child(2) {
+    text-align: center;
+}
+.threadWatch table tbody td:nth-child(3) {
+    text-align: center;
+}
+.threadWatch table tbody td:nth-child(6) {
+    border: medium none;
+    text-align: center;
+}
+.watchButton {
+    font-size: 18pt;
+    text-decoration: none;
+}
+.watchDeleteButton:hover {
+    color: #FF0000;
+    text-shadow: 0 0 0px #000; !important
+}
+#watchClearButton {
+    bottom: 5px;
+    float: left;
+    left: 50px;
+    position: absolute;
+}
+#watchClearButton:hover {
+    color: #FF0000;
+    text-shadow: 0 0 0px #000; !important
+}
+#watchReadButton {
+    bottom: 5px;
+    float: left;
+    left: 30px;
+    position: absolute;
+}
+#watchReadButton:hover {
+    color: #00FF00;
+    text-shadow: 0 0 0px #000; !important
+}
+#watchRefreshButton {
+    bottom: 5px;
+    float: left;
+    font-weight: bold;
+    left: 10px;
+    position: absolute;
+}
+#watchRefreshButton:hover {
+    color: #FFD900;
+    text-shadow: 0 0 0px #000; !important
+}
+#watchRemoveCol {
+    width: 20px;
+}
+#watchBoardCol {
+    width: 40px;
+}
+#watchIDCol {
+    width: 30px;
+}
+#watchPosterCol {
+    width: 100px;
+}
+#watchUnreadCol {
+    width: 10px;
+}
+.watchNewPosts {
+    background: none repeat scroll 0 0 #c33939;
+    box-shadow: 0 0 0px #FF0000;
+    color: #000; !important
+    font-weight: bold;
+}
+.post, .postOP {
+    display: block;
+    padding: 2px;
+    position: relative;
+}
+.post {
+    background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    border-radius: 0px 0px 0px 0px;
+    display: table;
+    margin-left: 20px;
+    margin-top: 5px;
+    opacity: 1;
+}
+.postOP {
+    background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    border-radius: 0px 0px 0px 0px;
+    opacity: 1;
+    width: 99%;
+}
+#postType {
+    background: none repeat scroll 0 0 transparent;
+}
+#postType:after {
+    font-family: pixelated,Arial;
+    font-size: 20pt;
+    padding-right: 2px;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+    width: 250px;
+}
+#postType.locked:after {
+    background: -moz-linear-gradient(left center , rgba(255, 0, 0, 0) 0%, #FF0000 100%) repeat scroll 0 0 transparent;
+    content: "LOCKED";
+}
+#postType.sticky:after {
+    background: -moz-linear-gradient(left center , rgba(0, 255, 0, 0) 0%, #00FF00 100%) repeat scroll 0 0 transparent;
+    content: "STICKY";
+}
+#postType.stickylocked:after {
+    background: -moz-linear-gradient(left center , rgba(0, 0, 255, 0) 0%, #0000FF 100%) repeat scroll 0 0 transparent;
+    content: "INFO";
+    color: #fff;
+}
+#postType.redirect:after {
+    background: -moz-linear-gradient(left center , rgba(255, 255, 255, 0) 0%, #FFFFFF 100%) repeat scroll 0 0 transparent;
+    color: #000000;
+    content: "REDIRECT";
+}
+.selected {
+    background-color: #eeab41;
+    border-top: 1px solid #f8b54a;
+    border-left: 1px solid #f8b54a;
+    border-bottom: 1px solid #be8934;
+    border-right: 1px solid #be8934;
+    border-radius: 0px 0px 0px 0px;
+    box-shadow: 0 0 0px #000000;
+}
+.selected a, .selected .quoteLine, .selected .postMod {
+    /*color: #FFFFFF;*/
+    text-shadow: 0 0 0px #FFFFFF;
+}
+.postImage {
+    box-shadow: 0 0 5px #000000;
+    float: left;
+    margin: 5px;
+    max-height: 100%;
+    max-width: 100%;
+}
+.postTitle {
+    color: #4e5739;
+    font-size: 14pt;
+    font-weight: bold;
+}
+.postUsername, .postTripcode {
+    font-size: 10pt;
+}
+.postUsername {
+    color: #393e2f;
+    font-weight: bold;
+}
+.postTripcode {
+    color: #495945;
+}
+.postMod {
+    border-bottom: 2px dotted #c80707;
+    border-top: 2px dotted #c80707;
+    color: #c80707;
+
+}
+.postImage {
+    border-radius: 5px 0 5px 0;
+}
+#postType {
+    background: none repeat scroll 0 0 transparent;
+}
+a.omittedText, a.fetchPrevious, a.fetchNext {
+    color: #FF0000;
+    font-size: 10pt;
+    font-weight: bold;
+    margin: 2px;
+    padding: 2px;
+}
+.threadToolbar {
+    margin-bottom: 0;
+    margin-left: 0px;
+}
+.threadToolbar a {
+    background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    color: #000;
+    font-size: 12pt;
+    padding: 3px;
+    text-align: center;
+    text-decoration: none;
+}
+.threadToolbar a:hover {
+   background-color: #eeab41;
+    border-top: 1px solid #f8b54a;
+    border-left: 1px solid #f8b54a;
+    border-bottom: 1px solid #be8934;
+    border-right: 1px solid #be8934;
+}
+.buttons {
+}
+.buttons a {
+    background: -moz-linear-gradient(center top , #EEEEEE, #888888) repeat scroll 0 0 transparent;
+    border-left: 1px solid #EEEEEE;
+    border-right: 1px solid #EEEEEE;
+    color: #000000;
+    padding: 5px;
+    position: relative;
+    top: -4px;
+}
+.buttons a:hover {
+    background-color: #EEEEEE;
+}
+.deleteBox, .reportBox {
+    clear: right;
+    float: right;
+}
+.footer {
+    color: #000000;
+    font-size: 8pt;
+    margin-top: 10px;
+    text-align: center;
+}
+.popup, .jqmWindow {
+    background-color: #EEEEEE;
+    border: 1px solid black;
+    color: #333333;
+    display: none;
+    left: 50%;
+    margin-left: -300px;
+    padding: 12px;
+    position: fixed;
+    top: 17%;
+    width: 600px;
+}
+.jqmOverlay {
+    background-color: #000000;
+}
+.menu {
+    background-color: #85a9a6;
+    left: 0;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 20;
+}
+.menu a {
+    color: #000000;
+}
+.menu li {
+    background: none repeat scroll 0 0 #85a9a6;
+}
+.menu li a {
+    padding: 2px 10px;
+}
+.menu li a:hover {
+    background:#6a8785;
+    color: #ffffff;
+}
+.menu > li > ul {
+    margin-top: -16px;
+}
+.menu .separator, .menu .separator2 {
+    background: none repeat scroll 0 0 #000000;
+    width: 1px;
+}
+.menu > li > a.menulink {
+    background-color: #85a9a6;
+    color: #000000;
+    font-weight: bold;
+}
+.menu > li > a.menulink:hover {
+    background:#6a8785;
+}
+h1, h2, h3, h4, h5, h6 {
+    display: inline;
+    margin: 0;
+}
+.fullwidth {
+    width: 100%;
+}
+#content {
+    background-color: #dab388;
+    border-top: 1px solid #d9b185;
+    border-left: 1px solid #d9b185;
+    border-bottom: 1px solid #897054;
+    border-right: 1px solid #897054;
+    border-radius: 0px 0px 0 0;
+    border-top: 0px solid #FF0000;
+    margin-top: 50px;
+    position: relative;
+}
+#chanTitle {
+    background-color: #bfcbab;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    border-radius: 0px 0 0px 0;
+    color: #000000;
+    display: inline-block;
+    margin-top: 0;
+    padding: 2px 10px;
+    text-align: center;
+}
+#news {
+    border-radius: 0px 0 0 0;
+    margin-right: 310px;
+    min-height: 600px;
+    padding: 5px;
+    text-align: justify;
+}
+#news img {
+    max-width: 100%;
+}
+#news .box {
+     background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    display: inline-block;
+    margin: 2px;
+    min-height: 200px;
+    min-width: 32%;
+    padding: 3px;
+    position: relative;
+    text-align: justify;
+    vertical-align: text-top;
+}
+#news .stretch {
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    width: 100%;
+}
+#postSidebar {
+    background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    border-radius: 0 0px 0 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 300px;
+}
+#postSidebar h3 {
+    background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    border-radius: 0 0px 0 0;
+    text-indent: 5px;
+}
+#postSidebar .simplePost {
+    margin-top: 5px;
+}
+#postSidebar .simplePost .postInfo {
+    background: none repeat scroll 0 0 #b7c69e;
+    text-indent: 5px;
+}
+#postSidebar .simplePost article {
+    padding: 2px;
+}
