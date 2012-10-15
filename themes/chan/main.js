@@ -555,12 +555,12 @@ $(function(){
     }
     if(cssoptions.postbox.resizable){
         var resfun = function(){$("#postForm .ui-wrapper").css('left','0');};
+        var stopfun= function(){$.cookie("chan2_fulltextdim",($("#fulltext").width())+"x"+($("#fulltext").height()),{ expires: 356, path: '/' });}
 
         if(cssoptions.layout.orientation != "none"){
             if(options.indexOf('b')!=-1){console.log('[POSTBOX] Resize adapt');}
             resfun = function(event, ui){
                 for(var i=0;i<cssoptions.layout.sync.length;i++){
-                    console.log(">>"+cssoptions.layout.sync[i]);
                     $(cssoptions.layout.sync[i]).css("width",($("#fulltext").width()+5)+"px")
                 }
                 for(var i=0;i<cssoptions.layout.adapt.length;i++){
@@ -569,8 +569,17 @@ $(function(){
                 $("#postForm .ui-wrapper").css('left','0');
             };
         }
+
+        if($.cookie("chan2_fulltextdim") != null){
+            if(options.indexOf('b')!=-1){console.log('[POSTBOX] Saved width');}
+            dat = $.cookie("chan2_fulltextdim").split("x");
+            $("#fulltext").width(dat[0]);
+            $("#fulltext").height(dat[1]);
+            resfun();
+        }
+
         if(options.indexOf('b')!=-1){console.log('[POSTBOX] Resizable');}
-        $("#fulltext").resizable({handles: "se,sw,s,w,e", resize: resfun,
+        $("#fulltext").resizable({handles: "se,sw,s,w,e", resize: resfun, stop: stopfun,
                                   minWidth: $("#fulltext").width(), minHeight: $("#fulltext").height()});
     }
     
