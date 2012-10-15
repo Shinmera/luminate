@@ -338,7 +338,6 @@ a.directQuote:visited {
     text-shadow: 0 0 0px #FFFFFF;
 }
 .postImage {
-    box-shadow: 0 0 5px #000000;
     float: left;
     margin: 5px;
     max-height: 100%;
@@ -364,9 +363,6 @@ a.directQuote:visited {
     border-top: 2px dotted #c80707;
     color: #c80707;
 
-}
-.postImage {
-    border-radius: 5px 0 5px 0;
 }
 #postType {
     background: none repeat scroll 0 0 transparent;
