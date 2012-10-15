@@ -335,7 +335,7 @@ function displayOptions(){
 
 function displayThreadWatch(){
     global $c,$k;
-    $watched = array_filter(explode(";",$_COOKIE['chan_watched']));
+    $watched = array_filter(explode(";",$_COOKIE['chan2_watched']));
     sort($watched);
     if(count($watched)==0)die('No threads watched.');
 
