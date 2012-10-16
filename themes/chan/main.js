@@ -570,6 +570,8 @@ $(function(){
             };
         }
 
+        var minwidth = $("#fulltext").width();
+        var minheight= $("#fulltext").height();
         if($.cookie("chan2_fulltextdim") != null){
             if(options.indexOf('b')!=-1){console.log('[POSTBOX] Saved width');}
             dat = $.cookie("chan2_fulltextdim").split("x");
@@ -579,8 +581,8 @@ $(function(){
         }
 
         if(options.indexOf('b')!=-1){console.log('[POSTBOX] Resizable');}
-        $("#fulltext").resizable({handles: "se,sw,s,w,e", resize: resfun, stop: stopfun,
-                                  minWidth: $("#fulltext").width(), minHeight: $("#fulltext").height()});
+        $("#fulltext").resizable({'handles': "se,sw,s,w,e", 'resize': resfun, 'stop': stopfun,
+                                  'minWidth': minwidth, 'minHeight': minheight});
     }
     
     
