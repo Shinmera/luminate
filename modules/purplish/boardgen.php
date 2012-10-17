@@ -68,7 +68,7 @@ class BoardGenerator{
                 <? } ?>
             </div>
             <br class="clear" />
-            <?=$k->pager(PROOT.$board->folder.'/',$totalthreads,$i,$c->o['chan_tpp'],true)."\n"?>
+            <?=$k->pager(PROOT.$board->folder.'/',$totalthreads,$i/$c->o['chan_tpp'],$c->o['chan_tpp'],true)."\n"?>
             <? require_once(PAGEPATH.'chan/chan_footer.php'); ?>
             <?=write_footer($board->title.' - '.$c->o['chan_title'],$board->boardID,$board->folder,0,$board->options);?>
 
