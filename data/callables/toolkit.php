@@ -322,7 +322,7 @@ public static function pager($base,$max,$current=0,$step=25,$return=false){
 
     for($i=0;$i<$max;$i+=$step){
         if($i/$step==$current) $ret.="<span class='pager_current'>".($i/$step+1)."</span> ";
-        else $ret.="<a href='".$base.($i/$step)."' title='To page ".($i/$step+1)."' class='jump'>".($i/$step+1)."</a> ";
+        else $ret.=" <a href='".$base.($i/$step)."' title='To page ".($i/$step+1)."' class='jump'>".($i/$step+1)."</a> ";
     }
 
     if(($current+1)*$step<$max)$ret.='<a href="'.$base.($current+1).'" title="Forwards to page '.($current+2).'" class="forwards">&gt;</a>';
