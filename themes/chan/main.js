@@ -458,7 +458,7 @@ function registerShortcuts(){
 
 function registerAutoUpdate(){
     if(options.indexOf('b')!=-1){console.log('[CUSTOM] Registering auto update');}
-    if($("#view").val()=="thread"){
+    if($("#view").hasClass("thread")){
         $(".thread").everyTime(10000,function(){
             updateThread();
         });
