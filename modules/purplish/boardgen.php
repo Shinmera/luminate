@@ -73,7 +73,7 @@ class BoardGenerator{
             <?=write_footer($board->title.' - '.$c->o['chan_title'],$board->boardID,$board->folder,0,$board->options);?>
 
             <?                    
-            file_put_contents($path.$i.'.php',ob_get_contents(),LOCK_EX);
+            file_put_contents($path.($i/$c->o['chan_tpp']).'.php',ob_get_contents(),LOCK_EX);
             ob_clean();
         }
 
