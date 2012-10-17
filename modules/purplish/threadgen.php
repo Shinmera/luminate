@@ -39,7 +39,6 @@ class ThreadGenerator{
         <? require_once(PAGEPATH.'chan/chan_header.php'); ?>
         <?=write_header($post->title.' - '.$c->o['chan_title'],$board,$pID,$post->options.$board->options,$post->ip);?>
 
-        <input type="hidden" id="view" value="thread" />
         <div class="threadToolbar">
             <a href="<?=PROOT.$board->folder?>/" title="Return to the board index">Return</a> 
             <a href="?b=-50" title="Show the last 50 posts">Last 50</a> 
@@ -60,7 +59,7 @@ class ThreadGenerator{
         $n=($begin-1);
         if($begin>1)echo(\'<a href="?b=0&e=\'.$end.\'" class="fetchPrevious" amount="\'.($n+1).\'">Fetch previous 10/\'.$n.\' posts</a>\');
         ?>'?>
-        <div class="thread" id="T<?=$pID?>">
+        <div id="view" class="thread" id="T<?=$pID?>">
             <?='<?
             for($i=$begin,$temp=count($postlist);$i<$end&&$i<$temp;$i++){
                 @ include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/posts/".$postlist[$i].".php");
