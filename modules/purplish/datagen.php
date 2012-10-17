@@ -125,7 +125,8 @@ class DataGenerator{
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         if(!class_exists("BoardGenerator"))include('boardgen.php');
         
-        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file,password FROM ch_posts WHERE postID=? AND BID=? AND options NOT REGEXP ? LIMIT 1",array($postID,$board,'d'));
+        $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file,password FROM ch_posts WHERE postID=? AND BID=? AND options NOT LIKE ? LIMIT 1",
+                                                array($postID,$board,'%d%'));
         if($post == null)throw new Exception("No such post.");
         if(!$a->check("chan.mod.delete")&&$_POST['password']!=$post->password)throw new Exception("No Access (password mismatch?).");
         if($post->PID==0)$thread=$postID;
@@ -281,7 +282,7 @@ class DataGenerator{
         if($thread!=0){
             $tpost = DataModel::getData('ch_posts','SELECT postID,BID,options,bumptime FROM ch_posts WHERE postID=? AND BID=? AND PID=0 LIMIT 1', array($thread,$board->boardID));
             if(strpos($tpost->options,'e')===FALSE&&!in_array("sage",$mail)){
-                $posts = $c->getData('SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT REGEXP ?',array($thread,$board->boardID,'d'));
+                $posts = $c->getData('SELECT COUNT(postID) FROM ch_posts WHERE PID=? AND BID=? AND options NOT LIKE ?',array($thread,$board->boardID,'%d%'));
                 if($posts[0]['COUNT(postID)']>$board->postlimit)$tpost->options.='e';
                 $tpost->bumptime=time();
                 $tpost->saveData();
@@ -435,7 +436,7 @@ class DataGenerator{
             $folder=$folder->folder;
         }
         echo("<div class='success'>Cleaning:<br />Database...<br />");
-        $c->query("DELETE FROM ch_posts WHERE BID=? AND options REGEXP ?",array($boardID,'d'));
+        $c->query("DELETE FROM ch_posts WHERE BID=? AND options LIKE ?",array($boardID,'%d%'));
         
         echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/files/_*.php');
         if(is_array($temp)&&count($temp)>0)

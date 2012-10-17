@@ -15,11 +15,11 @@ class BoardGenerator{
         $t->loadTheme("chan");
         $PAGETITLE=$board->title.' - '.$c->o['chan_title'];
 
-        $stickies= DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ? AND options REGEXP ? ORDER BY bumptime DESC",
-                                                    array($board->boardID,'d','s'));
+        $stickies= DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT LIKE ? AND options LIKE ? ORDER BY bumptime DESC",
+                                                    array($board->boardID,'%d%','%s%'));
         Toolkit::assureArray($stickies);
-        $threads = DataModel::getData('ch_posts','SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT REGEXP ? AND options NOT REGEXP ? ORDER BY bumptime DESC LIMIT ?,?',
-                                                    array($board->boardID,'d','s',0,($c->o['chan_tpp']*$board->maxpages)-count($stickies)));
+        $threads = DataModel::getData('ch_posts','SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT LIKE ? AND options NOT LIKE ? ORDER BY bumptime DESC LIMIT ?,?',
+                                                    array($board->boardID,'%d%','%s%',0,($c->o['chan_tpp']*$board->maxpages)-count($stickies)));
         Toolkit::assureArray($threads);
         $threads = array_merge($stickies, $threads);
         
@@ -37,10 +37,10 @@ class BoardGenerator{
             <div id="view" class="board">
                 <? for($j=$i;$j<$i+$c->o['chan_tpp'] && $j<$totalthreads;$j++){
                     if($genposts||$genthreads)ThreadGenerator::generateThread($threads[$j]->postID, $board->boardID,true);
-                    $posts = DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=? AND options NOT REGEXP ? ORDER BY postID DESC LIMIT 3",
-                                                            array($board->boardID,$threads[$j]->postID,'d'));
-                    $postcount = $c->getData("SELECT COUNT(postID) from ch_posts WHERE BID=? AND PID=? AND options NOT REGEXP ?",
-                                                            array($board->boardID,$threads[$j]->postID,'d'));
+                    $posts = DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=? AND options NOT LIKE ? ORDER BY postID DESC LIMIT 3",
+                                                            array($board->boardID,$threads[$j]->postID,'%d%'));
+                    $postcount = $c->getData("SELECT COUNT(postID) from ch_posts WHERE BID=? AND PID=? AND options NOT LIKE ?",
+                                                            array($board->boardID,$threads[$j]->postID,'%d%'));
                     $postcount=$postcount[0]['COUNT(postID)'];
                     Toolkit::assureArray($posts);
                     
@@ -78,8 +78,8 @@ class BoardGenerator{
         }
 
         //Delete posts.
-        $toDelete = DataModel::getData("ch_posts","SELECT postID FROM ch_posts WHERE BID=? AND TID=0 AND options NOT REGEXP ? AND options NOT REGEXP ? ORDER BY bumptime DESC LIMIT ?,?",
-                                                    array($board->boardID,'d','s',$totalthreads,18446744073709551615));
+        $toDelete = DataModel::getData("ch_posts","SELECT postID FROM ch_posts WHERE BID=? AND TID=0 AND options NOT LIKE ? AND options NOT LIKE ? ORDER BY bumptime DESC LIMIT ?,?",
+                                                    array($board->boardID,'%d%','%s%',$totalthreads,18446744073709551615));
         Toolkit::assureArray($toDelete);
         $datagen = new DataGenerator();
         foreach($toDelete as $thread){
