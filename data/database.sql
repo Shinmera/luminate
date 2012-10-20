@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `bl_entries` (
   `published` tinyint(1) NOT NULL,
   `owner` int(11) NOT NULL,
   PRIMARY KEY (`entryID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=59 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
 
 INSERT IGNORE INTO `bl_entries` (`entryID`, `FID`, `title`, `short`, `subject`, `tags`, `time`, `published`, `owner`) VALUES
 (7, 40, 'Punch Nick in the head because h', 'DO IT! >:U\r<br>\r<br>\r<br>Anyway, I don''t have much to say. Gonna work on the site some more today.\r<br>Most of my presents will tumble in later because of delivery shenanigans so I can''t say what kind of sw33t l00t I got yet.\r<br>I''ll VLog about it though as soon as I have everything.\r<br>\r<br>Also, apparently I''m not a good enough programmer to call myself "experienced": http://comments.deviantart.com/4/11322144/1746529207 \r<br>So yeah, apparently making a CMS and Chat Program equals a "Hello World" Program nowadays. Whadda I know.', '', '', '1290078820', 1, 1),
@@ -113,7 +113,8 @@ INSERT IGNORE INTO `bl_entries` (`entryID`, `FID`, `title`, `short`, `subject`, 
 (55, 36, 'Hello I Am Social Life Let Me Rape Your Time', 'img{http://johns-jokes.com/afiles/images/you-read-my-door-mat-that-is-enough-social-interaction-for-today.jpg}\r\nHumans are social creatures by nature. We are trained, from our childhood up and throughout our entire human life, to interact with others and to be socially active.', 'Now, of course, some are more invested in relationships and interaction than others, but we all still rely on other people to support us and exchange thoughts and ideas with us. Our ability to get along and help each other is an extremely strong point of our species. We have reached an immensely high point of interactivity, probably more so than any other animal on earth.\r\nHowever, as is with all things, it also comes with a drawback.\r\nKeeping relationships up and stable takes time. Increasingly so, the closer you get to the other person. The more people you know, the more time you spend interacting with them and the more time you lose that you could actually spend working. Now, of course, in most cases this isn&apos;t really much of a problem. Most people have fixed working hours, during which they work. The rest of the time is usually spent doing other chores, providing for oneself (eating, sleeping, etc) or doing social things like chatting, doing activities with others and so on. This is totally ok and understandable. After all, you already spent all the rest of your time working or doing other things. \r\nIt does, however, become a problem as soon as you aren&apos;t getting as much out of the time you put into social activities as you should. Obviously, you are at a problem of optimization. Something is taking up time and is giving you nothing in return, or way too little to be worth your time. The biggest waste of time, in all circumstances, is simply waiting. Waiting for people to arrive somewhere, waiting for something to happen, waiting for anything. You probably spend multiple accumulated hours of just waiting every day. The waiting time and "risk of waiting" is especially high when it comes to anything related to other people. Why? Simple, because if you do something yourself, you could always decide what to do, pretty much immediately. Whenever someone else is involved, you need to wait for them to respond, wait for them to make up their mind, wait for them to do x and y and probably also z.\r\nObviously, these waiting times are a low price to pay for what you get in return, usually. But here&apos;s where the real problem comes in: What if you don&apos;t know what you get in return? What if you are just waiting for something to happen, without being certain that it might even happen at all or if, when something does happen, it is of actual profit to you? In this case, the price of waiting is too high. You are effectively wasting your time doing nothing, with expectation of probably getting nothing. Why would anyone ever do such a crazy thing? Quite simply, it happens when we start depending on people too much, or depend on them for something they cannot always provide. This problem is alarmingly high when it comes to the internet.\r\nThe internet has an immense amount of stuff to offer. So many interesting and new things for you to learn, wonder and gander at. But it&apos;s always also a gamble. Do you want to take the risk of wasting your time looking for something, but not coming up with anything interesting? Do you want to take the risk of wasting your time waiting for something to happen on one of your thousand news ffeeds, facebook status bars, twitter timelines and whatever the hell the latest thing is? You could be using that time to do something productive, or do something that you know you could enjoy or that would benefit you, like f.e. studying, reading a good book, creating something, optimizing your daily routine or doing some work ahead of time.\r\n\r\nFor me, this gamble has been getting worse and worse lately I feel. I&apos;ve been wasting huge amounts of time waiting for people to come online and talk with me, waiting for something interesting to happen on forums, waiting for people to respond to my (almost) fruitless efforts at giving something back to humanity, etc. I have become a i{slacker}. It seems that this generation of humans, my generation, is full of slackers and it&apos;s i{normal} for people to do effectively nothing for large amounts of time. So who cares, right? Well, unfortunately, I care. I care a huge lot. At least, about how much I do, not so much about how others do. I have the odd habit of allowing others to slack (although not too much either), but never myself. I am a workaholic after all and I see it as only justified to give my best for the people I respect. Which means: Not wasting mine or your time with doing nothing of value.\r\nSo then. What now? Am I going to abandon every way of human contact and interaction? Am I going to devote all of my time to work? Hell no, I wouldn&apos;t be writing this blog entry if I did. I am, however, going to tone down my activity on Time Waster 3000 websites and my availability on chat related things. So, effectively, I won&apos;t be around as much. I&apos;ll still push out content as much as I can, but I probably won&apos;t be responding immediately or read all of the stuff that happens. The primary concerns of this being #Stevenchan, Twitter and EDF.\r\n\r\nAs a final note, I&apos;d like to mention that it depends on you for how much time you want to spend with social activities and how much you want to spend actually doing productive things. Finding the optimum for both is very tricky and takes a lot of time and effort. I hope you and I can get there eventually. For now, focus on improvement.', 'Activities, Chat, Internet, Time, Human, Interaction', '1336507738', 1, 1),
 (56, 38, 'Why', 'This time I won&apos;t be asking the question though, I&apos;ll be answering it!\r\nyoutube{http://www.youtube.com/watch?v=kdhhQhqi_AE}', 'The question is simply: Why am I doing what I&apos;m doing?\r\nA very basic thing and yet something I could never really answer.dawdad\r\nI might not be able to answer it sufficiently yet either, but I think I at least found some kind of proposal for a solution.\r\n\r\nQuite simply, the reason why I&apos;m doing things seems to be one of self-worth. I believe that, simply by doing things, I&apos;ll gain some kind of value. How well I finish my tasks and how much reception they get from others indicates how much worth I am. Obviously, this requires me to do as many things as I can, as good as I can and as quickly as I can.\r\nThis establishment of self-worth does have some wide effects though. For example, it means that I automatically assume that people will judge me on it, even if I am the only one with an idea of this value. The result of this is that I assume people will think well/badly of me, even if they don&apos;t. Pulling this further also shows that I anticipate this reaction of people and am quickly disappointed by the lack of response towards what I&apos;m doing.\r\nThis expectation can only lead to a bad mood on the long run, mainly because I know that I work a huge lot, but I also don&apos;t get very much response for what I&apos;m doing. This is normal. And it&apos;s bad of me to think that I should somehow receive more attention than anyone else.\r\nStill, it seems to be a necessity dictated by the way I do things. I&apos;m not sure if there&apos;s a way for me to avoid this or not, but it would sure be nice if I didn&apos;t depend on getting attention from others as much.\r\nSame with this blog entry obviously. I expect people to respond to it, since I&apos;ve put effort into writing it, but most likely I won&apos;t get anything.\r\nThe danger in this is that with no response I think that nobody even read it, which isn&apos;t true either. 90%(Â±9%) of the people will read something but not respond to it, so with a tiny readership I really shouldn&apos;t be as snooty as to expect responses.\r\n\r\nSo I won&apos;t.\r\nI&apos;ll just put this out here for... whoever gives a shit about shit nobody cares about.\r\nMaybe I can bring out a blog post of actual value next week once the finals are over.\r\nHow about some more of that XHTML/CSS tutorial? Yeah that&apos;d work I suppose.\r\nAt least people read that.\r\nAnd there I go again.\r\n\r\nimg{http://img.tymoon.eu/img//Wallpapers/Shinmera/0FsCo.jpg}', 'Why,Am,I,Doing,Things,Answers', '1340489031', 1, 1),
 (57, 36, 'About Work and Ideas', 'imgbox(right,:maxwidth 33){http://gallery.tymoon.eu/data/uploads/display/src/shinmera/misc/198-2012092103.png.png}\r\nIf you url(http://twitter.com/Shinmera){follow} even the least bit of what I do, you probably know that I&apos;m now working 100% as an intern at a url(http://www.planta-gmbh.ch/){software company}. The first days of my work were quite exciting, I got to continue the work that I had begun on an earlier instance, when I worked for them for a single week. That was about half a year ago. It was a good work to do and I actually did things, albeit I certainly wasn&apos;t at my optimal capacity. Now that I&apos;ve worked there for almost a month, things have changed a little. ', 'I went from being excited to feeling useless, because I felt like the things I did could be done much quicker and without having to steal other people&apos;s valuable time by someone else, so I didn&apos;t think I had much purpose by being there. I&apos;ve gotten over this now that I&apos;ve grown a bit more accustomed to things and know my way around a bit better (and therefore need to ask less), but there&apos;s still just so many things that I can&apos;t do on my own and all my work has to be reviewed by one of my co-workers again (and only one, since there&apos;s only one senior programmer in-house). So yes... it&apos;s getting better, slowly, but still. I&apos;m beginning to become useful. At least I hope so.\r\n\r\nThere is, however, one problem that has hit me hard the last few days. I got into a sort of productivity hole and just had immense difficulty to get myself to do anything. I just kept on url(http://www.joelonsoftware.com/articles/fog0000000339.html){reading articles} and sort of clicking my way around the internet, hoping I would find the will to get to work and make myself useful. This is doubly bad, because on one hand I already feel awful for not having any motivation, and on the other hand it&apos;s bad for the company and everyone working with me because I&apos;m hindering them by being slow. My time wasn&apos;t completely wasted though, just as the figures that stand around in everyone&apos;s room still serve the purpose of dust collectors, I collected information from articles in my head. Now, arguably the information I gathered is much url(http://tinyurl.com/cz62s6t){more valuable than the dust on a figma}, and I do have to say that the articles I read are very interesting and very good reads. In fact, url(http://www.joelonsoftware.com/articles/fog0000000069.html){you should read them as well}. But still, I&apos;d rather have done some things for the company. I think the only successful recipe to get out of this disaster is just pure willpower. The question remains however how you can build up that initial required willpower so you can finally smash your face on your keyboard and type out those mangled strings of information that keep the company alive somehow. The way that works for me is to try to completely severe all connections to the work that I have and just think of something entirely different. Or at least just of an unrelated context. This works because the brain is obviously still well capable of thought and processing, but it&apos;s just stuck on this one thing and can&apos;t continue, just the same as those pesky modal url(http://shinmera.tymoon.eu/public/nt/){dialog boxes} that keep popping up until you decide to just kill the application and do something else.\r\n\r\nThe way I eventually solved it (I only figured out the above solution by analysing what I did today), was by thinking of ways to improve TyNET and my workflow of programming in general, as inspired by the articles. This makes sense, because I was getting annoying thoughts about things to do during work the previous days and I found them to be very intrusive and wished they would go away. But no, hold on, they really shouldn&apos;t! Those little thoughts that jump in about something completely unrelated all of a sudden are worth more than the time you would&apos;ve saved by not thinking about them. They&apos;re probably even worth a hundred times more than that. These glimpses are so valuable, because they&apos;re usually completely new ideas or ways to think about a problem you had with something earlier on. If you dismiss them, you might never come up with them again because you already dismissed them as stupid. It&apos;s much better to quickly write it down, think about it for a minute or two and see how much you can wring out of it until you&apos;re done and then switch back to your regular work. It doesn&apos;t lose you much valuable time because you&apos;re done with it quickly and can remind yourself later, as you wrote it down. It also doesn&apos;t disrupt your mind any more than the thought already did. Trying to dismiss it forcefully might actually throw you out of concept even more than just letting it slide, since you&apos;ll be sitting there just a tiny bit more annoyed, instead of happier because you gained new insight.\r\n\r\nSo, that&apos;s what I started doing today and boy, it has already helped me a lot. I came up with a couple of important things that I need to change about TyNET and especially Reader (the blog module). The HUB module, which is my future project and bug tracker is also back in the planning phase and I need to get that done next. I&apos;ve gone on for way too long without a proper way of tracking bugs and reporting the status of my projects.\r\nTime to change!', '', '1348918490', 1, 1),
-(58, 36, 'About Bastion', 'The world is a quite marvellous. Marvellous, because it has so many things to offer, both for the url(http://jinzhan.deviantart.com/art/Afternoon-Tea-Time-260324890){really disturbingly unpleasant things} that scare you to the point that not even the dust clouds undearneath your bed appear threatening; as well as the sort of url(http://www.sublimetext.com/){stuff you fall in love with immediately} and want to spend the rest of your life with. How these things balance each other doesn&apos;t really depend on what happens to us (despite what some people would like to believe), but rather on what you make out of it and how important you deem them. Regardless of whether you have a shitty day because you just stubbed your toe into the corner of a wall with the might of a wrestler or if your day is extremely good because you just url(http://www.youtube.com/watch?v=H3JwS4RcYyk){won the lottery}, I&apos;m not here to talk about attitudes today. I&apos;ll just lose a few words about something that I&apos;ve recently fallen in love with.\r\ncenter{img(:title Oh mother...){http://wallpoper.com/images/00/39/73/39/bastion_00397339.jpg}}', 'i{}\r\nfloat(right){youtube{http://www.youtube.com/watch?v=AhS5occh_Fk}}\r\nBastion is a game developed by url(http://supergiantgames.com/){Supergiant Games}, yet another indie team. I&apos;m having a hard time describing what makes this game as good as I think it is, because it all just fits so well together that I can&apos;t really find a place to start. Despite this, I suppose I&apos;ll just start with the most special feature of Bastion, which is the narrator. Throughout the game you listen to a narrator that gives you back-story and additional information about what&apos;s currently going on. The narrative adapts to the way you play and the things you do, which helps a lot to get immersed into the game. What Supergiant got absolutely spot-on with the narrator, is a way to provide lots of story into the game, without disturbing its flow at all. You never have to stop and it&apos;s never intrusive, so you can keep on playing and listen to the fantastic voice as you go.\r\nurl(http://www.youtube.com/watch?v=AhS5occh_Fk){Just give it a try}.\r\n\r\nIsn&apos;t that just the kind of voice you&apos;d like to hear when camping out in the desert, sitting around a campfire and thinking about all the matters in the world, both good and bad; just pondering with your thoughts and letting them float through the starry night sky.\r\nOk, granted, that scenario is pretty damn unlikely for a city-face like me, but we&apos;ll imagine for now.\r\n\r\nimgbox(left,:maxwidth 50){http://cdn.pastemagazine.com/www/articles/2011/07/27/Bastion_092010_00031.jpeg}\r\nI find Bastion to be another game like Okami. It gets the artwork, gameplay and soundtrack just perfectly matched up. As such, this both means that the game would only be half as good if any of the things were missing, but it also means that they all are fantastic. The soundtrack has some really spectacular tunes, especially the ending theme, the artwork is lovely and often times just stunning to look at and the game plays really well, keeps you interested and deeply invested in the story, characters and developments. \r\n\r\nAt its core, the game is an action RPG, the RPG elements mainly consisting of the weapons you choose to fight and eventually level up. Another element are spirits, which give you passive bonuses during the game. There&apos;s also a variety of items scattered throughout the world that give you more insight about the backstory, once you talk to the Narrator about them. The story itself plays after an event referred to as the "Calamity", which tore the world to pieces and killed almost everyone in the process. As a survivor, you travel around the individual pieces of the world that have been shot up into the sky and try to find the cores that keep these parts from falling apart. With the cores, you can improve the strength of your new home, the Bastion. I won&apos;t say any more about it though, as it would just ruin so much of it, if I tried to retell it in any other way than the original way it was intended to be heard.\r\n\r\nfloat(right){youtube{http://www.youtube.com/watch?v=GDflVhOpS4E}}\r\nBastion does have its own set of problems of course. Just the same as the food that lands on your plate in a five star super luxury gourmét restaurant is extremely good and close to perfect, there&apos;s always some wanker out there who&apos;ll find a way to complain about i{something}. So, obviously, there are some complaints I have about this game, despite it being such a delicious dish. My first complaint is about the linux version of it. This might just be my machine, my setup or whatever the hell I&apos;m doing wrong, but it sometimes just freezes completely, and since it captures the mouse and keyboard, I can&apos;t do anything with my machine anymore, except press the power button. The freezes appear to be completely random and I have no clue what&apos;s causing them, but yeah. It was quite frustrating because it ripped me out of such a grand experience every time. Don&apos;t worry though, all the other complaints I have actually concern the game, so I&apos;ll stop my excessive geekery, at least for now. My other complaint is that the collision detection for the objects and ground is only sub-optimal. Often times there&apos;s places where I didn&apos;t think I could stand on, but could and other places that showed the reverse phenomenon. The hitboxes of the enemies are sometimes a bit weird as well, so I&apos;d wager the collision detection system could&apos;ve used some more work. Aside from that, I have nothing to complain about this game at all. Yep, that&apos;s it already!\r\n\r\nNow, the url(http://store.supergiantgames.com/){Supergiant Store} has some sweet Bastion merchandise to offer, of which I bought the collection pack. Here&apos;s some pictures that look worse than if they were shot by a camera from 15 years ago, but they&apos;ll have to do. It&apos;s late and my room is about as well lit as a cave in minecraft, so I apologize for the quality.\r\nimg{http://www.tymoon.eu/data/uploads/filer/38-IMG_20120926_185515.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/39-IMG_20120926_185532.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/40-IMG_20120926_185612.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/41-IMG_20120926_185705.jpg}', '', '1348918744', 1, 1);
+(58, 36, 'About Bastion', 'The world is a quite marvellous. Marvellous, because it has so many things to offer, both for the url(http://jinzhan.deviantart.com/art/Afternoon-Tea-Time-260324890){really disturbingly unpleasant things} that scare you to the point that not even the dust clouds undearneath your bed appear threatening; as well as the sort of url(http://www.sublimetext.com/){stuff you fall in love with immediately} and want to spend the rest of your life with. How these things balance each other doesn&apos;t really depend on what happens to us (despite what some people would like to believe), but rather on what you make out of it and how important you deem them. Regardless of whether you have a shitty day because you just stubbed your toe into the corner of a wall with the might of a wrestler or if your day is extremely good because you just url(http://www.youtube.com/watch?v=H3JwS4RcYyk){won the lottery}, I&apos;m not here to talk about attitudes today. I&apos;ll just lose a few words about something that I&apos;ve recently fallen in love with.\r\ncenter{img(:title Oh mother...){http://wallpoper.com/images/00/39/73/39/bastion_00397339.jpg}}', 'i{}\r\nfloat(right){youtube{http://www.youtube.com/watch?v=AhS5occh_Fk}}\r\nBastion is a game developed by url(http://supergiantgames.com/){Supergiant Games}, yet another indie team. I&apos;m having a hard time describing what makes this game as good as I think it is, because it all just fits so well together that I can&apos;t really find a place to start. Despite this, I suppose I&apos;ll just start with the most special feature of Bastion, which is the narrator. Throughout the game you listen to a narrator that gives you back-story and additional information about what&apos;s currently going on. The narrative adapts to the way you play and the things you do, which helps a lot to get immersed into the game. What Supergiant got absolutely spot-on with the narrator, is a way to provide lots of story into the game, without disturbing its flow at all. You never have to stop and it&apos;s never intrusive, so you can keep on playing and listen to the fantastic voice as you go.\r\nurl(http://www.youtube.com/watch?v=AhS5occh_Fk){Just give it a try}.\r\n\r\nIsn&apos;t that just the kind of voice you&apos;d like to hear when camping out in the desert, sitting around a campfire and thinking about all the matters in the world, both good and bad; just pondering with your thoughts and letting them float through the starry night sky.\r\nOk, granted, that scenario is pretty damn unlikely for a city-face like me, but we&apos;ll imagine for now.\r\n\r\nimgbox(left,:maxwidth 50){http://cdn.pastemagazine.com/www/articles/2011/07/27/Bastion_092010_00031.jpeg}\r\nI find Bastion to be another game like Okami. It gets the artwork, gameplay and soundtrack just perfectly matched up. As such, this both means that the game would only be half as good if any of the things were missing, but it also means that they all are fantastic. The soundtrack has some really spectacular tunes, especially the ending theme, the artwork is lovely and often times just stunning to look at and the game plays really well, keeps you interested and deeply invested in the story, characters and developments. \r\n\r\nAt its core, the game is an action RPG, the RPG elements mainly consisting of the weapons you choose to fight and eventually level up. Another element are spirits, which give you passive bonuses during the game. There&apos;s also a variety of items scattered throughout the world that give you more insight about the backstory, once you talk to the Narrator about them. The story itself plays after an event referred to as the "Calamity", which tore the world to pieces and killed almost everyone in the process. As a survivor, you travel around the individual pieces of the world that have been shot up into the sky and try to find the cores that keep these parts from falling apart. With the cores, you can improve the strength of your new home, the Bastion. I won&apos;t say any more about it though, as it would just ruin so much of it, if I tried to retell it in any other way than the original way it was intended to be heard.\r\n\r\nfloat(right){youtube{http://www.youtube.com/watch?v=GDflVhOpS4E}}\r\nBastion does have its own set of problems of course. Just the same as the food that lands on your plate in a five star super luxury gourmét restaurant is extremely good and close to perfect, there&apos;s always some wanker out there who&apos;ll find a way to complain about i{something}. So, obviously, there are some complaints I have about this game, despite it being such a delicious dish. My first complaint is about the linux version of it. This might just be my machine, my setup or whatever the hell I&apos;m doing wrong, but it sometimes just freezes completely, and since it captures the mouse and keyboard, I can&apos;t do anything with my machine anymore, except press the power button. The freezes appear to be completely random and I have no clue what&apos;s causing them, but yeah. It was quite frustrating because it ripped me out of such a grand experience every time. Don&apos;t worry though, all the other complaints I have actually concern the game, so I&apos;ll stop my excessive geekery, at least for now. My other complaint is that the collision detection for the objects and ground is only sub-optimal. Often times there&apos;s places where I didn&apos;t think I could stand on, but could and other places that showed the reverse phenomenon. The hitboxes of the enemies are sometimes a bit weird as well, so I&apos;d wager the collision detection system could&apos;ve used some more work. Aside from that, I have nothing to complain about this game at all. Yep, that&apos;s it already!\r\n\r\nNow, the url(http://store.supergiantgames.com/){Supergiant Store} has some sweet Bastion merchandise to offer, of which I bought the collection pack. Here&apos;s some pictures that look worse than if they were shot by a camera from 15 years ago, but they&apos;ll have to do. It&apos;s late and my room is about as well lit as a cave in minecraft, so I apologize for the quality.\r\nimg{http://www.tymoon.eu/data/uploads/filer/38-IMG_20120926_185515.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/39-IMG_20120926_185532.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/40-IMG_20120926_185612.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/41-IMG_20120926_185705.jpg}', '', '1348918744', 1, 1),
+(59, 38, 'Test entry', 'TEST', 'TEST', ',WWW', '1350132013', 1, 1);
 
 CREATE TABLE IF NOT EXISTS `bl_folders` (
   `folderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -1729,7 +1730,79 @@ INSERT IGNORE INTO `ch_hits` (`ip`, `time`, `BID`, `PID`) VALUES
 ('127.0.0.1', 1348919738, 1, 24),
 ('127.0.0.1', 1348919747, 1, 0),
 ('127.0.0.1', 1348919756, 1, 24),
-('127.0.0.1', 1348919788, 1, 24);
+('127.0.0.1', 1348919788, 1, 24),
+('127.0.0.1', 1350294394, 0, 0),
+('127.0.0.1', 1350294421, 0, 0),
+('127.0.0.1', 1350294422, 1, 0),
+('127.0.0.1', 1350294426, 1, 24),
+('127.0.0.1', 1350294533, 1, 0),
+('127.0.0.1', 1350294585, 1, 24),
+('127.0.0.1', 1350294634, 1, 0),
+('127.0.0.1', 1350294694, 1, 0),
+('127.0.0.1', 1350294709, 1, 0),
+('127.0.0.1', 1350294727, 1, 0),
+('127.0.0.1', 1350294756, 1, 0),
+('127.0.0.1', 1350295062, 1, 0),
+('127.0.0.1', 1350295087, 1, 0),
+('127.0.0.1', 1350295220, 1, 0),
+('127.0.0.1', 1350295277, 1, 0),
+('127.0.0.1', 1350295284, 1, 0),
+('127.0.0.1', 1350295315, 1, 0),
+('127.0.0.1', 1350295349, 1, 0),
+('127.0.0.1', 1350295456, 1, 0),
+('127.0.0.1', 1350295473, 1, 0),
+('127.0.0.1', 1350295530, 1, 0),
+('127.0.0.1', 1350295536, 1, 0),
+('127.0.0.1', 1350295568, 1, 0),
+('127.0.0.1', 1350295572, 1, 0),
+('127.0.0.1', 1350295684, 1, 0),
+('127.0.0.1', 1350295694, 1, 0),
+('127.0.0.1', 1350295696, 1, 0),
+('127.0.0.1', 1350295699, 1, 0),
+('127.0.0.1', 1350374410, 0, 0),
+('127.0.0.1', 1350374412, 1, 24),
+('127.0.0.1', 1350374418, 1, 24),
+('127.0.0.1', 1350470939, 0, 0),
+('127.0.0.1', 1350471177, 0, 0),
+('127.0.0.1', 1350471181, 0, 0),
+('127.0.0.1', 1350471182, 0, 0),
+('127.0.0.1', 1350471184, 1, 0),
+('127.0.0.1', 1350471497, 0, 0),
+('127.0.0.1', 1350471543, 1, 0),
+('127.0.0.1', 1350471567, 1, 0),
+('127.0.0.1', 1350471705, 1, 0),
+('127.0.0.1', 1350471714, 1, 22),
+('127.0.0.1', 1350471715, 1, 22),
+('127.0.0.1', 1350471716, 1, 22),
+('127.0.0.1', 1350471720, 1, 1),
+('127.0.0.1', 1350471726, 1, 24),
+('127.0.0.1', 1350472082, 1, 0),
+('127.0.0.1', 1350472088, 1, 1),
+('127.0.0.1', 1350472094, 1, 24),
+('127.0.0.1', 1350472100, 1, 22),
+('127.0.0.1', 1350472180, 1, 0),
+('127.0.0.1', 1350472183, 1, 1),
+('127.0.0.1', 1350472188, 1, 0),
+('127.0.0.1', 1350472804, 1, 0),
+('127.0.0.1', 1350472828, 1, 0),
+('127.0.0.1', 1350472934, 1, 0),
+('127.0.0.1', 1350472945, 1, 24),
+('127.0.0.1', 1350472950, 1, 0),
+('127.0.0.1', 1350472991, 1, 24),
+('127.0.0.1', 1350473064, 1, 0),
+('127.0.0.1', 1350473077, 1, 24),
+('127.0.0.1', 1350473080, 1, 0),
+('127.0.0.1', 1350473818, 1, 0),
+('127.0.0.1', 1350473912, 1, 0),
+('127.0.0.1', 1350473940, 1, 0),
+('127.0.0.1', 1350474160, 1, 0),
+('127.0.0.1', 1350474571, 1, 0),
+('127.0.0.1', 1350475934, 0, 0),
+('127.0.0.1', 1350475936, 1, 0),
+('127.0.0.1', 1350475949, 1, 0),
+('127.0.0.1', 1350475954, 1, 0),
+('127.0.0.1', 1350476094, 1, 0),
+('127.0.0.1', 1350476112, 1, 0);
 
 CREATE TABLE IF NOT EXISTS `ch_posts` (
   `postID` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -1778,12 +1851,14 @@ INSERT IGNORE INTO `ch_posts` (`postID`, `BID`, `PID`, `name`, `mail`, `trip`, `
 (3, 1, 1, '', '', '!C.C./tYwhI', '', '&gt;&gt;2', 1341356078, 1341356078, 'mMr4uFjQzmDundefined](9', '', '', '', 0, '127.0.0.1', 'p'),
 (20, 1, 1, '', '', '', '', '', 1344164570, 1344164570, ',Mlu-Pbc7ZDe8[]', '134416457047224.jpg', '3f0124cc9e24a12c9a20614a4fd0fdd6.jpg', '240x320', 26700, '127.0.0.1', 'p'),
 (23, 1, 1, '', '', '', '', '&gt;&gt;1', 1344164667, 1344164667, ',Mlu-Pbc7ZDe8[]', '134416466699101.jpg', '4d1a2241b624f9e15e0ed062d2bc44f2.jpg', '372x400', 86599, '127.0.0.1', 'p'),
-(24, 1, 0, '', '', '', 'Test', 'Test', 1347473859, 1348919788, ',Mlu-Pbc7ZDe8[]', '134747385958508.jpg', 'commander full speed ahead.jpg', '453x688', 79810, '127.0.0.1', 'p'),
+(24, 1, 0, '', '', '', 'Test', 'Test', 1347473859, 1350294633, ',Mlu-Pbc7ZDe8[]', '134747385958508.jpg', 'commander full speed ahead.jpg', '453x688', 79810, '127.0.0.1', 'p'),
 (25, 1, 24, '', '', '', '', 'awda', 1347473881, 1347473881, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
 (26, 1, 24, '', 'noko', '', '', 'adawd', 1347473954, 1347473954, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
 (27, 1, 24, '', 'noko', '', '', '', 1347474585, 1347474585, ',Mlu-Pbc7ZDe8[]', '134747458541847.jpg', 'now let me explain my point.jpg', '602x561', 37953, '127.0.0.1', 'p'),
 (28, 1, 24, '', 'noko', '', '', 'i&apos;m trying to update it more, unfortunately sometimes things come up and i can&apos;t do that. i&apos;ll try to\r\nstick to a post a day or every other day (provided i don&apos;t get writer&apos;s block again) \r\n\r\ni don&apos;t know how to dm, as i don&apos;t play d&d so i have any experience with what they do... \r\ni assume you&apos;re talking about the back n forthing in the timeline? now that the story&apos;s more into the swing of\r\nthings and the backstory as to why the world is the way it is has been told, there&apos;s going to be a lot less jumping\r\nin the timeline. \r\nunfortunately, when i do write the backstory i enjoy fleshing out the world, so the backstory posts will probably stay\r\nthe same length as they are when they do occur.', 1348919476, 1348919476, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
-(29, 1, 24, '', 'noko', '', '', '&gt;&gt;lol\r\n&gt;whatever\r\ndicks\r\n&gt;penis', 1348919788, 1348919788, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p');
+(29, 1, 24, '', 'noko', '', '', '&gt;&gt;lol\r\n&gt;whatever\r\ndicks\r\n&gt;penis', 1348919788, 1348919788, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
+(30, 1, 24, '', 'noko', '', '', '&gt;&gt;24\r\nbla', 1350294585, 1350294585, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
+(31, 1, 24, '', '', '', '', '&gt;&gt;24\r\nbla', 1350294633, 1350294633, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p');
 
 CREATE TABLE IF NOT EXISTS `ch_reports` (
   `ip` varchar(16) NOT NULL,
@@ -2341,7 +2416,13 @@ INSERT IGNORE INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALU
 ('Admin', 'ADMINDisplay', 'Display', 'displayAdmin'),
 ('Themes', 'buildMenu', 'Neon', 'buildMenu'),
 ('Themes', 'buildMenu', 'Admin', 'buildMenu'),
-('CORE', 'HIToffline', 'CORE', 'offline');
+('CORE', 'HIToffline', 'CORE', 'offline'),
+('Neon', 'profileSettings', 'Twitch', 'displayUserPanel'),
+('Neon', 'TwitterSave', 'Twitch', 'displayUserSave'),
+('CORE', 'APItwitter', 'Twitch', 'apiTwitterReturn'),
+('Display', 'POST', 'Twitch', 'universalPostHook'),
+('Reader', 'POST', 'Twitch', 'universalPostHook'),
+('CORE', 'HIThub', 'Hub', 'displayPage');
 
 CREATE TABLE IF NOT EXISTS `ms_links` (
   `linkID` int(10) unsigned NOT NULL AUTO_INCREMENT,
@@ -2353,25 +2434,29 @@ CREATE TABLE IF NOT EXISTS `ms_links` (
   `style` varchar(128) NOT NULL,
   `auth` varchar(128) NOT NULL,
   PRIMARY KEY (`linkID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
 INSERT IGNORE INTO `ms_links` (`linkID`, `PID`, `order`, `title`, `link`, `description`, `style`, `auth`) VALUES
-(2, 0, 2, 'Wiki', 'http://wiki.HOST', '', '', ''),
+(2, 0, 15, 'Wiki', 'http://wiki.HOST', '', '', ''),
 (3, 0, 0, 'Blog', 'http://blog.HOST', 'News and Articles', '', ''),
-(4, 0, 1, 'Gallery', 'http://gallery.HOST', '', '', ''),
+(4, 0, 5, 'Gallery', 'http://gallery.HOST', '', '', ''),
 (5, 4, 0, 'Upload', 'http://gallery.HOSTupload', 'Upload New Pictures', '', 'display.folder.*'),
 (6, 4, 1, 'Manage', 'http://gallery.HOSTmanage', 'Manage Your Submissions', '', 'display.folder.*'),
 (7, 3, 0, 'Folders', 'http://blog.HOSTf', 'Show Article Folders', '', ''),
 (8, 3, 1, 'Submit', 'http://blog.HOSTe', 'Submit a New Entry', '', 'reader.folder.*'),
-(9, 0, 3, 'Chan', 'http://chan.HOST', 'Stevenchan', '', ''),
-(10, 0, 4, 'Links', '#', '', '', ''),
+(9, 0, 20, 'Chan', 'http://chan.HOST', 'Stevenchan', '', ''),
+(10, 0, 25, 'Links', '#', '', '', ''),
 (11, 10, 1, 'Imagedump', 'http://img.tymoon.eu', 'A large collection of images from the internet', '', ''),
 (12, 10, 4, 'Argh', 'http://argh.tymoon.eu', 'Argh.', '', ''),
 (13, 10, 2, 'StevenArch', 'http://stevenarch.tymoon.eu', 'Stevenchan 1 Archive', '', ''),
 (14, 10, 5, 'Kick', 'http://scr.tymoon.eu/kick', 'Kick Shinmera', '', ''),
 (15, 10, 3, 'Movie Night', 'http://tymoon.eu/MovieNight', 'Stevenchan Movie Night', '', ''),
 (16, 10, 6, 'Did You Know', 'http://shinmera.tymoon.eu/public/nt', 'Did you know... about Windows NT', '', ''),
-(17, 10, 0, 'Shinmera', 'http://shinmera.com', 'Shinmera&apos;s personal website', '', '');
+(17, 10, 0, 'Shinmera', 'http://shinmera.com', 'Shinmera&apos;s personal website', '', ''),
+(18, 0, 10, 'Projects', 'http://hub.HOST', 'Project HUB and Bug Tracker', '', ''),
+(19, 18, 5, 'Submit Ticket', 'http://hub.HOSTticket/submit', 'Submit a Bug Ticket  or Request', '', ''),
+(20, 18, 0, 'Project List', 'http://hub.HOSTproject', 'View Project List', '', ''),
+(21, 18, 2, 'My Dashboard', 'http://hub.HOSTdashboard', 'View Assigned Bugs and Projects', '', 'hub.dashboard');
 
 CREATE TABLE IF NOT EXISTS `ms_log` (
   `logID` int(11) unsigned NOT NULL AUTO_INCREMENT,
@@ -2379,7 +2464,7 @@ CREATE TABLE IF NOT EXISTS `ms_log` (
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=118 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=130 ;
 
 INSERT IGNORE INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (1, 'Log cleared.', 2012, 1),
@@ -2498,7 +2583,19 @@ INSERT IGNORE INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (114, 'Hook Themes::buildMenu =&gt; Admin::buildMenu added.', 1344102070, 1),
 (115, 'Hook CORE::HIToffline =&gt; CORE::offline added.', 1344153529, 1),
 (116, 'Option key &apos;offline&apos; (b) added with value &apos;1&apos;.', 1344153540, 1),
-(117, 'Hook CORE::HIToffline =&gt; CORE::offline added.', 1344157325, 1);
+(117, 'Hook CORE::HIToffline =&gt; CORE::offline added.', 1344157325, 1),
+(118, 'Module &apos;Twitch&apos; added.', 1350120367, 1),
+(119, 'Hook Neon::profileSettings =&gt; Twitch::displayUserPanel added.', 1350120421, 1),
+(120, 'Hook Neon::TwitterSave =&gt; Twitch::displayUserSave added.', 1350120452, 1),
+(121, 'Option key &apos;twitch_consumer_key&apos; (s) added with value &apos;fzGWcOhR1baeFocC4WKKA&apos;.', 1350129375, 1),
+(122, 'Option key &apos;twitch_consumer_secret&apos; (s) added with value &apos;Kz527nJ2jn3AzfplttnedDEBOywhyJcGSByhFP5NUQM&apos;.', 1350129388, 1),
+(123, 'Hook CORE::APItwitter =&gt; Twitch::apiTwitterReturn added.', 1350129643, 1),
+(124, 'Hook Display::POST =&gt; Twitch::universalPostHook added.', 1350131961, 1),
+(125, 'Hook Reader::POST =&gt; Twitch::universalPostHook added.', 1350131971, 1),
+(126, 'Option key &apos;chan_fileloc_extern&apos; changed to &apos;http://linuz.com/TyNET/data/chan/&apos;.', 1350472880, 1),
+(127, 'Module &apos;Hub&apos; added.', 1350479564, 1),
+(128, 'Module &apos;Ticker&apos; added.', 1350479597, 1),
+(129, 'Hook CORE::HIThub =&gt; Hub::displayPage added.', 1350479610, 1);
 
 CREATE TABLE IF NOT EXISTS `ms_modules` (
   `name` varchar(35) CHARACTER SET latin1 NOT NULL,
@@ -2515,6 +2612,7 @@ INSERT IGNORE INTO `ms_modules` (`name`, `subject`) VALUES
 ('Display', 'A gallery module with per-user gallery support.'),
 ('Fenfire', 'Provides a simple comment system.'),
 ('Filer', 'A simple file upload API.'),
+('Hub', 'The hub module provides a large project management system.'),
 ('Layouter', 'A layout engine to create dynamic layouts and abolish the need for complicated themes.'),
 ('LightUp', 'BBCode and text formatting system '),
 ('Liroli', 'Public user groups'),
@@ -2525,6 +2623,8 @@ INSERT IGNORE INTO `ms_modules` (`name`, `subject`) VALUES
 ('Reader', 'A simple blogging system.'),
 ('Test', 'To run test suites.'),
 ('Themes', 'A simple theming system, making page construction very simple.'),
+('Ticker', 'Ticker is a bug ticket tracker API and has no front-end by itself. It is best integrated into the HUB.'),
+('Twitch', 'Twitter library.'),
 ('User', 'Allows for user management and supplies AUTH login/logout functions.');
 
 CREATE TABLE IF NOT EXISTS `ms_options` (
@@ -2539,7 +2639,7 @@ INSERT IGNORE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('avatar_maxdim', '150', 'i'),
 ('avatar_maxsize', '500', 'i'),
 ('chan_defaultamount', '5', 'i'),
-('chan_fileloc_extern', 'http://linuz.com/Luminate/data/chan/', 's'),
+('chan_fileloc_extern', 'http://linuz.com/TyNET/data/chan/', 's'),
 ('chan_frontposts', '20', 'i'),
 ('chan_maxlines', '20', 's'),
 ('chan_online', '1', 's'),
@@ -2562,7 +2662,10 @@ INSERT IGNORE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('salt2', 'you_have_GOT_to_be_shittong_me', 's'),
 ('salt3', '23scUOBa38@#J(&)2h1linDV(03uBNX:', 's'),
 ('sitename', 'TyNET', 's'),
-('sysop_mail', 'admin@xprog.ch', 's');
+('sysop_mail', 'admin@xprog.ch', 's'),
+('twitch_consumer_key', 'fzGWcOhR1baeFocC4WKKA', 's'),
+('twitch_consumer_secret', 'Kz527nJ2jn3AzfplttnedDEBOywhyJcGSByhFP5NUQM', 's'),
+('twitch_return', 'user.linuz.com/TyNET/panel?tab=Twitter', 's');
 
 CREATE TABLE IF NOT EXISTS `ms_timer` (
   `IP` varchar(16) CHARACTER SET latin1 NOT NULL,
@@ -2572,14 +2675,14 @@ CREATE TABLE IF NOT EXISTS `ms_timer` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 INSERT IGNORE INTO `ms_timer` (`IP`, `time`, `action`) VALUES
-('127.0.0.1', 1348919788, 'chan_post'),
+('127.0.0.1', 1350475949, 'chan_post'),
 ('127.0.0.1', 1341015121, 'chan_report'),
 ('127.0.0.1', 0, 'comment'),
 ('127.0.0.1', 1344091194, 'displayEdit'),
 ('127.0.0.1', 1335395795, 'sendmessage'),
 ('127.0.0.1', 0, 'visit'),
 ('127.0.0.1', 0, 'visit:'),
-('127.0.0.1', 1349019873, 'visit:1'),
+('127.0.0.1', 1350479689, 'visit:1'),
 ('127.0.0.1', 1343824183, 'visit:5'),
 ('127.0.0.1', 1344091244, 'visit:6');
 
@@ -2602,6 +2705,18 @@ CREATE TABLE IF NOT EXISTS `ti_ticket` (
   `solution` text NOT NULL,
   PRIMARY KEY (`ticketID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS `tw_data` (
+  `userID` int(10) unsigned NOT NULL,
+  `token` varchar(55) NOT NULL,
+  `secret` varchar(55) NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT IGNORE INTO `tw_data` (`userID`, `token`, `secret`, `active`) VALUES
+(0, '', '', 0),
+(1, '126658019-ZdNErtQONBO2bPXzNQDCV3snia1UcI9WKHDzJeJk', 'gO5YdHPf3K8NeT8snvU6ZnVJdNBqEKgWVaxVYm7stao', 1);
 
 CREATE TABLE IF NOT EXISTS `ud_fields` (
   `varname` varchar(32) CHARACTER SET latin1 NOT NULL,
