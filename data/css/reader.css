@@ -31,6 +31,7 @@
     display:inline-block;
     margin:0;padding:0;
     font-size:20pt;
+    max-width:680px;
 }
 
 #bloghead .userAvatar img{
@@ -47,7 +48,41 @@
     max-height:100%;
 }
 
+#blogentrynav{
+    margin: 10px;padding: 5px;
+    background: #FFF;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px #CCC;
+    position:relative;
+}
+#blogentrynav a{
+    display: inline-block;
+    padding: 3px;
+    width: 377px;
+    background: #888;
+    border-radius: 3px;
+    text-align: center;
+    vertical-align: middle;
+}
+#blogentrynav a.prev{text-align:left;}
+#blogentrynav a.next{text-align:right;}
+#blogentrynav a.prev{
+    background: -moz-linear-gradient(left, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0) 100%);
+    background: -webkit-linear-gradient(left, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: -o-linear-gradient(left, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: -ms-linear-gradient(left, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+    background: linear-gradient(to right, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0) 100%);
+}
+#blogentrynav a.next{
+    background: -moz-linear-gradient(left, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.15) 100%);
+    background: -webkit-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.15) 100%);
+    background: -o-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.15) 100%);
+    background: -ms-linear-gradient(left, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.15) 100%);
+    background: linear-gradient(to right, rgba(0,0,0,0) 0%,rgba(0,0,0,0) 50%,rgba(0,0,0,0.15) 100%);
+}
+
 #blogfoot,#folderfoot{
+    clear:both;
     min-height:20px;
     background: #FFF;
     border-top: 2px solid #AE61ED;
@@ -153,7 +188,7 @@
     background: #000;
     color: #FFF;
 }
-#content.invert #article blockquote{
+#content.invert #article blockquote, #content.invert #blogentrynav{
     background: #151515;
     box-shadow: 0px 0px 10px #151515;
     color: #FFF;
