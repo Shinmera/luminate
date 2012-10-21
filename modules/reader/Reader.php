@@ -103,6 +103,12 @@ function displayEntry($entryID){
         $this->displayHead();
         include(PAGEPATH.'404.php');
     }else{
+        $prev = DataModel::getData('','SELECT entryID, title FROM bl_entries 
+                                       WHERE published=1 AND time<? ORDER BY time DESC LIMIT 1',
+                                       array($entry->time));
+        $next = DataModel::getData('','SELECT entryID, title FROM bl_entries 
+                                       WHERE published=1 AND time>? ORDER BY time ASC LIMIT 1',
+                                       array($entry->time));
         $t->openPage($entry->title.' - Blog');
         $this->displayHead();
         ?>
@@ -132,6 +138,13 @@ function displayEntry($entryID){
                 <?=$l->triggerPARSE('Reader',$entry->subject);?>
                 <br style="clear:both;" />
             </blockquote>
+            <div id="blogentrynav">
+                <? if($prev!=null){ ?>
+                    <a class="prev" title="Previous blog entry" href="<?=PROOT.'p/'.$prev->entryID.'-'.Toolkit::makeUrlReady($prev->title)?>#blog">Previous: <?=$prev->title?></a>
+                <? }if($next!=null){ ?>
+                    <a class="next" title="Next blog entry" href="<?=PROOT.'p/'.$next->entryID.'-'.Toolkit::makeUrlReady($next->title)?>#blog">Next: <?=$next->title?></a>
+                <? } ?>
+            </div>
         </article>
         <div id="blogfoot">
             <? $l->triggerHook('entryFoot','Reader',$entry); ?>
