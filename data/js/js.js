@@ -257,6 +257,8 @@ function addInteractiveElement($ul,name,val){
     if($("li:last-child",$ul).length>0)
         id=$("li:last-child",$ul).attr("id")+1;
     else id=0;
+    name = name.trim(); val = val.trim();
+    if(name==""||val=="")return;
     $ul.append('<li id="ILE'+id+'"><a>x</a><input type="hidden" name="'+$ul.parent().attr("id")+'[]" value="'+val+'" />'+name+'</li>');
     try{$ul.sortable("refresh");}catch(e){}
     var $obj= $("#ILE"+id+" a",$ul);
