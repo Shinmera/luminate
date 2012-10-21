@@ -633,6 +633,8 @@ public static function autoBreakLines($text,$length=100){
             $text = substr($text,0,$pointer)." ".substr($text,$pointer);
         }else if($lastopen<$pointer && $lastclose<$pointer){
             $pointer += $lastclose-$lastopen;                                   //Compensate for invisible tag.
+            if($pointer>=strlen($text))return $text;                            //Oh wow, we jumped out of text boundary!
+            
             $nextopen = strrpos($text,"<",$pointer-strlen($text));
             $nextclose = strpos($text,">",$nextopen);
             if($nextopen<$pointer && $nextclose>$pointer){                      //We might have jumped into yet another tag!
