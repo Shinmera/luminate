@@ -244,7 +244,9 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{DOCUMENT_ROOT}/TyNET/decoder.php -f
 RewriteRule . /TyNET/decoder.php [L]
 
-RewriteCond %{DOCUMENT_ROOT}/TyNET/decoder.php !-f
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/decoder.php -f
 RewriteRule . /decoder.php [L]
 
 AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
