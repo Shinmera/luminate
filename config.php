@@ -10,7 +10,7 @@ if(!defined("INIT")||$force_reload){
     else                                            define("HOST",substr($_SERVER['SERVER_NAME'],strpos($_SERVER['SERVER_NAME'],'.')+1));
     //automatic root detection
     define("ROOT",rtrim($_SERVER['DOCUMENT_ROOT'],'/'));
-    define("PROOT",'/'.trim(str_replace(ROOT,'',dirname(__FILE__)),'/').'/');
+    define("PROOT",str_replace('//','','/'.str_replace(ROOT,'',dirname(__FILE__)).'/'));
     define("TROOT",ROOT.PROOT);
     define("NODOMAIN","http://".HOST.PROOT);
     //shortcuts
