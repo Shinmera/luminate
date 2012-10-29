@@ -232,15 +232,21 @@ SetEnvIfNoCase User-Agent "^Zyborg" bad_bot
     Deny from env=bad_bot
 </Limit>
 
-
+## INDEX ##
 DirectoryIndex decoder.php index.html index.php
 
+## REWRITE URL ##
 RewriteEngine On
 RewriteBase /
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/TyNET/decoder.php -f
 RewriteRule . /TyNET/decoder.php [L]
+
+RewriteCond %{DOCUMENT_ROOT}/TyNET/decoder.php !-f
+RewriteRule . /decoder.php [L]
+
 AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
 AddType 'text/html; charset=UTF-8' html
 AddType 'text/javascript; charset=UTF-8' js
