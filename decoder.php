@@ -1,5 +1,6 @@
 <?
 try{
+    define("DECODER",TRUE);
     include('config.php');
     if(BUFFER){if(COMPRESS){if(!ob_start('ob_gzhandler')) ob_start();}}
     Toolkit::checkShitBrowser();
@@ -25,7 +26,8 @@ try{
        strpos(TRUSTEDIPS,$_SERVER['REMOTE_ADDR'])===FALSE)$domain="offline";
     define('DOMAIN',$domain);
     define('FULLURL',$domain.'.'.HOST.$_SERVER['REQUEST_URI']);
-    
+    define('PARAM',$param);
+
     $l->triggerHook('HIT'.DOMAIN,'CORE',array($params),array(),true);
     
     //No hook registered for the domain, call default.
@@ -37,6 +39,9 @@ try{
     $c->close();
 
     $l->triggerHook('END',$CORE,array($k->getMicrotime()));
-    
-}catch(Exception $e){Toolkit::err('Error Code: '.$e->getCode().'<br>Error Message: '.$e->getMessage().'<br>Strack Trace: <br>'.$e->getTraceAsString());}
+
+}catch(Exception $e){
+    Toolkit::handle_exception($e);
+    include(PAGEPATH.'500.php');
+}
 ?>
