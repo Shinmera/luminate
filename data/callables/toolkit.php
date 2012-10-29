@@ -142,6 +142,30 @@ public static function err($message,$die=false,$return=false){
     if($die)die($message);else echo($message);
 }
 
+public static function handle_exception($e){
+    $message = '
+        <html>
+            <head>
+                <title>TyNET: Uncaught Exception</title>
+            </head>
+            <body>
+                <b>IP:</b> '.$_SERVER['REMOTE_ADDR'].'<br />
+                <b>Date:</b> '.date('Y-m-d H:i:s').'<br />
+                <b>File:</b> '.$e->getFile().':'.$e->getLine().'<br />
+                <b>Message:</b> '.$e->getMessage().'<br />
+                <b>Stack Trace:</b><br />
+                '.$e->getTraceAsString().'<br />
+                <b>Constants:</b><br />
+                '.str_replace("\n",'<br />',print_r(get_defined_constants(true)['user'],true)).'
+            </body>
+        </html>';
+    $headers  = 'MIME-Version: 1.0'."\r\n".
+                'Content-type: text/html; charset=UTF-8'."\r\n".
+                'To: Sysop <'.SYSOPMAIL.'>'."\r\n".
+                'From: TyNET system <sys@'.HOST.'>'."\r\n";
+    mail(SYSOPMAIL, 'TyNET: Uncaught Exception', $message, $headers);
+}
+
 public static function pf($message){
     echo($message.'<br />');
     ob_flush();flush();
