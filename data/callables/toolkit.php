@@ -143,6 +143,7 @@ public static function err($message,$die=false,$return=false){
 }
 
 public static function handle_exception($e){
+    $constants = get_defined_constants(true);
     $message = '
         <html>
             <head>
@@ -156,7 +157,7 @@ public static function handle_exception($e){
                 <b>Stack Trace:</b><br />
                 '.$e->getTraceAsString().'<br />
                 <b>Constants:</b><br />
-                '.str_replace("\n",'<br />',print_r(get_defined_constants(true)['user'],true)).'
+                '.str_replace("\n",'<br />',print_r($constants['user'],true)).'
             </body>
         </html>';
     $headers  = 'MIME-Version: 1.0'."\r\n".
