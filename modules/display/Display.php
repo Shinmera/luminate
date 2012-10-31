@@ -243,7 +243,7 @@ function displayEdit($picture){
                     $err="";
                     $picture->text = $_POST['text'];
                     $picture->title= $_POST['title'];
-                    $picture->tags = implode(',',$_POST['tags']);
+                    @$picture->tags = implode(',',$_POST['tags']);
                     if(strlen($_FILES['file']['name'])>20)$_FILES['file']['name']=substr($_FILES['file']['name'],0,20);
 
                     if($picture->pictureID!=''){
