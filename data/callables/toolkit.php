@@ -450,7 +450,7 @@ public static function downloadFile($url,$destination,$maxsizeKB=500,$allowedfil
     return $path;
 }
 
-public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname="",$appendextension=true){
+public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowedfiles=array(""),$overwrite=false,$newname="",$appendextension=true,$maxnamelength=64){
     if(!is_uploaded_file($_FILES[$fieldname]['tmp_name']))        throw new Exception("No file uploaded!");
     if(!file_exists($_FILES[$fieldname]['tmp_name']))             throw new Exception("No uploaded file exists!");
     $filesize = $_FILES[$fieldname]['size']/1024;
@@ -458,17 +458,32 @@ public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowe
     $fileorig = $_FILES[$fieldname]['tmp_name'];
     $filetype = self::getMimeType($_FILES[$fieldname]['tmp_name']);
     //new filename if any
+    print_r($_FILES[$fieldname]);
+    Toolkit::err("FILENAME: ".$filename."<br />NEWNAME: ".$newname);
     if($newname!=""){
         if($appendextension){
             if(strpos($filename,'.')!==FALSE){
                 $extension=substr($filename,strrpos($filename,'.')+1);
-            }else $extension='dat';
+                if(strlen($extension)<=1){
+                    $extension = substr($filetype,strrpos($filetype,'/')+1);
+                }
+            }else{
+                $extension = substr($filetype,strrpos($filetype,'/')+1);
+            }
             $newname = $newname.'.'.$extension;
+            Toolkit::err("RESULTING: ".$newname."<br />EXTENSION: ".$extension);
         }
         $filename = $newname;
     }
     //get away those nasty characters.
     $filename = Toolkit::sanitizeFilename($filename);
+    //trim filename length
+    if(strlen($filename)>$maxnamelength){
+        $extension=substr($filename,strrpos($filename,'.')+1);
+        $basename=substr($filename,0,strrpos($filename,'.'));
+        $basename=substr($filename,0,64-strlen($extension));
+        $filename=$basename.$extension;
+    }
     if(substr($destination,strlen($destination)-1)!="/")$destination=$destination."/";
     //perform checks
     if($filesize>$maxsizeKB)                                                throw new Exception("File is too big: ".Toolkit::displayFilesize ($filesize));
