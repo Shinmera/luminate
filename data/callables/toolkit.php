@@ -458,8 +458,6 @@ public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowe
     $fileorig = $_FILES[$fieldname]['tmp_name'];
     $filetype = self::getMimeType($_FILES[$fieldname]['tmp_name']);
     //new filename if any
-    print_r($_FILES[$fieldname]);
-    Toolkit::err("FILENAME: ".$filename."<br />NEWNAME: ".$newname);
     if($newname!=""){
         if($appendextension){
             if(strpos($filename,'.')!==FALSE){
@@ -471,7 +469,6 @@ public static function uploadFile($fieldname,$destination,$maxsizeKB=500,$allowe
                 $extension = substr($filetype,strrpos($filetype,'/')+1);
             }
             $newname = $newname.'.'.$extension;
-            Toolkit::err("RESULTING: ".$newname."<br />EXTENSION: ".$extension);
         }
         $filename = $newname;
     }
