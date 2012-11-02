@@ -468,19 +468,12 @@ code pre br{display:none;}
 }
 .comment .commentInfo .button:hover{box-shadow: 0px 0px 10px #FFDD00;}
 
-.commentBox{
-  padding: 10px;
-  margin: 10px;
-  border: 2px solid #490093;
-  border-radius: 3px;
-  display: inline-block;
-  background: #ffffff; /* Old browsers */
-  background: -moz-linear-gradient(top, #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
-  background: -ms-linear-gradient(top, #ffffff 0%, #e5e5e5 100%);
-  background: -o-linear-gradient(top, #ffffff 0%, #e5e5e5 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+#floatingCommentBox{display:none;}
+.comment .commentText textarea{
+  width:100%;
+  box-sizing: border-box;
 }
-.commentBox label{min-width:100px;}
+
 .commentBox textarea{min-width:260px;}
 
 .commentSection{

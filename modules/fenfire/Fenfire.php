@@ -206,25 +206,39 @@ function commentBox($FID=null){
     if($folder->open!=1)return;
     if($FID==null){$FID=$folder->folderID;}
     ?>
-    
-    <form class="commentBox" method="post" action="<?=$k->url("API","SubmitComment")?>">
-        <b><a title="commentBox">Add a comment:</a></b><br />
-        <? if($a->user==null) {?>
-            <label><a href="<?=$k->url("login","")?>" title="If you have a registered account, please log in first.">Username:</a></label> <input name="varuser" value="<?=$saveduser?>" type="text" /><br />
-            <label><a title="Email will not be published.">E-Mail:</a></label>                                                             <input name="varmail" value="<?=$savedmail?>" type="text" /><br />
-        <? } ?>
-            
-        <? $l->triggerHook("EDITOR",$this); ?>
-        <textarea Name="varsubject" id="varsubject" style="height:100px;"></textarea><br />
-        
-        <? if($a->user==null&&$c->o['recaptcha_key_public']!=''){
-            require(CALLABLESPATH.'recaptchalib.php'); ?>
-            <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
-            <?=recaptcha_get_html($c->o['recaptcha_key_public']);?>
-        <? } ?>
-        <input type="submit" name="Submit" value="Submit" />
-        <input type="hidden" name="varFID" value="<?=$FID?>">
-        <input type="hidden" id="varresponse" name="varresponse" value="">
+    <b><a title="commentBox">Add a comment:</a></b><br />
+    <form id="commentBox" class="comment commentBox" method="post" action="<?=$k->url("API","SubmitComment")?>">
+        <?=$k->getUserAvatar($a->user->displayname,$a->user->filename,false,75);?>
+        <div class="commentText">
+            <div class="commentInfo">
+                <? if($a->user==null) {?>
+                    <input name="varuser" value="<?=$saveduser?>" type="text" placeholder="Username" required />
+                    <input name="varmail" value="<?=$savedmail?>" type="text" placeholder="email" required />
+                <? }else{ ?>
+                    Posted by <?=$k->getUserPage($a->user->displayname);?> on <?=$k->toDate(time());?>
+                <? } ?>
+                <input type="submit" class="button replyButton" name="Submit" value="Submit" />
+            </div>
+            <p>
+                <? $l->triggerHook("EDITOR",$this); ?>
+                <textarea Name="varsubject" id="varsubject" style="height:100px;" required></textarea>
+                
+                <? if($a->user==null&&$c->o['recaptcha_key_public']!=''){
+                    if(!in_array(CALLABLESPATH.'recaptchalib.php',get_included_files())){
+                        include_once(CALLABLESPATH.'recaptchalib.php'); ?>
+                        <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
+                        <?=recaptcha_get_html($c->o['recaptcha_key_public']);?>
+                    <? }else{ ?>
+                        <script type="text/javascript">
+                            $(function(){
+                                $("#recaptcha_widget_div").clone().appendTo($("#commentBox .commentText p"));
+                            })
+                        </script>
+                <? }} ?>
+            </p>
+            <input type="hidden" name="varFID" value="<?=$FID?>">
+            <input type="hidden" id="varresponse" name="varresponse" value="">
+        </div>
     </form><?
 }
 
@@ -354,7 +368,7 @@ function cleanComments($FID){
 }
 
 function commentList($FID="",$width=440){
-    global $c,$k,$l;
+    global $a,$c,$k,$l;
     
     $folder = $this->getFolder($FID);
     $max = $c->getData("SELECT COUNT(commentID) FROM fenfire_comments WHERE FID=?",array($folder->folderID));
@@ -378,7 +392,7 @@ function commentList($FID="",$width=440){
                 $comment=null;
                 foreach($comments as $com){if($com->commentID==$o){$comment=$com;break;}}
                 if($comment!=null){
-                    ?><div class="comment" style="margin-left:<?=(50*$comment->level)?>px;">
+                    ?><div class="comment" style="margin-left:<?=(50*$comment->level)?>px;" id="P<?=$comment->commentID?>">
                         <?
                         $user = DataModel::getData("ud_users","SELECT displayname,filename FROM ud_users WHERE username LIKE ?",array($comment->username));
                         if($user==null){$user = DataModel::getHull("");$user->displayname=$comment->username;$user->filename="noguy.png";}
@@ -395,13 +409,47 @@ function commentList($FID="",$width=440){
                     </div><?
                 }
             }
-        } ?>
+        }
+
+        $saveduser=$_COOKIE['_session_user'];
+        $savedmail=$_COOKIE['_session_mail'];
+        if($FID==null){$FID=$folder->folderID;}
+        ?>
+        <form id="floatingCommentBox" class="comment commentBox" method="post" action="<?=$k->url("API","SubmitComment")?>">
+            <?=$k->getUserAvatar($a->user->displayname,$a->user->filename,false,75);?>
+            <div class="commentText">
+                <div class="commentInfo">
+                    <? if($a->user==null) {?>
+                        <input name="varuser" value="<?=$saveduser?>" type="text" placeholder="Username" required />
+                        <input name="varmail" value="<?=$savedmail?>" type="text" placeholder="email" required />
+                    <? }else{ ?>
+                        Posted by <?=$k->getUserPage($a->user->displayname);?> on <?=$k->toDate(time());?>
+                    <? } ?>
+                    <input type="submit" class="button replyButton" name="Submit" value="Submit" />
+                </div>
+                <p>
+                    <? $l->triggerHook("EDITOR",$this); ?>
+                    <textarea Name="varsubject" id="varsubject" style="height:100px;" required></textarea>
+                    
+                    <? if($a->user==null&&$c->o['recaptcha_key_public']!=''){
+                        include_once(CALLABLESPATH.'recaptchalib.php'); ?>
+                        <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
+                        <?=recaptcha_get_html($c->o['recaptcha_key_public']);?>
+                    <? } ?>
+                </p>
+                <input type="hidden" name="varFID" value="<?=$FID?>">
+                <input type="hidden" id="varresponse" name="varresponse" value="">
+            </div>
+        </form>
         <script type="text/javascript">
             $(".comment .replyButton").each(function(){
                 $(this).click(function(){
-                    $(".commentBox #varresponse").attr("value",$(this).attr("id"));
-                    $(".commentBox #varsubject").focus();
-                    $('html,body').animate({scrollTop: $(".commentBox #varsubject").offset().top-40},'fast');
+                    $comment = $("#P" + $(this).attr("id"));
+                    $("#floatingCommentBox").css({"display":"block", "margin-left":(parseInt($comment.css("margin-left").replace("px",""))+50)+"px"});
+                    $comment.after($("#floatingCommentBox").detach());
+                    $("#floatingCommentBox #varresponse").attr("value",$(this).attr("id"));
+                    $("#floatingCommentBox #varsubject").focus();
+                    $('html,body').animate({scrollTop: $comment.offset().top-40},'fast');
                 });
             });
         </script>
