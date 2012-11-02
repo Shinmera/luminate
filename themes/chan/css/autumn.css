@@ -1,0 +1,552 @@
+
+@charset "utf-8";
+.clear {
+    clear: both;
+}
+a:link {
+    color: #214313;
+    text-decoration: none;
+}
+a:visited {
+    color: #214313;
+}
+a:active {
+    color: #764507;
+}
+a:hover {
+    color: #764507;
+}
+IMG.flLeft {
+    float: left;
+    padding: 3px;
+}
+IMG.flRight {
+    float: right;
+    padding: 3px;
+}
+html, body {
+    background: url('http://chan.tymoon.eu/themes/chan/images/Maple-Leaves.png') repeat scroll 0 0 #f29c2f;
+    background-attachment: fixed;
+    color: #000000;
+    font-family: Arial,Monospace;
+    font-size: 10pt;
+}
+.spoiler {
+    border: 1px dotted #EEEEEE;
+}
+.sspoiler {
+    background: none repeat scroll 0 0 #000000;
+    color: #000000;
+}
+.content {
+    padding-top: 20px;
+}
+.boardTitle {
+    color: #5e2613;
+    display: block;
+    font-size: 36pt;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 0 0 #000000;
+}
+#pageBanner {
+    text-align: center;
+}
+.quote {
+    background-color: #222222;
+    border: 1px solid #000000;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 0 5px #000000;
+    padding: 5px;
+}
+.quoteLine {
+    color: #734545;
+    text-shadow: none;
+}
+a.directQuote {
+    color: #903d21;
+    text-decoration: none;
+}
+a.directQuote:hover {
+    color: #764507;
+    text-decoration: none;
+}
+a.directQuote:visited {
+    color: #903d21;
+    text-decoration: none;
+}
+.postBox {
+    background-color: #d89000;
+    border: 1px solid #6c2c16;
+    border-radius: 0 0 0 0;
+    display: inline-block;
+    opacity: 1;
+    padding: 5px;
+    position: absolute;
+    top: 50px;
+    z-index: 10;
+}
+.postBox:hover {
+    opacity: 1;
+}
+.postBox input {
+    background: none repeat scroll 0 0 #c77c1f;
+    border: 1px solid #6c2c16;
+    border-radius: 0 0 0 0;
+    color: #412222;
+    font-size: 10pt;
+    height: 15px;
+    text-shadow: 0 0 0 #000000;
+}
+.postBox textarea {
+    background: url('http://chan.tymoon.eu/themes/chan/images/pumpkin2.png') no-repeat;
+    background-position:bottom right;
+    background-color: #c77c1f;
+    border: 1px solid #6c2c16;
+    border-radius: 0 0 0 0;
+    color: #412222;
+}
+.postBox .eldesc {
+    float: left;
+    width: 100px;
+}
+.postBox #varname {
+    width: 125px;
+}
+.postBox #varmail {
+    width: 125px;
+}
+.postBox #varpass {
+    width: 260px;
+}
+.postBox #varfile {
+    height: 18px;
+    width: 260px;
+}
+.postBox #vartitle {
+    width: 300px;
+}
+.postBox #varsubmit {
+    height: 20px;
+    margin-top: 5px;
+    width: 60px;
+}
+.postBox #fulltext {
+    height: 70px;
+    width: 350px;
+}
+.postBox .tac {
+    font-size: 8pt;
+    margin-top: 10px;
+}
+.toolbar {
+    background: none repeat scroll 0 0 #000000;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.toolbar li {
+    display: inline-block;
+}
+.threadWatch {
+    background-color: #d89000;
+    border: 1px solid #6c2c16;
+    border-radius: 0 0 0 0;
+    display: none;
+    font-size: 8pt;
+    opacity: 1;
+    padding: 5px;
+    position: absolute;
+    top: 50px;
+    z-index: 10;
+}
+.threadWatch:hover {
+    opacity: 1;
+}
+.threadWatch a{
+    color: #013901;
+    text-decoration: none;
+}
+.threadWatch table {
+    border-spacing: 0;
+    margin: 0;
+    width: 100%;
+}
+.threadWatch table thead tr {
+    background-color: #20480a;
+    color: #ffb14f;
+    text-shadow: 0 0 0 #000000;
+}
+.threadWatch table tbody tr:nth-child(2n) {
+    background-color: #eb990a;
+    color: #442323;
+}
+.threadWatch table tbody tr:nth-child(2n+1) {
+    background-color: #c77c1f;
+    color: #442323;
+}
+.threadWatch table tbody td {
+    border-right: 1px solid #000000;
+}
+.threadWatch table tbody td:nth-child(1) {
+    text-align: center;
+}
+.threadWatch table tbody td:nth-child(2) {
+    text-align: center;
+}
+.threadWatch table tbody td:nth-child(3) {
+    text-align: center;
+}
+.threadWatch table tbody td:nth-child(6) {
+    border: medium none;
+    text-align: center;
+}
+.watchButton {
+    font-size: 18pt;
+    text-decoration: none;
+}
+.watchDeleteButton:hover {
+    color: #FF0000;
+    text-shadow: 0 0 0 #000000;
+}
+#watchClearButton {
+    bottom: 5px;
+    float: left;
+    left: 50px;
+    position: absolute;
+}
+#watchClearButton:hover {
+    color: #FF0000;
+    text-shadow: 0 0 0 #000000;
+}
+#watchReadButton {
+    bottom: 5px;
+    float: left;
+    left: 30px;
+    position: absolute;
+}
+#watchReadButton:hover {
+    color: #00FF00;
+    text-shadow: 0 0 0 #000000;
+}
+#watchRefreshButton {
+    bottom: 5px;
+    float: left;
+    font-weight: bold;
+    left: 10px;
+    position: absolute;
+}
+#watchRefreshButton:hover {
+    color: #FFD900;
+    text-shadow: 0 0 0 #000000;
+}
+#watchRemoveCol {
+    width: 20px;
+}
+#watchBoardCol {
+    width: 40px;
+}
+#watchIDCol {
+    width: 30px;
+}
+#watchPosterCol {
+    width: 100px;
+}
+#watchUnreadCol {
+    width: 10px;
+}
+.watchNewPosts {
+    background: none repeat scroll 0 0 #00ab00;
+    box-shadow: 0 0 0 #FF0000;
+    color: #000000;
+}
+.post, .postOP {
+    display: block;
+    padding: 2px;
+    position: relative;
+}
+.post {
+    background-color: #eeb21b;
+    border-color: #c35632;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    display: table;
+    margin-left: 20px;
+    margin-top: 5px;
+    opacity: 1;
+}
+.postOP {
+    background-color: #eeb21b;
+    border-color: #c35632;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    opacity: 1;
+    width: 99%;
+}
+#postType {
+    background: none repeat scroll 0 0 transparent;
+}
+#postType:after {
+    font-family: pixelated,Arial;
+    font-size: 20pt;
+    padding-right: 2px;
+    position: absolute;
+    right: 0;
+    text-align: right;
+    top: 0;
+    width: 250px;
+}
+#postType.locked:after {
+    background: -moz-linear-gradient(left center , rgba(255, 0, 0, 0) 0%, #FF0000 100%) repeat scroll 0 0 transparent;
+    content: "LOCKED";
+}
+#postType.sticky:after {
+    background: -moz-linear-gradient(left center , rgba(0, 255, 0, 0) 0%, #00FF00 100%) repeat scroll 0 0 transparent;
+    content: "STICKY";
+}
+#postType.stickylocked:after {
+    background: -moz-linear-gradient(left center , rgba(0, 0, 255, 0) 0%, #0000FF 100%) repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    content: "INFO";
+}
+#postType.redirect:after {
+    background: -moz-linear-gradient(left center , rgba(255, 255, 255, 0) 0%, #FFFFFF 100%) repeat scroll 0 0 transparent;
+    color: #000000;
+    content: "REDIRECT";
+}
+.selected {
+    background-color: #eeb21b;
+    border-color: #3d5f32;
+    border-style: dotted;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px 1px 1px 4px;
+    box-shadow: 0 0 0 #000000;
+}
+.selected a, .selected .quoteLine, .selected .postMod {
+    text-shadow: 0 0 0 #FFFFFF;
+}
+.postImage {
+    float: left;
+    margin: 5px;
+    max-height: 100%;
+    max-width: 100%;
+}
+.postTitle {
+    color: #593737;
+    font-size: 14pt;
+    font-weight: bold;
+}
+.postUsername, .postTripcode {
+    font-size: 10pt;
+}
+.postUsername {
+    color: #502010;
+    font-weight: bold;
+}
+.postTripcode {
+    color: #6a2b16;
+}
+.postMod {
+    border-bottom: 2px dotted #135c1a;
+    border-top: 2px dotted #135c1a;
+    color: #135c1a;
+}
+#postType {
+    background: none repeat scroll 0 0 transparent;
+}
+a.omittedText, a.fetchPrevious, a.fetchNext {
+    color: #133f15;
+    font-size: 10pt;
+    font-weight: bold;
+    margin: 2px;
+    padding: 2px;
+}
+.threadToolbar {
+    margin-bottom: 0;
+    margin-left: 0;
+}
+.threadToolbar a {
+    background-color: #eeb21b;
+    border-color: #c35632;
+    border-style: solid;
+    border-width: 1px;
+    color: #000000;
+    font-size: 12pt;
+    padding: 3px;
+    text-align: center;
+    text-decoration: none;
+}
+.threadToolbar a:hover {
+    background-color: #085f10;
+    border-color: #19ae27;
+    border-style: solid;
+    border-width: 1px;
+    color: #f6c588;
+}
+.buttons {
+}
+.buttons a {
+    background: -moz-linear-gradient(center top , #EEEEEE, #888888) repeat scroll 0 0 transparent;
+    border-left: 1px solid #EEEEEE;
+    border-right: 1px solid #EEEEEE;
+    color: #000000;
+    padding: 5px;
+    position: relative;
+    top: -4px;
+}
+.buttons a:hover {
+    background-color: #EEEEEE;
+}
+.deleteBox, .reportBox {
+    clear: right;
+    float: right;
+}
+.footer {
+    color: #0e3004;
+    font-size: 8pt;
+    margin-top: 10px;
+    text-align: center;
+}
+.popup, .jqmWindow {
+    background-color: #EEEEEE;
+    border: 1px solid black;
+    color: #333333;
+    display: none;
+    left: 50%;
+    margin-left: -300px;
+    padding: 12px;
+    position: fixed;
+    top: 17%;
+    width: 600px;
+}
+.jqmOverlay {
+    background-color: #000000;
+}
+.menu {
+    background-color: #7e2f15;
+    left: 0;
+    list-style: none outside none;
+    margin: 0;
+    padding: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 20;
+}
+.menu a {
+    color: #f1c14a;
+}
+.menu li {
+    background: none repeat scroll 0 0 #7e2f15;
+}
+.menu li a {
+    padding: 2px 10px;
+}
+.menu li a:hover {
+    background: none repeat scroll 0 0 #3f7e15;
+    color: #f1c14a;
+}
+.menu > li > ul {
+    margin-top: -16px;
+}
+.menu .separator, .menu .separator2 {
+    background: none repeat scroll 0 0 #000000;
+    width: 1px;
+}
+.menu > li > a.menulink {
+    background-color: #7e2f15;
+    color: #f1c14a;
+    font-weight: bold;
+}
+.menu > li > a.menulink:hover {
+    background: none repeat scroll 0 0 #3f7e15;
+}
+h1, h2, h3, h4, h5, h6 {
+    display: inline;
+    margin: 0;
+}
+.fullwidth {
+    width: 100%;
+}
+#content {
+    background: url('http://chan.tymoon.eu/themes/chan/images/ppp.png')#d89000;
+    border: 1px solid #6c2c16;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    margin-top: 50px;
+    position: relative;
+}
+#chanTitle {
+    background-color: #eeb21b;
+    border: 1px  #6c2c16;;
+    border-style: solid;
+    border-radius: 0 0 0 0;
+    color: #000000;
+    display: inline-block;
+    margin-top: 0;
+    padding: 2px 10px;
+    text-align: center;
+}
+#news {
+    border-radius: 0 0 0 0;
+    margin-right: 310px;
+    min-height: 600px;
+    padding: 5px;
+    text-align: justify;
+}
+#news img {
+    max-width: 100%;
+}
+#news .box {
+    background-color: #eeb21b;
+    border: 1px  #6c2c16;;
+    border-style: solid;
+    display: inline-block;
+    margin: 2px;
+    min-height: 200px;
+    min-width: 32%;
+    padding: 3px;
+    position: relative;
+    text-align: justify;
+    vertical-align: text-top;
+}
+#news .stretch {
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    width: 100%;
+}
+#postSidebar {
+    background-color: #d89611;
+    border-color: #441c0e;
+    border-radius: 0 0 0 0;
+    border-style: solid;
+    border-width: 1px;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 300px;
+}
+#postSidebar h3 {
+    background-color: transparent; !important
+    border-radius: 0 0 0 0;
+    text-indent: 5px;
+    color: #254c05; !important
+}
+#postSidebar .simplePost {
+    margin-top: 5px;
+}
+#postSidebar .simplePost .postInfo {
+    background: none repeat scroll 0 0 #ce8b05;
+    text-indent: 5px;
+}
+#postSidebar .simplePost article {
+    padding: 2px;
+}
