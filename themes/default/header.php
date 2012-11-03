@@ -1,6 +1,6 @@
 <? global $c,$k,$t,$a,$l; ?>
 <div id="header">
-    <h1><?=$c->o['sitename']?></h1>
+    <h1><a href="<?=NODOMAIN?>"><?=$c->o['sitename']?></a></h1>
 
     <nav id="navbar">
         <? $t->printMenu(); ?>
