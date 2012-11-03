@@ -117,6 +117,7 @@ code pre br{display:none;}
     opacity:0.8;
 }
 #header h1{font-size:12pt;margin:0;padding:0;}
+#header h1 a{color:#FFF;}
 #header:hover{opacity:0.95;}
 
 
@@ -669,4 +670,50 @@ code pre br{display:none;}
 .tags li a:hover{
     text-shadow: 0 0 5px #FFF;
     opacity: 1;
+}
+
+#registerForm{
+
+}
+
+#registerForm .formError{
+  background: #FF0000;
+  border-radius: 3px;
+  color: #FFF;
+  padding: 2px;
+  font-weight: bold;
+  border: 1px solid #BB0000;
+  position: relative;
+  height:15px;
+}
+#registerForm .formError::after{
+  content: "";
+  position:absolute;
+  left:-9px;top:2SubApx;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent; 
+  border-right:9px solid #FF0000; 
+  width: 0; 
+  height: 0; 
+}
+#registerForm .formError::before{
+  content: "";
+  position:absolute;
+  left:-11px;top:0px;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent; 
+  border-right:11px solid #BB0000; 
+  width: 0; 
+  height: 0; 
+}
+
+#registerForm #register{
+  width:100%;
+  box-sizing: border-box;
+  border-radius:5px;
+  border: 2px solid #0000BB;
+  background: #0000FF;
+  color: #FFF;
+  font-size:18pt;
+  font-weight:bold;
 }
