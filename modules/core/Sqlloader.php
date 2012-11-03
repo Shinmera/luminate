@@ -20,6 +20,7 @@ var $lastQuery="";
         $this->mysqli = new mysqli('localhost',$sqluser,$sqlpass,$database);
         if(mysqli_connect_errno())die(mysqli_connect_error());
         $this->mysqli->autocommit(TRUE);
+        $this->mysqli->set_charset("utf8");
         $this->loadOptions();
     }
 
