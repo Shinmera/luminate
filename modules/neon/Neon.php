@@ -177,9 +177,9 @@ function displayRegisterPage(){
             <label>E-Mail:   </label>
                 <input name="email" type="mail" maxlength="35" required value="<?=$_POST['email']?>" /> 
                 <?if($err[4]){?><label class="fixed formError"><?=$err[4]?></label><?}?><br />
-            <? if($c->o['toc_url']!=""){ ?>
-                <label><a href="<?=$c->o['toc_url']?>">Terms And Conditions:</a></label>
-                    <label><input name="tac" type="checkbox" value="accepted" required /> I read and accept.</label>
+            <? if($c->o['tac_url']!=""){ ?>
+                <label><a href="<?=$c->o['tac_url']?>">Terms And Conditions:</a></label>
+                    <label><input name="tac" type="checkbox" value="accepted" required /> accept.</label>
                     <?if($err[5]){?><label class="fixed formError"><?=$err[5]?></label><?}?><br />
             <? } ?>
             <? if($c->o['recaptcha_key_public']!=""){ ?>
