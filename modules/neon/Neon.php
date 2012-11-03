@@ -179,7 +179,7 @@ function displayRegisterPage(){
                 <?if($err[4]){?><label class="fixed formError"><?=$err[4]?></label><?}?><br />
             <? if($c->o['tac_url']!=""){ ?>
                 <label><a href="<?=$c->o['tac_url']?>">Terms And Conditions:</a></label>
-                    <label><input name="tac" type="checkbox" value="accepted" required /> accept.</label>
+                    <label><input name="tac" type="checkbox" value="accepted" required /> Accept</label>
                     <?if($err[5]){?><label class="fixed formError"><?=$err[5]?></label><?}?><br />
             <? } ?>
             <? if($c->o['recaptcha_key_public']!=""){ ?>
