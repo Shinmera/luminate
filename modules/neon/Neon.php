@@ -96,8 +96,8 @@ function displayRegisterPage(){
             $err[4]='This address is invalid.';
         }
         
-        if($_POST['toc']!='accepted'&&$c->o['toc_url']!=''){
-            $err[5]='You must read and accept the TOC.';
+        if($_POST['tac']!='accepted'&&$c->o['tac_url']!=''){
+            $err[5]='You must read and accept the TAC.';
         }
         
         if($c->o['recaptcha_key_private']==''){
@@ -144,8 +144,13 @@ function displayRegisterPage(){
             $headers .= 'To: <'.$_POST['email'].'>' . "\r\n";
             $headers .= 'From: TymoonNET <noreply@tymoon.eu>' . "\r\n";
             
-            if(mail($_POST['email'],'Account confirmation for TyNET',$message,$headers)){
-                $suc[0]='Your account has been registered successfully! Please check your e-mail for the activation code.';
+            if($c->o['confirm_email']){
+                if(mail($_POST['email'],'Account confirmation for TyNET',$message,$headers)){
+                    $suc[0]='Your account has been registered successfully! Please check your e-mail for the activation code.';
+                }else{
+                    $user->status='a';
+                    $suc[0]='Email sending failed, but your account has been registered successfully! You can now <a href="'.PROOT.'">log in</a>.';
+                }
             }else{
                 $user->status='a';
                 $suc[0]='Your account has been registered successfully! You can now <a href="'.PROOT.'">log in</a>.';
@@ -159,19 +164,29 @@ function displayRegisterPage(){
         if($err[0]!=""){?><div class="failure"><?=$err[0]?></div>
         <? }else{ ?>
         <script type="text/javascript">var RecaptchaOptions = {theme : 'clean'};</script>
-        <center><form action="#" method="post" style="text-align:left;display:inline-block;width:450px;white-space:nowrap;">
-            <label>Username: </label><input autofocus="autofocus" name="username" type="text"     maxlength="32" required value="<?=$_POST['username']?>" /> <label class="fixed"><?=$err[1]?></label><br />
-            <label>Password: </label><input                       name="password" type="password" maxlength="64" required value="<?=$_POST['password']?>" /> <label class="fixed"><?=$err[2]?></label><br />
-            <label>Repeat:   </label><input                       name="repeat"   type="password" maxlength="64" required value="<?=$_POST['repeat']?>" />   <label class="fixed"><?=$err[3]?></label><br />
-            <label>E-Mail:   </label><input                       name="email"    type="mail"     maxlength="35" required value="<?=$_POST['email']?>" />    <label class="fixed"><?=$err[4]?></label><br />
+        <center><form action="#" method="post" style="text-align:left;display:inline-block;width:450px;white-space:nowrap;" id="registerForm">
+            <label>Username: </label>
+                <input autofocus="autofocus" name="username" type="text" maxlength="32" required value="<?=$_POST['username']?>" />
+                <?if($err[1]){?><label class="fixed formError"><?=$err[1]?></label><?}?><br />
+            <label>Password: </label>
+                <input name="password" type="password" maxlength="64" required value="<?=$_POST['password']?>" />
+                <?if($err[2]){?><label class="fixed formError"><?=$err[2]?></label><?}?><br />
+            <label>Repeat:   </label>
+                <input name="repeat" type="password" maxlength="64" required value="<?=$_POST['repeat']?>" />
+                <?if($err[3]){?><label class="fixed formError"><?=$err[3]?></label><?}?><br />
+            <label>E-Mail:   </label>
+                <input name="email" type="mail" maxlength="35" required value="<?=$_POST['email']?>" /> 
+                <?if($err[4]){?><label class="fixed formError"><?=$err[4]?></label><?}?><br />
             <? if($c->o['toc_url']!=""){ ?>
-                <label><a href="<?=$c->o['toc_url']?>">Terms Of Content:</a></label>
-                    <label><input         name="toc"      type="checkbox" value="accepted" required /> I accept.</label><label><?=$err[5]?></label><br />
+                <label><a href="<?=$c->o['toc_url']?>">Terms And Conditions:</a></label>
+                    <label><input name="tac" type="checkbox" value="accepted" required /> I read and accept.</label>
+                    <?if($err[5]){?><label class="fixed formError"><?=$err[5]?></label><?}?><br />
             <? } ?>
             <? if($c->o['recaptcha_key_public']!=""){ ?>
-                <div style="display:inline-block;"><?=recaptcha_get_html($c->o['recaptcha_key_public']);?></div><br /><label><?=$err[6]?></label><br />
+                <div style="display:inline-block;"><?=recaptcha_get_html($c->o['recaptcha_key_public']);?></div><br />
+                <?if($err[6]){?><label><?=$err[6]?></label><?}?><br />
             <? } ?>
-            <input type="submit" name="action" value="Register" />
+            <input type="submit" name="action" value="Register" id="register" />
         </form></center>
     <? }}
 }
