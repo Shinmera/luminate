@@ -588,6 +588,7 @@ code pre br{display:none;}
     border: 2px solid #FFDD00;
     border-radius: 5px;
 }
+.notification p{margin:0;padding:0;display:inline;}
 
 .notification .time{
     float:right;
