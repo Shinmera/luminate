@@ -5,7 +5,7 @@ function displayControlPanelProfile(){
     
     switch($_POST['action']){
         case 'Update Account':
-            $_POST['displayname']=trim($k->sanitizeString($_POST['displayname']));
+            $_POST['displayname']=trim($_POST['displayname']);
             if($k->checkMailValidity($_POST['mail'])){
                 if(strlen($_POST['displayname'])>3){
                     if($_POST['displayname']!=$a->user->displayname){
@@ -17,7 +17,7 @@ function displayControlPanelProfile(){
                     $a->user->saveData();
                     $l->triggerHook("UPDATEaccount",'User');
                     $err[2]="Account information saved.";
-                }else $err[0]="Invalid username!";
+                }else $err[0]="Invalid displayname!";
             }else $err[1]="Invalid mail address!";
             break;
         case 'Save Password':
