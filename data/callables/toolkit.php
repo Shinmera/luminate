@@ -588,16 +588,24 @@ public static function checkMailValidity($mail){
     return true;
 }
 
-public static function checkDateValidity($date){
-    if(strpos($date,'.')!==FALSE)$date=explode('.',$date);
-    else                         $date=explode('/',$date);
-    if(count($date)!=3)return false;
-    if(!is_numeric($date[0]))return false;
-    if(!is_numeric($date[1]))return false;
-    if(!is_numeric($date[2]))return false;
-    if(strlen($date[0])==0||strlen($date[0])>2)return false;
-    if(strlen($date[1])==0||strlen($date[1])>2)return false;
-    if(strlen($date[2])<2 ||strlen($date[2])>4)return false;
+public static function checkDateValidity(&$date){
+    if(strpos($date,'.')!==FALSE){        $dates=explode('.',$date);$format="dmy";
+    }else if(strpos($date,'/')!==FALSE){  $dates=explode('/',$date);$format="dmy";
+    }else if(strpos($date,'-')!==FALSE){  $dates=explode('-',$date);$format="ymd";
+    }else if(strpos($date,' ')!==FALSE){  $dates=explode(' ',$date);$format="dmy";
+    }else return FALSE;
+    if(count($dates)!=3)return false;
+    if(!is_numeric($dates[0]))return false;
+    if(!is_numeric($dates[1]))return false;
+    if(!is_numeric($dates[2]))return false;
+    $len0 = strlen($dates[0]);
+    $len1 = strlen($dates[1]);
+    $len2 = strlen($dates[2]);
+    if($format == "dmy"){
+        if($len0>2||$len0<1 || $len1>2||$len1<1 || $len2>4||$len2<2)return FALSE;
+    }else if($format == "ymd"){
+        if($len0>4||$len0<2 || $len1>2||$len1<1 || $len2>2||$len2<1)return FALSE;
+    }
     return true;
 }
 
