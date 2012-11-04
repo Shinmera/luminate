@@ -86,7 +86,6 @@
             }
             return $returns;
         }else{
-            //$k->err("No hook '".$hook."' registered for ".$source::$name.".");
             return null;
         }
     }
@@ -106,8 +105,44 @@
             }
             return $args;
         }else{
-            //$k->err("No hook '".$hook."' registered for ".$source::$name.".");
             return $args;
+        }
+    }
+
+
+    function loadPluginCache($module){
+        global $PLUGINCACHE,$PLUGINTRIGGERS,$MODULECACHE;
+        $path = MODULEPATH.dirname($MODULECACHE[$module]);
+        if(!file_exists($path.'/plugincache')){
+            Toolkit::generatePluginCache($module);
+        }
+        $PLUGINCACHE[$module] = unserialize($path.'/plugincache');
+        $PLUGINTRIGGERS[$module] = unserialize($path.'/triggercache');
+    }
+
+    function loadPlugin($module,$name){
+        global $PLUGINS,$PLUGINCACHE,$MODULES,$MODULECACHE;
+        if(!is_string($module))$module = $module::$name;
+        if(!array_key_exists($module, $PLUGINCACHE))$this->loadPluginCache($module);
+        if(!class_exists($name))include(MODULEPATH.dirname($MODULECACHE[$module]).'plugins/'.$PLUGINCACHE[$module][$name]);
+        if(!class_exists($name))throw new Exception("No such class '".$name."'! Is your plugin named correctly?");
+        if(array_key_exists($name::$name,$PLUGINS[$module])){
+            return $PLUGINS[$module][$name::$name];
+        }
+
+        $p = new $name($MODULES[$module]);
+        $PLUGINS[$module][$name::$name] = $p;
+        return $p;
+    }
+
+    function triggerPlugin($module,$trigger,$args=array()){
+        global $PLUGINTRIGGERS;
+        if(!is_string($module))$module = $module::$name;
+        if(!array_key_exists($module, $PLUGINCACHE))$this->loadPluginCache($module);
+        $plugins = $PLUGINTRIGGERS[$module][$trigger];
+        foreach($plugins as $plugin){
+            $p = $this->loadPlugin($module,$plugin[0]);
+            call_user_func($p,$plugin[1], $args);
         }
     }
     
