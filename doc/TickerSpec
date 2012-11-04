@@ -1,0 +1,24 @@
+==Ticker Base Features Specification==
+    
+    --Projects--
+     * Allow sub-ordering of projects
+     * Project team
+     * Basic information such as creation date and description
+     * Request, Bug, etc. counts
+     * Tickets (obvs)
+
+    --Tickets--
+     * Title, description
+     * Type {improvement, bug, feature, duplicate}
+     * Status {request, implementation, testing, closed, rejected, deleted}
+     * Actions
+     * Creator
+     * Assignee
+
+    --Actions--
+     * Text (optional)
+     * Actions: {status change, type change, edit, move, comment}
+
+
+==Ticker Plugin API Specification==
+    
