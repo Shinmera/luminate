@@ -52,6 +52,16 @@ html, body {
     color: #FF0000;
     text-shadow: 0 0 5px #000000; !important
 }*/
+.pager{
+    background-color: #bfcbab;
+    border-top: 1px solid #dbe5c3;
+    border-left: 1px solid #dbe5c3;
+    border-bottom: 1px solid #99a289;
+    border-right: 1px solid #99a289;
+    border-radius: 0px 0px 0px 0px;
+    display: table;
+    padding: 2px;
+}
 #pageBanner {
     text-align: center;
 }
