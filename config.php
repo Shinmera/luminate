@@ -50,6 +50,9 @@ if(!defined("INIT")||$force_reload){
     $DOMINATINGMODULE="";
     $MODULES=array();
     $MODULECACHE=unserialize(file_get_contents(CALLABLESPATH.'modulecache'));
+    $PLUGINS=array();
+    $PLUGINCACHE=array();
+    $PLUGINTRIGGERS=array();
     //load core classes
     if(!class_exists("Module")){    require_once(MODULEPATH.'module.php');}
     if(!class_exists("DataModel")){ require_once(CALLABLESPATH.'DataModel.php');}

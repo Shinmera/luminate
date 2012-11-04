@@ -749,11 +749,11 @@ public static function generateModuleCache(){
             if(is_dir(MODULEPATH.$file)){
                 $di = opendir(MODULEPATH.$file);
                 while(($ifile = readdir($di)) !== false){
-                    if($ifile!="."&&$ifile!=".."&&!is_dir(MODULEPATH.$file.'/'.$ifile)){
+                    if(pathinfo(MODULEPATH.$file.'/'.$ifile,PATHINFO_EXTENSION) === "php"){
                         $modulelist[str_replace(".php","",$ifile)]=$file.'/'.$ifile;
                     }
                 }
-            }else{
+            }else if(pathinfo(MODULEPATH.$file,PATHINFO_EXTENSION) === "php"){
                 $modulelist[str_replace(".php","",$file)]=$file;
             }
         }
@@ -762,6 +762,34 @@ public static function generateModuleCache(){
     
     file_put_contents(CALLABLESPATH.'modulecache', serialize($modulelist));
 }  
+
+public static function generatePluginCache($module){
+    global $MODULECACHE;
+    if(!array_key_exists($module,$MODULECACHE))throw new Exception("Attempting to load plugins for inexistent module: ".$module);
+    $path = MODULEPATH.dirname($MODULECACHE[$module])."/plugins/";
+    $dh = opendir($path);
+    if($dh === FALSE)throw new Exception("Plugin directory does not exist: ".$path);
+
+    $pluginlist = array();
+    $triggerlist = array();
+    while(($file = readdir($dh)) !== FALSE){
+        $pathinfo = pathinfo($path.$file);
+        if($pathinfo['extension'] == "php"){
+            include_once($path.$file);
+            foreach($file::$triggers as $a=>$b){
+                if(!array_key_exists($a, $triggerlist)){
+                    $triggerlist[$a] = array();
+                }
+                $pluginlist[$file::$name] = $file;
+                $triggerlist[$a][] = array($file::$name,$b);
+            }
+        }
+    }
+    closedir($dh);
+
+    file_put_contents(MODULEPATH.dirname($MODULECACHE[$module]).'/plugincache', serialize(($pluginlist)));
+    file_put_contents(MODULEPATH.dirname($MODULECACHE[$module]).'/triggercache', serialize(($triggerlist)));
+}
 
 public static function generateRandomString($n=5,$set=array(0=>2,1=>1,2=>0),$add=""){
     $numbers = "01234567890123456789";
