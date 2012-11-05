@@ -1,5 +1,4 @@
-<? if(!defined("DECODER"))die("Invalid access.");
-if(!defined("INIT")||$force_reload){
+<? if(!defined("INIT")||$force_reload){
     //set start time and init flag
     $time = explode(' ',microtime());
     $time = $time[1]+$time[0];
