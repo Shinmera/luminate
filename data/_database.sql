@@ -1,67 +1,114 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.3
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Nov 06, 2012 at 10:41 PM
+-- Server version: 5.5.28-log
+-- PHP Version: 5.4.8
+
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
+
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
+--
+-- Database: `tymoonD`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ag_adventures`
+--
 
 CREATE TABLE IF NOT EXISTS `ag_adventures` (
   `adventureID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(32) NOT NULL,
-  `subtitle` varchar(128) NOT NULL,
-  `text` text NOT NULL,
-  `header` varchar(128) NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `subtitle` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `header` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`adventureID`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ag_chapters`
+--
 
 CREATE TABLE IF NOT EXISTS `ag_chapters` (
   `chapterID` int(10) unsigned NOT NULL,
   `AID` int(32) NOT NULL,
-  `title` varchar(64) NOT NULL,
-  `text` text NOT NULL,
-  `header` varchar(128) NOT NULL,
+  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `header` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`chapterID`,`AID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ag_panels`
+--
 
 CREATE TABLE IF NOT EXISTS `ag_panels` (
   `panelID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `AID` int(10) unsigned NOT NULL,
   `CID` int(10) unsigned NOT NULL,
-  `title` varchar(128) NOT NULL,
-  `text` text NOT NULL,
-  `file` varchar(128) NOT NULL,
-  `header` varchar(128) NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `file` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `header` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) unsigned NOT NULL,
-  `tags` text NOT NULL,
+  `tags` text COLLATE utf8_unicode_ci NOT NULL,
   `open` tinyint(1) NOT NULL,
   PRIMARY KEY (`panelID`,`AID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ag_suggestions`
+--
 
 CREATE TABLE IF NOT EXISTS `ag_suggestions` (
   `suggestionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `AID` int(10) unsigned NOT NULL,
   `PID` int(10) unsigned NOT NULL,
-  `text` varchar(128) NOT NULL,
+  `text` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) unsigned NOT NULL,
   `user` int(10) unsigned NOT NULL,
   PRIMARY KEY (`suggestionID`,`AID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bl_entries`
+--
 
 CREATE TABLE IF NOT EXISTS `bl_entries` (
   `entryID` int(11) NOT NULL AUTO_INCREMENT,
   `FID` int(11) NOT NULL,
-  `title` varchar(128) CHARACTER SET latin1 NOT NULL,
-  `short` text CHARACTER SET latin1 NOT NULL,
-  `subject` text CHARACTER SET latin1 NOT NULL,
-  `tags` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `time` varchar(16) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `short` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `tags` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `time` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `published` tinyint(1) NOT NULL,
   `owner` int(11) NOT NULL,
   PRIMARY KEY (`entryID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=60 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=60 ;
+
+--
+-- Dumping data for table `bl_entries`
+--
 
 INSERT IGNORE INTO `bl_entries` (`entryID`, `FID`, `title`, `short`, `subject`, `tags`, `time`, `published`, `owner`) VALUES
 (7, 40, 'Punch Nick in the head because h', 'DO IT! >:U\r<br>\r<br>\r<br>Anyway, I don''t have much to say. Gonna work on the site some more today.\r<br>Most of my presents will tumble in later because of delivery shenanigans so I can''t say what kind of sw33t l00t I got yet.\r<br>I''ll VLog about it though as soon as I have everything.\r<br>\r<br>Also, apparently I''m not a good enough programmer to call myself "experienced": http://comments.deviantart.com/4/11322144/1746529207 \r<br>So yeah, apparently making a CMS and Chat Program equals a "Hello World" Program nowadays. Whadda I know.', '', '', '1290078820', 1, 1),
@@ -116,12 +163,22 @@ INSERT IGNORE INTO `bl_entries` (`entryID`, `FID`, `title`, `short`, `subject`, 
 (58, 36, 'About Bastion', 'The world is a quite marvellous. Marvellous, because it has so many things to offer, both for the url(http://jinzhan.deviantart.com/art/Afternoon-Tea-Time-260324890){really disturbingly unpleasant things} that scare you to the point that not even the dust clouds undearneath your bed appear threatening; as well as the sort of url(http://www.sublimetext.com/){stuff you fall in love with immediately} and want to spend the rest of your life with. How these things balance each other doesn&apos;t really depend on what happens to us (despite what some people would like to believe), but rather on what you make out of it and how important you deem them. Regardless of whether you have a shitty day because you just stubbed your toe into the corner of a wall with the might of a wrestler or if your day is extremely good because you just url(http://www.youtube.com/watch?v=H3JwS4RcYyk){won the lottery}, I&apos;m not here to talk about attitudes today. I&apos;ll just lose a few words about something that I&apos;ve recently fallen in love with.\r\ncenter{img(:title Oh mother...){http://wallpoper.com/images/00/39/73/39/bastion_00397339.jpg}}', 'i{}\r\nfloat(right){youtube{http://www.youtube.com/watch?v=AhS5occh_Fk}}\r\nBastion is a game developed by url(http://supergiantgames.com/){Supergiant Games}, yet another indie team. I&apos;m having a hard time describing what makes this game as good as I think it is, because it all just fits so well together that I can&apos;t really find a place to start. Despite this, I suppose I&apos;ll just start with the most special feature of Bastion, which is the narrator. Throughout the game you listen to a narrator that gives you back-story and additional information about what&apos;s currently going on. The narrative adapts to the way you play and the things you do, which helps a lot to get immersed into the game. What Supergiant got absolutely spot-on with the narrator, is a way to provide lots of story into the game, without disturbing its flow at all. You never have to stop and it&apos;s never intrusive, so you can keep on playing and listen to the fantastic voice as you go.\r\nurl(http://www.youtube.com/watch?v=AhS5occh_Fk){Just give it a try}.\r\n\r\nIsn&apos;t that just the kind of voice you&apos;d like to hear when camping out in the desert, sitting around a campfire and thinking about all the matters in the world, both good and bad; just pondering with your thoughts and letting them float through the starry night sky.\r\nOk, granted, that scenario is pretty damn unlikely for a city-face like me, but we&apos;ll imagine for now.\r\n\r\nimgbox(left,:maxwidth 50){http://cdn.pastemagazine.com/www/articles/2011/07/27/Bastion_092010_00031.jpeg}\r\nI find Bastion to be another game like Okami. It gets the artwork, gameplay and soundtrack just perfectly matched up. As such, this both means that the game would only be half as good if any of the things were missing, but it also means that they all are fantastic. The soundtrack has some really spectacular tunes, especially the ending theme, the artwork is lovely and often times just stunning to look at and the game plays really well, keeps you interested and deeply invested in the story, characters and developments. \r\n\r\nAt its core, the game is an action RPG, the RPG elements mainly consisting of the weapons you choose to fight and eventually level up. Another element are spirits, which give you passive bonuses during the game. There&apos;s also a variety of items scattered throughout the world that give you more insight about the backstory, once you talk to the Narrator about them. The story itself plays after an event referred to as the "Calamity", which tore the world to pieces and killed almost everyone in the process. As a survivor, you travel around the individual pieces of the world that have been shot up into the sky and try to find the cores that keep these parts from falling apart. With the cores, you can improve the strength of your new home, the Bastion. I won&apos;t say any more about it though, as it would just ruin so much of it, if I tried to retell it in any other way than the original way it was intended to be heard.\r\n\r\nfloat(right){youtube{http://www.youtube.com/watch?v=GDflVhOpS4E}}\r\nBastion does have its own set of problems of course. Just the same as the food that lands on your plate in a five star super luxury gourmét restaurant is extremely good and close to perfect, there&apos;s always some wanker out there who&apos;ll find a way to complain about i{something}. So, obviously, there are some complaints I have about this game, despite it being such a delicious dish. My first complaint is about the linux version of it. This might just be my machine, my setup or whatever the hell I&apos;m doing wrong, but it sometimes just freezes completely, and since it captures the mouse and keyboard, I can&apos;t do anything with my machine anymore, except press the power button. The freezes appear to be completely random and I have no clue what&apos;s causing them, but yeah. It was quite frustrating because it ripped me out of such a grand experience every time. Don&apos;t worry though, all the other complaints I have actually concern the game, so I&apos;ll stop my excessive geekery, at least for now. My other complaint is that the collision detection for the objects and ground is only sub-optimal. Often times there&apos;s places where I didn&apos;t think I could stand on, but could and other places that showed the reverse phenomenon. The hitboxes of the enemies are sometimes a bit weird as well, so I&apos;d wager the collision detection system could&apos;ve used some more work. Aside from that, I have nothing to complain about this game at all. Yep, that&apos;s it already!\r\n\r\nNow, the url(http://store.supergiantgames.com/){Supergiant Store} has some sweet Bastion merchandise to offer, of which I bought the collection pack. Here&apos;s some pictures that look worse than if they were shot by a camera from 15 years ago, but they&apos;ll have to do. It&apos;s late and my room is about as well lit as a cave in minecraft, so I apologize for the quality.\r\nimg{http://www.tymoon.eu/data/uploads/filer/38-IMG_20120926_185515.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/39-IMG_20120926_185532.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/40-IMG_20120926_185612.jpg}\r\nimg{http://www.tymoon.eu/data/uploads/filer/41-IMG_20120926_185705.jpg}', '', '1348918744', 1, 1),
 (59, 38, 'Test entry', 'TEST', 'TEST', ',WWW', '1350132013', 1, 1);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bl_folders`
+--
+
 CREATE TABLE IF NOT EXISTS `bl_folders` (
   `folderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `title` varchar(64) NOT NULL,
-  `text` text NOT NULL,
+  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`folderID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=56 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=56 ;
+
+--
+-- Dumping data for table `bl_folders`
+--
 
 INSERT IGNORE INTO `bl_folders` (`folderID`, `title`, `text`) VALUES
 (34, 'Transcend', 'This category is for progress updates for the game project Transcend.\r\nIt discusses the game design process on a more distant level, so no coding knowledge is required.'),
@@ -132,73 +189,125 @@ INSERT IGNORE INTO `bl_folders` (`folderID`, `title`, `text`) VALUES
 (40, 'Misc', 'Everything that doesn''t quite fit anywhere else.'),
 (55, 'TymoonNexT', 'Global notices about TymoonNexT and associated projects.');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_bans`
+--
+
 CREATE TABLE IF NOT EXISTS `ch_bans` (
-  `ip` varchar(16) NOT NULL,
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) unsigned NOT NULL,
   `period` int(10) unsigned NOT NULL,
-  `reason` varchar(128) NOT NULL,
-  `appeal` text NOT NULL,
+  `reason` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `appeal` text COLLATE utf8_unicode_ci NOT NULL,
   `mute` tinyint(1) NOT NULL DEFAULT '0',
   `PID` int(10) unsigned NOT NULL,
-  `folder` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `folder` varchar(32) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_boards`
+--
 
 CREATE TABLE IF NOT EXISTS `ch_boards` (
   `boardID` bigint(20) NOT NULL AUTO_INCREMENT,
-  `folder` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `title` varchar(128) CHARACTER SET latin1 NOT NULL,
-  `subject` text CHARACTER SET latin1 NOT NULL,
+  `folder` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `maxfilesize` int(11) NOT NULL,
   `maxpages` int(11) NOT NULL,
   `postlimit` int(11) NOT NULL,
-  `filetypes` varchar(256) CHARACTER SET latin1 NOT NULL,
-  `defaulttheme` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `options` varchar(16) CHARACTER SET latin1 NOT NULL,
+  `filetypes` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `defaulttheme` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `options` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`boardID`),
   UNIQUE KEY `folder` (`folder`),
   UNIQUE KEY `title` (`title`),
   KEY `options` (`options`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+--
+-- Dumping data for table `ch_boards`
+--
 
 INSERT IGNORE INTO `ch_boards` (`boardID`, `folder`, `title`, `subject`, `maxfilesize`, `maxpages`, `postlimit`, `filetypes`, `defaulttheme`, `options`) VALUES
 (1, 'iou', 'I Love You', '', 15000, 10, 150, 'image/png;image/gif;image/jpeg', '', 't'),
 (2, 'second', 'second', '', 15000, 10, 150, 'image/png;image/jpeg;image/gif', '', 't');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_categories`
+--
+
 CREATE TABLE IF NOT EXISTS `ch_categories` (
-  `title` varchar(16) NOT NULL,
-  `order` varchar(128) NOT NULL,
+  `title` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `order` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ch_categories`
+--
 
 INSERT IGNORE INTO `ch_categories` (`title`, `order`) VALUES
 ('Test', '1,2');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_filetypes`
+--
+
 CREATE TABLE IF NOT EXISTS `ch_filetypes` (
-  `title` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `mime` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `preview` varchar(128) CHARACTER SET latin1 NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `mime` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `preview` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`title`),
   UNIQUE KEY `mime` (`mime`),
   UNIQUE KEY `mime_2` (`mime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_frontpage`
+--
 
 CREATE TABLE IF NOT EXISTS `ch_frontpage` (
-  `title` varchar(32) NOT NULL,
-  `text` text NOT NULL,
-  `classes` varchar(128) NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `classes` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ch_frontpage`
+--
 
 INSERT IGNORE INTO `ch_frontpage` (`title`, `text`, `classes`) VALUES
 ('Breaking News', 'img{http://img.tymoon.eu/img//Wallpapers/Shinmera/0FsCo.jpg}', 'fullwidth'),
 ('Welcome', 'Welcome to Stevenchan!', '');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_hits`
+--
+
 CREATE TABLE IF NOT EXISTS `ch_hits` (
-  `ip` varchar(16) NOT NULL,
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL,
   `BID` int(11) NOT NULL,
   `PID` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ch_hits`
+--
 
 INSERT IGNORE INTO `ch_hits` (`ip`, `time`, `BID`, `PID`) VALUES
 ('127.0.0.1', 1341390560, 1, 0),
@@ -1802,30 +1911,106 @@ INSERT IGNORE INTO `ch_hits` (`ip`, `time`, `BID`, `PID`) VALUES
 ('127.0.0.1', 1350475949, 1, 0),
 ('127.0.0.1', 1350475954, 1, 0),
 ('127.0.0.1', 1350476094, 1, 0),
-('127.0.0.1', 1350476112, 1, 0);
+('127.0.0.1', 1350476112, 1, 0),
+('127.0.0.1', 1350815525, 0, 0),
+('127.0.0.1', 1350815527, 1, 0),
+('127.0.0.1', 1350815534, 1, 0),
+('127.0.0.1', 1350815547, 1, 0);
+INSERT IGNORE INTO `ch_hits` (`ip`, `time`, `BID`, `PID`) VALUES
+('127.0.0.1', 1350815570, 1, 0),
+('127.0.0.1', 1350815724, 1, 0),
+('127.0.0.1', 1350815972, 1, 0),
+('127.0.0.1', 1350815974, 1, 0),
+('127.0.0.1', 1350815975, 1, 0),
+('127.0.0.1', 1350815975, 1, 0),
+('127.0.0.1', 1350815975, 1, 0),
+('127.0.0.1', 1350816011, 1, 0),
+('127.0.0.1', 1350816054, 1, 0),
+('127.0.0.1', 1350816058, 1, 0),
+('127.0.0.1', 1350816174, 1, 0),
+('127.0.0.1', 1350816238, 1, 0),
+('127.0.0.1', 1350816244, 1, 0),
+('127.0.0.1', 1350816328, 1, 0),
+('127.0.0.1', 1350816398, 1, 0),
+('127.0.0.1', 1351938090, 0, 0),
+('127.0.0.1', 1352226189, 0, 0),
+('127.0.0.1', 1352226192, 1, 0),
+('127.0.0.1', 1352226211, 1, 0),
+('127.0.0.1', 1352226222, 1, 0),
+('127.0.0.1', 1352226236, 1, 0),
+('127.0.0.1', 1352226246, 1, 0),
+('127.0.0.1', 1352226258, 1, 0),
+('127.0.0.1', 1352226272, 1, 0),
+('127.0.0.1', 1352226285, 1, 0),
+('127.0.0.1', 1352226342, 1, 0),
+('127.0.0.1', 1352226352, 1, 0),
+('127.0.0.1', 1352226452, 1, 0),
+('127.0.0.1', 1352226595, 1, 0),
+('127.0.0.1', 1352226634, 1, 0),
+('127.0.0.1', 1352226640, 1, 0),
+('127.0.0.1', 1352226723, 1, 0),
+('127.0.0.1', 1352226747, 1, 0),
+('127.0.0.1', 1352226898, 1, 0),
+('127.0.0.1', 1352226909, 1, 0),
+('127.0.0.1', 1352227142, 1, 0),
+('127.0.0.1', 1352227171, 1, 0),
+('127.0.0.1', 1352227434, 1, 0),
+('127.0.0.1', 1352227456, 1, 0),
+('127.0.0.1', 1352227630, 1, 0),
+('127.0.0.1', 1352227668, 1, 0),
+('127.0.0.1', 1352227707, 1, 0),
+('127.0.0.1', 1352227744, 1, 0),
+('127.0.0.1', 1352227771, 1, 0),
+('127.0.0.1', 1352227911, 1, 0),
+('127.0.0.1', 1352227947, 1, 0),
+('127.0.0.1', 1352228022, 1, 0),
+('127.0.0.1', 1352228067, 1, 0),
+('127.0.0.1', 1352228152, 1, 0),
+('127.0.0.1', 1352228179, 1, 0),
+('127.0.0.1', 1352229639, 1, 0),
+('127.0.0.1', 1352229657, 1, 0),
+('127.0.0.1', 1352229682, 1, 0),
+('127.0.0.1', 1352229700, 1, 0),
+('127.0.0.1', 1352229752, 1, 0),
+('127.0.0.1', 1352229766, 1, 0),
+('127.0.0.1', 1352229802, 1, 0),
+('127.0.0.1', 1352229813, 1, 0),
+('127.0.0.1', 1352229816, 1, 0),
+('127.0.0.1', 1352229822, 1, 0),
+('127.0.0.1', 1352229956, 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_posts`
+--
 
 CREATE TABLE IF NOT EXISTS `ch_posts` (
   `postID` bigint(20) NOT NULL AUTO_INCREMENT,
   `BID` bigint(20) NOT NULL,
   `PID` bigint(20) NOT NULL,
-  `name` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `mail` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `trip` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `title` varchar(256) CHARACTER SET latin1 NOT NULL,
-  `subject` text CHARACTER SET latin1 NOT NULL,
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `mail` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `trip` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL,
   `bumptime` int(11) NOT NULL,
-  `password` varchar(256) CHARACTER SET latin1 NOT NULL,
-  `file` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `fileorig` varchar(128) CHARACTER SET latin1 NOT NULL,
-  `filedim` varchar(64) CHARACTER SET latin1 NOT NULL,
+  `password` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `file` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `fileorig` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `filedim` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `filesize` int(11) NOT NULL,
-  `ip` varchar(16) CHARACTER SET latin1 NOT NULL,
-  `options` varchar(16) CHARACTER SET latin1 NOT NULL,
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `options` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`BID`,`postID`),
   KEY `PID` (`PID`),
   KEY `options` (`options`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `ch_posts`
+--
 
 INSERT IGNORE INTO `ch_posts` (`postID`, `BID`, `PID`, `name`, `mail`, `trip`, `title`, `subject`, `time`, `bumptime`, `password`, `file`, `fileorig`, `filedim`, `filesize`, `ip`, `options`) VALUES
 (9, 1, 1, '', '', '!C.C./tYwhI', '', '&gt;&gt;1', 1341924797, 1341924797, 'mMr4uFjQzmDundefined](9', '134192479738027.jpg', 'cc029.jpg', '1920x1080', 87906, '127.0.0.1', 'p'),
@@ -1851,34 +2036,59 @@ INSERT IGNORE INTO `ch_posts` (`postID`, `BID`, `PID`, `name`, `mail`, `trip`, `
 (3, 1, 1, '', '', '!C.C./tYwhI', '', '&gt;&gt;2', 1341356078, 1341356078, 'mMr4uFjQzmDundefined](9', '', '', '', 0, '127.0.0.1', 'p'),
 (20, 1, 1, '', '', '', '', '', 1344164570, 1344164570, ',Mlu-Pbc7ZDe8[]', '134416457047224.jpg', '3f0124cc9e24a12c9a20614a4fd0fdd6.jpg', '240x320', 26700, '127.0.0.1', 'p'),
 (23, 1, 1, '', '', '', '', '&gt;&gt;1', 1344164667, 1344164667, ',Mlu-Pbc7ZDe8[]', '134416466699101.jpg', '4d1a2241b624f9e15e0ed062d2bc44f2.jpg', '372x400', 86599, '127.0.0.1', 'p'),
-(24, 1, 0, '', '', '', 'Test', 'Test', 1347473859, 1350294633, ',Mlu-Pbc7ZDe8[]', '134747385958508.jpg', 'commander full speed ahead.jpg', '453x688', 79810, '127.0.0.1', 'p'),
+(24, 1, 0, '', '', '', 'Test', 'Test', 1347473859, 1350815534, ',Mlu-Pbc7ZDe8[]', '134747385958508.jpg', 'commander full speed ahead.jpg', '453x688', 79810, '127.0.0.1', 'p'),
 (25, 1, 24, '', '', '', '', 'awda', 1347473881, 1347473881, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
 (26, 1, 24, '', 'noko', '', '', 'adawd', 1347473954, 1347473954, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
 (27, 1, 24, '', 'noko', '', '', '', 1347474585, 1347474585, ',Mlu-Pbc7ZDe8[]', '134747458541847.jpg', 'now let me explain my point.jpg', '602x561', 37953, '127.0.0.1', 'p'),
 (28, 1, 24, '', 'noko', '', '', 'i&apos;m trying to update it more, unfortunately sometimes things come up and i can&apos;t do that. i&apos;ll try to\r\nstick to a post a day or every other day (provided i don&apos;t get writer&apos;s block again) \r\n\r\ni don&apos;t know how to dm, as i don&apos;t play d&d so i have any experience with what they do... \r\ni assume you&apos;re talking about the back n forthing in the timeline? now that the story&apos;s more into the swing of\r\nthings and the backstory as to why the world is the way it is has been told, there&apos;s going to be a lot less jumping\r\nin the timeline. \r\nunfortunately, when i do write the backstory i enjoy fleshing out the world, so the backstory posts will probably stay\r\nthe same length as they are when they do occur.', 1348919476, 1348919476, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
 (29, 1, 24, '', 'noko', '', '', '&gt;&gt;lol\r\n&gt;whatever\r\ndicks\r\n&gt;penis', 1348919788, 1348919788, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
 (30, 1, 24, '', 'noko', '', '', '&gt;&gt;24\r\nbla', 1350294585, 1350294585, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
-(31, 1, 24, '', '', '', '', '&gt;&gt;24\r\nbla', 1350294633, 1350294633, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p');
+(31, 1, 24, '', '', '', '', '&gt;&gt;24\r\nbla', 1350294633, 1350294633, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
+(32, 1, 24, '', '', '', '', 'This thread has been moved to &gt;&gt;iou/24', 1350815534, 1350815534, ',Mlu-Pbc7ZDe8[]', '', '', '', 0, '127.0.0.1', 'p'),
+(33, 1, 0, '', '', '', '', '', 1352226211, 1352226211, ',Mlu-Pbc7ZDe8[]', '135222621080618.gif', '95791311e960d7d1b4b651a488321e20.gif', '600x1740', 176198, '127.0.0.1', 'p'),
+(34, 1, 0, '', '', '', '', '', 1352226222, 1352226222, ',Mlu-Pbc7ZDe8[]', '135222622287210.jpg', '1317290752_copypasta.jpg', '750x600', 37862, '127.0.0.1', 'p'),
+(35, 1, 0, '', '', '', '', '', 1352226236, 1352226236, ',Mlu-Pbc7ZDe8[]', '135222623537905.jpeg', '1318851550515.jpeg', '450x300', 45486, '127.0.0.1', 'p'),
+(36, 1, 0, '', '', '', '', '', 1352226246, 1352226246, ',Mlu-Pbc7ZDe8[]', '135222624682336.jpeg', '1315557054303.jpeg', '800x600', 350762, '127.0.0.1', 'p'),
+(37, 1, 0, '', '', '', '', '', 1352226258, 1352226258, ',Mlu-Pbc7ZDe8[]', '135222625886524.jpeg', '1330490629280.jpeg', '500x385', 67884, '127.0.0.1', 'p'),
+(38, 1, 0, '', '', '', '', '', 1352226272, 1352226272, ',Mlu-Pbc7ZDe8[]', '135222627246777.png', '1341168819423.png', '580x1752', 137416, '127.0.0.1', 'p'),
+(39, 1, 0, '', '', '', '', '', 1352226285, 1352226285, ',Mlu-Pbc7ZDe8[]', '135222628515531.jpg', '1341003322355.jpg', '470x332', 41815, '127.0.0.1', 'p'),
+(40, 1, 0, '', '', '', '', '', 1352226352, 1352226352, ',Mlu-Pbc7ZDe8[]', '135222635217741.jpg', '1216340939471.jpg', '592x285', 26178, '127.0.0.1', 'p');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_reports`
+--
 
 CREATE TABLE IF NOT EXISTS `ch_reports` (
-  `ip` varchar(16) NOT NULL,
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) unsigned NOT NULL,
-  `reason` varchar(512) NOT NULL,
+  `reason` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
   `PID` int(10) unsigned NOT NULL,
-  `folder` varchar(32) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `folder` varchar(32) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `derpy_messages`
+--
 
 CREATE TABLE IF NOT EXISTS `derpy_messages` (
   `messageID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `sender` varchar(32) NOT NULL,
-  `recipient` varchar(32) NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 'm',
-  `title` varchar(64) NOT NULL DEFAULT 'No Subject',
-  `text` text NOT NULL,
+  `sender` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `recipient` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'm',
+  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'No Subject',
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
   `time` int(8) unsigned NOT NULL,
   `read` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`messageID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=11 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=11 ;
+
+--
+-- Dumping data for table `derpy_messages`
+--
 
 INSERT IGNORE INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`, `title`, `text`, `time`, `read`) VALUES
 (1, 'Shinmera', 'Shinmera', 'm', 'No Subject', 'A', 2012, 1),
@@ -1892,15 +2102,25 @@ INSERT IGNORE INTO `derpy_messages` (`messageID`, `sender`, `recipient`, `type`,
 (9, 'Shinmera', 'Faggot', 'm', 'Re: ', 'DDD', 1335432690, 0),
 (10, 'Shinmera', '', 'o', 'Re: ', 'DDD', 1335432690, 1);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `display_folders`
+--
+
 CREATE TABLE IF NOT EXISTS `display_folders` (
-  `folder` varchar(128) NOT NULL,
-  `text` text NOT NULL,
-  `pictures` text NOT NULL,
+  `folder` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `pictures` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`folder`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `display_folders`
+--
 
 INSERT IGNORE INTO `display_folders` (`folder`, `text`, `pictures`) VALUES
-('shinmera', 'Artwork done by Nicolas Hafner, aka. Shinmera.', ' '),
+('shinmera', 'Artwork done by Nicolas Hafner, aka. Shinmera.', ' ,199'),
 ('shinmera/3D-CG', 'Sometimes I do 3D computer graphic artwork.', '129,128,112,57'),
 ('shinmera/characters', 'Drawings of characters I created and designed myself.', '186,183,178,177,176,174,172,171,170,169,165,164,160,157,149,148,118,113,77,72,71,39,38,36,35,31,30,27'),
 ('shinmera/characters/re-boot', 'Re-Boot design sketches.', '143,162,161,141,140,117,110,109,108,107,106,105,94,89,82,70,69,49'),
@@ -1909,18 +2129,28 @@ INSERT IGNORE INTO `display_folders` (`folder`, `text`, `pictures`) VALUES
 ('shinmera/sketches', 'Sketchwork and practice', '193,192,191,190,188,187,182,180,168,166,163,158,156,155,154,153,150,147,146,145,139,137,136,135,125,96,95,93,92,67,66,65,37,29,28,152'),
 ('shinmera/transcend', 'Drawings and concept art for my game project.', '99,100,101,102,103,175');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `display_pictures`
+--
+
 CREATE TABLE IF NOT EXISTS `display_pictures` (
   `pictureID` int(11) NOT NULL AUTO_INCREMENT,
-  `folder` varchar(128) CHARACTER SET latin1 NOT NULL,
-  `title` varchar(256) CHARACTER SET latin1 NOT NULL,
-  `text` text CHARACTER SET latin1 NOT NULL,
+  `folder` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `text` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) NOT NULL,
-  `tags` varchar(256) CHARACTER SET latin1 NOT NULL,
-  `filename` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `user` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `tags` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `filename` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `user` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`pictureID`),
   UNIQUE KEY `filename` (`filename`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=195 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=200 ;
+
+--
+-- Dumping data for table `display_pictures`
+--
 
 INSERT IGNORE INTO `display_pictures` (`pictureID`, `folder`, `title`, `text`, `time`, `tags`, `filename`, `user`) VALUES
 (22, 'shinmera/MLP', 'Science!', 'A drawing for Mithent.', 1316361255, 'Twilight,Science,Mithent,Gift,Sci-Fi', '1316262988-science.png', 'Shinmera'),
@@ -2089,19 +2319,30 @@ INSERT IGNORE INTO `display_pictures` (`pictureID`, `folder`, `title`, `text`, `
 (191, 'shinmera/sketches', 'Reading', 'The challenge here was to have fun drawing it and not to use colours.\r\nI should try to simplify it some more so that it doesn&#039;t look too crowded.\r\nHm.', 1342388488, 'Suiseiseki,Desu,Black,White,Sketch', '1342388488-reading.png', 'Shinmera'),
 (192, 'shinmera/sketches', 'I Did It!', 'I finally got back into drawing!', 1342482306, 'Suiseiseki,Desu,Black,White,Sketch', '1342482306-I..._I_did_it.png', 'Shinmera'),
 (193, 'shinmera/sketches', 'Sketchadoodle doo', 'My pessimism drives me to describe this as a piece of shit, but I&#039;m trying my best to ignore that.', 1342779180, 'Digital,Pencil,Realism,Portrait', '1342779180-sketch_sketchadoodle_doo.png', 'Shinmera'),
-(194, 'shinmera/misc', 'Rain', 'Worthless and alone.\r\nThat&#039;s how I feel right now.', 1343169116, '', '1343169116-rain.png', 'Shinmera');
+(194, 'shinmera/misc', 'Rain', 'Worthless and alone.\r\nThat&#039;s how I feel right now.', 1343169116, '', '1343169116-rain.png', 'Shinmera'),
+(199, 'shinmera', 'aa', 'aaaa', 1351715407, '', '199-IMG_20121031_082730..jpeg', 'Shinmera');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fenfire_comments`
+--
 
 CREATE TABLE IF NOT EXISTS `fenfire_comments` (
   `commentID` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `FID` int(11) unsigned NOT NULL,
-  `username` varchar(32) NOT NULL,
-  `mail` varchar(32) NOT NULL,
-  `text` text NOT NULL,
+  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `mail` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL,
   `level` tinyint(4) unsigned NOT NULL,
   `moderation` tinyint(1) NOT NULL,
   PRIMARY KEY (`commentID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=25 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=28 ;
+
+--
+-- Dumping data for table `fenfire_comments`
+--
 
 INSERT IGNORE INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `text`, `time`, `level`, `moderation`) VALUES
 (15, 90, 'Someone Else', 'nigger', 'LOL UR GHEY FOR MITHENT', 1333924316, 0, 0),
@@ -2113,16 +2354,30 @@ INSERT IGNORE INTO `fenfire_comments` (`commentID`, `FID`, `username`, `mail`, `
 (21, 91, 'Shinmera', 'nhafner@gmx.ch', 'AAAAAAA', 1334823218, 1, 0),
 (22, 91, 'Shinmera', 'nhafner@gmx.ch', 'WHOOO', 1334823785, 2, 0),
 (23, 91, 'Shinmera', 'nhafner@gmx.ch', 'MITHEEENT', 1334824258, 0, 0),
-(24, 94, 'Shinmera', 'nhafner@gmx.ch', 'LOL PENIZ', 1341442309, 0, 0);
+(24, 94, 'Shinmera', 'nhafner@gmx.ch', 'LOL PENIZ', 1341442309, 0, 0),
+(25, 105, 'Shinmera', 'nhafner@gmx.ch', 'BLARGH', 1351882894, 0, 0),
+(26, 105, 'Huehuehue', 'aaa@cyz.ch', 'lol whatever man, you&apos;re just stupid anyway.', 1351892894, 1, 0),
+(27, 105, 'Shinmera', 'nhafner@gmx.ch', 'Hah waaaaw.', 1351894113, 2, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fenfire_folders`
+--
 
 CREATE TABLE IF NOT EXISTS `fenfire_folders` (
   `folderID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `module` varchar(32) NOT NULL,
-  `path` varchar(64) NOT NULL,
-  `order` text,
+  `module` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `path` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `order` text COLLATE utf8_unicode_ci,
   `open` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`folderID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=108 ;
+  PRIMARY KEY (`folderID`),
+  UNIQUE KEY `module` (`module`,`path`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=147 ;
+
+--
+-- Dumping data for table `fenfire_folders`
+--
 
 INSERT IGNORE INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `open`) VALUES
 (89, 'CORE', 'INDEX', ';0;9;1;0;7;10;8;2;3;4;5;6;11;12;13;14', 1),
@@ -2141,23 +2396,78 @@ INSERT IGNORE INTO `fenfire_folders` (`folderID`, `module`, `path`, `order`, `op
 (102, 'Reader', 'p/53', NULL, 1),
 (103, 'Reader', 'p/52', NULL, 1),
 (104, 'Reader', 'p/51', NULL, 1),
-(105, 'Reader', 'p/59', NULL, 1),
+(105, 'Reader', 'p/59', ';25;26;27', 1),
 (106, 'User', 'loldongs', NULL, 1),
-(107, 'User', 'nonPrivileged', NULL, 1);
+(107, 'User', 'nonPrivileged', NULL, 1),
+(108, 'Reader', 'p/50', NULL, 1),
+(109, 'Reader', 'p/49', NULL, 1),
+(110, 'Reader', 'p/48', NULL, 1),
+(111, 'Reader', 'p/47', NULL, 1),
+(112, 'Reader', 'p/46', NULL, 1),
+(113, 'Reader', 'p/45', NULL, 1),
+(114, 'Reader', 'p/44', NULL, 1),
+(115, 'Reader', 'p/43', NULL, 1),
+(116, 'Reader', 'p/42', NULL, 1),
+(117, 'Reader', 'p/41', NULL, 1),
+(118, 'Reader', 'p/40', NULL, 1),
+(119, 'Reader', 'p/39', NULL, 1),
+(120, 'Reader', 'p/38', NULL, 1),
+(121, 'Reader', 'p/37', NULL, 1),
+(122, 'Reader', 'p/36', NULL, 1),
+(123, 'Reader', 'p/35', NULL, 1),
+(124, 'Reader', 'p/34', NULL, 1),
+(125, 'Reader', 'p/33', NULL, 1),
+(126, 'Reader', 'p/32', NULL, 1),
+(127, 'Reader', 'p/31', NULL, 1),
+(128, 'Reader', 'p/30', NULL, 1),
+(129, 'Reader', 'p/29', NULL, 1),
+(130, 'Reader', 'p/28', NULL, 1),
+(131, 'Reader', 'p/27', NULL, 1),
+(132, 'Reader', 'p/26', NULL, 1),
+(133, 'Reader', 'p/25', NULL, 1),
+(134, 'Reader', 'p/24', NULL, 1),
+(135, 'Reader', 'p/23', NULL, 1),
+(136, 'Reader', 'p/22', NULL, 1),
+(137, 'Reader', 'p/21', NULL, 1),
+(138, 'Reader', 'p/20', NULL, 1),
+(139, 'Reader', 'p/17', NULL, 1),
+(140, 'Reader', 'p/16', NULL, 1),
+(141, 'Reader', 'p/15', NULL, 1),
+(142, 'Reader', 'p/13', NULL, 1),
+(143, 'Reader', 'p/12', NULL, 1),
+(144, 'Reader', 'p/10', NULL, 1),
+(145, 'Reader', 'p/9', NULL, 1),
+(146, 'Reader', 'p/7', NULL, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fi_files`
+--
 
 CREATE TABLE IF NOT EXISTS `fi_files` (
   `fileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `filename` varchar(128) NOT NULL,
+  `filename` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL,
-  `owner` varchar(32) NOT NULL,
+  `owner` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`fileID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lightup_suites`
+--
 
 CREATE TABLE IF NOT EXISTS `lightup_suites` (
-  `name` varchar(16) NOT NULL,
-  `module` varchar(32) NOT NULL,
+  `name` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `module` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lightup_suites`
+--
 
 INSERT IGNORE INTO `lightup_suites` (`name`, `module`) VALUES
 ('default', 'CORE'),
@@ -2165,17 +2475,27 @@ INSERT IGNORE INTO `lightup_suites` (`name`, `module`) VALUES
 ('plus', 'CORE'),
 ('pro', 'CORE');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lightup_tags`
+--
+
 CREATE TABLE IF NOT EXISTS `lightup_tags` (
-  `name` varchar(32) NOT NULL,
-  `suite` varchar(16) NOT NULL DEFAULT 'standard',
-  `tag` varchar(16) NOT NULL,
-  `tagcode` varchar(512) NOT NULL,
-  `deftag` text NOT NULL,
-  `description` varchar(64) DEFAULT NULL,
+  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `suite` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'standard',
+  `tag` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tagcode` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `deftag` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `limit` int(11) NOT NULL DEFAULT '-1',
   `order` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lightup_tags`
+--
 
 INSERT IGNORE INTO `lightup_tags` (`name`, `suite`, `tag`, `tagcode`, `deftag`, `description`, `limit`, `order`) VALUES
 ('Bold', 'default', 'b', 'b{@}', 'deftag(b){\r\n    tag(strong){print{content}}\r\n}', 'Bold text', -1, 0),
@@ -2193,15 +2513,25 @@ INSERT IGNORE INTO `lightup_tags` (`name`, `suite`, `tag`, `tagcode`, `deftag`, 
 ('Url', 'plus', 'url', 'url(&#36;Enter the URL|url&#36;){@}', 'deftag(url,url URLS false NIL,title TEXT false,target TEXT false _blank){\r\n    if(get{url},''NIL'',==){set(url){get{content}}}\r\n    tag(a,:extra href="get{url}" title="get{title}" target="get{target}"){print{content}}\r\n}', 'Insert a hyperlink', -1, 9),
 ('Youtube', 'extra', 'youtube', 'youtube{video code}', 'deftag(youtube,width INTE800 false 400,height INTE600 false 280,start INTE false,end INTE false,list TEXT false,listType STRI false list,loop BOOL false 0,autoplay BOOL false 0){\r\n  urlargs{get{content}}\r\n  set(id){get(v){params}}\r\n  if(get{loop},true){set(loop){1}}\r\n  if(get{autoplay},true){set(autoplay){1}}\r\n  tag(iframe,:force 1,:class youtube-player,:extra type="text/html" width="get{width}" height="get{height}" frameborder="0" src="http://www.youtube.com/embed/get{id}?start=get{start}&end=get{end}&list=get{list}&listType=get{listType}&loop=get{loop}&autoplay=get{autoplay}"){echo{#}}\r\n}', 'Insert a youtube video', 5, 0);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_actions`
+--
+
 CREATE TABLE IF NOT EXISTS `lore_actions` (
-  `title` varchar(128) NOT NULL,
-  `type` varchar(1) NOT NULL,
-  `action` varchar(16) NOT NULL,
-  `args` varchar(32) NOT NULL,
-  `reason` varchar(256) NOT NULL,
-  `editor` varchar(32) NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
+  `action` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `args` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `reason` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `editor` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lore_actions`
+--
 
 INSERT IGNORE INTO `lore_actions` (`title`, `type`, `action`, `args`, `reason`, `editor`, `time`) VALUES
 ('Index', '', 'edit', '1', 'Need an index page.', 'Shinmera', 1336374874),
@@ -2254,16 +2584,26 @@ INSERT IGNORE INTO `lore_actions` (`title`, `type`, `action`, `args`, `reason`, 
 ('love', 'f', 'edit', '5', '..', 'Shinmera', 1338240933),
 ('love', 'f', 'edit', '6', 'FINALLY GOD', 'Shinmera', 1338241399);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_articles`
+--
+
 CREATE TABLE IF NOT EXISTS `lore_articles` (
-  `title` varchar(128) NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 'o',
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'o',
   `revision` int(11) NOT NULL,
-  `current` text NOT NULL,
+  `current` text COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL,
-  `status` varchar(1) NOT NULL DEFAULT 'o',
+  `status` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'o',
   PRIMARY KEY (`title`,`type`),
   FULLTEXT KEY `current` (`current`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lore_articles`
+--
 
 INSERT IGNORE INTO `lore_articles` (`title`, `type`, `revision`, `current`, `time`, `status`) VALUES
 ('Index', 'a', 2, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.\r\n\r\n{category:cat}', 1336374874, 'l'),
@@ -2276,25 +2616,45 @@ INSERT IGNORE INTO `lore_articles` (`title`, `type`, `revision`, `current`, `tim
 ('', 'f', 1, 'Hee heeee', 1338224265, 'o'),
 ('love', 'f', 6, 'Hee heee :I', 1338225812, 'o');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_categories`
+--
+
 CREATE TABLE IF NOT EXISTS `lore_categories` (
-  `title` varchar(128) NOT NULL,
-  `article` varchar(128) NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `article` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`title`,`article`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lore_categories`
+--
 
 INSERT IGNORE INTO `lore_categories` (`title`, `article`) VALUES
 ('cat', 'Index'),
 ('cat', 'test');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_revisions`
+--
+
 CREATE TABLE IF NOT EXISTS `lore_revisions` (
-  `title` varchar(128) NOT NULL,
-  `type` varchar(1) NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
   `revision` int(11) NOT NULL AUTO_INCREMENT,
-  `text` text NOT NULL,
-  `editor` varchar(32) NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `editor` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(11) NOT NULL,
   PRIMARY KEY (`title`,`type`,`revision`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+--
+-- Dumping data for table `lore_revisions`
+--
 
 INSERT IGNORE INTO `lore_revisions` (`title`, `type`, `revision`, `text`, `editor`, `time`) VALUES
 ('Index', '', 1, 'Welcome to the TymoonNET wiki.\r\nThis wiki has some quite fantastic articles.\r\nYeah.\r\n\r\n\r\nWell actually, it would have if this site had any users.\r\nLOL.', 'Shinmera', 1336374874),
@@ -2338,23 +2698,39 @@ INSERT IGNORE INTO `lore_revisions` (`title`, `type`, `revision`, `text`, `edito
 ('love', 'f', 5, 'Hee heee', 'Shinmera', 1338240933),
 ('love', 'f', 6, 'Hee heee :I', 'Shinmera', 1338241399);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_categories`
+--
+
 CREATE TABLE IF NOT EXISTS `ms_categories` (
   `categoryID` bigint(20) NOT NULL AUTO_INCREMENT,
   `MID` int(11) NOT NULL,
   `PID` bigint(20) NOT NULL,
-  `title` varchar(35) CHARACTER SET latin1 NOT NULL,
-  `subject` text CHARACTER SET latin1 NOT NULL,
-  `options` text CHARACTER SET latin1 NOT NULL,
+  `title` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`categoryID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_hooks`
+--
 
 CREATE TABLE IF NOT EXISTS `ms_hooks` (
-  `source` varchar(64) NOT NULL,
-  `hook` varchar(64) NOT NULL,
-  `destination` varchar(64) NOT NULL,
-  `function` varchar(64) NOT NULL,
+  `source` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `hook` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `destination` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `function` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`source`,`hook`,`destination`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_hooks`
+--
 
 INSERT IGNORE INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
 ('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
@@ -2424,17 +2800,27 @@ INSERT IGNORE INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALU
 ('Reader', 'POST', 'Twitch', 'universalPostHook'),
 ('CORE', 'HIThub', 'Hub', 'displayPage');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_links`
+--
+
 CREATE TABLE IF NOT EXISTS `ms_links` (
   `linkID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `PID` int(10) unsigned NOT NULL,
   `order` int(10) unsigned NOT NULL,
-  `title` varchar(32) NOT NULL,
-  `link` varchar(256) NOT NULL,
-  `description` varchar(128) NOT NULL,
-  `style` varchar(128) NOT NULL,
-  `auth` varchar(128) NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `link` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `style` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `auth` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`linkID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
+
+--
+-- Dumping data for table `ms_links`
+--
 
 INSERT IGNORE INTO `ms_links` (`linkID`, `PID`, `order`, `title`, `link`, `description`, `style`, `auth`) VALUES
 (2, 0, 15, 'Wiki', 'http://wiki.HOST', '', '', ''),
@@ -2458,13 +2844,23 @@ INSERT IGNORE INTO `ms_links` (`linkID`, `PID`, `order`, `title`, `link`, `descr
 (20, 18, 0, 'Project List', 'http://hub.HOSTproject', 'View Project List', '', ''),
 (21, 18, 2, 'My Dashboard', 'http://hub.HOSTdashboard', 'View Assigned Bugs and Projects', '', 'hub.dashboard');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_log`
+--
+
 CREATE TABLE IF NOT EXISTS `ms_log` (
   `logID` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `subject` text CHARACTER SET latin1 NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) unsigned NOT NULL,
   `user` int(64) NOT NULL,
   PRIMARY KEY (`logID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=130 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=134 ;
+
+--
+-- Dumping data for table `ms_log`
+--
 
 INSERT IGNORE INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (1, 'Log cleared.', 2012, 1),
@@ -2595,13 +2991,27 @@ INSERT IGNORE INTO `ms_log` (`logID`, `subject`, `time`, `user`) VALUES
 (126, 'Option key &apos;chan_fileloc_extern&apos; changed to &apos;http://linuz.com/TyNET/data/chan/&apos;.', 1350472880, 1),
 (127, 'Module &apos;Hub&apos; added.', 1350479564, 1),
 (128, 'Module &apos;Ticker&apos; added.', 1350479597, 1),
-(129, 'Hook CORE::HIThub =&gt; Hub::displayPage added.', 1350479610, 1);
+(129, 'Hook CORE::HIThub =&gt; Hub::displayPage added.', 1350479610, 1),
+(130, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1351882894, 1),
+(131, 'Comment from Huehuehue (aaa@cyz.ch) for  added.', 1351892894, 0),
+(132, 'Comment from Shinmera (nhafner@gmx.ch) for  added.', 1351894113, 1),
+(133, 'User "AnotherTestAccount" (shinmera@tymoon.eu) registered.', 1351944286, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_modules`
+--
 
 CREATE TABLE IF NOT EXISTS `ms_modules` (
-  `name` varchar(35) CHARACTER SET latin1 NOT NULL,
-  `subject` text CHARACTER SET latin1 NOT NULL,
+  `name` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_modules`
+--
 
 INSERT IGNORE INTO `ms_modules` (`name`, `subject`) VALUES
 ('Ace', 'Provides a simple interface for the Ace text editor component.'),
@@ -2627,12 +3037,22 @@ INSERT IGNORE INTO `ms_modules` (`name`, `subject`) VALUES
 ('Twitch', 'Twitter library.'),
 ('User', 'Allows for user management and supplies AUTH login/logout functions.');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_options`
+--
+
 CREATE TABLE IF NOT EXISTS `ms_options` (
-  `key` varchar(64) CHARACTER SET latin1 NOT NULL,
-  `value` text CHARACTER SET latin1 NOT NULL,
-  `type` varchar(1) CHARACTER SET latin1 NOT NULL,
+  `key` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_options`
+--
 
 INSERT IGNORE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('akismet_key', '9fce28faba37', 's'),
@@ -2667,66 +3087,155 @@ INSERT IGNORE INTO `ms_options` (`key`, `value`, `type`) VALUES
 ('twitch_consumer_secret', 'Kz527nJ2jn3AzfplttnedDEBOywhyJcGSByhFP5NUQM', 's'),
 ('twitch_return', 'user.linuz.com/TyNET/panel?tab=Twitter', 's');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_timer`
+--
+
 CREATE TABLE IF NOT EXISTS `ms_timer` (
-  `IP` varchar(16) CHARACTER SET latin1 NOT NULL,
+  `IP` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
   `time` int(10) unsigned NOT NULL,
-  `action` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `action` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`IP`,`action`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_timer`
+--
 
 INSERT IGNORE INTO `ms_timer` (`IP`, `time`, `action`) VALUES
-('127.0.0.1', 1350475949, 'chan_post'),
+('127.0.0.1', 1352226352, 'chan_post'),
 ('127.0.0.1', 1341015121, 'chan_report'),
-('127.0.0.1', 0, 'comment'),
-('127.0.0.1', 1344091194, 'displayEdit'),
+('127.0.0.1', 1351894113, 'comment'),
+('127.0.0.1', 1351715407, 'displayEdit'),
 ('127.0.0.1', 1335395795, 'sendmessage'),
 ('127.0.0.1', 0, 'visit'),
 ('127.0.0.1', 0, 'visit:'),
-('127.0.0.1', 1350479689, 'visit:1'),
+('127.0.0.1', 1352237955, 'visit:1'),
 ('127.0.0.1', 1343824183, 'visit:5'),
-('127.0.0.1', 1344091244, 'visit:6');
+('127.0.0.1', 1344091244, 'visit:6'),
+('127.0.0.1', 1351945698, 'visit:7');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `neon_friends`
+--
 
 CREATE TABLE IF NOT EXISTS `neon_friends` (
   `uID1` int(11) unsigned NOT NULL,
   `uID2` int(11) unsigned NOT NULL,
-  `type` varchar(1) NOT NULL DEFAULT 'r',
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'r',
   PRIMARY KEY (`uID1`,`uID2`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `ti_ticket` (
-  `ticketID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `FID` int(10) unsigned NOT NULL,
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_actions`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_actions` (
+  `actionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `TID` int(10) unsigned NOT NULL,
+  `action` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` int(10) unsigned NOT NULL,
   `creator` int(10) unsigned NOT NULL,
-  `assigned` int(10) unsigned NOT NULL,
-  `phase` int(10) unsigned NOT NULL,
-  `status` int(10) unsigned NOT NULL,
-  `priority` int(10) unsigned NOT NULL,
-  `information` text NOT NULL,
-  `solution` text NOT NULL,
+  PRIMARY KEY (`actionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_projects`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_projects` (
+  `projectID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PID` int(10) unsigned NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `visibility` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`projectID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_teams`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_teams` (
+  `PID` int(10) unsigned NOT NULL,
+  `UID` int(10) unsigned NOT NULL,
+  `permissions` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`PID`,`UID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_tickets`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_tickets` (
+  `ticketID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PID` int(10) unsigned NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `creator` int(10) unsigned NOT NULL,
+  `assignee` int(10) unsigned NOT NULL,
   PRIMARY KEY (`ticketID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tw_data`
+--
 
 CREATE TABLE IF NOT EXISTS `tw_data` (
   `userID` int(10) unsigned NOT NULL,
-  `token` varchar(55) NOT NULL,
-  `secret` varchar(55) NOT NULL,
+  `token` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `secret` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL,
   PRIMARY KEY (`userID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `tw_data`
+--
 
 INSERT IGNORE INTO `tw_data` (`userID`, `token`, `secret`, `active`) VALUES
 (0, '', '', 0),
-(1, '126658019-ZdNErtQONBO2bPXzNQDCV3snia1UcI9WKHDzJeJk', 'gO5YdHPf3K8NeT8snvU6ZnVJdNBqEKgWVaxVYm7stao', 1);
+(1, '126658019-ZdNErtQONBO2bPXzNQDCV3snia1UcI9WKHDzJeJk', 'gO5YdHPf3K8NeT8snvU6ZnVJdNBqEKgWVaxVYm7stao', 0),
+(7, '', '', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_fields`
+--
 
 CREATE TABLE IF NOT EXISTS `ud_fields` (
-  `varname` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `title` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `default` text CHARACTER SET latin1 NOT NULL,
-  `type` varchar(1) CHARACTER SET latin1 NOT NULL DEFAULT 's',
+  `varname` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `default` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 's',
   `editable` tinyint(1) NOT NULL DEFAULT '0',
   `displayed` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`varname`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ud_fields`
+--
 
 INSERT IGNORE INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable`, `displayed`) VALUES
 ('web', 'Website', ' ', 'u', 1, 1),
@@ -2735,60 +3244,105 @@ INSERT IGNORE INTO `ud_fields` (`varname`, `title`, `default`, `type`, `editable
 ('userfirstname', 'First name', ' ', 's', 1, 1),
 ('userlastname', 'Last name', ' ', 's', 1, 1);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_field_values`
+--
+
 CREATE TABLE IF NOT EXISTS `ud_field_values` (
-  `varname` varchar(32) NOT NULL,
+  `varname` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   `userID` int(11) unsigned NOT NULL,
-  `value` text NOT NULL,
+  `value` text COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`varname`,`userID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ud_field_values`
+--
 
 INSERT IGNORE INTO `ud_field_values` (`varname`, `userID`, `value`) VALUES
 ('birthdate', 1, '18.11.1993'),
 ('web', 1, 'http://shinmera.com'),
 ('aboutuser', 1, 'I make stuff.\r\nSome of it is kinda cool.\r\n\r\nVery important trufax about me:\r\nMithent is my waifu.'),
 ('userfirstname', 1, 'Nicolas'),
-('userlastname', 1, 'Hafner');
+('userlastname', 1, 'Hafner'),
+('userlastname', 7, ''),
+('userfirstname', 7, ''),
+('birthdate', 7, '1993-11-08'),
+('aboutuser', 7, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_groups`
+--
 
 CREATE TABLE IF NOT EXISTS `ud_groups` (
-  `title` varchar(35) CHARACTER SET latin1 NOT NULL,
-  `permissions` text CHARACTER SET latin1 NOT NULL,
+  `title` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `permissions` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`title`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ud_groups`
+--
 
 INSERT IGNORE INTO `ud_groups` (`title`, `permissions`) VALUES
 ('root', '*.*'),
 ('Unregistered', 'base.*\r\nuser.profile.*');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_permissions`
+--
+
 CREATE TABLE IF NOT EXISTS `ud_permissions` (
   `UID` bigint(20) unsigned NOT NULL,
-  `tree` text CHARACTER SET latin1 NOT NULL,
+  `tree` mediumtext COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`UID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ud_permissions`
+--
 
 INSERT IGNORE INTO `ud_permissions` (`UID`, `tree`) VALUES
 (1, ''),
 (2, ''),
 (6, 'display.folder.shinmera.misc.*');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_users`
+--
+
 CREATE TABLE IF NOT EXISTS `ud_users` (
   `userID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `mail` varchar(35) CHARACTER SET latin1 NOT NULL,
-  `password` varchar(128) CHARACTER SET latin1 NOT NULL,
-  `secret` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `displayname` varchar(32) CHARACTER SET latin1 NOT NULL,
-  `filename` varchar(50) CHARACTER SET latin1 DEFAULT NULL,
-  `group` varchar(32) CHARACTER SET latin1 NOT NULL DEFAULT 'Registered',
-  `status` varchar(1) CHARACTER SET latin1 NOT NULL DEFAULT 'u',
+  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `mail` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `secret` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `displayname` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `filename` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `group` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Registered',
+  `status` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'u',
   `time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `displayname` (`displayname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `ud_users`
+--
 
 INSERT IGNORE INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
-(1, 'Shinmera', 'nhafner@gmx.ch', '3c5d02ca7ea61d658edd147e733816719a55aff62fcca3d84093bfd6a8df013c9ebe3db18563576989e40f27b41165401d85e856f68f6a6f06760e423a0cd9b4', '6pz5HhD9142RA5n1Ft476191vhPi2ZG', 'Mona', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(1, 'Shinmera', 'nhafner@gmx.ch', '3c5d02ca7ea61d658edd147e733816719a55aff62fcca3d84093bfd6a8df013c9ebe3db18563576989e40f27b41165401d85e856f68f6a6f06760e423a0cd9b4', '6pz5HhD9142RA5n1Ft476191vhPi2ZG', 'しんめら', '/Shinmera-gahh4.png', 'root', 'a', 0),
 (2, 'McDick', 'lol@dongs.com', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'b6kyP3l53rQZ3u73gX8oNvAi02G7gPH', 'Dicks', '', 'Unregistered', 'i', 0),
 (3, 'Faggot', 'shinmera@tymoon.eu', 'cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e', 'J73Xq6HrgF081Ql130e8v8l3349Jc06', 'Faggot', '', 'Registered', 'a', 1335212007),
 (4, '', '', '73c3aadab0213b673178d108fabc96436fa17fc4895d5b8c638e1b534c3533886e85eb534121d7615b97daa176c59d99d372d8f8c0441ebeca757814c313b31a', '7jckAbg3o5GIE9msd37P6aCjZg39qXP', '', '', '', 'i', 1335432455),
-(6, 'nonPrivileged', 'null@null.com', 'cde7d4050c4b0a7f0a1f95111e67573d480255e11ff409285ca5a043b8fbeb297670ce29ce532aaca4f3b459faea86c5d0b383e75d33ab276b813c38031ff749', 'ch1c7w8O33E9EIc75F7IUaDnR0p5JW1', 'nonPrivileged', '', 'Unregistered', 'a', 1344089966);
+(6, 'nonPrivileged', 'null@null.com', 'cde7d4050c4b0a7f0a1f95111e67573d480255e11ff409285ca5a043b8fbeb297670ce29ce532aaca4f3b459faea86c5d0b383e75d33ab276b813c38031ff749', 'ch1c7w8O33E9EIc75F7IUaDnR0p5JW1', 'nonPrivileged', '', 'Unregistered', 'a', 1344089966),
+(7, 'AnotherTestAccount', 'shinmera@tymoon.eu', '43c1a9c3161f6ae9adbf4fdc67350dd5343957c9a3d7e567c5cc23ea860f4b35057c13ec09456becfeb623b10894fcf69c2be53ee7fb15b0fbc6ebe179a4bcc3', '54pU21fU8XEu02OVLuM00Dc6KJxb6U6', 'AnotherTestAccount', NULL, 'Unregistered', 'a', 1351944286);
