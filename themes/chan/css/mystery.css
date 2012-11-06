@@ -185,6 +185,8 @@ a.directQuote:visited {
     z-index: 10;
     box-shadow: 0 0 1px #cebaba;
 }
+/* FIX for table sizing inserted by Shinmera */
+.tablediv{position:relative;overflow-x:hidden;overflow-y:auto;}
 .threadWatch:hover {
     opacity: 1;
 }

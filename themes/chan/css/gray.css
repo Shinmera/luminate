@@ -112,6 +112,7 @@ html,body{
     font-size:8pt;
     text-shadow: 0px 0px 3px #CCC;
 }
+.tablediv{position:relative;overflow-x:hidden;overflow-y:auto;}
 .threadWatch:hover{opacity: 1;}
 .threadWatch a{color:#EEE;text-decoration:none;}
 .threadWatch table{width:100%;margin:0px;border-spacing: 0px;}
@@ -125,11 +126,8 @@ html,body{
 .threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
 .watchButton{font-size:18pt;text-decoration: none;}
 .watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
-#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
 #watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
-#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
 #watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
-#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;}
 #watchRefreshButton:hover{color:#3D8BA6;text-shadow: 0px 0px 5px #3D8BA6;}
 #watchRemoveCol{width:20px;}
 #watchBoardCol{width:40px;}

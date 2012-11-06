@@ -163,6 +163,8 @@ a.directQuote:visited {
 .toolbar li {
     display: inline-block;
 }
+/* FIX for table sizing inserted by Shinmera */
+.tablediv{position:relative;overflow-x:hidden;overflow-y:auto;}
 .threadWatch {
     background-color: #89aca9;
     border: 1px solid #3b4d4c;
