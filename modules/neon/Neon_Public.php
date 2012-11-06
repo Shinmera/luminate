@@ -53,7 +53,8 @@ function displayUserlistPage(){
 
 function displayUserPage($username){
     global $t,$l,$k,$a,$params,$site,$SUPERIORPATH;
-    $user = DataModel::getData("ud_users","SELECT userID,username,displayname,`group`,`status`,`time`,filename FROM ud_users WHERE username LIKE ? OR displayname LIKE ?",array($username,$username));
+    $user = DataModel::getData("ud_users","SELECT userID,username,displayname,`group`,`status`,`time`,filename FROM ud_users 
+                                           WHERE username LIKE ? OR displayname LIKE ?",array($username,$username));
     $SUPERIORPATH=$user->username;
     if($user==null){
         $t->openPage("User not found");

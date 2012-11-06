@@ -1,4 +1,8 @@
-==Ticker Base Features Specification==
+==Ticker Base Features Spec==
+
+    This is only a short overview of the core features implemented by
+    Ticker. The rest will hopefully be implemented gradually through
+    the Ticker Plugin API.
     
     --Projects--
      * Allow sub-ordering of projects
@@ -11,14 +15,59 @@
      * Title, description
      * Type {improvement, bug, feature, duplicate}
      * Status {request, implementation, testing, closed, rejected, deleted}
-     * Actions
      * Creator
      * Assignee
+     * Actions
 
     --Actions--
      * Text (optional)
      * Actions: {status change, type change, edit, move, comment}
 
+    --Teams--
+     * Per-user permissions through nodes
 
-==Ticker Plugin API Specification==
+==Ticker Table Spec==
     
+    Note: Ticker follows the TyNET table spec of softlinking everything.
+    No constraint mechanisms are utilized. This requires proper cleanup
+    and integrity handling by the application, but ensures DB inter-
+    compatibility and unification.
+
+    --ti_actions--
+        actionID    INT         PRIMARY
+        TID         INT         LINKED=ti_tickets.ticketID
+        action      TINYINT     
+        description TEXT
+        date        INT
+        creator     INT         LINKED=ud_users.userID
+
+    --ti_projects--
+        projectID   INT         PRIMARY
+        PID         INT         LINKED=ti_projects.projectID
+        title       VARCHAR32   
+        description TEXT
+        date        INT
+        visibility  TINYINT
+
+    --ti_teams--
+        PID         INT         LINKED=ti_projects.projectID
+        UID         INT         LINKED=ud_users.userID
+        permissions TEXT
+
+    --ti_tickets--
+        ticketID    INT         PRIMARY
+        PID         INT         LINKED=ti_projects.projectID
+        title       VARCHAR128 
+        description TEXT
+        date        INT
+        type        TINYINT
+        status      TINYINT
+        creator     INT         LINKED=ud_users.userID
+        assignee    INT         LINKED=ud_users.userID
+
+==Ticker Plugin API Spec==
+
+    Ticker utilizes the TyNETv4 Plugin Framework. As such, it specifies triggers
+    that can be hooked onto by a plugin. These triggers, their arguments and their
+    environments are closely documented here to ensure a stable API.
+
