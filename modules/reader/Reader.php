@@ -116,7 +116,8 @@ function displayEntry($entryID){
             <?=Toolkit::getUserAvatar($entry->displayname, $entry->filename,false,75)?>
             <h2><a href="<?=PROOT.'p/'.$entryID.'-'.Toolkit::makeUrlReady($entry->title)?>#blog"><?=$entry->title?></a></h2>
             in <a href="<?=PROOT.'f/'.$entry->FID.'-'.Toolkit::makeUrlReady($entry->ftitle)?>"><?=$entry->ftitle?></a><br />
-            Posted on <?=Toolkit::toDate($entry->time)?> by <?=Toolkit::getUserPage($entry->displayname)?>.
+            Posted on <?=Toolkit::toDate($entry->time)?> by <?=Toolkit::getUserPage($entry->displayname)?>.<br />
+            Tags: <? Toolkit::compileTagList($entry->tags); ?>
             <?=$l->triggerHook('entryHead','Reader',$entry);?>
             <br style="clear:left;" />
         </div>
