@@ -15,7 +15,7 @@
     </div><br clear="all">
     
     <div id="threadWatch" class="threadWatch">
-        <table><thead>
+        <div class="tablediv"><table><thead>
             <tr>
                 <th id="watchRemoveCol"></th>
                 <th id="watchBoardCol">Board</th>
@@ -25,7 +25,7 @@
                 <th id="watchUnreadCol">Unread</th>
             </tr>
         </thead><tbody>
-        </tbody></table>
+        </tbody></table></div>
         <a href="#" id="watchRefreshButton" class="watchButton" title="Refresh">↻</a> 
         <a href="#" id="watchReadButton" class="watchButton" title="Read All">✔</a> 
         <a href="#" id="watchClearButton" class="watchButton" title="Clear">✘</a> 

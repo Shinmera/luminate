@@ -589,12 +589,12 @@ $(function(){
     if(options.indexOf('b')!=-1){console.log('[INIT] THREADWATCH');}
     if(cssoptions.threadwatch.draggable){
         if(options.indexOf('b')!=-1){console.log('[THREADWATCH] Draggable');}
+        $("#threadWatch").css({"top":(65+$("#postBox").height())+"px","left":($(document).width()-$("#threadWatch").outerWidth()-20)+"px"});
         $("#threadWatch").draggable({containment: 'document'});
-        $("#threadWatch").css({right:"0px",top:(65+$("#postBox").height())+"px"});
     }
     if(cssoptions.threadwatch.resizable){
         if(options.indexOf('b')!=-1){console.log('[THREADWATCH] Resizable');}
-        $("#threadWatch").resizable({minWidth:300,minHeight:30}).css({"width":"400px","height":"100px"});
+        $("#threadWatch .tablediv").resizable({minWidth:300,minHeight:30});
     }
     if(cssoptions.post.filenamelimit){$(".fileName").css("max-width","100px");}
     

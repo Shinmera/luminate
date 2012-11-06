@@ -161,6 +161,8 @@ a.directQuote:visited {
     top: 50px;
     z-index: 10;
 }
+/* FIX for table sizing inserted by Shinmera */
+.tablediv{position:relative;overflow-x:hidden;overflow-y:auto;}
 .threadWatch:hover {
     opacity: 1;
 }

@@ -124,8 +124,9 @@ a.directQuote{
     width:300px;
     min-height: 200px;
 }
+.tablediv{position:relative;overflow-x:hidden;overflow-y:auto;}
 .threadWatch a{color:#555;text-decoration:none;}
-.threadWatch table{margin:0px;border-spacing: 0px;width:100%;}
+.threadWatch table{margin:0px;border-spacing: 0px;width:100%;overflow:scroll;}
 .threadWatch table thead tr{background-color:#FFF;color:#1B77E0;}
 .threadWatch table tbody tr:nth-child(2n){background-color:#CCC;}
 .threadWatch table tbody tr:nth-child(2n+1){background-color:#EEE;}
@@ -136,11 +137,9 @@ a.directQuote{
 .threadWatch table tbody td:nth-child(6){text-align:center;border: none;}
 .watchButton{font-size:18pt;text-decoration: none;}
 .watchDeleteButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
-#watchClearButton{position:absolute;float:left;bottom:5px;left:50px;}
 #watchClearButton:hover{color:#FF0000;text-shadow: 0px 0px 5px #FF0000;}
-#watchReadButton{position:absolute;float:left;bottom:5px;left:30px;}
 #watchReadButton:hover{color:#00FF00;text-shadow: 0px 0px 5px #00FF00;}
-#watchRefreshButton{position:absolute;float:left;bottom:5px;left:10px;font-weight:bold;}
+#watchRefreshButton{font-weight:bold;}
 #watchRefreshButton:hover{color:#FFD900;text-shadow: 0px 0px 5px #FFD900;}
 #watchRemoveCol{width:20px;}
 #watchBoardCol{width:40px;}
