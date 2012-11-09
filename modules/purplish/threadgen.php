@@ -27,12 +27,12 @@ class ThreadGenerator{
         ob_start();
         ?>
 
-        <?='<? $postlist=array('.$pID?>
-        <? for($i=0;$i<count($postlist);$i++){
-            echo(','.$postlist[$i]['postID']);
+        <? $temp = array($pID);
+        for($i=0;$i<count($postlist);$i++){
+            $temp[]=$postlist[$i]['postID'];
             PostGenerator::generatePost($postlist[$i]['postID'], $post->BID);
          } ?>
-        <?=');
+        <?='<?php $postlist=array("'.implode('","', $temp).'");
         if($_GET["a"]=="postlist")die(implode(";",$postlist));
         if(is_numeric($_GET["a"]))header("Location: '.$k->url("chan",$board->folder).'/posts/".$_GET["a"].".php"); ?>'?>
         
