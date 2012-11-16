@@ -183,22 +183,6 @@ public static $hooks=array("foo");
         return $open-$match[0][1];
     }
     
-    function parseFuncEMShortTags($text){
-        global $FEMSTRAW;
-        foreach($this->tags as $name=>$tag){
-            $FEMSTRAW=$tag;
-            $text=preg_replace_callback('`'.$name.'#([-A-Z0-9+&@#/%=~_|$?!:,.]+)`is',array(&$this,'parseFuncEMShortTagsCallback') , $text, $tag->limit);
-        }
-        unset($FEMSTRAW);
-        return $text;
-    }
-    function parseFuncEMShortTagsCallback($matches){
-        global $FEMSTRAW;
-        $tag = $FEMSTRAW->parse($matches[1],array());
-        if($tag!==FALSE)return $tag;
-        else            return $matches[0];
-    }
-    
     function secureNoParse($text){
         $text = preg_replace_callback('`\!\{(.*?)\}\!`is',array(&$this,'secureNoParseCallback'),$text);
         return $text;
@@ -213,7 +197,6 @@ public static $hooks=array("foo");
         if(strlen($text)==1)return $text;
         
         $text = $this->fixBracketBalance($text);
-        $text = $this->parseFuncEMShortTags($text);
         $text = $this->secureNoParse($text);
         
         $tagCounter = array();
