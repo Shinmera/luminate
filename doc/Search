@@ -1,0 +1,87 @@
+==Search Query Spec==
+    --Query Structure--
+        A token is defined as a string of characters separated by spaces, or encapsulated
+        by quotes ("" / ''). All spaces between tokens act as a logical OR condition.
+        The following special operators are supported:
+         * ^ the following token is at the beginning of a line
+         * $ the following token is at the end of a line
+         * ! the following token is NOT included in the result
+         * + logical AND between the neighboring tokens
+         * / logical OR between the neighboring tokens
+         * * Arbitrary length wildcard
+         * ? Single character wildcard
+        
+        All special operators can be escaped with a backslash (\).
+    
+    --Search Order--
+        The following order types are available:
+         * RELEVANCE (number of hits)
+         * TIME
+         * TITLE (alphabetical)
+         * USER (alphabetical)
+        
+        Additionally, an ordering direction can be specified by adding either ASC or DESC.
+        The default is ASC. Multiple orders can be specified in an array:
+
+        ('RELEVANCE', 'TIME DESC', 'TITLE ASC', 'USER ASC')
+
+==Database Structure Spec==
+    --Types--
+        The Search module accepts the following types of fields:
+           TYPE     IMPORTANCE DEFAULT
+         * TEXT     (1)
+         * TITLE    (2.5)
+         * TAGS     (2)
+         * USER     (2)
+         * TIME     (1)
+    
+    --Call Structure--
+        The setDatabaseStructure function expects the data in the following format:
+        ( 
+            TABLE => ( CELL => ( TYPE [, IMPORTANCE] ), ... ),
+            ...
+        )
+    
+==Technical Spec==
+    --Query Composition--
+        The query depends on the type of field. All hit counts are multiplied by the importance
+        of the field. The total importance score of a row determines its relevance to the query.
+
+        - TEXT | TITLE -
+        The search is executed through a REGEX. To safely accomplish this, all REGEX special
+        characters (that are not also Query Structure Operators) need to be escaped in the
+        string. Next, all the operators have to be unwrapped and re-composed as a valid regular
+        expression. The regex should then possibly be compiled in one statement on the db, so
+        that it can be re-used in the following query, without having to recompile it again.
+        @TODO: Research
+        The amount of matches for a particular cell determines its hit rate.
+
+        - TAGS -
+        The field is split by semicolons (;) and then a simple check for whether a token is
+        contained in the array (or not, depending on the operator), is performed. A match
+        against a token is counted as a hit.
+
+        - USER -
+        The username is strictly matched against any token directly. If the token matches, it
+        counts as a hit.
+
+        - TIME -
+        Time fields are currently not being searched, but serve purely for ordering purpose.
+        A future specification could implement date/time detection in the query, as well as
+        loose matching against this.
+
+    --REGEX Transformer--
+
+
+    --Search Engine Flow--
+
+
+    --Result Set--
+
+
+==Search API Tools==
+    --Generated Search Box--
+
+
+    --Generated Result List--
+
