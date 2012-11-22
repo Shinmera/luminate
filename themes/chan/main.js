@@ -403,10 +403,12 @@ function customizePost(post){
                     $("#previewImage").css({"top":(e.pageY+10)+"px"});
                 else
                     $("#previewImage").css({"top":($(window).scrollTop()+$(window).height()-$("#previewImage").height())+"px"});
-                $("#previewImage").stop(true, true).fadeIn();
+                $("#previewImage").stop(true, true).fadeIn('fast');
             }
         }).mouseout(function(e){
-            $("#previewImage").stop(true, true).fadeOut();
+            $("#previewImage").stop(true, true).fadeOut('fast', function(){
+                $("#previewImage").attr("src","");
+            });
         });
     }
     
