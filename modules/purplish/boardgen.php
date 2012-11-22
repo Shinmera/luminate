@@ -78,7 +78,7 @@ class BoardGenerator{
         }
 
         //Delete posts.
-        $toDelete = DataModel::getData("ch_posts","SELECT postID FROM ch_posts WHERE BID=? AND TID=0 AND options NOT LIKE ? AND options NOT LIKE ? ORDER BY bumptime DESC LIMIT ?,?",
+        $toDelete = DataModel::getData("ch_posts","SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT LIKE ? AND options NOT LIKE ? ORDER BY bumptime DESC LIMIT ?,?",
                                                     array($board->boardID,'%d%','%s%',$totalthreads,18446744073709551615));
         Toolkit::assureArray($toDelete);
         $datagen = new DataGenerator();
