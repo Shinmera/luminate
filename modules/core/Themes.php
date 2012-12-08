@@ -73,7 +73,9 @@ function setMenu($data){
 }
 
 function openPage($pgtitle){
-    global $PAGETITLE;
+    global $PAGETITLE,$METADESCRIPTION,$METAKEYS,$c;
+    $METADESCRIPTION=$c->o['metadescription'];
+    $METAKEYS=$c->o['metakeys'];
     $PAGETITLE=$pgtitle;
     if($this->tname=="")$this->loadTheme("default",false);
     include(PAGEPATH.'global_header.php');
