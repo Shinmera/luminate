@@ -7,12 +7,11 @@ class ThreadGenerator{
     }
 
     public static function generateThreadFromObject($post,$posts=false){
-        global $c,$k,$t,$l,$PAGETITLE,$NO_BUFFER;
+        global $c,$k,$t,$l,$PAGETITLE,$METADESCRIPTION,$METAKEYS,$NO_BUFFER;
         $previousTheme = $t->tname;
         $t = $l->loadModule('Themes');
         $t->loadTheme("chan");
-        $PAGETITLE=$board->title.' - '.$c->o['chan_title'];
-        
+
         $pID=$post->postID;
         $postlist = $c->getData("SELECT postID FROM ch_posts WHERE PID=? AND BID=? AND `options` NOT LIKE ? ORDER BY postID ASC",array($pID,$post->BID,'%d%'));
         Toolkit::assureArray($postlist);
@@ -22,6 +21,25 @@ class ThreadGenerator{
         }
         $board = DataModel::getData('ch_boards',"SELECT boardID,folder,subject,title,filetypes,options FROM ch_boards WHERE boardID=?",array($post->BID));
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/threads/'.$pID.'.php';
+
+        if(strlen($post->title) > 3){
+            $PAGETITLE=$post->title;
+        }else if(strlen($post->subject) > 20){
+            $PAGETITLE=substr($post->subject, 0, 20).'...';
+        }else{
+            $PAGETITLE=$post->subject;
+        }
+        $PAGETITLE=$PAGETITLE.' - '.$board->title;
+
+        if(strlen($post->subject) > 100){
+            $METADESCRIPTION=substr($post->subject, 0, 100);
+        }else if(strlen($post->subject) > 10){
+            $METADESCRIPTION=$post->subject;
+        }else{
+            $METADESCRIPTION=$PAGETITLE;
+        }
+        $METAKEYS=$post->title.','.$board->title.','.$board->folder.','.$c->o['chan_title'].','.$c->o['sitename'];
+
         
         $NO_BUFFER=true;
         ob_start();
@@ -44,6 +62,14 @@ class ThreadGenerator{
             <a href="?b=-50" title="Show the last 50 posts">Last 50</a> 
             <a href="?e=100" title="Show the first 100 posts">First 100</a>
             <a href='#' class='watchThread' id='<?=$pID?>' title="Add this thread to the watched toolbar">Watch</a>
+            <span itemscope="itemscope" itemtype="http://data-vocabulary.org/Breadcrumb" id="breadcrumbs" style="display:none;">
+                <a href='<?=PROOT?>' class='chanRoot' itemprop="url">
+                    <span itemprop="title"><?=$c->o['chan_title']?></span>
+                </a>
+                <a href='<?=PROOT.$board->folder?>/' class='boardRoot' itemprop="url">
+                    <span itemprop="title"><?=$board->folder?></span>
+                </a>
+            </span>
         </div>
         
         <?='<? 

@@ -7,13 +7,12 @@ class BoardGenerator{
     }
 
     public static function generateBoardFromObject($board,$genposts=false,$genthreads=false){
-        global $c,$k,$t,$l,$PAGETITLE,$NO_BUFFER;
+        global $c,$k,$t,$l,$PAGETITLE,$METADESCRIPTION,$METAKEYS,$NO_BUFFER;
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         $path = ROOT.DATAPATH.'chan/'.$board->folder.'/';
         $previousTheme = $t->tname;
         $t = $l->loadModule('Themes');
         $t->loadTheme("chan");
-        $PAGETITLE=$board->title.' - '.$c->o['chan_title'];
 
         $stickies= DataModel::getData('ch_posts',"SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT LIKE ? AND options LIKE ? ORDER BY bumptime DESC",
                                                     array($board->boardID,'%d%','%s%'));
@@ -22,6 +21,10 @@ class BoardGenerator{
                                                     array($board->boardID,'%d%','%s%',0,($c->o['chan_tpp']*$board->maxpages)-count($stickies)));
         Toolkit::assureArray($threads);
         $threads = array_merge($stickies, $threads);
+
+        $PAGETITLE=$board->title.' - '.$c->o['chan_title'];
+        $METADESCRIPTION=$PAGETITLE;
+        $METAKEYS=$board->title.','.$board->folder.','.$c->o['chan_title'].','.$c->o['sitename'];
         
         $NO_BUFFER=true; //To stop the theme header to flush automatically
         ob_start();
@@ -77,6 +80,11 @@ class BoardGenerator{
             ob_clean();
         }
 
+        file_put_contents($path.'index.php','<?php include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/0.php"); ?>',LOCK_EX);
+        ob_end_clean();
+        $NO_BUFFER=false;
+        $t->loadTheme($previousTheme);
+
         //Delete posts.
         $toDelete = DataModel::getData("ch_posts","SELECT postID FROM ch_posts WHERE BID=? AND PID=0 AND options NOT LIKE ? AND options NOT LIKE ? ORDER BY bumptime DESC LIMIT ?,?",
                                                     array($board->boardID,'%d%','%s%',$totalthreads,18446744073709551615));
@@ -85,11 +93,6 @@ class BoardGenerator{
         foreach($toDelete as $thread){
             $datagen->deletePost($thread->postID, $board->boardID, false, false);
         }
-
-        file_put_contents($path.'index.php','<?php include("'.ROOT.DATAPATH.'chan/'.$board->folder.'/0.php"); ?>',LOCK_EX);
-        ob_end_clean();
-        $NO_BUFFER=false;
-        $t->loadTheme($previousTheme);
 
         //That's it.
     }
