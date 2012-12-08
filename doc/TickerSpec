@@ -59,6 +59,7 @@
         PID         INT         LINKED=ti_projects.projectID
         title       VARCHAR128 
         description TEXT
+        solution    TEXT
         date        INT
         type        TINYINT
         status      TINYINT
