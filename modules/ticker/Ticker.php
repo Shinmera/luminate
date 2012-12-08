@@ -31,5 +31,7 @@ function displayPage(){
 
     $t->closePage();
 }
+
+
 }
 ?>
