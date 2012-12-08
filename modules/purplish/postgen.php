@@ -28,21 +28,23 @@ class PostGenerator{
         <?='<? if("'.$post->ip.'"==$_SERVER["REMOTE_ADDR"]||strpos("'.$post->options.'",",h")===FALSE||$a->check("chan.mod.hidden")){ ?>'."\n"?>
             <article class="post<?=($post->PID==0)?'OP':''?> <?=$type?>" id="P<?=$pID?>" 
                      data-time="<?=$post->time?>" data-name="<?=$post->name?>" data-trip="<?=$post->trip?>" data-mail="<?=$post->mail?>"
-                     data-postid="<?=$pID?>" >
+                     data-postid="<?=$pID?>"
+                     itemscope="itemscope"
+                     itemtype="http://data-vocabulary.org/<?=($post->PID==0)?'Article':'Comment'?>" >
                 <a name="<?=$pID?>"></a>
                 <div class="postInfo">
                     <input type="checkbox" name="varposts[]" value="<?=$pID?>" /> 
-                    <a href="<?=$tpath?>#<?=$pID?>">No.</a> 
+                    <a href="<?=$tpath?>#<?=$pID?>" itemprop="discussionUrl">No.</a> 
                     <a class="postReply" href="<?=$tpath?>#q<?=$pID?>" id="<?=$tID?>"><?=$pID?></a> 
-                    <h3 class="postTitle"><?=$post->title?></h3> 
-                    <span class="postUsername">
+                    <h3 class="postTitle" itemprop="headline"><?=$post->title?></h3> 
+                    <span class="postUsername" itemprop="">
                         <? if(trim($post->name)==""&&trim($post->trip)=="")$post->name="Anonymous"; 
                         if($post->mail!="")echo('<a href="mailto:'.$post->mail.'">'.$post->name.'</a>');
                         else               echo($post->name); ?>
                     </span>
                     <span class="postTripcode"><?=$post->trip?></span> 
                     <? if(strpos($post->options,"m")!==FALSE) echo('<span class="postMod">### MOD ###</span>'); ?>
-                    <span class="postTime"><?=$k->toDate($post->time)?></span> 
+                    <span class="postTime" itemprop="dateCreated"><?=$k->toDate($post->time)?></span> 
                     <span id="postType" class="<?=$type?>">&nbsp;</span> 
                     <span class="buttons">
                         <? if($post->PID==0){ ?>
@@ -73,10 +75,10 @@ class PostGenerator{
                         <span class="fileSize"><?=$k->displayFilesize($post->filesize)?></span> 
                         <span class="fileDimensions"><?=$post->filedim?></span> 
                     <? } ?>
-                </div><div class="postContent">
+                </div><div class="postContent"  itemprop="articleBody">
                     <? if($post->file!=""){ 
                         if(strpos($post->options,'w') !== FALSE || strpos($post->options,'r') !== FALSE)$classes.="spoilerimg";?>
-                        <a class="postImageLink" title="<?=$post->fileorig?>" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>">
+                        <a class="postImageLink" title="<?=$post->fileorig?>" href="<?=$c->o['chan_fileloc_extern'].$folder.'/files/'.$post->file?>" itemprop="image">
                             <img class="postImage <?=$classes?>" alt="<?=$post->fileorig?>" src="<?=$c->o['chan_fileloc_extern'].$folder.'/thumbs/'.$post->file?>" border="0">
                         </a>
                     <? }
@@ -86,7 +88,7 @@ class PostGenerator{
                     $shorttemp=str_replace("\n",'<br />',Toolkit::limitLines(str_replace('<br />',"\n",$temp),$c->o['chan_maxlines']));
                     
                     ?>
-                    <blockquote>
+                    <blockquote itemprop="text">
                         <?='<? if(POST_SHORT===TRUE){ ?>'?>
                             <?=($shorttemp==$temp)?$temp:$shorttemp.'<hr /><a href="'.$tpath.'#'.$pID.'" class="direct">Post abbreviated.</a>'?>
                         <?='<? }else{ ?>'?>
