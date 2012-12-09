@@ -226,7 +226,8 @@ function displayOutboxPage(){
 
 function displayWritePage(){
     global $k,$a;
-    if($_POST['recipient']!=""){
+
+    if($_POST['recipient']!="" && $_POST['text']!=""){
         if($k->updateTimeout("sendmessage",2*60)){
             $err=implode("<br />",$this->sendMessage($_POST['recipient'], $_POST['text'], $_POST['title']));
         }else{
@@ -234,7 +235,9 @@ function displayWritePage(){
         }
         if($err=="")$suc="Message sent!";
     }
-    
+
+    if($_GET['to']!=='' && $_POST['recipient']=='')         $_POST['recipient'] = $_GET['to'];
+    if($_GET['recipient']!=='' && $_POST['recipient']=='')  $_POST['recipient'] = $_GET['recipient'];
     
     include(MODULEPATH.'gui/Editor.php');
     $editor = new SimpleEditor("#","sendMessage");
