@@ -91,7 +91,7 @@ class BoardGenerator{
         Toolkit::assureArray($toDelete);
         $datagen = new DataGenerator();
         foreach($toDelete as $thread){
-            $datagen->deletePost($thread->postID, $board->boardID, false, false);
+            $datagen->deletePost($thread->postID, $board->boardID, false, false, true);
         }
 
         //That's it.
