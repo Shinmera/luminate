@@ -7,6 +7,8 @@ public static $required=array("Auth","Themes");
 public static $hooks=array("foo");
 
 //TODO: Add admin back-end for picture management.
+//This module is a good example as to why linking by VARCHAR fields is almost never a good idea.
+//TODO: Restructure to use UIDs to link FOLDER<->PICTURE someday.
 
 function displayPage(){
     global $t,$a,$params,$param;
@@ -24,7 +26,7 @@ function displayPage(){
             }else{
                 if(substr($param,strlen($param)-1)=='/')$param=substr($param,0,strlen($param)-1);
                 $picture = DataModel::getHull('display_pictures');
-                $picture->folder=strtolower(str_replace('upload/','',$param));
+                $picture->folder=str_replace('upload/','',$param);
                 $picture->time=time();
                 $picture->user=$a->user->username;
                 $this->displayEdit($picture);break;
