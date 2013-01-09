@@ -1,7 +1,7 @@
 <? class Display{
 public static $name="Display";
 public static $author="NexT";
-public static $version=0.01;
+public static $version=1.03;
 public static $short='display';
 public static $required=array("Auth","Themes");
 public static $hooks=array("foo");

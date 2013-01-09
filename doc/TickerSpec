@@ -10,6 +10,7 @@
      * Basic information such as creation date and description
      * Request, Bug, etc. counts
      * Tickets (obvs)
+     * Team
 
     --Tickets--
      * Title, description
@@ -23,8 +24,9 @@
      * Text (optional)
      * Actions: {status change, type change, edit, move, comment}
 
-    --Teams--
-     * Per-user permissions through nodes
+    --Groups--
+     * Members
+     * Description
 
 ==Ticker Table Spec==
     
@@ -41,10 +43,16 @@
         date        INT
         creator     INT         LINKED=ud_users.userID
 
+    --ti_groups--
+        groupID     INT         PRIMARY
+        title       VARCHAR32   UNIQUE
+        description TEXT
+        visibility  TINYINT
+
     --ti_projects--
         projectID   INT         PRIMARY
         PID         INT         LINKED=ti_projects.projectID
-        title       VARCHAR32   
+        title       VARCHAR32   UNIQUE
         description TEXT
         date        INT
         visibility  TINYINT
@@ -52,7 +60,7 @@
     --ti_teams--
         PID         INT         LINKED=ti_projects.projectID
         UID         INT         LINKED=ud_users.userID
-        permissions TEXT
+        permissions TEXT        
 
     --ti_tickets--
         ticketID    INT         PRIMARY
@@ -66,9 +74,14 @@
         creator     INT         LINKED=ud_users.userID
         assignee    INT         LINKED=ud_users.userID
 
+    --ti_users--
+        UID         INT         LINKED=ud_users.userID
+        GID         INT         LINKED=ti_groups.groupID
+
 ==Ticker Plugin API Spec==
 
-    Ticker utilizes the TyNETv4 Plugin Framework. As such, it specifies triggers
-    that can be hooked onto by a plugin. These triggers, their arguments and their
-    environments are closely documented here to ensure a stable API.
+    Ticker utilizes the TyNETv4 Plugin Framework. As such, it specifies 
+    triggers that can be hooked onto by a plugin. These triggers, their 
+    arguments and their environments are closely documented here to ensure
+    a stable API.
 
