@@ -29,9 +29,7 @@
     define('COOKIE_AUTH','authcook');
     define('SECRET_KEY','dk;l1894!851éds-fghjg4lui:è3afàzgq_f4fá.');
     //mysql information
-    define("SQLUSER","tymoon");
-    define("SQLPASS","DtuyAEuNesZMhLNc");
-    define("SQLDB","tymoonD");
+    include(TROOT.'dbconfig.php');
     //other bs
     define("SYSTEMNAMES","system,tynet,tymoonnet,admin,root,mod,moderator");
     define("TRUSTEDIPS","188.154.8.12 192.168.0.1 127.0.0.1 0.0.0.1");
