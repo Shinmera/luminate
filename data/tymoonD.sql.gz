@@ -1,0 +1,889 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.5
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost
+-- Generation Time: Jan 23, 2013 at 10:22 PM
+-- Server version: 5.5.29-log
+-- PHP Version: 5.4.11
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Database: `tymoonD`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bl_entries`
+--
+
+CREATE TABLE IF NOT EXISTS `bl_entries` (
+  `entryID` int(11) NOT NULL AUTO_INCREMENT,
+  `FID` int(11) NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `short` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `tags` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `time` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `published` tinyint(1) NOT NULL,
+  `owner` int(11) NOT NULL,
+  PRIMARY KEY (`entryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bl_folders`
+--
+
+CREATE TABLE IF NOT EXISTS `bl_folders` (
+  `folderID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`folderID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_bans`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_bans` (
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `period` int(10) unsigned NOT NULL,
+  `reason` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `appeal` text COLLATE utf8_unicode_ci NOT NULL,
+  `mute` tinyint(1) NOT NULL DEFAULT '0',
+  `PID` int(10) unsigned NOT NULL,
+  `folder` varchar(32) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_boards`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_boards` (
+  `boardID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `folder` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `maxfilesize` int(11) NOT NULL,
+  `maxpages` int(11) NOT NULL,
+  `postlimit` int(11) NOT NULL,
+  `filetypes` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `defaulttheme` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `options` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`boardID`),
+  UNIQUE KEY `folder` (`folder`),
+  UNIQUE KEY `title` (`title`),
+  KEY `options` (`options`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_categories` (
+  `title` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `order` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_filetypes`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_filetypes` (
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `mime` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `preview` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`title`),
+  UNIQUE KEY `mime` (`mime`),
+  UNIQUE KEY `mime_2` (`mime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_frontpage`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_frontpage` (
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `classes` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_hits`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_hits` (
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  `BID` int(11) NOT NULL,
+  `PID` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_posts`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_posts` (
+  `postID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `BID` bigint(20) NOT NULL,
+  `PID` bigint(20) NOT NULL,
+  `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `mail` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `trip` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  `bumptime` int(11) NOT NULL,
+  `password` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `file` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `fileorig` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `filedim` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `filesize` int(11) NOT NULL,
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `options` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`BID`,`postID`),
+  KEY `PID` (`PID`),
+  KEY `options` (`options`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ch_reports`
+--
+
+CREATE TABLE IF NOT EXISTS `ch_reports` (
+  `ip` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `reason` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `PID` int(10) unsigned NOT NULL,
+  `folder` varchar(32) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `derpy_messages`
+--
+
+CREATE TABLE IF NOT EXISTS `derpy_messages` (
+  `messageID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `sender` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `recipient` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'm',
+  `title` varchar(64) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'No Subject',
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(8) unsigned NOT NULL,
+  `read` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`messageID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `display_folders`
+--
+
+CREATE TABLE IF NOT EXISTS `display_folders` (
+  `folder` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `pictures` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`folder`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `display_pictures`
+--
+
+CREATE TABLE IF NOT EXISTS `display_pictures` (
+  `pictureID` int(11) NOT NULL AUTO_INCREMENT,
+  `folder` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `text` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(10) NOT NULL,
+  `tags` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `filename` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `user` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`pictureID`),
+  UNIQUE KEY `filename` (`filename`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fenfire_comments`
+--
+
+CREATE TABLE IF NOT EXISTS `fenfire_comments` (
+  `commentID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `FID` int(11) unsigned NOT NULL,
+  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `mail` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  `level` tinyint(4) unsigned NOT NULL,
+  `moderation` tinyint(1) NOT NULL,
+  PRIMARY KEY (`commentID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fenfire_folders`
+--
+
+CREATE TABLE IF NOT EXISTS `fenfire_folders` (
+  `folderID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `module` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `path` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `order` text COLLATE utf8_unicode_ci,
+  `open` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`folderID`),
+  UNIQUE KEY `module` (`module`,`path`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `fi_files`
+--
+
+CREATE TABLE IF NOT EXISTS `fi_files` (
+  `fileID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `filename` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  `owner` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`fileID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lightup_suites`
+--
+
+CREATE TABLE IF NOT EXISTS `lightup_suites` (
+  `name` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `module` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lightup_suites`
+--
+
+INSERT INTO `lightup_suites` (`name`, `module`) VALUES
+('default', 'CORE'),
+('extra', 'CORE'),
+('plus', 'CORE'),
+('pro', 'CORE');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lightup_tags`
+--
+
+CREATE TABLE IF NOT EXISTS `lightup_tags` (
+  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `suite` varchar(16) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'standard',
+  `tag` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `tagcode` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `deftag` text COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `limit` int(11) NOT NULL DEFAULT '-1',
+  `order` int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `lightup_tags`
+--
+
+INSERT INTO `lightup_tags` (`name`, `suite`, `tag`, `tagcode`, `deftag`, `description`, `limit`, `order`) VALUES
+('Bold', 'default', 'b', 'b{@}', 'deftag(b){\r\n    tag(strong){print{content}}\r\n}', 'Bold text', -1, 0),
+('Center', 'default', 'center', 'center{@}', 'deftag(center){\r\n  tag(center){print{content}}\r\n}', 'Center stuff', -1, NULL),
+('Code', 'extra', 'code', 'code($STRI$){@}', 'deftag(code,lang STRI FALSE){\r\n  tag(code){\r\n    div(:class codehead){echo{Code:}print{lang}}\r\n    tag(pre){print{content}}}\r\n}', 'Markup tag for code.', -1, 0),
+('Color', 'plus', 'color', 'color(&#36;Choose a colour|color&#36;){@}', 'deftag(color,color STRI true){\r\n    tag(span,:style color: get{color}){ print{content}}\r\n}', 'Change the font colour', -1, 4),
+('Floater', 'default', 'float', 'float(right){@}', 'deftag(float,dir STRI true){ \r\n  div(:style display:inline-block;margin:5px;float:get{dir}){print{content}}\r\n}', 'Float', -1, NULL),
+('Image', 'plus', 'img', 'img{@}', 'deftag(img,alt TEXT false,title TEXT false,maxwidth INTE100 false 100){\r\n    tag(img,:style max-width:get{maxwidth}%,:extra alt="get{alt}" title="get{title}" src="get{content}"){}\r\n}', 'Insert an image', -1, 5),
+('Imgbox', 'plus', 'imgbox', 'imgbox(right){@}', 'deftag(imgbox,float STRI true,caption TEXT false,maxwidth INTE100 false 50,alt TEXT false,title TEXT false){\r\n  div(:style float:get{float};max-width:get{maxwidth}%;position:relative;margin:5px;clear:both){\r\n    tag(img,:extra alt="get{alt}" title="get{title}" src="get{content}"){}\r\n    tag(br){}\r\n    tag(em){print{caption}}\r\n  }\r\n}', 'Image Box', -1, NULL),
+('Italic', 'default', 'i', 'i{@}', 'deftag(i){\r\n    tag(em){print{content}}\r\n}', 'Italic text', -1, 1),
+('Quote', 'extra', 'quote', 'quote(&#36;user|string&#36;,&#36;urls|url&#36;){@}', 'deftag(quote,user STRI false,url URLS false){\r\n div(quote){\r\n   tag(h5){\r\n    if(get{user},false,!=){echo{By: }url(http://user.linuz.com/Luminate/get{user}){print{user}}}\r\n    if(get{url},false,!=){url(get{url}){echo{↗}}}\r\n   }\r\n   tag(p){print{content}}\r\n  }\r\n}', 'Quote a post', -1, 11),
+('Rainbow', 'default', 'rainbow', 'rainbow{@}', 'deftag(rainbow){\r\n   set(c,0){''#FF0000''}\r\n   set(c,1){''#FF7F00''}\r\n   set(c,2){''#FFFF00''}\r\n   set(c,3){''#00FF00''}\r\n   set(c,4){''#0000FF''}\r\n   tag(div,:style padding-top:40px;){\r\n    each(c){\r\n     tag(div,:style color: get{item};margin-top:-40px;font-size:40pt;text-align:center;){\r\n       print{content}\r\n     }\r\n    }\r\n   }\r\n}', 'Rainbow Shit', -1, 0),
+('Size', 'plus', 'size', 'size(&#36;Enter the font size|number&#36;){@}', 'deftag(size,size INTE46 false 12){\r\n   tag(span,:style font-size: get{size} pt;){print{content}}\r\n}', 'Change the font size', -1, 8),
+('Spoiler', 'plus', 'spoiler', 'spoiler{@}', 'deftag(spoiler,open TEXT false Open,close TEXT false Close){\r\n  set(*spoilers){math(get{*spoilers},1){add}}\r\n  tag(div,:class spoiler,:extra id="get{*spoilers}"){\r\n    tag(button){print{open}}\r\n    div(:style display:none){print{content}}\r\n    tag(span,:class open,:style display:none){print{open}}\r\n    tag(span,:class close,:style display:none){print{close}}\r\n  }\r\n}', 'Spoiler text', -1, 0),
+('Url', 'plus', 'url', 'url(&#36;Enter the URL|url&#36;){@}', 'deftag(url,url URLS false NIL,title TEXT false,target TEXT false _blank){\r\n    if(get{url},''NIL'',==){set(url){get{content}}}\r\n    tag(a,:extra href="get{url}" title="get{title}" target="get{target}"){print{content}}\r\n}', 'Insert a hyperlink', -1, 9),
+('Youtube', 'extra', 'youtube', 'youtube{video code}', 'deftag(youtube,width INTE800 false 400,height INTE600 false 280,start INTE false,end INTE false,list TEXT false,listType STRI false list,loop BOOL false 0,autoplay BOOL false 0){\r\n  urlargs{get{content}}\r\n  set(id){get(v){params}}\r\n  if(get{loop},true){set(loop){1}}\r\n  if(get{autoplay},true){set(autoplay){1}}\r\n  tag(iframe,:force 1,:class youtube-player,:extra type="text/html" width="get{width}" height="get{height}" frameborder="0" src="http://www.youtube.com/embed/get{id}?start=get{start}&end=get{end}&list=get{list}&listType=get{listType}&loop=get{loop}&autoplay=get{autoplay}"){echo{#}}\r\n}', 'Insert a youtube video', 5, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_actions`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_actions` (
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
+  `action` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `args` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `reason` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `editor` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_articles`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_articles` (
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'o',
+  `revision` int(11) NOT NULL,
+  `current` text COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  `status` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'o',
+  PRIMARY KEY (`title`,`type`),
+  FULLTEXT KEY `current` (`current`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_categories` (
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `article` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`title`,`article`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `lore_revisions`
+--
+
+CREATE TABLE IF NOT EXISTS `lore_revisions` (
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
+  `revision` int(11) NOT NULL AUTO_INCREMENT,
+  `text` text COLLATE utf8_unicode_ci NOT NULL,
+  `editor` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(11) NOT NULL,
+  PRIMARY KEY (`title`,`type`,`revision`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_categories`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_categories` (
+  `categoryID` bigint(20) NOT NULL AUTO_INCREMENT,
+  `MID` int(11) NOT NULL,
+  `PID` bigint(20) NOT NULL,
+  `title` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`categoryID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_hooks`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_hooks` (
+  `source` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `hook` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `destination` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `function` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`source`,`hook`,`destination`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_hooks`
+--
+
+INSERT INTO `ms_hooks` (`source`, `hook`, `destination`, `function`) VALUES
+('CORE', 'HITDOMAIN', 'CORE', 'printTimePassed'),
+('CORE', 'HITadmin', 'Admin', 'displayPage'),
+('CORE', 'HITlogin', 'Neon', 'displayLogin'),
+('Admin', 'PANELdisplay', 'User', 'displayPanel'),
+('Admin', 'ADMINUser', 'User', 'displayAdminPage'),
+('Admin', 'PANELdisplay', 'Themes', 'displayPanel'),
+('Admin', 'ADMINThemes', 'Themes', 'displayAdminPage'),
+('CORE', 'HITapi', 'CORE', 'apiCall'),
+('CORE', 'APIThemes', 'Themes', 'displayAPI'),
+('Admin', 'ADMINMenu', 'Menu', 'displayAdmin'),
+('CORE', 'HITuser', 'Neon', 'displayMainPage'),
+('Themes', 'buildMenu', 'Menu', 'buildMenu'),
+('Admin', 'ADMINNavbar', 'User', 'adminNavbar'),
+('Admin', 'ADMINNavbar', 'Themes', 'adminNavbar'),
+('Admin', 'PANELdisplay', 'Menu', 'displayPanel'),
+('Admin', 'ADMINFenfire', 'Fenfire', 'displayAdminPage'),
+('Admin', 'PANELdisplay', 'Fenfire', 'displayPanel'),
+('Admin', 'ADMINNavbar', 'Fenfire', 'adminNavbar'),
+('CORE', 'APISubmitComment', 'Fenfire', 'submitCommentForm'),
+('CORE', 'APIparse', 'LightUp', 'displayApiPage'),
+('Neon', 'PROFILEpage', 'Fenfire', 'commentSection'),
+('User', 'buildMenu', 'Derpy', 'buildMenu'),
+('User', 'SETTINGSNavbar', 'Derpy', 'userNavbar'),
+('User', 'SETTINGSMessages', 'Derpy', 'displayMessagesPage'),
+('CORE', 'PARSE', 'LightUp', 'deparse'),
+('CORE', 'GETtags', 'LightUp', 'getTags'),
+('Admin', 'PANELdisplay', 'LightUp', 'displayPanel'),
+('Admin', 'ADMINLightUp', 'LightUp', 'displayAdminPage'),
+('CORE', 'APILightUpTagOrder', 'LightUp', 'displayApiOrderPage'),
+('Fenfire', 'POST', 'Derpy', 'handlePostHook'),
+('CORE', 'APINOTIFICATIONdelete', 'Derpy', 'handleAPINotificationDelete'),
+('CORE', 'APIUSERsearch', 'User', 'apiUserSearch'),
+('CORE', 'HITtest', 'Test', 'runTests'),
+('Admin', 'PANELdisplay', 'Admin', 'displayPanel'),
+('Admin', 'ADMINAdmin', 'Admin', 'displayAdminPage'),
+('CORE', 'HITwiki', 'Lore', 'displayPage'),
+('CORE', 'APIlightupCUSTOM', 'LightUp', 'displayApiCustomParse'),
+('CORE', 'APILoreParse', 'Lore', 'displayApiParse'),
+('CORE', 'HITgallery', 'Display', 'displayPage'),
+('CORE', 'APIdisplayManageSave', 'Display', 'displayAPISaveData'),
+('CORE', 'APIdisplayManageDelete', 'Display', 'displayAPIDeletePicture'),
+('Admin', 'PANELdisplay', 'Purplish', 'displayAdminPanel'),
+('Admin', 'ADMINChan', 'Purplish', 'displayAdmin'),
+('CORE', 'APIchan', 'Purplish', 'displayAPI'),
+('CORE', 'HITchan', 'Purplish', 'displayPage'),
+('Admin', 'PANELdisplay', 'Reader', 'displayPanel'),
+('CORE', 'HITblog', 'Reader', 'displayPage'),
+('Reader', 'entryFoot', 'Fenfire', 'commentSection'),
+('Admin', 'ADMINReader', 'Reader', 'displayAdmin'),
+('CORE', 'APIfiler', 'Filer', 'displayAPI'),
+('Reader', 'editor', 'Filer', 'displayPopupFiler'),
+('Admin', 'PANELdisplay', 'Filer', 'displayPanel'),
+('Admin', 'ADMINFiler', 'Filer', 'displayAdmin'),
+('Admin', 'PANELdisplay', 'Layouter', 'displayPanel'),
+('Admin', 'ADMINLayouter', 'Layouter', 'displayAdmin'),
+('Admin', 'PANELdisplay', 'Display', 'displayPanel'),
+('Admin', 'ADMINDisplay', 'Display', 'displayAdmin'),
+('Themes', 'buildMenu', 'Neon', 'buildMenu'),
+('Themes', 'buildMenu', 'Admin', 'buildMenu'),
+('CORE', 'HIToffline', 'CORE', 'offline'),
+('Neon', 'profileSettings', 'Twitch', 'displayUserPanel'),
+('Neon', 'TwitterSave', 'Twitch', 'displayUserSave'),
+('CORE', 'APItwitter', 'Twitch', 'apiTwitterReturn'),
+('Display', 'POST', 'Twitch', 'universalPostHook'),
+('Reader', 'POST', 'Twitch', 'universalPostHook'),
+('CORE', 'HIThub', 'Hub', 'displayPage');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_links`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_links` (
+  `linkID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PID` int(10) unsigned NOT NULL,
+  `order` int(10) unsigned NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `link` varchar(256) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `style` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `auth` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`linkID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=22 ;
+
+--
+-- Dumping data for table `ms_links`
+--
+
+INSERT INTO `ms_links` (`linkID`, `PID`, `order`, `title`, `link`, `description`, `style`, `auth`) VALUES
+(2, 0, 15, 'Wiki', 'http://wiki.HOST', '', '', ''),
+(3, 0, 0, 'Blog', 'http://blog.HOST', 'News and Articles', '', ''),
+(4, 0, 5, 'Gallery', 'http://gallery.HOST', '', '', ''),
+(5, 4, 0, 'Upload', 'http://gallery.HOSTupload', 'Upload New Pictures', '', 'display.folder.*'),
+(6, 4, 1, 'Manage', 'http://gallery.HOSTmanage', 'Manage Your Submissions', '', 'display.folder.*'),
+(7, 3, 0, 'Folders', 'http://blog.HOSTf', 'Show Article Folders', '', ''),
+(8, 3, 1, 'Submit', 'http://blog.HOSTe', 'Submit a New Entry', '', 'reader.folder.*'),
+(9, 0, 20, 'Chan', 'http://chan.HOST', 'Stevenchan', '', ''),
+(10, 0, 25, 'Links', '#', '', '', ''),
+(11, 10, 1, 'Imagedump', 'http://img.tymoon.eu', 'A large collection of images from the internet', '', ''),
+(12, 10, 4, 'Argh', 'http://argh.tymoon.eu', 'Argh.', '', ''),
+(13, 10, 2, 'StevenArch', 'http://stevenarch.tymoon.eu', 'Stevenchan 1 Archive', '', ''),
+(14, 10, 5, 'Kick', 'http://scr.tymoon.eu/kick', 'Kick Shinmera', '', ''),
+(15, 10, 3, 'Movie Night', 'http://tymoon.eu/MovieNight', 'Stevenchan Movie Night', '', ''),
+(16, 10, 6, 'Did You Know', 'http://shinmera.tymoon.eu/public/nt', 'Did you know... about Windows NT', '', ''),
+(17, 10, 0, 'Shinmera', 'http://shinmera.com', 'Shinmera&apos;s personal website', '', ''),
+(18, 0, 10, 'Projects', 'http://hub.HOST', 'Project HUB and Bug Tracker', '', ''),
+(19, 18, 5, 'Submit Ticket', 'http://hub.HOSTticket/submit', 'Submit a Bug Ticket  or Request', '', ''),
+(20, 18, 0, 'Project List', 'http://hub.HOSTproject', 'View Project List', '', ''),
+(21, 18, 2, 'My Dashboard', 'http://hub.HOSTdashboard', 'View Assigned Bugs and Projects', '', 'hub.dashboard');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_log`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_log` (
+  `logID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `user` int(64) NOT NULL,
+  PRIMARY KEY (`logID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_modules`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_modules` (
+  `name` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `subject` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_modules`
+--
+
+INSERT INTO `ms_modules` (`name`, `subject`) VALUES
+('Ace', 'Provides a simple interface for the Ace text editor component.'),
+('Admin', 'Allows administration of CORE models and provides an interface for module specific configuration pages.'),
+('Auth', 'Provides a secure session and authentication system, as well as permission management.'),
+('CORE', 'This is the CORE module, providing the INIT system.'),
+('Derpy', 'Derpy Mail, a private user message system.'),
+('Display', 'A gallery module with per-user gallery support.'),
+('Fenfire', 'Provides a simple comment system.'),
+('Filer', 'A simple file upload API.'),
+('Hub', 'The hub module provides a large project management system.'),
+('Layouter', 'A layout engine to create dynamic layouts and abolish the need for complicated themes.'),
+('LightUp', 'BBCode and text formatting system '),
+('Liroli', 'Public user groups'),
+('Lore', 'Wiki'),
+('Menu', 'Menu manager.'),
+('Neon', 'Provides user front-end.'),
+('Purplish', 'Purplish is a kusaba-like imageboard software.'),
+('Reader', 'A simple blogging system.'),
+('Test', 'To run test suites.'),
+('Themes', 'A simple theming system, making page construction very simple.'),
+('Ticker', 'Ticker is a bug ticket tracker API and has no front-end by itself. It is best integrated into the HUB.'),
+('Twitch', 'Twitter library.'),
+('User', 'Allows for user management and supplies AUTH login/logout functions.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_options`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_options` (
+  `key` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ms_options`
+--
+
+INSERT INTO `ms_options` (`key`, `value`, `type`) VALUES
+('akismet_key', '9fce28faba37', 's'),
+('avatar_maxdim', '150', 'i'),
+('avatar_maxsize', '500', 'i'),
+('chan_defaultamount', '5', 'i'),
+('chan_fileloc_extern', 'http://linuz.com/TyNET/data/chan/', 's'),
+('chan_frontposts', '20', 'i'),
+('chan_maxlines', '20', 's'),
+('chan_online', '1', 's'),
+('chan_opthumbsize', '200', 's'),
+('chan_posttimeout', '5', 'i'),
+('chan_theme', 'light.css', 's'),
+('chan_thumbsize', '125', 's'),
+('chan_title', 'Stevenchan', 's'),
+('chan_tpp', '15', 's'),
+('chan_trips', '', 's'),
+('cookie_life_h', '8544', 'i'),
+('default_theme', 'default', 's'),
+('display_default_gallery', 'shinmera', 's'),
+('idiots', 'retards', 's'),
+('metakeys', 'Tymoon;TymoonNET;NexT;TymoonNexT;Shinmera;Nicolas;Hafner;Stevenchan', 'l'),
+('offline', '1', 'b'),
+('recaptcha_key_private', '6LeYH7wSAAAAAMyEpHJzu0HScC6hqm6CyV7WPVMG', 's'),
+('recaptcha_key_public', '6LeYH7wSAAAAADyB1R9ooRPtxFSTCUcnL5dO6dr8', 's'),
+('salt1', 'MLPisAveryAWESOMEshow', 's'),
+('salt2', 'you_have_GOT_to_be_shittong_me', 's'),
+('salt3', '23scUOBa38@#J(&)2h1linDV(03uBNX:', 's'),
+('sitename', 'TyNET', 's'),
+('sysop_mail', 'admin@xprog.ch', 's'),
+('twitch_consumer_key', 'fzGWcOhR1baeFocC4WKKA', 's'),
+('twitch_consumer_secret', 'Kz527nJ2jn3AzfplttnedDEBOywhyJcGSByhFP5NUQM', 's'),
+('twitch_return', 'user.linuz.com/TyNET/panel?tab=Twitter', 's');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ms_timer`
+--
+
+CREATE TABLE IF NOT EXISTS `ms_timer` (
+  `IP` varchar(16) COLLATE utf8_unicode_ci NOT NULL,
+  `time` int(10) unsigned NOT NULL,
+  `action` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`IP`,`action`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `neon_friends`
+--
+
+CREATE TABLE IF NOT EXISTS `neon_friends` (
+  `uID1` int(11) unsigned NOT NULL,
+  `uID2` int(11) unsigned NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'r',
+  PRIMARY KEY (`uID1`,`uID2`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_actions`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_actions` (
+  `actionID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `TID` int(10) unsigned NOT NULL,
+  `action` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `creator` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`actionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_groups` (
+  `groupID` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `title` varchar(32) NOT NULL,
+  `description` text NOT NULL,
+  `visibility` tinyint(4) unsigned NOT NULL,
+  PRIMARY KEY (`groupID`),
+  UNIQUE KEY `title` (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_projects`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_projects` (
+  `projectID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PID` int(10) unsigned NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `visibility` tinyint(3) unsigned NOT NULL,
+  PRIMARY KEY (`projectID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_teams`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_teams` (
+  `PID` int(10) unsigned NOT NULL,
+  `UID` int(10) unsigned NOT NULL,
+  `permissions` text CHARACTER SET utf8mb4 NOT NULL,
+  PRIMARY KEY (`PID`,`UID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_tickets`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_tickets` (
+  `ticketID` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `PID` int(10) unsigned NOT NULL,
+  `title` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci NOT NULL,
+  `solution` text COLLATE utf8_unicode_ci NOT NULL,
+  `date` int(10) unsigned NOT NULL,
+  `type` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `status` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `creator` int(10) unsigned NOT NULL,
+  `assignee` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`ticketID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ti_users`
+--
+
+CREATE TABLE IF NOT EXISTS `ti_users` (
+  `UID` int(10) unsigned NOT NULL,
+  `GID` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`UID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tw_data`
+--
+
+CREATE TABLE IF NOT EXISTS `tw_data` (
+  `userID` int(10) unsigned NOT NULL,
+  `token` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `secret` varchar(55) COLLATE utf8_unicode_ci NOT NULL,
+  `active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`userID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_fields`
+--
+
+CREATE TABLE IF NOT EXISTS `ud_fields` (
+  `varname` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `default` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  `type` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 's',
+  `editable` tinyint(1) NOT NULL DEFAULT '0',
+  `displayed` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`varname`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_field_values`
+--
+
+CREATE TABLE IF NOT EXISTS `ud_field_values` (
+  `varname` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `userID` int(11) unsigned NOT NULL,
+  `value` text COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`varname`,`userID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_groups`
+--
+
+CREATE TABLE IF NOT EXISTS `ud_groups` (
+  `title` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `permissions` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`title`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ud_groups`
+--
+
+INSERT INTO `ud_groups` (`title`, `permissions`) VALUES
+('Registered', 'base.*\r\nuser.profile.*'),
+('root', '*.*');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_permissions`
+--
+
+CREATE TABLE IF NOT EXISTS `ud_permissions` (
+  `UID` bigint(20) unsigned NOT NULL,
+  `tree` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`UID`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `ud_permissions`
+--
+
+INSERT INTO `ud_permissions` (`UID`, `tree`) VALUES
+(1, ''),
+(6, '');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `ud_users`
+--
+
+CREATE TABLE IF NOT EXISTS `ud_users` (
+  `userID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `mail` varchar(35) COLLATE utf8_unicode_ci NOT NULL,
+  `password` varchar(128) COLLATE utf8_unicode_ci NOT NULL,
+  `secret` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `displayname` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `filename` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `group` varchar(32) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'Registered',
+  `status` varchar(1) COLLATE utf8_unicode_ci NOT NULL DEFAULT 'u',
+  `time` int(11) unsigned NOT NULL,
+  PRIMARY KEY (`userID`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `displayname` (`displayname`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=8 ;
+
+--
+-- Dumping data for table `ud_users`
+--
+
+INSERT INTO `ud_users` (`userID`, `username`, `mail`, `password`, `secret`, `displayname`, `filename`, `group`, `status`, `time`) VALUES
+(1, 'Shinmera', 'nhafner@gmx.ch', '0a7692382c5083dc7d6a612879de30b29423f5693ce9f8ccd40049e86a07f26b719378c1fa8727e72c877cd35d47c5ffddb53300598dcf1aab6d415bf970ebe2', 'E298c5VAS163Ddt2udy56p8N73K527N', 'しんめら', '/Shinmera-gahh4.png', 'root', 'a', 0),
+(6, 'nonPrivileged', 'null@null.com', 'd4122413e8b517039a0d4431069bb32bc580d4585b24d18228f8f722abe21e806dfe33daf9bfb2994419066111f40bd387af6b1e062b4e9882a90bcebb186d70', 'Zjy638b5v360Uq4ce9aLg87asm65651', 'nonPrivileged', '', 'Unregistered', 'a', 1344089966);
