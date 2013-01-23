@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>You're an idiot - Shinmera - Ticker - TyNET</title>
+    <link rel="stylesheet" type="text/css" href="./ticker.css" />
+    <script src="http://linuz.com/TyNET/data/js/jquery.js"></script>
+</head>
+<body>
+    <div id="ticketContent" class="contentFixed content">
+        <div id="ticketHead" class="head">
+            <a class="project" href="/p/Shinmera">
+                <img title="Shinmera" src="./proj-shinmera-64.png" />
+            </a>
+            <a class="ticket" href="/t/Shinmera/2552">
+                <h1>You're an idiot</h1>
+            </a>
+            <div id="ticketShortInfo">
+                <a class="ticketType" href="/t/Shinmera/byType/improvement">Improvement</a>
+                <a class="project" href="/p/Shinmera">Shinmera</a>
+            </div>
+            <span id="ticketRecordInfo">
+                Recorded on <span class="time">3.12.2012 09:00</span>
+                by <a class="user" href="/u/Anonymous">Anonymous</a>
+            </span>
+        </div>
+        <div id="sideBar">
+            <div id="ribbonSide"></div>
+            <ul>
+                <li><a class="tool" id="toolEdit">Edit</a></li>
+                <li><a class="tool" id="toolComment">Comment</a></li>
+                <li><a class="tool" id="toolAssign">Assign</a></li>
+                <li><a class="tool" id="toolType">Change Type</a></li>
+                <li><a class="tool" id="toolStatus">Change Status</a></li>
+                <li><a class="tool" id="toolClose">Close</a></li>
+            </ul>
+        </div>
+
+        <div id="returnButton">
+            <a href="/p/Shinmera">
+                Return to Shinmera
+            </a>
+        </div>
+
+        <article>
+            <form id="ticketBody" class="body" method="post">
+                <ul>
+                    <li>
+                    <label>Assigned to:</label>
+                        <div class="formInputArea">
+                            <a class="user" href="/u/Shinmera">Shinmera</a>
+                            <input type="text" name="assignee" value="Shinmera" required />
+                        </div>
+                    </li><li>
+                    <label>Ticket type:</label>
+                        <div class="formInputArea">
+                            <a class="ticketType" href="/t/Shinmera/byType/improvement">Improvement</a>
+                            <select name="type">
+                                <option value="b">Bug</option>
+                                <option value="i" selected>Improvement</option>
+                                <option value="f">New Feature</option>
+                                <option value="f">Duplicate</option>
+                            </select>
+                        </div>
+                    </li><li>
+                    <label>Status:</label>
+                        <div class="formInputArea">
+                            <a class="ticketStatus" href="/t/Shinmera/byStatus/closed">Closed</a>
+                            <select name="status">
+                                <option value="r">Request</option>
+                                <option value="i">Implementation</option>
+                                <option value="t">Testing</option>
+                                <option value="c" selected>Closed</option>
+                                <option value="q">Rejected</option>
+                                <option value="a">Archived</option>
+                            </select>
+                        </div>
+                    </li><li>
+                    <label>Description:</label>
+                        <div class="formInputArea">
+                            <p>
+                                Oh my god, Shinmera is such a fucking idiot. I mean damn, can't he do anything right? Seriously, I don't care about all the bugs in the site as long as you fix this idiot up.
+                            </p>
+                            <p>
+                                <img src="http://shinmera.tymoon.eu/public/meanwhile%20on%20fabulous.png" alt="img" class="postImage" />
+                            </p>
+                            <textarea name="description" class="previewable" id="previewable" required>Oh my god, Shinmera is such a fucking idiot. I mean damn, can't he do anything right? Seriously, I don't care about all the bugs in the site as long as you fix this idiot up.
+img{http://shinmera.tymoon.eu/public/meanwhile%20on%20fabulous.png}</textarea>
+                        </div>
+                    </li><li>
+                    <label>Solution:</label>
+                        <div class="formInputArea">
+                            <p>
+                                Ate a couple of maths books. That should do the trick, right?
+                            </p>
+                            <textarea name="solution" class="previewable" id="solution">Ate a couple of maths books. That should do the trick, right?</textarea>
+                        </div>
+                    </li>
+                </ul>
+                <input type="submit" value="Edit" />
+            </form>
+        </article>
+        <div id="ticketActions">
+            <h2>Actions</h2>
+            <ul id="ticketActionsLegend">
+                <li id="legendComment" class="actionComment">Comment</li>
+                <li id="legendEdit" class="actionEdit">Edit</li>
+                <li id="legendType" class="actionType">Type</li>
+                <li id="legendStatus" class="actionStatus">Status</li>
+                <li id="legendAssign" class="actionAssign">Assign</li>
+                <li id="legendOpen" class="actionOpen">Open</li>
+                <li id="legendClose" class="actionClose">Close</li>
+            </ul>
+            <ul class="ticketActionsList">
+                <li class="ticketAction actionType">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">3.13.2012 10:56</span>
+                        <span class="ticketActionDescription"> changed type to Improvement</span>
+                    </div>
+                </li>
+                <li class="ticketAction actionComment">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">3.12.2012 10:56</span>
+                        <span class="ticketActionDescription"> commented</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            It's true. So true.
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionAssign">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">3.12.2012 10:57</span>
+                        <span class="ticketActionDescription"> assigned to </span>
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a>
+                    </div>
+                </li>
+                <li class="ticketAction actionClose">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">3.13.2012 12:41</span>
+                        <span class="ticketActionDescription"> closed </span>
+                    </div>
+                </li>
+                <li class="ticketAction actionOpen">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">3.13.2012 13:51</span>
+                        <span class="ticketActionDescription"> opened </span>
+                    </div>
+                </li>
+                <li class="ticketAction actionStatus">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">3.13.2012 22:34</span>
+                        <span class="ticketActionDescription"> changed status to Implementation</span>
+                    </div>
+                </li>
+                <li class="ticketAction actionStatus">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">3.12.2012 23:01</span>
+                        <span class="ticketActionDescription"> changed status to Rejected</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            Argh, man, this is impossible to do.
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionComment">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">3.12.2012 23:02</span>
+                        <span class="ticketActionDescription"> commented</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            Stop wussing out you faggot and do this shit.
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionComment">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">3.12.2012 23:01</span>
+                        <span class="ticketActionDescription"> commented</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+
+                            Maybe tomorrow.
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionStatus">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">4.13.2012 09:12</span>
+                        <span class="ticketActionDescription"> changed status to Implementation</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            <img alt="postimage" src="http://tymoon.eu/data/chan/fab/files/135462641940642.jpg" class="postImage" />
+                        </p>
+                        <p>
+                            *sign*
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionEdit">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">4.13.2012 11:54</span>
+                        <span class="ticketActionDescription"> edited </span>
+                    </div>
+                </li>
+                <li class="ticketAction actionClose">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">4.13.2012 11:54</span>
+                        <span class="ticketActionDescription"> closed </span>
+                    </div>
+                </li>
+                <li class="ticketAction actionComment">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">4.12.2012 13:02</span>
+                        <span class="ticketActionDescription"> commented</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            :I
+                        </p>
+                    </div>
+                </li>
+            </ul>
+            <form id="ticketActionsComment" class="ticketAction  actionComment">
+                <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">3.12.2012 15:25</span>
+                        <span class="ticketActionDescription"> commented</span>
+                        <input type="submit" value="Submit" />
+                    </div>
+                    <div class="ticketActionBody">
+                        <textarea name="comment" class="previewable" id="comment"></textarea>
+                    </div>
+            </form>
+        </div>
+    </div>
+    <div id="spinner"><p>Loading</p></div>
+    <div id="showLabels">Show Labels</div>
+    <div id="popupBack" class="popup"></div>
+    <div id="popup" class="popup"><p></p></div>
+    <div id="message"></div>
+
+    <script type="text/javascript" src="./mousetrap.min.js"></script>
+    <script type="text/javascript" src="./mousetrap-global.min.js"></script>
+    <script type="text/javascript" src="./mousetrap-pause.min.js"></script>
+    <script type="text/javascript" src="./ticker.js"></script>
+</body>
+</html>
