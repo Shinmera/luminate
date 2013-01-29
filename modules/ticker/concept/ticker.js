@@ -5,7 +5,9 @@ function defVar(vars, def){
 }
 
 function fixActionsY(){
-    $("#ticketActions").css("top",($("article").position().top + $("article").height()+10)+"px")
+    var $actions = $("#ticketActions");
+    if($actions.length > 0)
+        $actions.css("top",($("article").position().top + $("article").height()+10)+"px")
 }
 
 function fixMargins(){

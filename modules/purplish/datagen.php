@@ -438,12 +438,12 @@ class DataGenerator{
         echo("<div class='success'>Cleaning:<br />Database...<br />");
         $c->query("DELETE FROM ch_posts WHERE BID=? AND options LIKE ?",array($boardID,'%d%'));
         
-        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/files/_*.php');
+        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/files/_*.*');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn)  {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/thumbs/_*.php');
+        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/thumbs/_*.*');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn) {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
