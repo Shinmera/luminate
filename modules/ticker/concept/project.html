@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>Shinmera - Ticker - TyNET</title>
+    <link rel="stylesheet" type="text/css" href="./ticker.css" />
+    <script src="http://linuz.com/TyNET/data/js/jquery.js"></script>
+</head>
+<body>
+    <div id="projectContent" class="contentVariable content">
+        <div id="projectHead" class="head">
+            <a class="project" href="/p/Shinmera">
+                <img title="Shinmera" src="./proj-shinmera-128.png" />
+                <h1>Shinmera</h1>
+            </a>
+        </div>
+
+        <div id="sideBar">
+            <div id="ribbonSide"></div>
+            <ul>
+                <li><a class="tool" id="toolEdit">Edit</a></li>
+                <li><a class="tool" id="toolSubmit" href='/t/new?parent=Shinmera'>Submit Ticket</a></li>
+                <li><a class="tool" id="toolJoin" href='/p/Shinmera/join'>Join Team</a></li>
+                <li><a class="tool" id="toolLeave" href='/p/Shinmera/leave'>Leave Team</a></li>
+                <li><a class="tool" id="toolSubProject" href='/p/new?parent=Shinmera'>Create Sub-Project</a></li>
+            </ul>
+        </div>
+
+        <div id="returnButton">
+            <a href="/p/Personal">
+                Go to parent project
+            </a>
+        </div>
+
+        <article>
+            <form id="projectBody" class="body" method="post">
+                <ul>
+                    <li>
+                    <label>Title:</label>
+                        <div class="formInputArea">
+                            <span class="projectName">Shinmera</span>
+                            <input type="text" name="title" value="Shinmera" required />
+                        </div>
+                    </li><li>
+                    <label>Creation date:</label>
+                        <div class="formInputArea">
+                            <span class="projectDate">1993/11/18</span>
+                            <input type="text" name="creation" value="1993/11/18" required />
+                        </div>
+                    </li><li>
+                    <label>Visibility:</label>
+                        <div class="formInputArea">
+                            <span class="projectVisibility">Public</span>
+                            <select name="status">
+                                <option value="r" selected>Public</option>
+                                <option value="i">Team</option>
+                                <option value="t">Assigned</option>
+                            </select>
+                        </div>
+                    </li><li>
+                    <label>Description:</label>
+                        <div class="formInputArea">
+                            <p></p>
+                            <textarea name="description" class="previewable" id="previewable" required></textarea>
+                        </div>
+                    </li>
+                </ul>
+                <input type="submit" value="Edit" />
+            </form>
+        </article>
+
+        <div id="projectTeam" class="container left team">
+            <div class="head">
+                <h2>Team</h2>
+                <ul class='menu'>
+                    <li><a href='#' id="toolManageTeam">Manage</a></li>
+                    <li><a href='#' id="toolTeamAddUser">Add User</a></li>
+                </ul>
+            </div>
+            <ul class='usersList'>
+                <li><a href="/u/Shinmera" class="user" data-user="Shinmera">
+                    <img src="./user-shinmera-16.png" alt="" />
+                    Shinmera
+                </a></li>
+                <li><a href="/u/Malakin" class="user" data-user="Malakin">
+                    <img src="./user-malakin-16.png" alt="" />
+                    Malakin
+                </a></li>
+                <li><a href="/u/Mithent" class="user" data-user="Mithent">
+                    <img src="./user-any-16.png" alt="" />
+                    Mithent
+                </a></li>
+                <li><a href="/u/Mithent" class="user" data-user="Mithent">
+                    <img src="./user-any-16.png" alt="" />
+                    Mithent
+                </a></li>
+                <li><a href="/u/Mithent" class="user" data-user="Mithent">
+                    <img src="./user-any-16.png" alt="" />
+                    Mithent
+                </a></li>
+            </ul>
+            <ul class='manageList invisible'>
+                <li>
+                    <img src="./user-any-16.png" alt="" />
+                    Anonymous
+                    <a href="#" class="button edit toggleable" data-user="Anonymous">Edit</a>
+                    <a href="#" class="button remove" data-user="Anonymous">Remove</a>
+                    <form action="#" method="post" class="invisible ajax">
+                        <div>
+                            <input type="text" class="permnode" name="permissions[]" value="ticket.submit" />
+                            <input type="text" class="permnode" name="permissions[]" value="" />
+                        </div>
+                        <input type="hidden" name="user" value="anonymous" />
+                        <input type="submit" value="Save" />
+                        <a href="#" class="button add">Add Row</a>
+                    </form>
+                </li>
+                <li>
+                    <img src="./user-any-16.png" alt="" />
+                    Registered
+                    <a href="#" class="button edit toggleable" data-user="Registered">Edit</a>
+                    <a href="#" class="button remove" data-user="Registered">Remove</a>
+                    <form action="#" method="post" class="invisible ajax">
+                        <div>
+                            <input type="text" class="permnode" name="permissions[]" value="ticket.submit" />
+                            <input type="text" class="permnode" name="permissions[]" value="" />
+                        </div>
+                        <input type="hidden" name="user" value="registered" />
+                        <input type="submit" value="Save" />
+                        <a href="#" class="button add">Add Row</a>
+                    </form>
+                </li>
+                <li>
+                    <img src="./user-shinmera-16.png" alt="" />
+                    Shinmera
+                    <a href="#" class="button edit toggleable" data-user="Shinmera">Edit</a>
+                    <a href="#" class="button remove" data-user="Shinmera">Remove</a>
+                    <form action="#" method="post" class="invisible ajax">
+                        <div>
+                            <input type="text" class="permnode" name="permissions[]" value="*" />
+                            <input type="text" class="permnode" name="permissions[]" value="" />
+                        </div>
+                        <input type="hidden" name="user" value="shinmera" />
+                        <input type="submit" value="Save" />
+                        <a href="#" class="button add">Add Row</a>
+                    </form>
+                </li>
+            </ul>
+        </div>
+
+        <div id="projectActivity" class="container right">
+            <div class="head">
+                <h2>Activity</h2>
+                <ul class='menu'>
+                    <li><a href='/t/Shinmera/activity' id="toolShowActivity">Show All</a></li>
+                </ul>
+            </div>
+            <ul class="ticketActionsList">
+                <li class="ticketAction actionComment">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Malakin" data-user="Malakin">
+                            <img title="Malakin" src="./user-malakin-16.png" />
+                            Malakin
+                        </a> on
+                        <span class="time">4.12.2012 13:02</span>
+                        <span class="ticketActionDescription"> commented</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            :I
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionEdit">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">4.13.2012 11:54</span>
+                        <span class="ticketActionDescription"> edited </span>
+                    </div>
+                </li>
+                <li class="ticketAction actionClose">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">4.13.2012 11:54</span>
+                        <span class="ticketActionDescription"> closed </span>
+                    </div>
+                </li>
+                <li class="ticketAction actionStatus">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">4.13.2012 09:12</span>
+                        <span class="ticketActionDescription"> changed status to Implementation</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            <img alt="postimage" src="http://tymoon.eu/data/chan/fab/files/135462641940642.jpg" class="postImage" />
+                        </p>
+                        <p>
+                            *sign*
+                        </p>
+                    </div>
+                </li>
+                <li class="ticketAction actionComment">
+                    <div class="ticketActionHead">
+                        <a class="user" href="/u/Shinmera" data-user="Shinmera">
+                            <img title="Shinmera" src="./user-shinmera-16.png" />
+                            Shinmera
+                        </a> on
+                        <span class="time">3.12.2012 23:01</span>
+                        <span class="ticketActionDescription"> commented</span>
+                    </div>
+                    <div class="ticketActionBody">
+                        <p>
+                            Maybe tomorrow.
+                        </p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div id="projectRecentTickets" class="container left">
+            <div class="head">
+                <h2>Recent Tickets</h2>
+                <ul class='menu'>
+                    <li><a href='/t/Shinmera/' id="toolShowTickets">Show All</a></li>
+                </ul>
+            </div>
+            <ul class="ticketsList">
+                <li class="ticket ticketImprovement">
+                    <a href="/t/123-Youre-an-idiot" class="ticket">You're an idiot</a>
+                    by <a class="user" href="/u/Anonymous">Anonymous</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/improvement">Improvement</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketDuplicate">
+                    <a href="/t/23" class="ticket">Foo</a>
+                    by <a class="user" href="/u/FooBar">FooBar</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/duplicate">Duplicate</a>
+                </li>
+                <li class="ticket ticketFeature">
+                    <a href="/t/21-Get-better-at-art" class="ticket">Get better at art</a>
+                    by <a class="user" href="/u/Shinmera">Shinmera</a>
+                    <a class="ticketType" href="/t/Shinmera/byType/improvement">Improvement</a>
+                </li>
+            </ul>
+        </div>
+
+        <br style="clear:both;" />
+    </div>
+    <div id="spinner"><p>Loading</p></div>
+    <div id="showLabels">Show Labels</div>
+    <div id="popupBack" class="popup"></div>
+    <div id="popup" class="popup"><p></p></div>
+    <div id="message"></div>
+
+    <script type="text/javascript" src="./mousetrap.min.js"></script>
+    <script type="text/javascript" src="./mousetrap-global.min.js"></script>
+    <script type="text/javascript" src="./mousetrap-pause.min.js"></script>
+    <script type="text/javascript" src="./ticker.js"></script>
+</body>
+</html>

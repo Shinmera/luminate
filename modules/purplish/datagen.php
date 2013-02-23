@@ -120,7 +120,7 @@ class DataGenerator{
         $l->triggerHook('purge','Purplish',array($ip));
     }
 
-    function deletePost($postID,$board,$generate=true,$imageonly=false){
+    function deletePost($postID,$board,$generate=true,$imageonly=false,$ignoreperm=false){
         global $l,$a,$c;
         if(!class_exists("ThreadGenerator"))include('threadgen.php');
         if(!class_exists("BoardGenerator"))include('boardgen.php');
@@ -128,7 +128,7 @@ class DataGenerator{
         $post = DataModel::getData('ch_posts',"SELECT postID,PID,BID,file,password FROM ch_posts WHERE postID=? AND BID=? AND options NOT LIKE ? LIMIT 1",
                                                 array($postID,$board,'%d%'));
         if($post == null)throw new Exception("No such post.");
-        if(!$a->check("chan.mod.delete")&&$_POST['password']!=$post->password)throw new Exception("No Access (password mismatch?).");
+        if(!$a->check("chan.mod.delete") && $_POST['password']!=$post->password && !$ignoreperm) throw new Exception("No Access (password mismatch?).");
         if($post->PID==0)$thread=$postID;
         else             $thread=$post->PID;
 
@@ -438,12 +438,12 @@ class DataGenerator{
         echo("<div class='success'>Cleaning:<br />Database...<br />");
         $c->query("DELETE FROM ch_posts WHERE BID=? AND options LIKE ?",array($boardID,'%d%'));
         
-        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/files/_*.php');
+        echo("Files: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/files/_*.*');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn)  {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}
         flush();
-        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/thumbs/_*.php');
+        echo("Thumbs: <br />");$temp=glob(ROOT.DATAPATH.'chan/'.$folder.'/thumbs/_*.*');
         if(is_array($temp)&&count($temp)>0)
             foreach($temp as $fn) {echo('&nbsp; &nbsp; Deleting: '.$fn.'<br />');ob_flush();unlink($fn);}
         else{echo('&nbsp; &nbsp; Clean.<br />');ob_flush();}

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <title>Malakin - Ticker - TyNET</title>
+    <link rel="stylesheet" type="text/css" href="./ticker.css" />
+    <script src="http://linuz.com/TyNET/data/js/jquery.js"></script>
+</head>
+<body>
+    <div id="userContent" class="contentVariable content">
+        <div id="userHead" class="head">
+            <a class="user" href="/u/Malakin">
+                <img title="Malakin" src="./user-malakin-128.png" />
+                <h1>Malakin</h1>
+            </a>
+        </div>
+
+        <div id="sideBar">
+            <div id="ribbonSide"></div>
+            <ul>
+                <li><a class="tool" id="toolSendMessage" href='/_user/panel/Messages/Write?to=Shinmera'>Send Message</a></li></li>
+                <li><a class="tool" id="toolTyNETProfile" href='/_user/Shinmera'>TyNET Profile</a></li></li>
+                <li><a class="tool" id="toolAddProject">Add Project</a></li>
+                <li><a class="tool" id="toolSwitchGroup">Switch Group</a></li>
+                <li><a class="tool" id="toolPermissions">Permissions</a></li>
+            </ul>
+        </div>
+
+        <div id="returnButton">
+            <a href="/g/NexT">
+                Go to parent group
+            </a>
+        </div>
+
+        <article>
+            <form id="userBody" class="body" method="post">
+                <ul>
+                    <li>
+                    <label>Username:</label>
+                        <div class="formInputArea">
+                            Malakin
+                        </div>
+                    </li><li>
+                    <label>Registration date:</label>
+                        <div class="formInputArea">
+                            <span class="projectDate">2012/07/12</span>
+                        </div>
+                    </li><li>
+                    <label>Group:</label>
+                        <div class="formInputArea">
+                            <a class='team' href='/g/NexT'>NexT</a>
+                        </div>
+                    </li>
+                </ul>
+            </form>
+        </article>
+
+        <div id="userTickets" class="container right">
+            <div class="head">
+                <h2>Assigned Tickets</h2>
+                <ul class='menu'>
+                    <li><a href='#' id="toolLoadTickets">Load More</a></li>
+                </ul>
+            </div>
+            <ul class="ticketsList">
+                <li class="ticket ticketImprovement">
+                    <a href="/t/541-Obj-importer-fails-on-lvl23" class="ticket">Obj importer fails on lvl23</a>
+                    by <a class="user" href="/u/Shinmera">Shinmera</a>
+                    <a class="ticketType" href="/t/CUBE/byType/bug">Bug</a>
+                </li>
+                <li class="ticket ticketImprovement">
+                    <a href="/t/541-Lighting-looks-off" class="ticket">Lighting looks off</a>
+                    by <a class="user" href="/u/Shinmera">Shinmera</a>
+                    <a class="ticketType" href="/t/CUBE/byType/improvement">Improvement</a>
+                </li>
+            </ul>
+        </div>
+
+        <div id="userContributingProjects" class="container left">
+            <div class="head">
+                <h2>Contributing Projects</h2>
+            </div>
+            <ul class='projectsList'>
+                <li><a class='project' href='/p/CUBE'>
+                    <img src="./proj-cube-16.png" alt="" />
+                    CUBE
+                </a></li>
+                <li><a class='project' href='/p/TyNET'>
+                    <img src="./proj-tynet-16.png" alt="" />
+                    TyNET
+                </a></li>
+                <li><a class='project' href='/p/Hibernate'>
+                    <img src="./proj-hibernate-16.png" alt="" />
+                    Hibernate
+                </a></li>
+                <li><a class='project' href='/p/Shinmera'>
+                    <img src="./proj-shinmera-16.png" alt="" />
+                    Shinmera
+                </a></li>
+            </ul>
+        </div>
+
+        <div id="userStatistics" class="container left">
+            <div class="head">
+                <h2>Statistics</h2>
+            </div>
+            <ul>
+                <li><label>Tickets created: </label> 0</li> 
+                <li><label>Assigned tickets: </label> 2</li>
+                <li><label>Recorded actions: </label> 51</li>
+            </ul>
+        </div>
+
+        <br style="clear:both;" />
+    </div>
+    <div id="spinner"><p>Loading</p></div>
+    <div id="showLabels">Show Labels</div>
+    <div id="popupBack" class="popup"></div>
+    <div id="popup" class="popup"><p></p></div>
+    <div id="message"></div>
+
+    <script type="text/javascript" src="./mousetrap.min.js"></script>
+    <script type="text/javascript" src="./mousetrap-global.min.js"></script>
+    <script type="text/javascript" src="./mousetrap-pause.min.js"></script>
+    <script type="text/javascript" src="./ticker.js"></script>
+</body>
+</html>
