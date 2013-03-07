@@ -263,12 +263,12 @@ function displayEdit($entryID){
     global $t,$a,$l,$c;
     $entry = DataModel::getData('bl_entries','SELECT * FROM bl_entries WHERE entryID=?',array($entryID));
     
-    if(!$a->check('reader.folder.*')&&$entry->owner!==$a->user->userID){
+    if(!$a->check('reader.folder.'.$entry->FID)&&$entry->owner!==$a->user->userID){
         $t->openPage('Permission Denied - Blog');
         $this->displayHead();
         include(PAGEPATH.'403.php');
     }else{
-        if($entry==null||(!$a->check('reader.mod.*')&&$entry->owner!==$a->user->userID)){
+        if($entry==null||(!$a->check('reader.mod.'.$entry->FID)&&$entry->owner!==$a->user->userID)){
             $entry = DataModel::getHull('bl_entries');
             $t->openPage('Create a new entry - Blog');
             $new=true;
