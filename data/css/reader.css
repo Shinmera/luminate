@@ -32,6 +32,7 @@
     margin:0;padding:0;
     font-size:20pt;
     max-width:680px;
+    white-space: nowrap;
 }
 
 #bloghead .userAvatar img{
