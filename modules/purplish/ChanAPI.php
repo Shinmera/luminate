@@ -313,11 +313,12 @@ function displayOptions(){
         <input type="checkbox" value="a" id="cba" /><label>Automatically watch threads you post in</label><br />
         <input type="checkbox" value="w" id="cbw" /><label>Always show watched threads</label><br />
         <input type="checkbox" value="v" id="cbv" /><label>Hide embedded videos</label><br />
+        <input type="checkbox" value="x" id="cbx" /><label>Enable fart scrolling</label><br />
         <input type="checkbox" value="b" id="cbb" /><label>Enable JS debug mode</label><br />
         <input type="submit" id="saveOptions" value="Save" /> 
         <span id="saveResult" style="color:red;font-weight:bold;"></span>
     </form><script type="text/javascript">
-        var ops = ['u','p','e','h','s','q','w','f','v','b'];
+        var ops = ['u','p','e','h','s','q','w','f','v','x','b'];
         for(var i=0;i<ops.length;i++){
             if(options.indexOf(ops[i])!=-1)$("#cb"+ops[i]).prop("checked", true);
         }
