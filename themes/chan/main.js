@@ -3,8 +3,8 @@ var focused = window;
 var post_ids = "";
 var origtitle = document.title;
 var fetch = 10;
-//update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f video hiding v auto-watch a debug b
-//bcdgijklmnoqrtxyz
+//update u preview p enlarge e scroll s hidden h quote q watched w fixed postbox f video hiding v auto-watch a debug b fart x
+//cdgijklmnoqrtyz
 var options = 'upeshq';
 var cssoptions = {"postbox":    {"draggable": true,"resizable": true},
                   "threadwatch":{"draggable": true,"resizable": true},
@@ -600,6 +600,11 @@ $(function(){
     }
     if(cssoptions.post.filenamelimit){$(".fileName").css("max-width","100px");}
     
+    if(options.indexOf('x')!=-1){
+        console.log('[INIT] Fartscroll');
+        $(document).fartscroll();
+    }
+
     if(options.indexOf('b')!=-1){console.log("[INIT] POST");}
     $(".post,.postOP").each(function(){customizePost($(this))});
 });
