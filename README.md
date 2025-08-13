@@ -1,6 +1,4 @@
-luminate
-========
+# This repository has [moved](https://shinmera.com/projects/luminate)!
+Due to Microsoft's continued enshittification of the platform this repository has been moved to [Codeberg](https://shinmera.com/projects/luminate) in August of 2025. It will not receive further updates or patches. **Issues and pull requests will not be looked at here either**, please submit your patches and issue tickets on Codeberg, or send them directly via good old email patches to [shirakumo@tymoon.eu](mailto:shirakumo@tymoon.eu).
 
-Version 4 of TyNET, a multi-application CMS written in PHP.
-
-No longer being maintained, due to being superseded by [TyNETv5/Radiance](https://shinmera.com/project/radiance).
+Thanks.
